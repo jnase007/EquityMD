@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "include": [
+    "src/**/*.{ts,tsx}",
+    "*.{js,ts}"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ],
+  "typescript": {
+    "enabled": true
+  },
+  "tailwind": {
+    "enabled": true,
+    "configPath": "tailwind.config.js"
+  }
+}

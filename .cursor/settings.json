@@ -1,0 +1,9 @@
+{
+  "projectType": "react",
+  "framework": "vite",
+  "typescript": true,
+  "tailwind": true,
+  "supabase": true,
+  "formatOnSave": true,
+  "telemetry": false
+}
