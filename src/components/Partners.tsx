@@ -18,7 +18,7 @@ interface PartnersProps {
 const partners: Partner[] = [
   {
     name: "AppFolio",
-    logo: "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//appfolio_logo.png",
+    logo: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//appfolio_logo.png`,
     description: "Seamlessly import and sync your property data from AppFolio. Streamline your workflow with automated data transfer.",
     url: "https://www.appfolio.com",
     features: [
@@ -30,7 +30,7 @@ const partners: Partner[] = [
   },
   {
     name: "CashflowPortal",
-    logo: "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//cashflow_logo.jpg",
+    logo: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//cashflow_logo.jpg`,
     description: "Direct integration with CashflowPortal for seamless deal management and investor communications.",
     url: "https://www.cashflowportal.com",
     features: [
@@ -42,7 +42,7 @@ const partners: Partner[] = [
   },
   {
     name: "Juniper Square",
-    logo: "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Juniper_Square.png",
+    logo: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//Juniper_Square.png`,
     description: "Leverage Juniper Square's powerful investment management platform for enhanced investor relations and reporting.",
     url: "https://www.junipersquare.com",
     features: [

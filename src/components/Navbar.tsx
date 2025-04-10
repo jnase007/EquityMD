@@ -181,12 +181,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
     <nav className={`${baseClasses} ${bgClasses}`}>
       <Link to="/" className="flex items-center">
         <img 
-          src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png"
+          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
           alt="EquityMD"
           className={`h-10 ${isTransparent ? 'hidden' : 'block'}`}
         />
         <img 
-          src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-white.png"
+          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-white.png`}
           alt="EquityMD"
           className={`h-10 ${isTransparent ? 'block' : 'hidden'}`}
         />
@@ -355,7 +355,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             <div className="flex justify-between items-center mb-6">
               <Link to="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
                 <img 
-                  src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png"
+                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
                   alt="EquityMD"
                   className="h-10"
                 />

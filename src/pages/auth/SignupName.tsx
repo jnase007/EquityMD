@@ -94,7 +94,7 @@ export function SignupName() {
           <div className="text-center mb-8">
             <Link to="/">
               <img
-                src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png"
+                src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
                 alt="EquityMD"
                 className="h-12 mx-auto mb-6"
               />

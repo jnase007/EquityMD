@@ -26,7 +26,7 @@ export function Footer() {
             className="flex items-center mb-4"
           >
             <img 
-              src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-white.png"
+              src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-white.png`}
               alt="EquityMD"
               className="h-10"
             />

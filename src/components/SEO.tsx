@@ -13,7 +13,7 @@ interface SEOProps {
 export function SEO({ 
   title = 'EquityMD - Real Estate Investment Platform',
   description = 'Connect with accredited investors and real estate syndicators. Access institutional-quality real estate investments and grow your portfolio.',
-  image = 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png',
+  image = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`,
   url = typeof window !== 'undefined' ? window.location.href : 'https://equitymd.com',
   type = 'website',
   noindex = false
@@ -58,7 +58,7 @@ export function SEO({
             "@type": "Organization",
             "name": "EquityMD",
             "url": "https://equitymd.com",
-            "logo": "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png",
+            "logo": `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`,
             "sameAs": [
               "https://twitter.com/equitymd",
               "https://linkedin.com/company/equitymd"

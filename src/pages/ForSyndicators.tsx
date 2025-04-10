@@ -45,7 +45,7 @@ export function ForSyndicators() {
   const integrations = [
     {
       name: "AppFolio",
-      logo: "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//appfolio_logo.png",
+      logo: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//appfolio_logo.png`,
       description: "Import your property listings directly from AppFolio. Automatically sync property details, financials, and media.",
       features: [
         "One-click property import",
@@ -56,7 +56,7 @@ export function ForSyndicators() {
     },
     {
       name: "CashflowPortal",
-      logo: "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//cashflow_logo.jpg",
+      logo: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//cashflow_logo.jpg`,
       description: "Seamlessly integrate your CashflowPortal deals with EquityMD. Keep your investment opportunities in sync across platforms.",
       features: [
         "Direct deal import",
@@ -67,7 +67,7 @@ export function ForSyndicators() {
     },
     {
       name: "Juniper Square",
-      logo: "https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Juniper_Square.png",
+      logo: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//Juniper_Square.png`,
       description: "Leverage Juniper Square's powerful investment management platform for enhanced investor relations and reporting.",
       features: [
         "Automated investor reporting",
