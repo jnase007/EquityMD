@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { X, User, Building2 } from 'lucide-react';
 
 interface AuthModalProps {
   onClose: () => void;
   defaultType?: 'investor' | 'syndicator';
+  defaultView?: 'sign_in' | 'sign_up';
 }
 
-export function AuthModal({ onClose, defaultType }: AuthModalProps) {
+export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: AuthModalProps) {
   const [userType, setUserType] = useState<'investor' | 'syndicator'>(defaultType || 'investor');
   const [error, setError] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<'sign_in' | 'sign_up'>(defaultView);
   const navigate = useNavigate();
 
   const handleSignUp = async ({ email, password }: { email: string; password: string }) => {
@@ -85,7 +88,14 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
         }
 
         if (!existingProfile) {
-          // Create new profile
+          // If user signed in with social provider but has no profile, redirect to social signup
+          if (user.app_metadata?.provider && user.app_metadata.provider !== 'email') {
+            onClose();
+            navigate('/social-signup');
+            return;
+          }
+
+          // Create new profile for email users
           const { error: profileError } = await supabase
             .from('profiles')
             .insert([
@@ -144,6 +154,11 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
     }
   };
 
+  // Track view changes from the Auth component
+  const handleViewChange = (view: 'sign_in' | 'sign_up') => {
+    setCurrentView(view);
+  };
+
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
@@ -154,12 +169,14 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Sign In / Sign Up</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            {currentView === 'sign_in' ? 'Sign In' : 'Sign Up / Register'}
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
           >
-            ×
+            <X className="h-6 w-6" />
           </button>
         </div>
 
@@ -170,22 +187,24 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setUserType('investor')}
-              className={`py-2 px-4 rounded-lg text-center ${
+              className={`py-2 px-4 rounded-lg text-center flex items-center justify-center ${
                 userType === 'investor'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
+              <User className="h-5 w-5 mr-2" />
               Investor
             </button>
             <button
               onClick={() => setUserType('syndicator')}
-              className={`py-2 px-4 rounded-lg text-center ${
+              className={`py-2 px-4 rounded-lg text-center flex items-center justify-center ${
                 userType === 'syndicator'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
+              <Building2 className="h-5 w-5 mr-2" />
               Syndicator
             </button>
           </div>
@@ -208,12 +227,35 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
                   brandAccent: '#1d4ed8',
                 }
               }
+            },
+            style: {
+              button: {
+                borderRadius: '0.5rem',
+                height: '44px',
+              },
+              input: {
+                borderRadius: '0.5rem',
+                padding: '0.75rem 1rem',
+              },
+              anchor: {
+                color: '#2563eb',
+              },
+              message: {
+                borderRadius: '0.5rem',
+              },
+              container: {
+                gap: '1rem',
+              },
+              divider: {
+                margin: '1.5rem 0',
+              },
             }
           }}
-          providers={['google']}
+          providers={['google', 'facebook', 'linkedin']}
           onSignUp={handleSignUp}
           onAuthSuccess={handleAuthSuccess}
-          view="sign_in"
+          view={currentView}
+          onViewChange={handleViewChange}
           socialLayout="horizontal"
           localization={{
             variables: {
@@ -223,7 +265,7 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
                 password_label: "Password",
                 button_label: "Sign in",
                 loading_button_label: "Signing in...",
-                link_text: "Already have an account? Sign in"
+                link_text: "Don't have an account? Sign up"
               },
               sign_up: {
                 social_provider_text: "Sign up with",
@@ -231,7 +273,7 @@ export function AuthModal({ onClose, defaultType }: AuthModalProps) {
                 password_label: "Create a Password",
                 button_label: "Sign up",
                 loading_button_label: "Signing up...",
-                link_text: "Don't have an account? Sign up"
+                link_text: "Already have an account? Sign in"
               }
             }
           }}

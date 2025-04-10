@@ -82,6 +82,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
 
   useEffect(() => {
     if (user) {
@@ -174,6 +175,16 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
     );
   };
 
+  const handleSignIn = () => {
+    setAuthModalType('investor');
+    setShowAuthModal(true);
+  };
+
+  const handleGetStarted = () => {
+    setAuthModalType('investor');
+    setShowAuthModal(true);
+  };
+
   const baseClasses = "relative flex justify-between items-center px-6 py-4";
   const bgClasses = isTransparent ? "" : "bg-white shadow-sm";
 
@@ -181,12 +192,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
     <nav className={`${baseClasses} ${bgClasses}`}>
       <Link to="/" className="flex items-center">
         <img 
-          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
+          src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png"
           alt="EquityMD"
           className={`h-10 ${isTransparent ? 'hidden' : 'block'}`}
         />
         <img 
-          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-white.png`}
+          src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-white.png"
           alt="EquityMD"
           className={`h-10 ${isTransparent ? 'block' : 'hidden'}`}
         />
@@ -317,7 +328,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
         ) : (
           <>
             <button
-              onClick={() => setShowAuthModal(true)}
+              onClick={handleSignIn}
               className={`${
                 isTransparent 
                   ? 'text-white hover:text-blue-200' 
@@ -326,12 +337,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             >
               Sign In
             </button>
-            <Link
-              to="/signup/start"
+            <button
+              onClick={handleGetStarted}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Get Started
-            </Link>
+            </button>
           </>
         )}
       </div>
@@ -355,7 +366,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             <div className="flex justify-between items-center mb-6">
               <Link to="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
                 <img 
-                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
+                  src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//logo-black.png"
                   alt="EquityMD"
                   className="h-10"
                 />
@@ -426,19 +437,23 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);
+                    setAuthModalType('investor');
                     setShowAuthModal(true);
                   }}
                   className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
                 >
                   Sign In
                 </button>
-                <Link
-                  to="/signup/start"
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setAuthModalType('investor');
+                    setShowAuthModal(true);
+                  }}
                   className="w-full bg-gray-100 text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition text-center"
-                  onClick={() => setIsMenuOpen(false)}
                 >
                   Get Started
-                </Link>
+                </button>
               </div>
             )}
 
@@ -503,7 +518,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
       )}
       
       {showAuthModal && (
-        <AuthModal onClose={() => setShowAuthModal(false)} />
+        <AuthModal onClose={() => setShowAuthModal(false)} defaultType={authModalType} />
       )}
     </nav>
   );

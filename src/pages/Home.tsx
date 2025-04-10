@@ -47,6 +47,7 @@ export function Home() {
   const [featuredDeals, setFeaturedDeals] = useState<Deal[]>([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [useVideo, setUseVideo] = useState(true);
+  const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
 
   useEffect(() => {
     fetchFeaturedDeals();
@@ -70,6 +71,11 @@ export function Home() {
       console.error('Error:', error);
     }
   }
+
+  const handleGetStarted = () => {
+    setAuthModalType('investor');
+    setShowAuthModal(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -125,12 +131,12 @@ export function Home() {
                 Browse Opportunities
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <Link 
-                to="/directory"
+              <button 
+                onClick={handleGetStarted}
                 className="bg-white text-blue-600 text-lg px-8 py-3 rounded-lg hover:bg-blue-50 transition flex items-center"
               >
-                Find Syndicators
-              </Link>
+                Get Started
+              </button>
             </div>
           </div>
         </div>
@@ -246,13 +252,19 @@ export function Home() {
           </p>
           <div className="flex justify-center gap-4">
             <button 
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => {
+                setAuthModalType('investor');
+                setShowAuthModal(true);
+              }}
               className="bg-white text-blue-600 text-lg px-8 py-3 rounded-lg hover:bg-blue-50 transition"
             >
               Create Investor Profile
             </button>
             <button 
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => {
+                setAuthModalType('syndicator');
+                setShowAuthModal(true);
+              }}
               className="bg-blue-700 text-white text-lg px-8 py-3 rounded-lg hover:bg-blue-800 transition border border-white"
             >
               Create Syndicator Profile
@@ -264,7 +276,7 @@ export function Home() {
       {showAuthModal && (
         <AuthModal 
           onClose={() => setShowAuthModal(false)} 
-          defaultType="syndicator"
+          defaultType={authModalType}
         />
       )}
 

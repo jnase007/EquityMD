@@ -36,6 +36,7 @@ import { SignupPassword } from './pages/auth/SignupPassword';
 import { SignupName } from './pages/auth/SignupName';
 import { SignupAccreditation } from './pages/auth/SignupAccreditation';
 import { SignupContinue } from './pages/auth/SignupContinue';
+import { SocialSignup } from './pages/auth/SocialSignup';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 
@@ -109,12 +110,19 @@ export default function App() {
       }
 
       if (!data) {
-        console.log('No profile found, creating new profile...');
+        console.log('No profile found, redirecting to social signup...');
         // Get user details
         const { data: { user } } = await supabase.auth.getUser(userId);
         if (!user) throw new Error('User not found');
 
-        // Create profile
+        // If user signed in with social provider but has no profile, redirect to social signup
+        if (user.app_metadata?.provider && user.app_metadata.provider !== 'email') {
+          setProfile(null);
+          window.location.href = '/social-signup';
+          return;
+        }
+
+        // Create profile for email users
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert([{
@@ -197,6 +205,7 @@ export default function App() {
         <Route path="/signup/:type/name" element={<SignupName />} />
         <Route path="/signup/:type/accreditation" element={<SignupAccreditation />} />
         <Route path="/signup/:type/continue" element={<SignupContinue />} />
+        <Route path="/social-signup" element={<SocialSignup />} />
 
         {/* Protected Routes */}
         <Route 
@@ -274,7 +283,10 @@ export default function App() {
       </Routes>
 
       {showAuthModal && (
-        <AuthModal onClose={() => setShowAuthModal(false)} />
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          defaultView="sign_in"
+        />
       )}
     </>
   );
