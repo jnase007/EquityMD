@@ -159,6 +159,15 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
     setCurrentView(view);
   };
 
+  useEffect(() => {
+    const buttons = document.querySelectorAll('.supabase-auth-ui_ui-button');
+    buttons.forEach((btn) => {
+      if (btn.textContent?.toLowerCase().includes('linkedin')) {
+        btn.classList.add('linkedin-btn');
+      }
+    });
+  }, []);
+
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
@@ -215,69 +224,73 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             {error}
           </div>
         )}
-
+        
         <Auth
-          supabaseClient={supabase}
-          appearance={{ 
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: '#2563eb',
-                  brandAccent: '#1d4ed8',
-                }
-              }
+      supabaseClient={supabase}
+      appearance={{
+        theme: ThemeSupa,
+        variables: {
+          default: {
+            colors: {
+              brand: '#2563eb',
+              brandAccent: '#1d4ed8',
             },
-            style: {
-              button: {
-                borderRadius: '0.5rem',
-                height: '44px',
-              },
-              input: {
-                borderRadius: '0.5rem',
-                padding: '0.75rem 1rem',
-              },
-              anchor: {
-                color: '#2563eb',
-              },
-              message: {
-                borderRadius: '0.5rem',
-              },
-              container: {
-                gap: '1rem',
-              },
-              divider: {
-                margin: '1.5rem 0',
-              },
-            }
-          }}
-          providers={['google', 'facebook', 'linkedin']}
-          onSignUp={handleSignUp}
-          onAuthSuccess={handleAuthSuccess}
-          view={currentView}
-          onViewChange={handleViewChange}
-          socialLayout="horizontal"
-          localization={{
-            variables: {
-              sign_in: {
-                social_provider_text: "Continue with",
-                email_label: "Email address",
-                password_label: "Password",
-                button_label: "Sign in",
-                loading_button_label: "Signing in...",
-                link_text: "Don't have an account? Sign up"
-              },
-              sign_up: {
-                social_provider_text: "Sign up with",
-                email_label: "Email address",
-                password_label: "Create a Password",
-                button_label: "Sign up",
-                loading_button_label: "Signing up...",
-                link_text: "Already have an account? Sign in"
-              }
-            }
-          }}
-        />
+          },
+        },
+        style: {
+          button: {
+            borderRadius: '0.5rem',
+            height: '44px',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+          input: {
+            borderRadius: '0.5rem',
+            padding: '0.75rem 1rem',
+          },
+          anchor: {
+            color: '#2563eb',
+          },
+          message: {
+            borderRadius: '0.5rem',
+          },
+          container: {
+            gap: '1rem',
+          },
+          divider: {
+            margin: '1.5rem 0',
+          },
+        },
+      }}
+      providers={['google', 'facebook', 'linkedin_oidc']}
+      onSignUp={handleSignUp}
+      onAuthSuccess={handleAuthSuccess}
+      view={currentView}
+      onViewChange={handleViewChange}
+      socialLayout="horizontal"
+      localization={{
+        variables: {
+          sign_in: {
+            social_provider_text: 'Continue with',
+            email_label: 'Email address',
+            password_label: 'Password',
+            button_label: 'Sign in',
+            loading_button_label: 'Signing in...',
+            link_text: "Don't have an account? Sign up",
+          },
+          sign_up: {
+            social_provider_text: 'Sign up with',
+            email_label: 'Email address',
+            password_label: 'Create a Password',
+            button_label: 'Sign up',
+            loading_button_label: 'Signing up...',
+            link_text: 'Already have an account? Sign in',
+          },
+        },
+      }}
+    />
       </div>
     </div>
   );

@@ -1,12 +1,3 @@
-/*
-  # Create Test Investor Account
-  
-  1. Changes
-    - Create test investor user if not exists
-    - Set up investor profile with sample data
-    - Add test data for referrals and credits
-*/
-
 DO $$ 
 DECLARE
   test_id uuid;
@@ -43,8 +34,7 @@ BEGIN
       '{}'::jsonb,
       now(),
       now()
-    )
-    RETURNING id INTO test_id;
+    ) RETURNING id INTO test_id;
 
     -- Create profile
     INSERT INTO profiles (

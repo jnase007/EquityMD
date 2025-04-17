@@ -1,10 +1,3 @@
-/*
-  # Update notifications schema to include navigation data
-  
-  1. Changes
-    - Add deal_slug to notifications data for proper navigation
-*/
-
 DO $$ 
 BEGIN
   -- Update existing message notifications to include deal_slug
@@ -18,5 +11,6 @@ BEGIN
   JOIN deals d ON m.deal_id = d.id
   WHERE n.type = 'message' 
   AND n.data->>'message_id' = m.id::text;
-
+  
 END $$;
+;

@@ -1,16 +1,3 @@
-/*
-  # Fix Email Notifications System
-
-  1. Changes
-    - Remove dependency on net schema
-    - Create notification function using pg_notify for async processing
-    - Add trigger for message notifications
-
-  2. Security
-    - Maintain existing RLS policies
-    - Add function security definer for notifications
-*/
-
 -- Create function to handle email notifications
 CREATE OR REPLACE FUNCTION handle_email_notification()
 RETURNS TRIGGER
@@ -89,7 +76,7 @@ BEGIN
   ) VALUES (
     NEW.receiver_id,
     'message',
-    CASE 
+    CASE
       WHEN NEW.deal_id IS NOT NULL THEN
         (SELECT 'New message about ' || title FROM deals WHERE id = NEW.deal_id)
       ELSE
@@ -99,7 +86,7 @@ BEGIN
     jsonb_build_object(
       'sender_id', NEW.sender_id,
       'deal_id', NEW.deal_id,
-      'deal_slug', CASE 
+      'deal_slug', CASE
         WHEN NEW.deal_id IS NOT NULL THEN
           (SELECT regexp_replace(lower(title), '[^a-z0-9]+', '-', 'g') FROM deals WHERE id = NEW.deal_id)
         ELSE

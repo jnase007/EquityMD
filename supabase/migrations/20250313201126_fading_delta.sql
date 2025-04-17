@@ -1,16 +1,3 @@
-/*
-  # Fix Admin Authentication
-
-  1. Changes
-    - Drop existing admin user and recreate with proper authentication
-    - Set up admin profile with correct privileges
-    - Ensure proper password hashing
-
-  2. Security
-    - Use proper password encryption
-    - Set admin privileges through profiles table
-*/
-
 -- First remove any existing admin records to avoid conflicts
 DO $$ 
 BEGIN
@@ -102,3 +89,4 @@ BEGIN
     now()
   );
 END $$;
+;

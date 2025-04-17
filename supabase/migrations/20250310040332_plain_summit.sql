@@ -1,11 +1,3 @@
-/*
-  # Add dummy messages and notifications
-  
-  1. Changes
-    - Insert dummy messages from syndicators
-    - Create corresponding notifications
-*/
-
 DO $$ 
 DECLARE
   test_investor_id uuid;
@@ -37,3 +29,4 @@ BEGIN
     (syndicator_3_id, test_investor_id, deal_3_id, 'Based on your investment preferences, I think you''d be interested in our new medical office development. The minimum investment is $50,000 with a projected IRR of 18%.', NOW() - INTERVAL '30 minutes');
 
 END $$;
+;

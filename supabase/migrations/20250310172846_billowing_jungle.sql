@@ -1,19 +1,3 @@
-/*
-  # Add site settings table
-  
-  1. New Tables
-    - `site_settings`
-      - `id` (uuid, primary key)
-      - `logo_black` (text, nullable) - URL for black logo
-      - `logo_white` (text, nullable) - URL for white logo
-      - `updated_at` (timestamptz)
-      - `updated_by` (uuid) - Reference to profiles table
-      
-  2. Security
-    - Enable RLS on site_settings table
-    - Add policies for admin access
-*/
-
 -- Create site settings table
 CREATE TABLE IF NOT EXISTS site_settings (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -23,10 +7,10 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_by uuid REFERENCES profiles(id)
 );
 
--- Enable RLS
+-- Enable RLS (Row Level Security)
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
--- Create policies
+-- Create policies for site settings
 CREATE POLICY "Public users can view site settings"
   ON site_settings
   FOR SELECT
@@ -48,7 +32,7 @@ CREATE POLICY "Only admins can update site settings"
     AND profiles.is_admin = true
   ));
 
--- Insert initial record
+-- Insert initial record into site_settings
 INSERT INTO site_settings (id)
 VALUES (gen_random_uuid())
 ON CONFLICT DO NOTHING;

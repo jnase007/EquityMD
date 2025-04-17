@@ -1,16 +1,3 @@
-/*
-  # Update Investor Profiles
-
-  1. Changes
-    - Updates existing investor profiles with medical professional names and details
-    - Adds more professional profile information
-    - Focuses on healthcare-related investment preferences
-
-  2. Security
-    - No changes to security policies
-    - Maintains existing RLS
-*/
-
 -- Update existing profiles with medical professional names
 UPDATE profiles
 SET 

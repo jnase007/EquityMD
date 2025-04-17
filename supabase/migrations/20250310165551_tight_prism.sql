@@ -1,16 +1,3 @@
-/*
-  # Create admin user
-
-  1. New Data
-    - Creates admin user in auth.users
-    - Creates admin profile in profiles table
-    - Sets admin privileges
-
-  2. Security
-    - Admin user has elevated permissions
-    - Profile linked to auth user
-*/
-
 -- Enable UUID extension if not already enabled
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 

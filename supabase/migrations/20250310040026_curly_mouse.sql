@@ -1,22 +1,4 @@
-/*
-  # Add notifications system
-  
-  1. New Tables
-    - `notifications`
-      - `id` (uuid, primary key)
-      - `user_id` (uuid, references profiles)
-      - `type` (text) - e.g. 'message', 'deal_update', etc.
-      - `title` (text)
-      - `content` (text)
-      - `read` (boolean)
-      - `data` (jsonb) - Additional data specific to notification type
-      - `created_at` (timestamptz)
-  
-  2. Security
-    - Enable RLS on notifications table
-    - Add policy for users to read their own notifications
-*/
-
+-- Create notifications table
 CREATE TABLE IF NOT EXISTS notifications (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
@@ -28,15 +10,17 @@ CREATE TABLE IF NOT EXISTS notifications (
   created_at timestamptz DEFAULT now()
 );
 
+-- Enable Row Level Security (RLS) for notifications
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
+-- Create policy allowing users to read their own notifications
 CREATE POLICY "Users can read own notifications"
   ON notifications
   FOR SELECT
   TO authenticated
   USING (auth.uid() = user_id);
 
--- Trigger to create notification when message is sent
+-- Trigger function to create a notification when a message is sent
 CREATE OR REPLACE FUNCTION create_message_notification()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -62,7 +46,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Trigger to execute function after a message is sent
 CREATE TRIGGER on_message_sent
   AFTER INSERT ON messages
   FOR EACH ROW
   EXECUTE FUNCTION create_message_notification();
+;

@@ -1,16 +1,3 @@
-/*
-  # Fix Profile Policies
-
-  1. Changes
-    - Remove circular references in profile policies
-    - Simplify admin access checks
-    - Add proper user and admin policies
-
-  2. Security
-    - Maintain RLS protection
-    - Ensure proper access control
-*/
-
 -- Drop existing policies to recreate them
 DROP POLICY IF EXISTS "Admins can view all profiles" ON profiles;
 DROP POLICY IF EXISTS "Admins can update all profiles" ON profiles;

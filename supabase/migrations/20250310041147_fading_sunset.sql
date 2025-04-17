@@ -1,13 +1,3 @@
-/*
-  # Add RLS policy for notifications
-
-  1. Security
-    - Enable RLS on notifications table
-    - Add policy for users to read their own notifications
-    - Add policy for users to update their own notifications
-    - Add policy for system to create notifications
-*/
-
 -- Enable RLS
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 

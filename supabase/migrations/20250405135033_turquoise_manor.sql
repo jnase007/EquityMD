@@ -1,15 +1,3 @@
-/*
-  # Add Stripe Integration Functions
-  
-  1. New Functions
-    - add_credits: Function to add credits to a user's account
-    - process_subscription_payment: Function to handle subscription payments
-    
-  2. Security
-    - Functions are security definer to run with elevated privileges
-    - Input validation to prevent misuse
-*/
-
 -- Function to add credits to a user's account
 CREATE OR REPLACE FUNCTION add_credits(
   p_user_id uuid,

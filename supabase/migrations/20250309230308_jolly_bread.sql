@@ -1,17 +1,3 @@
-/*
-  # Add Demo Syndicators
-
-  1. New Data
-    - Add two demo syndicator profiles:
-      - Sutera Properties
-      - Back Bay Capital
-    
-  2. Changes
-    - Insert auth users
-    - Insert profile records
-    - Insert syndicator profile records
-*/
-
 -- Create demo users in auth schema
 INSERT INTO auth.users (id, email)
 VALUES 
@@ -90,3 +76,4 @@ VALUES
     true
   )
 ON CONFLICT (id) DO NOTHING;
+;

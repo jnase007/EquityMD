@@ -1,17 +1,3 @@
-/*
-  # Add Invite System and Credit Tracking
-  
-  1. New Tables
-    - `invites`
-      - Track referral invites and their status
-    - `invite_credits`
-      - Track credits earned from invites
-    
-  2. Changes
-    - Add referral_code to profiles table
-    - Add credit tracking to existing tables
-*/
-
 -- Create invites table
 CREATE TABLE IF NOT EXISTS invites (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -70,7 +56,7 @@ BEGIN
   VALUES
     (NEW.sender_id, NEW.id, 50, 'earned'),
     (auth.uid(), NEW.id, 50, 'earned');
-    
+  
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

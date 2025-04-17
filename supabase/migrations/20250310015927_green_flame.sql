@@ -1,16 +1,3 @@
-/*
-  # Create Storage Buckets
-
-  1. New Buckets
-    - `avatars`: For user profile pictures
-    - `logos`: For company logos
-    - `deal-media`: For deal-related media files
-
-  2. Security
-    - Enable public access for avatars and logos
-    - Restrict deal-media access to authenticated users
-*/
-
 -- Create avatars bucket
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'avatars', true);
@@ -103,3 +90,4 @@ USING (
   bucket_id = 'deal-media'
   AND auth.uid() = owner
 );
+;

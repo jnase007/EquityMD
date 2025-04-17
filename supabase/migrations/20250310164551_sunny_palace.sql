@@ -1,16 +1,3 @@
-/*
-  # Add Admin Support and Create Admin User
-
-  1. Changes
-    - Adds is_admin column to profiles table
-    - Creates admin user with proper authentication
-    - Sets up admin profile
-
-  2. Security
-    - Admin user has full access to manage users
-    - Password should be changed after first login
-*/
-
 -- Add is_admin column to profiles table if it doesn't exist
 DO $$ 
 BEGIN

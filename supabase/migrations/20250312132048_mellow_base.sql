@@ -1,20 +1,13 @@
--- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 -- Create admin user if not exists
 DO $$
 DECLARE
-  admin_id uuid;
+  _user_id uuid := gen_random_uuid();
 BEGIN
-  -- First check if admin already exists
+  -- Insert into auth.users if admin doesn't exist
   IF NOT EXISTS (
     SELECT 1 FROM auth.users 
     WHERE email = 'admin@equitymd.com'
   ) THEN
-    -- Generate new UUID for admin
-    SELECT gen_random_uuid() INTO admin_id;
-    
-    -- Create auth user
     INSERT INTO auth.users (
       id,
       instance_id,
@@ -26,26 +19,28 @@ BEGIN
       raw_app_meta_data,
       raw_user_meta_data,
       created_at,
-      updated_at,
-      confirmation_token,
-      recovery_token
+      updated_at
     ) VALUES (
-      admin_id,
+      _user_id,
       '00000000-0000-0000-0000-000000000000',
       'authenticated',
       'authenticated',
       'admin@equitymd.com',
-      crypt('Admin123!', gen_salt('bf')),
+      -- Use proper password hashing
+      crypt('Admin123!', gen_salt('bf', 10)),
       now(),
-      '{"provider": "email", "providers": ["email"]}'::jsonb,
-      '{}'::jsonb,
+      jsonb_build_object(
+        'provider', 'email',
+        'providers', ARRAY['email']
+      ),
+      jsonb_build_object(
+        'role', 'admin'
+      ),
       now(),
-      now(),
-      '',
-      ''
+      now()
     );
 
-    -- Create profile
+    -- Create admin profile
     INSERT INTO public.profiles (
       id,
       email,
@@ -56,7 +51,7 @@ BEGIN
       created_at,
       updated_at
     ) VALUES (
-      admin_id,
+      _user_id,
       'admin@equitymd.com',
       'System Administrator',
       'syndicator',
@@ -74,12 +69,13 @@ BEGIN
       created_at,
       updated_at
     ) VALUES (
-      admin_id,
+      _user_id,
       'EQUITYMD Admin',
       'Platform administrator',
       now(),
       now()
     );
+
   END IF;
 END $$;
 ;

@@ -1,16 +1,3 @@
-/*
-  # Add Properties and Connect to Syndicators
-
-  1. Changes
-    - Add new properties for each syndicator
-    - Ensure all properties have deal pages
-    - Connect properties to syndicators
-    - Add media and documents for each property
-
-  2. Security
-    - Maintain existing RLS policies
-*/
-
 DO $$ 
 DECLARE
   summit_id uuid;
@@ -263,11 +250,12 @@ BEGIN
     );
 
   -- Add sample media for each deal
-  FOR deal_id IN 
-    SELECT id FROM deals 
+  FOR deal_id IN
+    SELECT id FROM deals
     WHERE syndicator_id IN (summit_id, horizon_id, metro_id, innovation_id, evergreen_id)
   LOOP
     INSERT INTO deal_media (
+      id,
       deal_id,
       type,
       url,
@@ -276,6 +264,7 @@ BEGIN
       "order"
     ) VALUES
       (
+        gen_random_uuid(),
         deal_id,
         'image',
         'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80',
@@ -284,6 +273,7 @@ BEGIN
         1
       ),
       (
+        gen_random_uuid(),
         deal_id,
         'image',
         'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
@@ -292,6 +282,7 @@ BEGIN
         2
       ),
       (
+        gen_random_uuid(),
         deal_id,
         'image',
         'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80',

@@ -1,17 +1,3 @@
-/*
-  # Add Sample Syndicators and Deals
-
-  1. Changes
-    - Creates sample syndicator accounts with proper authentication
-    - Creates corresponding profiles and syndicator profiles
-    - Adds sample deals for each syndicator
-    - Adds deal media for better presentation
-
-  2. Security
-    - Uses proper password hashing
-    - Maintains existing RLS policies
-*/
-
 -- Create sample syndicators with dynamic UUIDs
 DO $$ 
 DECLARE
@@ -32,7 +18,8 @@ BEGIN
     email_confirmed_at,
     created_at,
     updated_at
-  ) VALUES
+  ) 
+  VALUES
     (
       '00000000-0000-0000-0000-000000000000',
       summit_id,
@@ -98,7 +85,8 @@ BEGIN
     is_verified,
     created_at,
     updated_at
-  ) VALUES
+  )
+  VALUES
     (summit_id, 'info@summitcapital.com', 'Summit Capital Partners', 'syndicator', true, now(), now()),
     (horizon_id, 'info@horizoninvest.com', 'Horizon Investment Group', 'syndicator', true, now(), now()),
     (metro_id, 'info@metroreal.com', 'Metropolitan Real Estate', 'syndicator', true, now(), now()),
@@ -116,11 +104,12 @@ BEGIN
     city,
     website_url,
     linkedin_url
-  ) VALUES
+  )
+  VALUES
     (
       summit_id,
       'Summit Capital Partners',
-      'Summit Capital Partners is a leading real estate investment firm specializing in value-add multifamily and office properties across high-growth markets in the Southeast. With over two decades of experience, our team has successfully managed over $1.2B in real estate assets.',
+      'Summit Capital Partners is a leading real estate investment firm...',
       22,
       1200000000,
       'Florida',
@@ -131,7 +120,7 @@ BEGIN
     (
       horizon_id,
       'Horizon Investment Group',
-      'Horizon Investment Group focuses on identifying and capitalizing on emerging market opportunities in the industrial and logistics sector. Our data-driven approach and deep market relationships have enabled us to build a portfolio of high-performing assets.',
+      'Horizon Investment Group focuses on emerging market opportunities...',
       15,
       800000000,
       'Texas',
@@ -142,7 +131,7 @@ BEGIN
     (
       metro_id,
       'Metropolitan Real Estate',
-      'Metropolitan Real Estate specializes in urban mixed-use developments that transform neighborhoods and create lasting value. Our integrated approach combines residential, retail, and office components to create vibrant communities.',
+      'Metropolitan Real Estate specializes in urban mixed-use developments...',
       18,
       1500000000,
       'California',
@@ -153,7 +142,7 @@ BEGIN
     (
       innovation_id,
       'Innovation Healthcare Properties',
-      'Innovation Healthcare Properties is dedicated to developing and acquiring state-of-the-art medical office buildings and healthcare facilities. Our expertise in healthcare real estate enables us to create environments that support modern medical practices.',
+      'Innovation Healthcare Properties develops modern healthcare facilities...',
       12,
       600000000,
       'Massachusetts',
@@ -164,7 +153,7 @@ BEGIN
     (
       evergreen_id,
       'Evergreen Residential',
-      'Evergreen Residential focuses on sustainable multifamily developments that combine environmental responsibility with strong financial performance. Our properties feature energy-efficient designs and smart home technology.',
+      'Evergreen Residential focuses on sustainable multifamily developments...',
       10,
       400000000,
       'Washington',
@@ -188,14 +177,15 @@ BEGIN
     status,
     featured,
     cover_image_url
-  ) VALUES
+  )
+  VALUES
     (
       summit_id,
       'The Summit at Brickell',
-      'Luxury multi-family development in Miami''s Brickell district featuring 300 units with premium amenities and stunning bay views.',
+      'Luxury multi-family development in Miami''s Brickell district...',
       'Multi-Family',
       'Miami, FL',
-      ARRAY['Prime Brickell location', 'Luxury amenities', 'Strong rental market', 'Value-add opportunity'],
+      ARRAY['Prime location', 'Luxury amenities', 'Strong rental market'],
       100000,
       18.5,
       5,
@@ -207,10 +197,10 @@ BEGIN
     (
       horizon_id,
       'Horizon Logistics Center',
-      'State-of-the-art logistics facility strategically located near major transportation hubs, featuring 500,000 sq ft of Class A industrial space.',
+      'State-of-the-art logistics facility near major transportation hubs...',
       'Industrial',
       'Dallas, TX',
-      ARRAY['E-commerce growth corridor', 'Triple-net leases', 'Major tenant commitments', 'Expansion potential'],
+      ARRAY['Triple-net leases', 'Expansion potential'],
       250000,
       16.0,
       7,
@@ -222,10 +212,10 @@ BEGIN
     (
       metro_id,
       'The Metropolitan Downtown',
-      'Mixed-use development in downtown LA combining luxury apartments, retail space, and creative offices.',
+      'Mixed-use development in downtown LA combining apartments, retail...',
       'Mixed-Use',
       'Los Angeles, CA',
-      ARRAY['Transit-oriented development', 'High-growth submarket', 'Mixed-income component', 'Retail pre-leasing'],
+      ARRAY['Transit-oriented', 'Retail pre-leasing'],
       150000,
       17.5,
       6,
@@ -237,10 +227,10 @@ BEGIN
     (
       innovation_id,
       'Innovation Medical Plaza',
-      'Modern medical office building adjacent to major hospital campus with long-term healthcare tenants.',
+      'Modern medical office building next to hospital campus...',
       'Medical Office',
       'Boston, MA',
-      ARRAY['100% medical tenancy', 'Hospital affiliation', 'Recent renovations', 'Long-term leases'],
+      ARRAY['100% medical tenancy', 'Long-term leases'],
       100000,
       15.0,
       5,
@@ -252,10 +242,10 @@ BEGIN
     (
       evergreen_id,
       'Evergreen Apartments',
-      'Sustainable apartment community featuring smart home technology, energy-efficient systems, and resort-style amenities.',
+      'Sustainable apartment community with smart home tech and amenities...',
       'Multi-Family',
       'Seattle, WA',
-      ARRAY['LEED Gold certified', 'Smart home features', 'Solar power system', 'Low operating costs'],
+      ARRAY['LEED Gold', 'Smart home features'],
       75000,
       16.5,
       5,
@@ -264,5 +254,4 @@ BEGIN
       true,
       'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80'
     );
-
 END $$;

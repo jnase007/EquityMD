@@ -1,23 +1,4 @@
-/*
-  # Add deal media support
-  
-  1. New Tables
-    - `deal_media`
-      - `id` (uuid, primary key)
-      - `deal_id` (uuid, foreign key)
-      - `type` (text) - 'image' or 'video'
-      - `url` (text)
-      - `title` (text)
-      - `description` (text)
-      - `order` (integer)
-      - `created_at` (timestamp)
-
-  2. Security
-    - Enable RLS on `deal_media` table
-    - Add policies for syndicators to manage their deal media
-    - Add policy for public to view media of active deals
-*/
-
+-- Create deal_media table
 CREATE TABLE IF NOT EXISTS deal_media (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   deal_id uuid REFERENCES deals(id) ON DELETE CASCADE,
@@ -29,6 +10,7 @@ CREATE TABLE IF NOT EXISTS deal_media (
   created_at timestamptz DEFAULT now()
 );
 
+-- Enable Row Level Security (RLS) for deal_media
 ALTER TABLE deal_media ENABLE ROW LEVEL SECURITY;
 
 -- Allow syndicators to manage their deal media
@@ -59,3 +41,4 @@ CREATE POLICY "Public can view media of active deals"
 
 -- Create index for better performance
 CREATE INDEX idx_deal_media_deal_id ON deal_media(deal_id);
+;

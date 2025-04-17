@@ -1,19 +1,3 @@
-/*
-  # Add site settings table and policies
-
-  1. New Tables
-    - site_settings
-      - id (uuid, primary key)
-      - logo_black (text, nullable)
-      - logo_white (text, nullable)
-      - updated_at (timestamptz)
-      - updated_by (uuid, references profiles)
-
-  2. Security
-    - Enable RLS
-    - Add policies for admin access
-*/
-
 -- Drop existing policies if they exist
 DO $$
 BEGIN

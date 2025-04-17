@@ -1,17 +1,4 @@
-/*
-  # Fix Signup RLS Policies
-
-  1. Changes
-    - Add policies to allow new user registration
-    - Fix profile creation permissions
-    - Update investor profile policies
-
-  2. Security
-    - Maintain secure access control
-    - Allow proper signup flow
-*/
-
--- Drop existing policies
+-- Drop existing policies for profiles
 DROP POLICY IF EXISTS "Users can read own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON profiles;

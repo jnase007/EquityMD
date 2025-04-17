@@ -1,21 +1,3 @@
-/*
-  # Add syndicator reviews and ratings
-
-  1. New Tables
-    - `syndicator_reviews`
-      - `id` (uuid, primary key)
-      - `syndicator_id` (uuid, references syndicator_profiles)
-      - `reviewer_id` (uuid, references profiles)
-      - `rating` (integer, 1-5)
-      - `review_text` (text)
-      - `created_at` (timestamp)
-      - `updated_at` (timestamp)
-    
-  2. Security
-    - Enable RLS on `syndicator_reviews` table
-    - Add policies for creating and viewing reviews
-*/
-
 -- Create syndicator reviews table
 CREATE TABLE IF NOT EXISTS syndicator_reviews (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -71,3 +53,4 @@ CREATE TRIGGER update_syndicator_reviews_updated_at
   BEFORE UPDATE ON syndicator_reviews
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
+;

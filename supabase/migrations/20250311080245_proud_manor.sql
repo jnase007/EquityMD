@@ -1,12 +1,3 @@
-/*
-  # Add Admin User and Policies
-
-  1. Changes
-    - Create admin user with email/password
-    - Add admin profile
-    - Update RLS policies for admin access
-*/
-
 -- Create admin user if not exists
 DO $$
 BEGIN
@@ -64,7 +55,7 @@ INSERT INTO profiles (
   created_at,
   updated_at
 )
-SELECT 
+SELECT
   id,
   email,
   'Admin',
