@@ -85,3 +85,4 @@ BEGIN
     now()
   );
 END $$;
+;

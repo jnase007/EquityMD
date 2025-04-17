@@ -1,10 +1,3 @@
-/*
-  # Update Sutera Properties Location
-
-  1. Changes
-    - Updates the location of Sutera Properties to Nashville, TN
-*/
-
 DO $$ 
 BEGIN
   IF EXISTS (

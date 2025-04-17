@@ -1,23 +1,5 @@
-/*
-  # Add Subscription and Credit System
-
-  1. New Tables
-    - `subscriptions`
-      - Track active subscriptions and billing details
-    - `subscription_tiers`
-      - Define available subscription tiers and features
-    - `credits`
-      - Track credit balances and usage
-    - `credit_transactions`
-      - Log credit purchases and usage
-
-  2. Security
-    - Enable RLS on all tables
-    - Add policies for subscription management
-*/
-
 -- Create subscription tiers table
-CREATE TABLE subscription_tiers (
+CREATE TABLE IF NOT EXISTS subscription_tiers (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name text NOT NULL,
   monthly_price integer NOT NULL,
@@ -29,7 +11,7 @@ CREATE TABLE subscription_tiers (
 );
 
 -- Create subscriptions table
-CREATE TABLE subscriptions (
+CREATE TABLE IF NOT EXISTS subscriptions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   syndicator_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
   tier_id uuid REFERENCES subscription_tiers(id),
@@ -43,7 +25,7 @@ CREATE TABLE subscriptions (
 );
 
 -- Create credits table
-CREATE TABLE credits (
+CREATE TABLE IF NOT EXISTS credits (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   syndicator_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
   balance integer NOT NULL DEFAULT 0,
@@ -51,7 +33,7 @@ CREATE TABLE credits (
 );
 
 -- Create credit transactions table
-CREATE TABLE credit_transactions (
+CREATE TABLE IF NOT EXISTS credit_transactions (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   syndicator_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
   amount integer NOT NULL,
@@ -61,12 +43,12 @@ CREATE TABLE credit_transactions (
 );
 
 -- Enable RLS
-ALTER TABLE subscription_tiers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE credits ENABLE ROW LEVEL SECURITY;
-ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS subscription_tiers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS subscriptions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS credits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS credit_transactions ENABLE ROW LEVEL SECURITY;
 
--- Create policies
+-- Create policies (without IF NOT EXISTS)
 CREATE POLICY "Public can view subscription tiers"
   ON subscription_tiers
   FOR SELECT
@@ -91,9 +73,11 @@ CREATE POLICY "Users can view own credit transactions"
   TO authenticated
   USING (auth.uid() = syndicator_id);
 
--- Insert subscription tiers
-INSERT INTO subscription_tiers (name, monthly_price, annual_price, credits_per_month, extra_credit_price, features) VALUES
+-- Insert subscription tiers (with default UUID generation for the id column)
+INSERT INTO subscription_tiers (id, name, monthly_price, annual_price, credits_per_month, extra_credit_price, features) 
+VALUES
   (
+    gen_random_uuid(),  -- Automatically generate a UUID for the id column
     'Starter',
     149,
     1490,
@@ -109,6 +93,7 @@ INSERT INTO subscription_tiers (name, monthly_price, annual_price, credits_per_m
     ]'::jsonb
   ),
   (
+    gen_random_uuid(),
     'Pro',
     349,
     3490,
@@ -125,6 +110,7 @@ INSERT INTO subscription_tiers (name, monthly_price, annual_price, credits_per_m
     ]'::jsonb
   ),
   (
+    gen_random_uuid(),
     'Elite',
     699,
     6990,

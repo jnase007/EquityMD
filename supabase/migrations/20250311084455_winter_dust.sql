@@ -1,16 +1,3 @@
-/*
-  # Create Admin User
-
-  1. Changes
-    - Creates a new admin user
-    - Grants admin privileges
-    - Sets up necessary profile records
-
-  2. Security
-    - Password should be changed on first login
-    - Admin privileges granted through profiles table
-*/
-
 -- Create admin user function to handle the auth.users insert
 CREATE OR REPLACE FUNCTION create_admin_user()
 RETURNS void AS $$

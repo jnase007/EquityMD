@@ -1,15 +1,3 @@
-/*
-  # Add email notifications support
-
-  1. Changes
-    - Add email_notifications column to profiles table with default notification preferences
-    - Add trigger function to handle email notifications
-    - Add trigger for sending email notifications
-
-  2. Security
-    - No changes to RLS policies needed
-*/
-
 -- Add email_notifications column to profiles table
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email_notifications jsonb DEFAULT jsonb_build_object(
   'messages', true,

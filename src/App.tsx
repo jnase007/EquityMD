@@ -47,35 +47,41 @@ export default function App() {
   const [requireAuth, setRequireAuth] = useState(false);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const initAuth = async () => {  
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.warn('Refresh session error:', refreshError);
+      }
+  
+      const { data: { session }, error } = await supabase.auth.getSession();
       console.log('Initial session check:', session?.user?.id);
+  
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
       }
-    });
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
-      if (event === 'SIGNED_OUT') {
-        clearAuth();
-      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.id);
+        if (event === 'SIGNED_OUT') {
+          clearAuth();
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          }
         }
-      }
-    });
-
-    // Check site settings for gated access
-    fetchSiteSettings();
-
-    return () => subscription.unsubscribe();
+      });
+  
+      fetchSiteSettings();
+  
+      return () => subscription.unsubscribe();
+    };
+  
+    initAuth();
   }, []);
+  
 
   async function fetchSiteSettings() {
     try {
@@ -98,7 +104,7 @@ export default function App() {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         if (error.message.includes('fetch') && retryCount < 3) {
@@ -111,8 +117,7 @@ export default function App() {
 
       if (!data) {
         console.log('No profile found, redirecting to social signup...');
-        // Get user details
-        const { data: { user } } = await supabase.auth.getUser(userId);
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('User not found');
 
         // If user signed in with social provider but has no profile, redirect to social signup

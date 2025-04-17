@@ -1,26 +1,7 @@
-/*
-  # Add deal media and sample content
+-- Створення розширення pgcrypto для використання функції gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-  1. New Tables
-    - `deal_media`
-      - `id` (uuid, primary key)
-      - `deal_id` (uuid, references deals)
-      - `type` (text, either 'image' or 'video')
-      - `url` (text)
-      - `title` (text)
-      - `description` (text)
-      - `order` (integer)
-      - `created_at` (timestamptz)
-
-  2. Security
-    - Enable RLS on deal_media table
-    - Add policies for public viewing and syndicator management
-    
-  3. Sample Data
-    - Add sample images and video for demo purposes
-*/
-
--- Create deal_media table if it doesn't exist
+-- Створення таблиці deal_media, якщо вона не існує
 CREATE TABLE IF NOT EXISTS deal_media (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   deal_id uuid REFERENCES deals(id) ON DELETE CASCADE,
@@ -32,13 +13,13 @@ CREATE TABLE IF NOT EXISTS deal_media (
   created_at timestamptz DEFAULT now()
 );
 
--- Create index for faster lookups if it doesn't exist
+-- Створення індексу для покращення продуктивності, якщо він не існує
 CREATE INDEX IF NOT EXISTS idx_deal_media_deal_id ON deal_media(deal_id);
 
--- Enable RLS
+-- Включення RLS (Row Level Security)
 ALTER TABLE deal_media ENABLE ROW LEVEL SECURITY;
 
--- Add policies if they don't exist
+-- Додавання політик, якщо вони не існують
 DO $$ 
 BEGIN
   IF NOT EXISTS (
@@ -50,11 +31,13 @@ BEGIN
       ON deal_media
       FOR SELECT
       TO public
-      USING (EXISTS (
-        SELECT 1 FROM deals
-        WHERE deals.id = deal_media.deal_id
-        AND deals.status = 'active'
-      ));
+      USING (
+        EXISTS (
+          SELECT 1 FROM deals
+          WHERE deals.id = deal_media.deal_id
+          AND deals.status = 'active'
+        )
+      );
   END IF;
 
   IF NOT EXISTS (
@@ -66,17 +49,21 @@ BEGIN
       ON deal_media
       FOR ALL
       TO authenticated
-      USING (EXISTS (
-        SELECT 1 FROM deals
-        WHERE deals.id = deal_media.deal_id
-        AND deals.syndicator_id = auth.uid()
-      ));
+      USING (
+        EXISTS (
+          SELECT 1 FROM deals
+          WHERE deals.id = deal_media.deal_id
+          AND deals.syndicator_id = auth.uid()
+        )
+      );
   END IF;
 END $$;
 
--- Insert sample media for demo
-INSERT INTO deal_media (deal_id, type, url, title, description, "order")
+-- Вставка зразкових медіа для демонстрації
+-- Переконайтеся, що в таблиці deals є хоча б один активний запис
+INSERT INTO deal_media (id, deal_id, type, url, title, description, "order")
 SELECT 
+  gen_random_uuid(), -- Генерація UUID для стовпця id
   d.id,
   'image',
   'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80',
@@ -87,8 +74,9 @@ FROM deals d
 WHERE d.status = 'active'
 LIMIT 1;
 
-INSERT INTO deal_media (deal_id, type, url, title, description, "order")
+INSERT INTO deal_media (id, deal_id, type, url, title, description, "order")
 SELECT 
+  gen_random_uuid(), -- Генерація UUID для стовпця id
   d.id,
   'image',
   'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80',
@@ -99,8 +87,9 @@ FROM deals d
 WHERE d.status = 'active'
 LIMIT 1;
 
-INSERT INTO deal_media (deal_id, type, url, title, description, "order")
+INSERT INTO deal_media (id, deal_id, type, url, title, description, "order")
 SELECT 
+  gen_random_uuid(), -- Генерація UUID для стовпця id
   d.id,
   'image',
   'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
@@ -111,8 +100,9 @@ FROM deals d
 WHERE d.status = 'active'
 LIMIT 1;
 
-INSERT INTO deal_media (deal_id, type, url, title, description, "order")
+INSERT INTO deal_media (id, deal_id, type, url, title, description, "order")
 SELECT 
+  gen_random_uuid(), -- Генерація UUID для стовпця id
   d.id,
   'image',
   'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80',
@@ -123,9 +113,10 @@ FROM deals d
 WHERE d.status = 'active'
 LIMIT 1;
 
--- Add a sample video (using a placeholder URL)
-INSERT INTO deal_media (deal_id, type, url, title, description, "order")
+-- Додавання зразкового відео (використовуючи URL-заповнювач)
+INSERT INTO deal_media (id, deal_id, type, url, title, description, "order")
 SELECT 
+  gen_random_uuid(), -- Генерація UUID для стовпця id
   d.id,
   'video',
   'https://example.com/sample-property-tour.mp4',

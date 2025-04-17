@@ -1,17 +1,3 @@
-/*
-  # Add Real Estate Syndicator Companies
-  
-  1. New Data
-    - Add real estate syndicators if they don't already exist
-    - Map company details to syndicator_profiles schema
-    - Create corresponding auth users and profiles
-    
-  2. Security
-    - Check for existing records before inserting
-    - Maintain existing RLS policies
-    - Use proper password hashing
-*/
-
 DO $$ 
 DECLARE
   profile_id uuid;

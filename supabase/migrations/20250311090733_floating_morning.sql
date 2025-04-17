@@ -1,17 +1,3 @@
-/*
-  # Update Investor Profiles with Medical Professionals
-
-  1. Changes
-    - Updates existing profiles with medical professional names and photos
-    - Sets accredited investor status
-    - Updates investment preferences to focus on healthcare real estate
-    - Adds medical specialties and credentials
-
-  2. Security
-    - Maintains existing RLS policies
-    - No changes to security settings
-*/
-
 -- Update profiles with medical professional names and photos
 UPDATE profiles
 SET 

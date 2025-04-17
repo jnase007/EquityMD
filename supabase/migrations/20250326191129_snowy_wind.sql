@@ -1,16 +1,3 @@
-/*
-  # Add Referral System with Return Multiplier
-  
-  1. Changes
-    - Add multiplier_credits column to track available credits
-    - Add referral tracking and rewards
-    - Update existing tables for referral functionality
-    
-  2. Security
-    - Maintain existing RLS policies
-    - Add policies for referral management
-*/
-
 -- Add multiplier credits to investor profiles
 ALTER TABLE investor_profiles
 ADD COLUMN multiplier_credits integer DEFAULT 0;

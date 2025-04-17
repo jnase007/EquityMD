@@ -1,23 +1,3 @@
-/*
-  # Site Settings and Logo Management
-
-  1. New Tables
-    - `site_settings` table for managing global site configuration
-      - `id` (uuid, primary key)
-      - `logo_black` (text, nullable) - URL for black logo variant
-      - `logo_white` (text, nullable) - URL for white logo variant
-      - `updated_at` (timestamp)
-      - `updated_by` (uuid, references profiles)
-
-  2. Security
-    - Enable RLS on site_settings table
-    - Add policy for admin-only updates
-    - Add policy for public read access
-
-  3. Initial Data
-    - Insert default settings record
-*/
-
 -- Drop existing table and policies if they exist
 DROP TABLE IF EXISTS site_settings CASCADE;
 
@@ -30,17 +10,17 @@ CREATE TABLE site_settings (
   updated_by uuid REFERENCES profiles(id)
 );
 
--- Enable RLS
+-- Enable RLS (Row Level Security)
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
--- Public read access
+-- Public read access for site settings
 CREATE POLICY "Public read access for site settings"
   ON site_settings
   FOR SELECT
   TO public
   USING (true);
 
--- Admin-only updates
+-- Admin-only updates for site settings
 CREATE POLICY "Admin only updates for site settings"
   ON site_settings
   FOR ALL
@@ -60,11 +40,21 @@ CREATE POLICY "Admin only updates for site settings"
     )
   );
 
--- Insert initial settings
+-- Insert initial settings with default logos
 INSERT INTO site_settings (logo_black, logo_white)
 VALUES ('/logo-black.png', '/logo-white.png');
 
--- Add updated_at trigger
+-- Create function for updating the updated_at column
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS trigger AS $$
+BEGIN
+  NEW.updated_at = now();
+  NEW.updated_by = auth.uid();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Add trigger for updating the updated_at field on updates
 CREATE TRIGGER update_site_settings_updated_at
   BEFORE UPDATE ON site_settings
   FOR EACH ROW

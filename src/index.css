@@ -45,3 +45,29 @@
   font-weight: 800;
   letter-spacing: -0.02em;
 }
+
+.supabase-auth-ui_ui-button:nth-of-type(3)::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-image: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: brightness(0) saturate(100%) invert(31%) sepia(69%) saturate(3700%) hue-rotate(174deg) brightness(100%) contrast(100%);
+}
+
+.linkedin-btn::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-image: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: brightness(0) saturate(100%) invert(31%) sepia(69%) saturate(3700%) hue-rotate(174deg) brightness(100%) contrast(100%);
+}

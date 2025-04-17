@@ -1,16 +1,3 @@
-/*
-  # Fix Messages Query and Add Email Notifications
-
-  1. Changes
-    - Add indexes to improve message query performance
-    - Add function to handle email notifications for new messages
-    - Add trigger to send email notifications when messages are created
-
-  2. Security
-    - Maintain existing RLS policies
-    - Add function security definer for email notifications
-*/
-
 -- Add indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_messages_sender_receiver ON messages(sender_id, receiver_id);
 CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at DESC);

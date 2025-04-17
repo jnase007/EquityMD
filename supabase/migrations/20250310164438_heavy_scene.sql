@@ -1,16 +1,3 @@
-/*
-  # Add Admin Support and Create Admin User
-
-  1. Changes
-    - Adds is_admin column to profiles table
-    - Creates admin user with admin privileges
-    - Sets up profile with admin access
-
-  2. Security
-    - Password should be changed after first login
-    - Admin user has full access to manage users
-*/
-
 -- Add is_admin column to profiles table
 ALTER TABLE public.profiles 
 ADD COLUMN is_admin boolean DEFAULT false;

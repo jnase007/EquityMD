@@ -1,15 +1,3 @@
-/*
-  # Add deal email notifications
-  
-  1. Changes
-    - Add trigger function for new deal notifications
-    - Create notifications for all investors
-    - Send email notifications based on preferences
-    
-  2. Security
-    - Maintain existing RLS policies
-*/
-
 -- Create function to handle new deal notifications
 CREATE OR REPLACE FUNCTION handle_new_deal_notification()
 RETURNS TRIGGER
@@ -63,13 +51,13 @@ BEGIN
             'to', investor_record.email,
             'subject', 'New Investment Opportunity from ' || syndicator_name,
             'content', format(
-              E'A new investment opportunity has been posted:\n\n' ||
-              'Property: %s\n' ||
-              'Location: %s\n' ||
-              'Type: %s\n' ||
-              'Minimum Investment: $%s\n' ||
-              'Target IRR: %s%%\n' ||
-              'Investment Term: %s years\n\n' ||
+              E'A new investment opportunity has been posted:\\n\\n' ||
+              'Property: %s\\n' ||
+              'Location: %s\\n' ||
+              'Type: %s\\n' ||
+              'Minimum Investment: $%s\\n' ||
+              'Target IRR: %s%%\\n' ||
+              'Investment Term: %s years\\n\\n' ||
               'Click below to view the full details and investment materials.',
               NEW.title,
               NEW.location,
@@ -99,3 +87,4 @@ CREATE TRIGGER on_new_deal
   AFTER INSERT ON deals
   FOR EACH ROW
   EXECUTE FUNCTION handle_new_deal_notification();
+;

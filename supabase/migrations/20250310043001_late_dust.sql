@@ -1,18 +1,3 @@
-/*
-  # Implement SEO-Friendly URLs
-
-  1. Changes
-    - Adds slug columns to deals and syndicator_profiles tables
-    - Configures slugs as generated columns based on title/company_name
-    - Creates indexes for efficient slug lookups
-
-  2. Benefits
-    - Improves SEO with human-readable URLs
-    - Automatically maintains slugs when titles change
-    - Ensures URL consistency
-    - Enables faster URL-based lookups
-*/
-
 -- Add generated slug column to deals table if it doesn't exist
 DO $$ 
 BEGIN

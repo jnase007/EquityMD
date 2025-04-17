@@ -1,8 +1,8 @@
 -- Add claimable flag to syndicator_profiles
 ALTER TABLE syndicator_profiles
-ADD COLUMN IF NOT EXISTS claimable boolean DEFAULT true,
-ADD COLUMN IF NOT EXISTS claimed_at timestamptz,
-ADD COLUMN IF NOT EXISTS claimed_by uuid REFERENCES profiles(id);
+  ADD COLUMN IF NOT EXISTS claimable boolean DEFAULT true,
+  ADD COLUMN IF NOT EXISTS claimed_at timestamptz,
+  ADD COLUMN IF NOT EXISTS claimed_by uuid REFERENCES profiles(id);
 
 -- Create claim requests table
 CREATE TABLE IF NOT EXISTS syndicator_claim_requests (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS syndicator_claim_requests (
   updated_at timestamptz DEFAULT now()
 );
 
--- Enable RLS
+-- Enable Row Level Security (RLS)
 ALTER TABLE syndicator_claim_requests ENABLE ROW LEVEL SECURITY;
 
 -- Drop existing policies if they exist

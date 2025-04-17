@@ -1,15 +1,3 @@
-/*
-  # Add email notifications for messages
-
-  1. New Functions
-    - Create function to send email notifications via Supabase Edge Functions
-    - Add trigger to send emails on new messages
-
-  2. Changes
-    - Add email_notifications column to profiles table
-    - Add email notification preferences
-*/
-
 -- Add email notification preferences to profiles
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email_notifications jsonb DEFAULT jsonb_build_object(
   'messages', true,
@@ -27,9 +15,9 @@ DECLARE
   notification_type TEXT;
 BEGIN
   -- Get receiver's email and preferences
-  SELECT email, email_notifications, full_name 
+  SELECT email, email_notifications, full_name
   INTO receiver_email, receiver_prefs, sender_name
-  FROM profiles 
+  FROM profiles
   WHERE id = NEW.receiver_id;
 
   -- Determine notification type
@@ -51,11 +39,11 @@ BEGIN
         ),
         body := jsonb_build_object(
           'to', receiver_email,
-          'subject', CASE 
+          'subject', CASE
             WHEN notification_type = 'messages' THEN 'New Message from ' || sender_name
             ELSE 'New Notification'
           END,
-          'content', CASE 
+          'content', CASE
             WHEN notification_type = 'messages' THEN NEW.content
             ELSE 'You have a new notification'
           END,

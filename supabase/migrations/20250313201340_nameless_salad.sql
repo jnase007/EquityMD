@@ -1,18 +1,3 @@
-/*
-  # Fix Storage Configuration
-
-  1. Changes
-    - Create required storage buckets if they don't exist
-    - Set up proper RLS policies for buckets
-    - Enable public access where needed
-    - Fix bucket permissions for authenticated users
-
-  2. Security
-    - Maintain secure access control
-    - Allow public read access where appropriate
-    - Restrict write access to authenticated users
-*/
-
 -- Create required buckets if they don't exist
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES 
@@ -25,7 +10,7 @@ ON CONFLICT (id) DO UPDATE SET
   allowed_mime_types = EXCLUDED.allowed_mime_types;
 
 -- Drop existing policies to recreate them
-DO $$
+DO $$ 
 BEGIN
   -- Drop avatar policies
   DROP POLICY IF EXISTS "Avatar files are publicly accessible" ON storage.objects;

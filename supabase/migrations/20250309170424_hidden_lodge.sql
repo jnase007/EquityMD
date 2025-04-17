@@ -1,16 +1,3 @@
-/*
-  # Add test accounts
-
-  1. Changes
-    - Add test investor account
-    - Add test syndicator account
-    - Create corresponding profiles and type-specific profiles
-
-  2. Security
-    - Accounts are created with secure passwords
-    - Proper RLS policies are already in place
-*/
-
 -- Create test investor account
 INSERT INTO auth.users (
   instance_id,
@@ -187,3 +174,4 @@ INSERT INTO public.deals (
   'active',
   true
 );
+;

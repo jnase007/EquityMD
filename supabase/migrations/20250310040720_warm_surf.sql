@@ -1,13 +1,3 @@
-/*
-  # Add message notifications and triggers
-  
-  1. New Functions
-    - create_message_notification: Creates notifications for message recipients
-    
-  2. Sample Data
-    - Add realistic message notifications between investors and syndicators
-*/
-
 -- Create message notification trigger function
 CREATE OR REPLACE FUNCTION create_message_notification()
 RETURNS TRIGGER AS $$
@@ -117,6 +107,7 @@ LIMIT 1;
 
 -- Create trigger for new messages
 DROP TRIGGER IF EXISTS on_message_sent ON messages;
+
 CREATE TRIGGER on_message_sent
   AFTER INSERT ON messages
   FOR EACH ROW

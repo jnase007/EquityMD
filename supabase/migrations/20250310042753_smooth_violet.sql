@@ -1,10 +1,3 @@
-/*
-  # Update BackBay Location
-
-  1. Changes
-    - Updates the location of BackBay to Newport Beach, CA
-*/
-
 DO $$ 
 BEGIN
   IF EXISTS (

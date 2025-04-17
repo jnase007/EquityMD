@@ -1,19 +1,5 @@
--- Add is_admin column if it doesn't exist
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'profiles'
-    AND column_name = 'is_admin'
-  ) THEN
-    ALTER TABLE profiles ADD COLUMN is_admin boolean DEFAULT false;
-  END IF;
-END $$;
-
 -- Create admin user if not exists
 DO $$
-DECLARE
-  admin_id uuid;
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM auth.users
@@ -55,30 +41,58 @@ BEGIN
       '',
       '',
       ''
-    ) RETURNING id INTO admin_id;
-
-    -- Create admin profile
-    INSERT INTO profiles (
-      id,
-      email,
-      full_name,
-      user_type,
-      is_admin,
-      created_at,
-      updated_at
-    ) VALUES (
-      admin_id,
-      'admin@equitymd.com',
-      'Admin',
-      'syndicator',
-      true,
-      now(),
-      now()
     );
   END IF;
 END $$;
 
--- Create site settings table if not exists
+-- Create admin profile
+INSERT INTO profiles (
+  id,
+  email,
+  full_name,
+  user_type,
+  is_admin,
+  created_at,
+  updated_at
+)
+SELECT
+  id,
+  email,
+  'Admin',
+  'syndicator',
+  true,
+  now(),
+  now()
+FROM auth.users
+WHERE email = 'admin@equitymd.com'
+ON CONFLICT (id) DO UPDATE
+SET is_admin = true;
+
+-- Drop existing policies if they exist
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Admins can view all profiles" ON profiles;
+  DROP POLICY IF EXISTS "Admins can update all profiles" ON profiles;
+  DROP POLICY IF EXISTS "Only admins can update site settings" ON site_settings;
+EXCEPTION
+  WHEN undefined_object THEN
+    NULL;
+END $$;
+
+-- Add RLS policies for admin access
+CREATE POLICY "Admins can view all profiles"
+  ON profiles
+  FOR SELECT
+  TO authenticated
+  USING (is_admin = true OR id = auth.uid());
+
+CREATE POLICY "Admins can update all profiles"
+  ON profiles
+  FOR UPDATE
+  TO authenticated
+  USING (is_admin = true OR id = auth.uid());
+
+-- Add site settings table
 CREATE TABLE IF NOT EXISTS site_settings (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   logo_black text,
@@ -87,15 +101,9 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_by uuid REFERENCES profiles(id)
 );
 
--- Enable RLS on site_settings
 ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies if they exist
-DROP POLICY IF EXISTS "Admin site settings access" ON site_settings;
-DROP POLICY IF EXISTS "Public read access for site settings" ON site_settings;
-
--- Create new policies
-CREATE POLICY "Admin site settings access"
+CREATE POLICY "Only admins can update site settings"
   ON site_settings
   FOR ALL
   TO authenticated
@@ -104,12 +112,6 @@ CREATE POLICY "Admin site settings access"
     WHERE id = auth.uid()
     AND is_admin = true
   ));
-
-CREATE POLICY "Public read access for site settings"
-  ON site_settings
-  FOR SELECT
-  TO public
-  USING (true);
 
 -- Insert initial site settings if not exists
 INSERT INTO site_settings (id)

@@ -1,25 +1,3 @@
-/*
-  # Add investor connection rules
-
-  1. New Tables
-    - `investor_connections`
-      - `id` (uuid, primary key)
-      - `investor_id` (uuid, references profiles)
-      - `syndicator_id` (uuid, references profiles)
-      - `initiated_by` (text, either 'investor' or 'syndicator')
-      - `status` (text, either 'pending', 'accepted', 'rejected')
-      - `created_at` (timestamptz)
-      - `updated_at` (timestamptz)
-
-  2. Security
-    - Enable RLS on `investor_connections` table
-    - Add policies for connection management
-    - Update message policies to check connections
-
-  3. Changes
-    - Add connection check to messages policy
-*/
-
 -- Create investor connections table
 CREATE TABLE IF NOT EXISTS investor_connections (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

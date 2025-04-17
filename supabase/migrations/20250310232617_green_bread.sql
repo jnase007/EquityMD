@@ -1,16 +1,3 @@
-/*
-  # Admin Authentication Setup
-
-  1. Changes
-    - Add is_admin column to profiles table
-    - Create initial admin user
-    - Add RLS policies for admin access
-
-  2. Security
-    - Enable RLS on affected tables
-    - Add policies to restrict admin access
-*/
-
 -- Add is_admin column if it doesn't exist
 DO $$ 
 BEGIN

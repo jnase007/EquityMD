@@ -1,16 +1,3 @@
-/*
-  # Add admin functionality
-
-  1. Changes
-    - Add is_admin column to profiles table
-    - Create initial admin user
-    - Add policy for admin access
-
-  2. Security
-    - Enable RLS
-    - Add policies for admin operations
-*/
-
 -- Add is_admin column if it doesn't exist
 DO $$ 
 BEGIN

@@ -1,24 +1,3 @@
-/*
-  # Create Feedback System
-
-  1. New Tables
-    - `feedback`
-      - `id` (uuid, primary key)
-      - `user_id` (uuid, references profiles)
-      - `name` (text)
-      - `email` (text)
-      - `subject` (text)
-      - `message` (text)
-      - `type` (text)
-      - `status` (text)
-      - `created_at` (timestamp)
-      - `updated_at` (timestamp)
-
-  2. Security
-    - Enable RLS on feedback table
-    - Add policies for feedback submission and admin access
-*/
-
 -- Create feedback table
 CREATE TABLE IF NOT EXISTS feedback (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
