@@ -231,7 +231,14 @@ export function SyndicatorProfile() {
 
       if (error) throw error;
 
+      // Reset form
+      setUserReview({ rating: 0, review_text: '' });
       setShowReviewForm(false);
+      
+      // Show success message
+      alert('Thank you for your review! It has been submitted successfully.');
+      
+      // Refresh data to show the new review
       fetchSyndicatorData();
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -451,17 +458,31 @@ export function SyndicatorProfile() {
 
               {showReviewForm && (
                 <form onSubmit={handleSubmitReview} className="mb-8 bg-gray-50 p-6 rounded-lg">
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-3">Write a Review for {syndicator.company_name}</h3>
+                    <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                      <h4 className="font-medium text-blue-900 mb-2">Review Guidelines:</h4>
+                      <ul className="text-sm text-blue-800 space-y-1">
+                        <li>• Share your experience working with this syndicator</li>
+                        <li>• Comment on communication, transparency, and professionalism</li>
+                        <li>• Mention deal performance if you've invested with them</li>
+                        <li>• Be honest and constructive in your feedback</li>
+                        <li>• Avoid personal attacks or unverified claims</li>
+                      </ul>
+                    </div>
+                  </div>
+
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Rating
+                      Overall Rating *
                     </label>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 mb-2">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
                           onClick={() => setUserReview(prev => ({ ...prev, rating: star }))}
-                          className="focus:outline-none"
+                          className="focus:outline-none hover:scale-110 transition-transform"
                         >
                           <Star
                             className={`h-8 w-8 ${
@@ -474,26 +495,41 @@ export function SyndicatorProfile() {
                         </button>
                       ))}
                     </div>
+                    <div className="text-sm text-gray-600">
+                      {userReview.rating === 0 && "Click to rate"}
+                      {userReview.rating === 1 && "Poor - Significant issues"}
+                      {userReview.rating === 2 && "Fair - Below expectations"}
+                      {userReview.rating === 3 && "Good - Meets expectations"}
+                      {userReview.rating === 4 && "Very Good - Exceeds expectations"}
+                      {userReview.rating === 5 && "Excellent - Outstanding experience"}
+                    </div>
                   </div>
 
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Your Review
+                      Your Review *
                     </label>
                     <textarea
                       value={userReview.review_text}
                       onChange={(e) => setUserReview(prev => ({ ...prev, review_text: e.target.value }))}
-                      rows={4}
+                      rows={5}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Share your experience working with this syndicator..."
+                      placeholder="Share your experience working with this syndicator. What went well? What could be improved? How was their communication and professionalism?"
                       required
+                      minLength={50}
+                      maxLength={1000}
                     />
+                    <div className="flex justify-between text-sm text-gray-500 mt-1">
+                      <span>Minimum 50 characters</span>
+                      <span>{userReview.review_text.length}/1000</span>
+                    </div>
                   </div>
 
                   <div className="flex gap-4">
                     <button
                       type="submit"
-                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+                      disabled={userReview.rating === 0 || userReview.review_text.length < 50}
+                      className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                       Submit Review
                     </button>
@@ -564,8 +600,21 @@ export function SyndicatorProfile() {
                 ))}
 
                 {reviews.length === 0 && (
-                  <div className="text-center text-gray-500 py-8">
-                    No reviews yet. Be the first to review {syndicator?.company_name}.
+                  <div className="text-center py-12">
+                    <Star className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No reviews yet</h3>
+                    <p className="text-gray-500 mb-4">
+                      Be the first to share your experience with {syndicator?.company_name}.
+                    </p>
+                    {user && profile?.user_type === 'investor' && (
+                      <button
+                        onClick={handleReviewClick}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-flex items-center"
+                      >
+                        <Star className="h-5 w-5 mr-2" />
+                        Write the First Review
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
