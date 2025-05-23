@@ -4,6 +4,7 @@ import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal,
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { PageBanner } from '../components/PageBanner';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { supabase } from '../lib/supabase';
 
 interface Syndicator {
@@ -88,26 +89,112 @@ export function Directory() {
           slug
         `);
 
-      if (syndicatorError) throw syndicatorError;
+      if (syndicatorError) {
+        console.error('Error fetching syndicators:', syndicatorError);
+        // Use mock data if database fetch fails
+        setSyndicators(mockSyndicators);
+        setLoading(false);
+        return;
+      }
 
-      // Combine real data with dummy data for demonstration
-      const combinedData = [
-        ...(syndicatorData || []).map(s => ({
+      // If no syndicators in database, use mock data for demo purposes
+      if (!syndicatorData || syndicatorData.length === 0) {
+        setSyndicators(mockSyndicators);
+      } else {
+        // Combine real data with enhanced properties
+        const combinedData = syndicatorData.map(s => ({
           ...s,
           average_rating: Math.round((Math.random() * 2 + 3) * 10) / 10,
           total_reviews: Math.floor(Math.random() * 50) + 5,
           active_deals: Math.floor(Math.random() * 10) + 1,
-          specialties: ['Multi-Family', 'Office', 'Retail'].slice(0, Math.floor(Math.random() * 3) + 1)
-        }))
-      ];
-
-      setSyndicators(combinedData);
+          specialties: ['Multi-Family', 'Office', 'Retail'].slice(0, Math.floor(Math.random() * 3) + 1),
+          team_size: Math.floor(Math.random() * 20) + 5,
+          notable_projects: ['Project A', 'Project B'],
+          investment_focus: ['Value-Add', 'Core-Plus'],
+          min_investment: 50000,
+          target_markets: ['Texas', 'Florida'],
+          certifications: ['CCIM', 'CRE']
+        }));
+        setSyndicators(combinedData);
+      }
     } catch (error) {
       console.error('Error fetching syndicators:', error);
+      // Use mock data if there's an error
+      setSyndicators(mockSyndicators);
     } finally {
       setLoading(false);
     }
   }
+
+  // Mock syndicators for demo purposes
+  const mockSyndicators: Syndicator[] = [
+    {
+      id: 'mock-syn-1',
+      company_name: 'Austin Capital Partners',
+      company_logo_url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&q=80&w=100&h=100',
+      company_description: 'Specializing in multifamily value-add opportunities across Texas markets.',
+      state: 'Texas',
+      city: 'Austin',
+      years_in_business: 12,
+      total_deal_volume: 450000000,
+      website_url: 'https://austincapitalpartners.com',
+      average_rating: 4.8,
+      total_reviews: 24,
+      active_deals: 6,
+      slug: 'austin-capital-partners',
+      specialties: ['Multi-Family', 'Value-Add', 'Texas Markets'],
+      team_size: 15,
+      notable_projects: ['Sunset Ridge Apartments', 'Downtown Lofts'],
+      investment_focus: ['Value-Add', 'Core-Plus'],
+      min_investment: 50000,
+      target_markets: ['Austin', 'Dallas', 'Houston'],
+      certifications: ['CCIM', 'CRE']
+    },
+    {
+      id: 'mock-syn-2',
+      company_name: 'Lone Star Syndications',
+      company_logo_url: 'https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&q=80&w=100&h=100',
+      company_description: 'Premier real estate investment firm focused on institutional-quality properties.',
+      state: 'Texas',
+      city: 'Dallas',
+      years_in_business: 8,
+      total_deal_volume: 280000000,
+      website_url: 'https://lonestarsyndications.com',
+      average_rating: 4.6,
+      total_reviews: 18,
+      active_deals: 4,
+      slug: 'lone-star-syndications',
+      specialties: ['Multi-Family', 'Office', 'Industrial'],
+      team_size: 12,
+      notable_projects: ['Metro Office Complex', 'Riverside Apartments'],
+      investment_focus: ['Core', 'Value-Add'],
+      min_investment: 75000,
+      target_markets: ['Dallas', 'Fort Worth', 'San Antonio'],
+      certifications: ['CCIM', 'SIOR']
+    },
+    {
+      id: 'mock-syn-3',
+      company_name: 'Gulf Coast Investments',
+      company_logo_url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=100&h=100',
+      company_description: 'Focused on coastal markets with strong fundamentals and growth potential.',
+      state: 'Florida',
+      city: 'Miami',
+      years_in_business: 15,
+      total_deal_volume: 620000000,
+      website_url: 'https://gulfcoastinvestments.com',
+      average_rating: 4.9,
+      total_reviews: 31,
+      active_deals: 8,
+      slug: 'gulf-coast-investments',
+      specialties: ['Multi-Family', 'Mixed-Use', 'Hospitality'],
+      team_size: 22,
+      notable_projects: ['Bayfront Towers', 'Ocean View Resort'],
+      investment_focus: ['Opportunistic', 'Value-Add'],
+      min_investment: 100000,
+      target_markets: ['Miami', 'Tampa', 'Orlando'],
+      certifications: ['CCIM', 'CRE', 'CPM']
+    }
+  ];
 
   const filteredSyndicators = syndicators
     .filter(syndicator => {
@@ -147,7 +234,11 @@ export function Directory() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading directory...</div>
+        <LoadingSpinner 
+          variant="medical" 
+          size="xl" 
+          text="Loading syndicator directory..." 
+        />
       </div>
     );
   }

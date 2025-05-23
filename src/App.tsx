@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { SEO } from './components/SEO';
-import { Home } from './pages/Home';
-import { Browse } from './pages/Browse';
-import { Profile } from './pages/Profile';
-import { Dashboard } from './pages/Dashboard';
-import { DealDetails } from './pages/DealDetails';
-import { NewDeal } from './pages/NewDeal';
+import { LoadingSpinner } from './components/LoadingSpinner';
+import { supabase } from './lib/supabase';
+import { useAuthStore } from './lib/store';
+import { preloadCriticalResources, preloadRoute } from './utils/performance';
+
+// Lazy load heavy components
+const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
+const Browse = lazy(() => import('./pages/Browse').then(module => ({ default: module.Browse })));
+const Profile = lazy(() => import('./pages/Profile').then(module => ({ default: module.Profile })));
+const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
+const DealDetails = lazy(() => import('./pages/DealDetails').then(module => ({ default: module.DealDetails })));
+const NewDeal = lazy(() => import('./pages/NewDeal').then(module => ({ default: module.NewDeal })));
+const SyndicatorProfile = lazy(() => import('./pages/SyndicatorProfile').then(module => ({ default: module.SyndicatorProfile })));
+const Directory = lazy(() => import('./pages/Directory').then(module => ({ default: module.Directory })));
+const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
+const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
+
+// Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
-import { SyndicatorProfile } from './pages/SyndicatorProfile';
-import { Directory } from './pages/Directory';
 import { HowItWorks } from './pages/HowItWorks';
 import { ForSyndicators } from './pages/ForSyndicators';
 import { SuccessStories } from './pages/SuccessStories';
 import { DueDiligence } from './pages/resources/DueDiligence';
 import { InvestmentCalculator } from './pages/resources/InvestmentCalculator';
 import { MarketReports } from './pages/resources/MarketReports';
-import { MarketMap } from './pages/MarketMap';
 import { Education } from './pages/resources/Education';
 import { Glossary } from './pages/resources/Glossary';
 import { Privacy } from './pages/legal/Privacy';
@@ -25,12 +35,12 @@ import { Disclaimer } from './pages/legal/Disclaimer';
 import { Accreditation } from './pages/legal/Accreditation';
 import { Compliance } from './pages/legal/Compliance';
 import { Contact } from './pages/Contact';
-import { Inbox } from './pages/Inbox';
 import { AdminLogin } from './pages/admin/Login';
-import { AdminDashboard } from './pages/admin/Dashboard';
 import { Pricing } from './pages/Pricing';
 import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
+import { LoaderDemo } from './pages/LoaderDemo';
+import { TestMessaging } from './pages/TestMessaging';
 import { AuthModal } from './components/AuthModal';
 import { SignupStart } from './pages/auth/SignupStart';
 import { SignupEmail } from './pages/auth/SignupEmail';
@@ -39,14 +49,40 @@ import { SignupName } from './pages/auth/SignupName';
 import { SignupAccreditation } from './pages/auth/SignupAccreditation';
 import { SignupContinue } from './pages/auth/SignupContinue';
 import { SocialSignup } from './pages/auth/SocialSignup';
-import { supabase } from './lib/supabase';
-import { useAuthStore } from './lib/store';
+import { PerformanceMonitor } from './components/PerformanceMonitor';
+
+// Loading fallback component
+const PageLoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <LoadingSpinner size="lg" />
+  </div>
+);
 
 export default function App() {
   const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
   const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [requireAuth, setRequireAuth] = useState(false);
+
+  // Preload critical resources on app start
+  useEffect(() => {
+    preloadCriticalResources();
+  }, []);
+
+  // Preload likely next routes based on current page
+  useEffect(() => {
+    const currentPath = location.pathname;
+    
+    // Preload common next routes
+    if (currentPath === '/') {
+      preloadRoute(() => import('./pages/Browse'));
+      preloadRoute(() => import('./pages/Directory'));
+    } else if (currentPath === '/browse') {
+      preloadRoute(() => import('./pages/DealDetails'));
+    } else if (currentPath === '/directory') {
+      preloadRoute(() => import('./pages/SyndicatorProfile'));
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const initAuth = async () => {  
@@ -179,7 +215,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -195,100 +231,104 @@ export default function App() {
     <>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/for-syndicators" element={<ForSyndicators />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/email-preview" element={<EmailPreview />} />
-        <Route path="/email-test" element={<EmailTest />} />
-        <Route path="/legal/privacy" element={<Privacy />} />
-        <Route path="/legal/terms" element={<Terms />} />
-        <Route path="/legal/disclaimer" element={<Disclaimer />} />
-        <Route path="/resources/glossary" element={<Glossary />} />
+        <Route path="/" element={<Suspense fallback={<PageLoadingFallback />}><Home /></Suspense>} />
+        <Route path="/how-it-works" element={<Suspense fallback={<PageLoadingFallback />}><HowItWorks /></Suspense>} />
+        <Route path="/for-syndicators" element={<Suspense fallback={<PageLoadingFallback />}><ForSyndicators /></Suspense>} />
+        <Route path="/contact" element={<Suspense fallback={<PageLoadingFallback />}><Contact /></Suspense>} />
+        <Route path="/pricing" element={<Suspense fallback={<PageLoadingFallback />}><Pricing /></Suspense>} />
+        <Route path="/email-preview" element={<Suspense fallback={<PageLoadingFallback />}><EmailPreview /></Suspense>} />
+        <Route path="/email-test" element={<Suspense fallback={<PageLoadingFallback />}><EmailTest /></Suspense>} />
+        <Route path="/loader-demo" element={<Suspense fallback={<PageLoadingFallback />}><LoaderDemo /></Suspense>} />
+        <Route path="/legal/privacy" element={<Suspense fallback={<PageLoadingFallback />}><Privacy /></Suspense>} />
+        <Route path="/legal/terms" element={<Suspense fallback={<PageLoadingFallback />}><Terms /></Suspense>} />
+        <Route path="/legal/disclaimer" element={<Suspense fallback={<PageLoadingFallback />}><Disclaimer /></Suspense>} />
+        <Route path="/resources/glossary" element={<Suspense fallback={<PageLoadingFallback />}><Glossary /></Suspense>} />
 
         {/* Signup Routes */}
-        <Route path="/signup/start" element={<SignupStart />} />
-        <Route path="/signup/:type/email" element={<SignupEmail />} />
-        <Route path="/signup/:type/password" element={<SignupPassword />} />
-        <Route path="/signup/:type/name" element={<SignupName />} />
-        <Route path="/signup/:type/accreditation" element={<SignupAccreditation />} />
-        <Route path="/signup/:type/continue" element={<SignupContinue />} />
-        <Route path="/social-signup" element={<SocialSignup />} />
+        <Route path="/signup/start" element={<Suspense fallback={<PageLoadingFallback />}><SignupStart /></Suspense>} />
+        <Route path="/signup/:type/email" element={<Suspense fallback={<PageLoadingFallback />}><SignupEmail /></Suspense>} />
+        <Route path="/signup/:type/password" element={<Suspense fallback={<PageLoadingFallback />}><SignupPassword /></Suspense>} />
+        <Route path="/signup/:type/name" element={<Suspense fallback={<PageLoadingFallback />}><SignupName /></Suspense>} />
+        <Route path="/signup/:type/accreditation" element={<Suspense fallback={<PageLoadingFallback />}><SignupAccreditation /></Suspense>} />
+        <Route path="/signup/:type/continue" element={<Suspense fallback={<PageLoadingFallback />}><SignupContinue /></Suspense>} />
+        <Route path="/social-signup" element={<Suspense fallback={<PageLoadingFallback />}><SocialSignup /></Suspense>} />
 
         {/* Protected Routes */}
         <Route 
           path="/browse" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Browse />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Browse /></Suspense>} 
         />
         <Route 
           path="/directory" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Directory />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Directory /></Suspense>} 
         />
         <Route 
           path="/success-stories" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <SuccessStories />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><SuccessStories /></Suspense>} 
         />
         <Route 
           path="/resources/due-diligence" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <DueDiligence />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><DueDiligence /></Suspense>} 
         />
         <Route 
           path="/resources/calculator" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <InvestmentCalculator />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><InvestmentCalculator /></Suspense>} 
         />
         <Route 
           path="/resources/market-reports" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <MarketReports />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><MarketReports /></Suspense>} 
         />
         <Route 
           path="/resources/education" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Education />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Education /></Suspense>} 
         />
         <Route 
           path="/market-map" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <MarketMap />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><MarketMap /></Suspense>} 
         />
         <Route 
           path="/legal/accreditation" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Accreditation />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Accreditation /></Suspense>} 
         />
         <Route 
           path="/legal/compliance" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Compliance />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Compliance /></Suspense>} 
         />
         <Route 
           path="/deals/:slug" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <DealDetails />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><DealDetails /></Suspense>} 
         />
         <Route 
           path="/syndicators/:slug" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <SyndicatorProfile />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><SyndicatorProfile /></Suspense>} 
         />
         <Route 
           path="/profile" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Profile />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Profile /></Suspense>} 
         />
         <Route 
           path="/dashboard" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Dashboard />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Dashboard /></Suspense>} 
         />
         <Route 
           path="/deals/new" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <NewDeal />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><NewDeal /></Suspense>} 
         />
         <Route 
           path="/inbox" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Inbox />} 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Inbox /></Suspense>} 
         />
 
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLogin />} />
-        <Route path="/admin/dashboard/*" element={<AdminDashboard />} />
-        <Route path="/dev-admin/*" element={<AdminDashboard />} />
+        <Route path="/admin" element={<Suspense fallback={<PageLoadingFallback />}><AdminLogin /></Suspense>} />
+        <Route path="/admin/dashboard/*" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
+        <Route path="/dev-admin/*" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
+
+        {/* Test Messaging Route */}
+        <Route path="/test-messaging" element={<Suspense fallback={<PageLoadingFallback />}><TestMessaging /></Suspense>} />
 
         {/* 404 Route */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Suspense fallback={<PageLoadingFallback />}><NotFound /></Suspense>} />
       </Routes>
 
       {showAuthModal && (
@@ -297,6 +337,8 @@ export default function App() {
           defaultView="sign_in"
         />
       )}
+
+      <PerformanceMonitor />
     </>
   );
 }

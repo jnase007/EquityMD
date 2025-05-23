@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, User, Menu, X, ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
+import { OptimizedImage } from './OptimizedImage';
+import type { Deal, SyndicatorProfile } from '../types/database';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -43,10 +45,13 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
     <Link to={`/deals/${slug}`} className={`block ${className}`}>
       <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
         <div className="relative">
-          <img 
+          <OptimizedImage 
             src={image} 
             alt={title} 
             className="w-full h-48 object-cover rounded-lg mb-4"
+            width={400}
+            height={192}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           {!isAuthenticated && (
             <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
@@ -110,10 +115,13 @@ export function DealListItem({ id, slug, image, title, location, description, me
       <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
         <div className="flex gap-6">
           <div className="relative flex-shrink-0">
-            <img 
+            <OptimizedImage 
               src={image} 
               alt={title} 
               className="w-48 h-48 object-cover rounded-lg"
+              width={192}
+              height={192}
+              sizes="192px"
             />
             {!isAuthenticated && (
               <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
@@ -202,10 +210,13 @@ export function InvestorCard({ name, title, company, image, portfolio, specialti
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
       <div className="text-center mb-4">
-        <img 
+        <OptimizedImage 
           src={image} 
           alt={name} 
           className="w-20 h-20 object-cover rounded-full mx-auto mb-4"
+          width={80}
+          height={80}
+          sizes="80px"
         />
         <h3 className="text-xl font-bold text-gray-800">{name}</h3>
         <p className="text-gray-600">{title}</p>

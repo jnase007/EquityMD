@@ -7,9 +7,11 @@ import { PageBanner } from '../components/PageBanner';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import type { Deal } from '../types/database';
 
-const propertyTypeImages = {
+// Property type to image mapping
+const propertyTypeImages: Record<string, string> = {
   'Multi-Family': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
   'Office': 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
   'Retail': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80',
@@ -22,6 +24,7 @@ const propertyTypeImages = {
   'Self-Storage': 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&q=80'
 };
 
+// Default fallback images for variety
 const fallbackImages = [
   'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80',
   'https://images.unsplash.com/photo-1464938050520-ef2270bb8ce8?auto=format&fit=crop&q=80',
@@ -30,6 +33,7 @@ const fallbackImages = [
   'https://images.unsplash.com/photo-1577979749830-f1d742b96791?auto=format&fit=crop&q=80'
 ];
 
+// Get image URL based on property type or fallback to random default
 const getPropertyImage = (propertyType: string, index: number) => {
   return propertyTypeImages[propertyType] || fallbackImages[index % fallbackImages.length];
 };
@@ -60,16 +64,90 @@ export function Browse() {
 
       if (error) {
         console.error('Error fetching deals:', error);
+        // Use mock data if database fetch fails
+        setDeals(mockDeals);
+        setLoading(false);
         return;
       }
 
-      setDeals(data || []);
+      // If no deals in database, use mock data for demo purposes
+      if (!data || data.length === 0) {
+        setDeals(mockDeals);
+      } else {
+        setDeals(data);
+      }
     } catch (error) {
       console.error('Error:', error);
+      // Use mock data if there's an error
+      setDeals(mockDeals);
     } finally {
       setLoading(false);
     }
   }
+
+  // Mock deals for demo purposes
+  const mockDeals: Deal[] = [
+    {
+      id: 'mock-1',
+      syndicator_id: 'mock-syndicator-1',
+      title: 'Sunset Gardens Apartments',
+      location: 'Austin, TX',
+      property_type: 'Multi-Family',
+      status: 'active',
+      target_irr: 18,
+      minimum_investment: 50000,
+      investment_term: 5,
+      description: 'A 120-unit multifamily property in a growing Austin suburb with strong rental demand.',
+      address: { street: '123 Sunset Blvd', city: 'Austin', state: 'TX', zip: '78701' },
+      investment_highlights: ['Strong rental demand', 'Growing market', 'Value-add opportunity'],
+      total_equity: 2500000,
+      featured: true,
+      cover_image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
+      created_at: '2024-01-15T00:00:00Z',
+      updated_at: '2024-01-15T00:00:00Z',
+      slug: 'sunset-gardens-apartments'
+    },
+    {
+      id: 'mock-2',
+      syndicator_id: 'mock-syndicator-2',
+      title: 'Downtown Office Plaza',
+      location: 'Dallas, TX',
+      property_type: 'Office',
+      status: 'active',
+      target_irr: 15,
+      minimum_investment: 100000,
+      investment_term: 7,
+      description: 'Class A office building in downtown Dallas with long-term corporate tenants.',
+      address: { street: '456 Main St', city: 'Dallas', state: 'TX', zip: '75201' },
+      investment_highlights: ['Class A building', 'Long-term tenants', 'Downtown location'],
+      total_equity: 5000000,
+      featured: true,
+      cover_image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
+      created_at: '2024-01-10T00:00:00Z',
+      updated_at: '2024-01-10T00:00:00Z',
+      slug: 'downtown-office-plaza'
+    },
+    {
+      id: 'mock-3',
+      syndicator_id: 'mock-syndicator-3',
+      title: 'University Heights Student Housing',
+      location: 'College Station, TX',
+      property_type: 'Student Housing',
+      status: 'active',
+      target_irr: 22,
+      minimum_investment: 25000,
+      investment_term: 4,
+      description: 'Modern student housing complex near Texas A&M University with high occupancy rates.',
+      address: { street: '789 University Dr', city: 'College Station', state: 'TX', zip: '77840' },
+      investment_highlights: ['Near Texas A&M', 'High occupancy', 'Modern amenities'],
+      total_equity: 1800000,
+      featured: false,
+      cover_image_url: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&q=80',
+      created_at: '2024-01-05T00:00:00Z',
+      updated_at: '2024-01-05T00:00:00Z',
+      slug: 'university-heights-student-housing'
+    }
+  ];
 
   const sortOptions = [
     { value: 'recent', label: 'Recently Added' },
@@ -101,7 +179,11 @@ export function Browse() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading deals...</div>
+        <LoadingSpinner 
+          variant="medical" 
+          size="xl" 
+          text="Loading investment opportunities..." 
+        />
       </div>
     );
   }

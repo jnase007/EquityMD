@@ -43,6 +43,37 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
         messageData.deal_id = dealId;
       }
 
+      // If user is an investor, automatically create a connection if it doesn't exist
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_type')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.user_type === 'investor') {
+          // Check if connection already exists
+          const { data: existingConnection } = await supabase
+            .from('investor_connections')
+            .select('id')
+            .eq('investor_id', user.id)
+            .eq('syndicator_id', syndicatorId)
+            .single();
+
+          // Create connection if it doesn't exist
+          if (!existingConnection) {
+            await supabase
+              .from('investor_connections')
+              .insert({
+                investor_id: user.id,
+                syndicator_id: syndicatorId,
+                initiated_by: 'investor',
+                status: 'pending'
+              });
+          }
+        }
+      }
+
       const { error: sendError } = await supabase
         .from('messages')
         .insert(messageData);

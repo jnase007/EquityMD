@@ -52,74 +52,76 @@ export function Home() {
   // Mock investor data - replace with real data from your API
   const featuredInvestors = [
     {
-      name: "Dr. Sarah Chen",
-      title: "Chief Medical Officer",
-      company: "Healthcare Ventures LLC",
+      name: "Sarah Chen",
+      title: "Technology Executive",
+      company: "Tech Innovations Inc",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$2.5M",
         activeDeals: 8,
         avgReturn: "22%"
       },
-      specialties: ["Medical", "Multi-Family", "Senior Living"]
+      specialties: ["Multi-Family", "Mixed-Use", "Value-Add"]
     },
     {
       name: "Michael Rodriguez",
-      title: "Real Estate Investor",
-      company: "Rodriguez Capital",
+      title: "Business Owner",
+      company: "Rodriguez Manufacturing",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.8M",
         activeDeals: 12,
         avgReturn: "19%"
       },
-      specialties: ["Industrial", "Office", "Mixed-Use"]
+      specialties: ["Multi-Family", "Workforce Housing", "Passive Income"]
     },
     {
-      name: "Dr. Jennifer Kim",
-      title: "Surgeon & Investor",
+      name: "Jennifer Kim",
+      title: "Financial Advisor",
+      company: "Wealth Management Partners",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$3.2M",
         activeDeals: 6,
         avgReturn: "24%"
       },
-      specialties: ["Medical", "Student Housing", "Retail"]
+      specialties: ["Multi-Family", "Student Housing", "Long-term Growth"]
     },
     {
-      name: "Dr. David Thompson",
-      title: "Emergency Medicine",
-      company: "Thompson Holdings",
+      name: "David Thompson",
+      title: "Attorney",
+      company: "Thompson & Associates Law",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.4M",
         activeDeals: 9,
         avgReturn: "21%"
       },
-      specialties: ["Multi-Family", "Medical", "Office"]
+      specialties: ["Multi-Family", "Tax Benefits", "Passive Income"]
     },
     {
-      name: "Dr. Lisa Patel",
-      title: "Cardiologist & Investor",
-      company: "Patel Investment Group",
+      name: "Lisa Patel",
+      title: "Healthcare Executive",
+      company: "Regional Medical Group",
       image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$2.9M",
         activeDeals: 7,
         avgReturn: "26%"
       },
-      specialties: ["Medical", "Senior Living", "Mixed-Use"]
+      specialties: ["Multi-Family", "Workforce Housing", "Diversification"]
     },
     {
-      name: "Dr. James Wilson",
-      title: "Orthopedic Surgeon",
+      name: "James Wilson",
+      title: "Engineering Consultant",
+      company: "Wilson Engineering Solutions",
       image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.6M",
         activeDeals: 5,
         avgReturn: "18%"
       },
-      specialties: ["Medical", "Industrial", "Self-Storage"]
+      specialties: ["Multi-Family", "Value-Add", "Portfolio Growth"]
     }
   ];
 
@@ -300,7 +302,7 @@ export function Home() {
               Current Investors
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Join a community of successful medical professionals and real estate investors building wealth through strategic property investments.
+              Join a community of successful real estate investors building wealth through strategic property investments.
             </p>
           </div>
           
