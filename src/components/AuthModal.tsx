@@ -3,6 +3,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { sendSignupEmails } from '../lib/emailService';
 import { X, User, Building2 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -58,6 +59,18 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             .insert([{ id: data.user.id }]);
           
           if (syndicatorError) throw syndicatorError;
+        }
+
+        // Send signup notification emails
+        try {
+          await sendSignupEmails({
+            userName: data.user.email?.split('@')[0] || 'New User',
+            userEmail: data.user.email || '',
+            userType: userType
+          });
+        } catch (emailError) {
+          console.error('Failed to send signup emails:', emailError);
+          // Don't throw here - we don't want email failures to break signup
         }
 
         // Close modal and redirect to dashboard
@@ -168,6 +181,81 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
     });
   }, []);
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        try {
+          const user = session.user;
+          
+          // Check if this is a new user by looking for existing profile
+          const { data: existingProfile, error: profileCheckError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+          if (profileCheckError && profileCheckError.code !== 'PGRST116') {
+            throw profileCheckError;
+          }
+
+          // If no existing profile, this is a new user
+          if (!existingProfile) {
+            // Create profile
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .insert([
+                {
+                  id: user.id,
+                  email: user.email,
+                  full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
+                  avatar_url: user.user_metadata?.avatar_url,
+                  user_type: userType,
+                },
+              ]);
+
+            if (profileError) throw profileError;
+
+            // Create type-specific profile
+            if (userType === 'investor') {
+              const { error: investorError } = await supabase
+                .from('investor_profiles')
+                .insert([{ id: user.id }]);
+              
+              if (investorError) throw investorError;
+            } else {
+              const { error: syndicatorError } = await supabase
+                .from('syndicator_profiles')
+                .insert([{ id: user.id }]);
+              
+              if (syndicatorError) throw syndicatorError;
+            }
+
+            // Send signup notification emails for new users
+            try {
+              await sendSignupEmails({
+                userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'New User',
+                userEmail: user.email || '',
+                userType: userType
+              });
+            } catch (emailError) {
+              console.error('Failed to send signup emails:', emailError);
+              // Don't throw here - we don't want email failures to break signup
+            }
+          }
+
+          // Close modal and redirect to dashboard
+          onClose();
+          navigate('/dashboard');
+        } catch (err) {
+          console.error('Error in signup process:', err);
+          setError(err instanceof Error ? err.message : 'An error occurred during signup');
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [userType, onClose, navigate]);
+
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
@@ -265,10 +353,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
         },
       }}
       providers={['google', 'facebook', 'linkedin_oidc']}
-      onSignUp={handleSignUp}
-      onAuthSuccess={handleAuthSuccess}
+      onlyThirdPartyProviders={false}
+      redirectTo={window.location.origin}
       view={currentView}
-      onViewChange={handleViewChange}
       socialLayout="horizontal"
       localization={{
         variables: {

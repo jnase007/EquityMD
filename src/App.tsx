@@ -29,6 +29,8 @@ import { Inbox } from './pages/Inbox';
 import { AdminLogin } from './pages/admin/Login';
 import { AdminDashboard } from './pages/admin/Dashboard';
 import { Pricing } from './pages/Pricing';
+import { EmailPreview } from './pages/EmailPreview';
+import { EmailTest } from './pages/EmailTest';
 import { AuthModal } from './components/AuthModal';
 import { SignupStart } from './pages/auth/SignupStart';
 import { SignupEmail } from './pages/auth/SignupEmail';
@@ -177,7 +179,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -198,6 +200,8 @@ export default function App() {
         <Route path="/for-syndicators" element={<ForSyndicators />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/email-preview" element={<EmailPreview />} />
+        <Route path="/email-test" element={<EmailTest />} />
         <Route path="/legal/privacy" element={<Privacy />} />
         <Route path="/legal/terms" element={<Terms />} />
         <Route path="/legal/disclaimer" element={<Disclaimer />} />

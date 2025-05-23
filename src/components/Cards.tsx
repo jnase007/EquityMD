@@ -184,3 +184,62 @@ export function StatCard({ number, label, icon }: StatCardProps) {
     </div>
   );
 }
+
+interface InvestorCardProps {
+  name: string;
+  title: string;
+  company?: string;
+  image: string;
+  portfolio: {
+    totalInvested: string;
+    activeDeals: number;
+    avgReturn: string;
+  };
+  specialties: string[];
+}
+
+export function InvestorCard({ name, title, company, image, portfolio, specialties }: InvestorCardProps) {
+  return (
+    <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+      <div className="text-center mb-4">
+        <img 
+          src={image} 
+          alt={name} 
+          className="w-20 h-20 object-cover rounded-full mx-auto mb-4"
+        />
+        <h3 className="text-xl font-bold text-gray-800">{name}</h3>
+        <p className="text-gray-600">{title}</p>
+        {company && <p className="text-sm text-blue-600 font-medium">{company}</p>}
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 border-t pt-4 mb-4">
+        <div className="text-center">
+          <p className="text-sm text-gray-500">Total Invested</p>
+          <p className="font-semibold text-blue-600">{portfolio.totalInvested}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-sm text-gray-500">Active Deals</p>
+          <p className="font-semibold text-blue-600">{portfolio.activeDeals}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-sm text-gray-500">Avg Return</p>
+          <p className="font-semibold text-blue-600">{portfolio.avgReturn}</p>
+        </div>
+      </div>
+
+      <div className="border-t pt-4">
+        <p className="text-sm text-gray-500 mb-2">Investment Focus</p>
+        <div className="flex flex-wrap gap-2">
+          {specialties.map((specialty, index) => (
+            <span 
+              key={index} 
+              className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full"
+            >
+              {specialty}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { sendSignupEmails } from '../../lib/emailService';
 
 export function SignupPassword() {
   const navigate = useNavigate();
@@ -41,6 +42,18 @@ export function SignupPassword() {
 
       // Store user data for next steps
       sessionStorage.setItem('signup_user_id', user!.id);
+
+      // Send email notifications
+      try {
+        await sendSignupEmails({
+          userName: user!.email?.split('@')[0] || 'New User',
+          userEmail: user!.email || '',
+          userType: (type as 'investor' | 'syndicator') || 'investor'
+        });
+      } catch (emailError) {
+        console.error('Failed to send signup emails:', emailError);
+        // Don't throw here - we don't want email failures to break signup
+      }
 
       // Navigate to next step
       navigate(`/signup/${type}/name`);

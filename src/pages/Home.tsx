@@ -6,7 +6,7 @@ import { Building2, Star, Calendar, TrendingUp, Users, MapPin, ExternalLink,
   MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
-import { DealCard, FeatureCard, StatCard } from '../components/Cards';
+import { DealCard, FeatureCard, StatCard, InvestorCard } from '../components/Cards';
 import { AuthModal } from '../components/AuthModal';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
@@ -15,7 +15,7 @@ import { useAuthStore } from '../lib/store';
 import type { Deal } from '../types/database';
 
 // Property type to image mapping
-const propertyTypeImages = {
+const propertyTypeImages: Record<string, string> = {
   'Multi-Family': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
   'Office': 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
   'Retail': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80',
@@ -48,6 +48,80 @@ export function Home() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [useVideo, setUseVideo] = useState(true);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
+
+  // Mock investor data - replace with real data from your API
+  const featuredInvestors = [
+    {
+      name: "Dr. Sarah Chen",
+      title: "Chief Medical Officer",
+      company: "Healthcare Ventures LLC",
+      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
+      portfolio: {
+        totalInvested: "$2.5M",
+        activeDeals: 8,
+        avgReturn: "22%"
+      },
+      specialties: ["Medical", "Multi-Family", "Senior Living"]
+    },
+    {
+      name: "Michael Rodriguez",
+      title: "Real Estate Investor",
+      company: "Rodriguez Capital",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
+      portfolio: {
+        totalInvested: "$1.8M",
+        activeDeals: 12,
+        avgReturn: "19%"
+      },
+      specialties: ["Industrial", "Office", "Mixed-Use"]
+    },
+    {
+      name: "Dr. Jennifer Kim",
+      title: "Surgeon & Investor",
+      image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
+      portfolio: {
+        totalInvested: "$3.2M",
+        activeDeals: 6,
+        avgReturn: "24%"
+      },
+      specialties: ["Medical", "Student Housing", "Retail"]
+    },
+    {
+      name: "Dr. David Thompson",
+      title: "Emergency Medicine",
+      company: "Thompson Holdings",
+      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
+      portfolio: {
+        totalInvested: "$1.4M",
+        activeDeals: 9,
+        avgReturn: "21%"
+      },
+      specialties: ["Multi-Family", "Medical", "Office"]
+    },
+    {
+      name: "Dr. Lisa Patel",
+      title: "Cardiologist & Investor",
+      company: "Patel Investment Group",
+      image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
+      portfolio: {
+        totalInvested: "$2.9M",
+        activeDeals: 7,
+        avgReturn: "26%"
+      },
+      specialties: ["Medical", "Senior Living", "Mixed-Use"]
+    },
+    {
+      name: "Dr. James Wilson",
+      title: "Orthopedic Surgeon",
+      image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=300&h=300",
+      portfolio: {
+        totalInvested: "$1.6M",
+        activeDeals: 5,
+        avgReturn: "18%"
+      },
+      specialties: ["Medical", "Industrial", "Self-Storage"]
+    }
+  ];
 
   useEffect(() => {
     fetchFeaturedDeals();
@@ -214,6 +288,43 @@ export function Home() {
             {/* Gradient Overlays */}
             <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none" />
             <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
+          </div>
+        </div>
+      </section>
+
+      {/* Current Investors Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              Current Investors
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Join a community of successful medical professionals and real estate investors building wealth through strategic property investments.
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="overflow-x-auto pb-4 scrollbar-hide">
+              <div className="flex gap-6" style={{ width: 'max-content' }}>
+                {featuredInvestors.map((investor, index) => (
+                  <div key={index} className="w-[350px] relative">
+                    <InvestorCard
+                      name={investor.name}
+                      title={investor.title}
+                      company={investor.company}
+                      image={investor.image}
+                      portfolio={investor.portfolio}
+                      specialties={investor.specialties}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Gradient Overlays */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
           </div>
         </div>
       </section>

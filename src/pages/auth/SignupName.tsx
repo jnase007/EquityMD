@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { User, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { sendSignupEmails } from '../../lib/emailService';
 
 export function SignupName() {
   const navigate = useNavigate();
@@ -69,6 +70,18 @@ export function SignupName() {
 
       // Navigate to next step
       navigate(`/signup/${type}/accreditation`);
+
+      // Send email notification with proper data structure
+      try {
+        await sendSignupEmails({
+          userName: fullName,
+          userEmail: email || '',
+          userType: (type as 'investor' | 'syndicator') || 'investor'
+        });
+      } catch (emailError) {
+        console.error('Failed to send signup emails:', emailError);
+        // Don't throw here - we don't want email failures to break signup
+      }
     } catch (error) {
       console.error('Error creating profile:', error);
       setError('Error creating profile. Please try again.');

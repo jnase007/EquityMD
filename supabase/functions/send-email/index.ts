@@ -1,8 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getBaseTemplate } from './templates.ts';
+import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = 'notifications@equitymd.com';
+const ADMIN_EMAIL = 'admin@equitymd.com'; // Replace with your admin email
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -37,20 +38,6 @@ serve(async (req) => {
 
     const { to, subject, content, type, data } = body;
 
-    // Validate required fields
-    if (!to || !subject || !content) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: to, subject, and content are required' }),
-        { 
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-          }
-        }
-      );
-    }
-
     // Validate Resend API key
     if (!RESEND_API_KEY) {
       console.error('RESEND_API_KEY environment variable is not set');
@@ -66,17 +53,88 @@ serve(async (req) => {
       );
     }
 
-    // Generate HTML using template
-    const html = getBaseTemplate({
-      title: subject,
-      content: content.split('\n').map(line => `<p>${line}</p>`).join(''),
-      buttonText: type === 'deal_update' ? 'View Investment Details' : undefined,
-      buttonUrl: type === 'deal_update' && data?.deal_slug ? 
-        `https://equitymd.com/deals/${data.deal_slug}` : undefined
-    });
+    let html: string;
+    let emailTo: string;
+    let emailSubject: string;
 
-    console.log('Sending email to:', to);
-    console.log('Subject:', subject);
+    // Handle different email types
+    switch (type) {
+      case 'new_investor_signup':
+        if (!data?.userName || !data?.userEmail) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for new investor signup notification' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getNewInvestorSignupTemplate({
+          userType: 'investor',
+          userName: data.userName,
+          userEmail: data.userEmail,
+          signupDate: data.signupDate || new Date().toLocaleDateString()
+        });
+        emailTo = ADMIN_EMAIL;
+        emailSubject = 'New Investor Registration - EquityMD';
+        break;
+
+      case 'new_syndicator_signup':
+        if (!data?.userName || !data?.userEmail) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for new syndicator signup notification' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getNewSyndicatorSignupTemplate({
+          userType: 'syndicator',
+          userName: data.userName,
+          userEmail: data.userEmail,
+          signupDate: data.signupDate || new Date().toLocaleDateString()
+        });
+        emailTo = ADMIN_EMAIL;
+        emailSubject = 'New Syndicator Registration - EquityMD';
+        break;
+
+      case 'welcome_email':
+        if (!data?.userName || !data?.userType || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for welcome email' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getWelcomeEmailTemplate(data.userType, data.userName);
+        emailTo = to;
+        emailSubject = `Welcome to EquityMD, ${data.userName}!`;
+        break;
+
+      default:
+        // Handle regular emails
+        if (!to || !subject || !content) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required fields: to, subject, and content are required' }),
+            { 
+              status: 400,
+              headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+              }
+            }
+          );
+        }
+
+        html = getBaseTemplate({
+          title: subject,
+          content: content.split('\n').map(line => `<p>${line}</p>`).join(''),
+          buttonText: type === 'deal_update' ? 'View Investment Details' : undefined,
+          buttonUrl: type === 'deal_update' && data?.deal_slug ? 
+            `https://equitymd.com/deals/${data.deal_slug}` : undefined
+        });
+        emailTo = to;
+        emailSubject = subject;
+        break;
+    }
+
+    console.log('Sending email to:', emailTo);
+    console.log('Subject:', emailSubject);
+    console.log('Type:', type);
 
     // Send email using Resend API
     const response = await fetch('https://api.resend.com/emails', {
@@ -87,10 +145,10 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: FROM_EMAIL,
-        to,
-        subject,
+        to: emailTo,
+        subject: emailSubject,
         html,
-        text: content // Fallback plain text version
+        text: content || `Please view this email in HTML format.` // Fallback plain text version
       })
     });
 
