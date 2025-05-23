@@ -3,9 +3,12 @@ export interface Profile {
   email: string;
   full_name: string | null;
   avatar_url: string | null;
+  phone_number: string | null;
   user_type: 'investor' | 'syndicator';
   is_verified: boolean;
   is_admin: boolean;
+  sms_opt_in: boolean;
+  sms_opt_in_timestamp: string | null;
   created_at: string;
   updated_at: string;
   email_notifications: {

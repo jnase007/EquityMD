@@ -42,6 +42,7 @@ import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
 import { LoaderDemo } from './pages/LoaderDemo';
 import { TestMessaging } from './pages/TestMessaging';
+import { OnboardingDemo } from './pages/OnboardingDemo';
 import { AuthModal } from './components/AuthModal';
 import { SignupStart } from './pages/auth/SignupStart';
 import { SignupEmail } from './pages/auth/SignupEmail';
@@ -52,6 +53,7 @@ import { SignupContinue } from './pages/auth/SignupContinue';
 import { SocialSignup } from './pages/auth/SocialSignup';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { DashboardReview } from './pages/DashboardReview';
+import { TooltipDemo } from './pages/TooltipDemo';
 
 // Loading fallback component
 const PageLoadingFallback = () => (
@@ -217,7 +219,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/admin', '/admin/dashboard', '/dashboard-review'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/tooltip-demo', '/onboarding-demo', '/admin', '/admin/dashboard', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -332,6 +334,12 @@ export default function App() {
 
         {/* Test Messaging Route */}
         <Route path="/test-messaging" element={<Suspense fallback={<PageLoadingFallback />}><TestMessaging /></Suspense>} />
+
+        {/* Tooltip Demo Route */}
+        <Route path="/tooltip-demo" element={<Suspense fallback={<PageLoadingFallback />}><TooltipDemo /></Suspense>} />
+
+        {/* Onboarding Demo Route */}
+        <Route path="/onboarding-demo" element={<Suspense fallback={<PageLoadingFallback />}><OnboardingDemo /></Suspense>} />
 
         {/* 404 Route */}
         <Route path="*" element={<Suspense fallback={<PageLoadingFallback />}><NotFound /></Suspense>} />

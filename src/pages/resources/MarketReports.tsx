@@ -25,6 +25,7 @@ interface MarketReport {
     score: number;
   }[];
   image: string;
+  thumbnail: string;
 }
 
 const US_STATES = [
@@ -38,58 +39,81 @@ const US_STATES = [
   'Wisconsin', 'Wyoming'
 ];
 
-const stateImages = {
-  'Alabama': 'https://images.unsplash.com/photo-1576620978143-63f0e5c9ce8f?auto=format&fit=crop&q=80',
-  'Alaska': 'https://images.unsplash.com/photo-1516939884455-1445c8652f83?auto=format&fit=crop&q=80',
-  'Arizona': 'https://images.unsplash.com/photo-1474557157379-8aa74a6ef541?auto=format&fit=crop&q=80',
-  'Arkansas': 'https://images.unsplash.com/photo-1518639192441-8fce0a366e2e?auto=format&fit=crop&q=80',
-  'California': 'https://images.unsplash.com/photo-1449034446853-66c86144b0ad?auto=format&fit=crop&q=80',
-  'Colorado': 'https://images.unsplash.com/photo-1546156929-a4c0ac411f47?auto=format&fit=crop&q=80',
-  'Connecticut': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Delaware': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Florida': 'https://images.unsplash.com/photo-1605723517503-3cadb5818a0c?auto=format&fit=crop&q=80',
-  'Georgia': 'https://images.unsplash.com/photo-1575916167835-a609853ffd7e?auto=format&fit=crop&q=80',
-  'Hawaii': 'https://images.unsplash.com/photo-1598135753163-6167c1a1ad65?auto=format&fit=crop&q=80',
-  'Idaho': 'https://images.unsplash.com/photo-1601791074012-d4e0ee30d9a7?auto=format&fit=crop&q=80',
-  'Illinois': 'https://images.unsplash.com/photo-1494522855154-9297ac14b55f?auto=format&fit=crop&q=80',
-  'Indiana': 'https://images.unsplash.com/photo-1578777108770-fcd123148f66?auto=format&fit=crop&q=80',
-  'Iowa': 'https://images.unsplash.com/photo-1572724061722-1f58c84a4c72?auto=format&fit=crop&q=80',
-  'Kansas': 'https://images.unsplash.com/photo-1587473555771-96fac8e54668?auto=format&fit=crop&q=80',
-  'Kentucky': 'https://images.unsplash.com/photo-1580483046931-aaba29e90f14?auto=format&fit=crop&q=80',
-  'Louisiana': 'https://images.unsplash.com/photo-1571893544028-06b07af6dade?auto=format&fit=crop&q=80',
-  'Maine': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Maryland': 'https://images.unsplash.com/photo-1575916167835-a609853ffd7e?auto=format&fit=crop&q=80',
-  'Massachusetts': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Michigan': 'https://images.unsplash.com/photo-1578777108770-fcd123148f66?auto=format&fit=crop&q=80',
-  'Minnesota': 'https://images.unsplash.com/photo-1578777108770-fcd123148f66?auto=format&fit=crop&q=80',
-  'Mississippi': 'https://images.unsplash.com/photo-1571893544028-06b07af6dade?auto=format&fit=crop&q=80',
-  'Missouri': 'https://images.unsplash.com/photo-1572724061722-1f58c84a4c72?auto=format&fit=crop&q=80',
-  'Montana': 'https://images.unsplash.com/photo-1601791074012-d4e0ee30d9a7?auto=format&fit=crop&q=80',
-  'Nebraska': 'https://images.unsplash.com/photo-1587473555771-96fac8e54668?auto=format&fit=crop&q=80',
-  'Nevada': 'https://images.unsplash.com/photo-1581351721010-8cf859cb14a4?auto=format&fit=crop&q=80',
-  'New Hampshire': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'New Jersey': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'New Mexico': 'https://images.unsplash.com/photo-1474557157379-8aa74a6ef541?auto=format&fit=crop&q=80',
-  'New York': 'https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&q=80',
-  'North Carolina': 'https://images.unsplash.com/photo-1575916167835-a609853ffd7e?auto=format&fit=crop&q=80',
-  'North Dakota': 'https://images.unsplash.com/photo-1587473555771-96fac8e54668?auto=format&fit=crop&q=80',
-  'Ohio': 'https://images.unsplash.com/photo-1578777108770-fcd123148f66?auto=format&fit=crop&q=80',
-  'Oklahoma': 'https://images.unsplash.com/photo-1587473555771-96fac8e54668?auto=format&fit=crop&q=80',
-  'Oregon': 'https://images.unsplash.com/photo-1601791074012-d4e0ee30d9a7?auto=format&fit=crop&q=80',
-  'Pennsylvania': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Rhode Island': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'South Carolina': 'https://images.unsplash.com/photo-1575916167835-a609853ffd7e?auto=format&fit=crop&q=80',
-  'South Dakota': 'https://images.unsplash.com/photo-1587473555771-96fac8e54668?auto=format&fit=crop&q=80',
-  'Tennessee': 'https://images.unsplash.com/photo-1575916167835-a609853ffd7e?auto=format&fit=crop&q=80',
-  'Texas': 'https://images.unsplash.com/photo-1531834685032-c34bf0d84c77?auto=format&fit=crop&q=80',
-  'Utah': 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80',
-  'Vermont': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Virginia': 'https://images.unsplash.com/photo-1575916167835-a609853ffd7e?auto=format&fit=crop&q=80',
-  'Washington': 'https://images.unsplash.com/photo-1601791074012-d4e0ee30d9a7?auto=format&fit=crop&q=80',
-  'West Virginia': 'https://images.unsplash.com/photo-1572731410363-68226f91e8f5?auto=format&fit=crop&q=80',
-  'Wisconsin': 'https://images.unsplash.com/photo-1578777108770-fcd123148f66?auto=format&fit=crop&q=80',
-  'Wyoming': 'https://images.unsplash.com/photo-1601791074012-d4e0ee30d9a7?auto=format&fit=crop&q=80'
+// Function to get state image from Supabase storage
+const getStateImage = (state: string, size: 'thumb' | 'full' = 'full'): string => {
+  const baseUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/states`;
+  
+  // Map state names to their corresponding image filenames
+  const stateImageMap: { [key: string]: string } = {
+    'Alabama': 'Alabama.jpg',
+    'Alaska': 'Alaska.jpg',
+    'Arizona': 'Arizona.jpg',
+    'Arkansas': 'Arkansas.jpg',
+    'California': 'California.jpg',
+    'Colorado': 'Colorado.jpg',
+    'Connecticut': 'Connecticut.jpg',
+    'Delaware': 'Delaware.jpg',
+    'Florida': 'Florida.jpg',
+    'Georgia': 'Georgia.jpg',
+    'Hawaii': 'Hawaii.jpg',
+    'Idaho': 'Idaho.jpg',
+    'Illinois': 'Illinois.jpg',
+    'Indiana': 'Indiana.jpg',
+    'Iowa': 'Iowa.jpg',
+    'Kansas': 'Kansas.jpg',
+    'Kentucky': 'Kentucky.jpg',
+    'Louisiana': 'Louisiana.jpg',
+    'Maine': 'Maine.jpg',
+    'Maryland': 'Maryland.jpg',
+    'Massachusetts': 'Massachusetts.jpg',
+    'Michigan': 'Michigan.jpg',
+    'Minnesota': 'Minnesota.jpg',
+    'Mississippi': 'Mississippi.jpg',
+    'Missouri': 'Missouri.jpg',
+    'Montana': 'Montana.jpg',
+    'Nebraska': 'Nebraska.jpg',
+    'Nevada': 'Nevada.jpg',
+    'New Hampshire': 'NewHampshire.jpg',
+    'New Jersey': 'NewJersey.jpg',
+    'New Mexico': 'NewMexico.jpg',
+    'New York': 'NewYork.jpg',
+    'North Carolina': 'NorthCarolina.jpg',
+    'North Dakota': 'NorthDakota.jpg',
+    'Ohio': 'Ohio.jpg',
+    'Oklahoma': 'Oklahoma.jpg',
+    'Oregon': 'Oregon.jpg',
+    'Pennsylvania': 'Pennsylvania.jpg',
+    'Rhode Island': 'RhodeIsland.jpg',
+    'South Carolina': 'SouthCarolina.jpg',
+    'South Dakota': 'SouthDakota.jpg',
+    'Tennessee': 'Tennessee.jpg',
+    'Texas': 'Texas.jpg',
+    'Utah': 'Utah.jpg',
+    'Vermont': 'Vermont.jpg',
+    'Virginia': 'Virginia.jpg',
+    'Washington': 'Washington.jpg',
+    'West Virginia': 'WestVirginia.jpg',
+    'Wisconsin': 'Wisconsin.jpg',
+    'Wyoming': 'Wyoming.jpg'
+  };
+  
+  const filename = stateImageMap[state];
+  if (!filename) return defaultStateImage;
+  
+  // Add transformation parameters for better performance
+  const params = size === 'thumb' 
+    ? '?width=400&height=300&resize=cover&quality=80'
+    : '?width=800&height=600&resize=cover&quality=85';
+  
+  return `${baseUrl}/${filename}${params}`;
 };
+
+const stateImages: { [key: string]: string } = {};
+const stateImagesThumbs: { [key: string]: string } = {};
+US_STATES.forEach(state => {
+  stateImages[state] = getStateImage(state, 'full');
+  stateImagesThumbs[state] = getStateImage(state, 'thumb');
+});
 
 const defaultStateImage = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80';
 
@@ -190,7 +214,8 @@ const generateStateReport = (state: string): MarketReport => {
         score: Math.floor(Math.random() * 10 + 80)
       }
     ],
-    image: stateImages[state] || defaultStateImage
+    image: stateImages[state] || defaultStateImage,
+    thumbnail: stateImagesThumbs[state] || defaultStateImage
   };
 };
 
@@ -322,11 +347,19 @@ export function MarketReports() {
           <div className="bg-white rounded-lg shadow-sm p-8">
             {filteredReports.map(report => report.state === selectedState && (
               <div key={report.state}>
-                <div className="relative h-64 mb-8 rounded-lg overflow-hidden">
+                <div className="relative h-64 mb-8 rounded-lg overflow-hidden bg-gray-200">
                   <img
                     src={report.image}
                     alt={`${report.state} skyline`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-opacity duration-300"
+                    loading="eager"
+                    onLoad={(e) => {
+                      e.currentTarget.style.opacity = '1';
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.src = defaultStateImage;
+                    }}
+                    style={{ opacity: 0 }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-6 left-6">
@@ -417,11 +450,19 @@ export function MarketReports() {
                 className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer"
                 onClick={() => setSelectedState(report.state)}
               >
-                <div className="relative h-48">
+                <div className="relative h-48 bg-gray-200">
                   <img
-                    src={report.image}
+                    src={report.thumbnail}
                     alt={`${report.state} skyline`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-opacity duration-300"
+                    loading="lazy"
+                    onLoad={(e) => {
+                      e.currentTarget.style.opacity = '1';
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.src = defaultStateImage;
+                    }}
+                    style={{ opacity: 0 }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4">

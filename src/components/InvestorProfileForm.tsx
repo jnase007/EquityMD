@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { ImageUpload } from './ImageUpload';
+import { Tooltip, InfoIcon } from './Tooltip';
+import { SMSOptIn } from './SMSOptIn';
 import type { InvestorProfile } from '../types/database';
 
 interface InvestorProfileFormProps {
@@ -15,12 +17,14 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     avatarUrl: profile?.avatar_url || '',
+    phoneNumber: profile?.phone_number || '',
     accreditedStatus: false,
     minimumInvestment: '',
     preferredPropertyTypes: [] as string[],
     preferredLocations: [] as string[],
     riskTolerance: '',
     investmentGoals: '',
+    smsOptIn: profile?.sms_opt_in || false,
   });
 
   useEffect(() => {
@@ -76,6 +80,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         .update({
           full_name: formData.fullName,
           avatar_url: formData.avatarUrl,
+          phone_number: formData.phoneNumber,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user!.id);
@@ -106,6 +111,16 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       setLoading(false);
     }
   };
+
+  const handleSMSUpdate = (optIn: boolean, phone: string) => {
+    setFormData(prev => ({
+      ...prev,
+      phoneNumber: phone,
+      smsOptIn: optIn
+    }));
+  };
+
+  const accreditedInvestorTooltip = "An accredited investor has an annual income over $200,000 ($300,000 joint) for 2 years, or a net worth over $1M (excluding home), or specific professional licenses. This SEC definition allows you to invest in private deals on Equitymd.com.";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -146,6 +161,27 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Phone Number
+        </label>
+        <input
+          type="tel"
+          value={formData.phoneNumber}
+          onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          placeholder="+1-555-123-4567"
+        />
+      </div>
+
+      {/* SMS Opt-in Component */}
+      <SMSOptIn
+        userId={user?.id || ''}
+        currentPhone={formData.phoneNumber}
+        currentOptIn={formData.smsOptIn}
+        onUpdate={handleSMSUpdate}
+      />
+
+      <div>
         <label className="flex items-center">
           <input
             type="checkbox"
@@ -156,6 +192,11 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           <span className="ml-2 text-sm text-gray-700">
             I am an accredited investor
           </span>
+          <Tooltip content={accreditedInvestorTooltip} position="right" maxWidth="320px">
+            <div className="ml-2 cursor-help">
+              <InfoIcon className="w-4 h-4 text-blue-500 hover:text-blue-600" />
+            </div>
+          </Tooltip>
         </label>
       </div>
 
