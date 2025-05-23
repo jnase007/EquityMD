@@ -71,3 +71,10 @@
   background-repeat: no-repeat;
   filter: brightness(0) saturate(100%) invert(31%) sepia(69%) saturate(3700%) hue-rotate(174deg) brightness(100%) contrast(100%);
 }
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}

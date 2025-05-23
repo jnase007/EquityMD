@@ -36,6 +36,7 @@ import { Accreditation } from './pages/legal/Accreditation';
 import { Compliance } from './pages/legal/Compliance';
 import { Contact } from './pages/Contact';
 import { AdminLogin } from './pages/admin/Login';
+import { DashboardOverview } from './pages/DashboardOverview';
 import { Pricing } from './pages/Pricing';
 import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
@@ -50,6 +51,7 @@ import { SignupAccreditation } from './pages/auth/SignupAccreditation';
 import { SignupContinue } from './pages/auth/SignupContinue';
 import { SocialSignup } from './pages/auth/SocialSignup';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { DashboardReview } from './pages/DashboardReview';
 
 // Loading fallback component
 const PageLoadingFallback = () => (
@@ -215,7 +217,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/admin', '/admin/dashboard', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -321,8 +323,12 @@ export default function App() {
 
         {/* Admin Routes */}
         <Route path="/admin" element={<Suspense fallback={<PageLoadingFallback />}><AdminLogin /></Suspense>} />
-        <Route path="/admin/dashboard/*" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
+        <Route path="/admin/dashboard" element={<Suspense fallback={<PageLoadingFallback />}><DashboardOverview /></Suspense>} />
+        <Route path="/admin/dashboard/*" element={<Suspense fallback={<PageLoadingFallback />}><DashboardOverview /></Suspense>} />
         <Route path="/dev-admin/*" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
+
+        {/* Dashboard Review Route - No Authentication Required */}
+        <Route path="/dashboard-review" element={<Suspense fallback={<PageLoadingFallback />}><DashboardReview /></Suspense>} />
 
         {/* Test Messaging Route */}
         <Route path="/test-messaging" element={<Suspense fallback={<PageLoadingFallback />}><TestMessaging /></Suspense>} />
