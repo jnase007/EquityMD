@@ -4,7 +4,7 @@ import { Footer } from '../components/Footer';
 import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
 
 export function EmailPreview() {
-  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator'>('investor');
+  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome'>('investor');
   const [copied, setCopied] = useState(false);
 
   // Sample data for previews
@@ -20,6 +20,24 @@ export function EmailPreview() {
       userEmail: 'michael@rodriguezpartners.com',
       userType: 'syndicator' as const,
       signupDate: new Date().toLocaleDateString()
+    },
+    deal: {
+      id: 'deal-123',
+      title: 'Luxury Apartment Complex - Downtown Austin',
+      location: 'Austin, TX',
+      propertyType: 'Multi-Family',
+      totalRaise: '$2,500,000',
+      minInvestment: '$50,000',
+      targetIRR: '18-22%',
+      holdPeriod: '3-5 years',
+      syndicatorName: 'Rodriguez Capital Partners',
+      description: 'Prime downtown Austin location with 48 luxury units. Recently renovated with high-end finishes and amenities. Strong rental demand in growing tech hub.',
+      highlights: [
+        'Prime downtown location with walkability score of 95',
+        'Recently renovated with luxury finishes',
+        'Strong rental demand from tech professionals',
+        'Projected 18-22% IRR over 3-5 year hold period'
+      ]
     }
   };
 
@@ -327,8 +345,266 @@ export function EmailPreview() {
           </html>
         `;
 
+      case 'investment_opportunity':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>New Investment Opportunity - EquityMD</title>
+              ${baseStyles}
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">New Investment Opportunity - EquityMD</div>
+                  
+                  <div class="content">
+                    <p>🏢 <strong>Exciting news!</strong> A new investment opportunity has been listed on the EquityMD platform.</p>
+                    
+                    <div class="info-box">
+                      <h4>Investment Opportunity Details:</h4>
+                      <p><strong>Title:</strong> ${sampleData.deal.title}</p>
+                      <p><strong>Location:</strong> ${sampleData.deal.location}</p>
+                      <p><strong>Property Type:</strong> ${sampleData.deal.propertyType}</p>
+                      <p><strong>Total Raise:</strong> ${sampleData.deal.totalRaise}</p>
+                      <p><strong>Minimum Investment:</strong> ${sampleData.deal.minInvestment}</p>
+                      <p><strong>Target IRR:</strong> ${sampleData.deal.targetIRR}</p>
+                      <p><strong>Hold Period:</strong> ${sampleData.deal.holdPeriod}</p>
+                      <p><strong>Syndicator:</strong> ${sampleData.deal.syndicatorName}</p>
+                    </div>
+                    
+                    <p>Description:</p>
+                    <p>${sampleData.deal.description}</p>
+                    
+                    <p>Highlights:</p>
+                    <ul>
+                      ${sampleData.deal.highlights.map(highlight => `<li>${highlight}</li>`).join('')}
+                    </ul>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/investment-opportunity/${sampleData.deal.id}" class="button">
+                      View Investment Opportunity
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this email because you have notifications enabled.</p>
+                  <p>To update your preferences, visit your profile settings.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'sms_deal_alert':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>SMS Deal Alert Preview - EquityMD</title>
+              ${baseStyles}
+              <style>
+                .sms-preview {
+                  max-width: 320px;
+                  margin: 20px auto;
+                  background: #007AFF;
+                  color: white;
+                  padding: 12px 16px;
+                  border-radius: 18px;
+                  font-size: 16px;
+                  line-height: 1.4;
+                  white-space: pre-line;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                }
+                .phone-frame {
+                  max-width: 375px;
+                  margin: 0 auto;
+                  background: #000;
+                  border-radius: 25px;
+                  padding: 20px;
+                  position: relative;
+                }
+                .phone-screen {
+                  background: #f2f2f7;
+                  border-radius: 15px;
+                  padding: 20px;
+                  min-height: 400px;
+                }
+                .message-header {
+                  text-align: center;
+                  color: #8e8e93;
+                  font-size: 12px;
+                  margin-bottom: 20px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">SMS Deal Alert Preview</div>
+                  
+                  <div class="content">
+                    <p>📱 <strong>SMS Preview:</strong> This is how the deal alert will appear on investors' phones.</p>
+                    
+                    <div class="phone-frame">
+                      <div class="phone-screen">
+                        <div class="message-header">
+                          EquityMD • now
+                        </div>
+                        <div class="sms-preview">
+                          ${getSMSContent('sms_deal_alert')}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="info-box">
+                      <h4>SMS Details:</h4>
+                      <p><strong>Character Count:</strong> ${getSMSContent('sms_deal_alert').length} characters</p>
+                      <p><strong>Message Parts:</strong> ${Math.ceil(getSMSContent('sms_deal_alert').length / 160)} (${getSMSContent('sms_deal_alert').length <= 160 ? 'Single SMS' : 'Multiple SMS parts'})</p>
+                      <p><strong>Estimated Cost:</strong> $${(Math.ceil(getSMSContent('sms_deal_alert').length / 160) * 0.05).toFixed(2)} per recipient</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>SMS will be sent via ClickSend to opted-in investors only.</p>
+                  <p>Recipients can reply STOP to opt out at any time.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'sms_welcome':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>SMS Welcome Preview - EquityMD</title>
+              ${baseStyles}
+              <style>
+                .sms-preview {
+                  max-width: 320px;
+                  margin: 20px auto;
+                  background: #007AFF;
+                  color: white;
+                  padding: 12px 16px;
+                  border-radius: 18px;
+                  font-size: 16px;
+                  line-height: 1.4;
+                  white-space: pre-line;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                }
+                .phone-frame {
+                  max-width: 375px;
+                  margin: 0 auto;
+                  background: #000;
+                  border-radius: 25px;
+                  padding: 20px;
+                  position: relative;
+                }
+                .phone-screen {
+                  background: #f2f2f7;
+                  border-radius: 15px;
+                  padding: 20px;
+                  min-height: 400px;
+                }
+                .message-header {
+                  text-align: center;
+                  color: #8e8e93;
+                  font-size: 12px;
+                  margin-bottom: 20px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">SMS Welcome Preview</div>
+                  
+                  <div class="content">
+                    <p>📱 <strong>SMS Preview:</strong> This welcome message is sent when investors opt-in to SMS alerts.</p>
+                    
+                    <div class="phone-frame">
+                      <div class="phone-screen">
+                        <div class="message-header">
+                          EquityMD • now
+                        </div>
+                        <div class="sms-preview">
+                          ${getSMSContent('sms_welcome')}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="info-box">
+                      <h4>SMS Details:</h4>
+                      <p><strong>Character Count:</strong> ${getSMSContent('sms_welcome').length} characters</p>
+                      <p><strong>Message Parts:</strong> ${Math.ceil(getSMSContent('sms_welcome').length / 160)} (${getSMSContent('sms_welcome').length <= 160 ? 'Single SMS' : 'Multiple SMS parts'})</p>
+                      <p><strong>Estimated Cost:</strong> $${(Math.ceil(getSMSContent('sms_welcome').length / 160) * 0.05).toFixed(2)} per recipient</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>SMS will be sent via ClickSend to opted-in investors only.</p>
+                  <p>Recipients can reply STOP to opt out at any time.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
       default:
         return '<p>Email type not found</p>';
+    }
+  };
+
+  const getSMSContent = (type: string) => {
+    switch (type) {
+      case 'sms_deal_alert':
+        return `🏢 NEW CRE DEAL ALERT!
+
+${sampleData.deal.title}
+📍 ${sampleData.deal.location}
+💰 Min: ${sampleData.deal.minInvestment}
+📈 Target IRR: ${sampleData.deal.targetIRR}
+
+View details: equitymd.com/deal/${sampleData.deal.id}
+
+Reply STOP to opt out`;
+      
+      case 'sms_welcome':
+        return `Welcome to EquityMD SMS alerts! 🎉
+
+You'll receive 2-3 CRE deal alerts per week.
+
+Manage preferences: equitymd.com/profile
+Reply STOP to opt out
+
+Msg & data rates may apply.`;
+      
+      default:
+        return '';
     }
   };
 
@@ -346,7 +622,10 @@ export function EmailPreview() {
     { id: 'investor', label: 'New Investor Notification (Admin)', icon: '👤' },
     { id: 'syndicator', label: 'New Syndicator Notification (Admin)', icon: '🏢' },
     { id: 'welcome_investor', label: 'Welcome Email (Investor)', icon: '🎉' },
-    { id: 'welcome_syndicator', label: 'Welcome Email (Syndicator)', icon: '🎉' }
+    { id: 'welcome_syndicator', label: 'Welcome Email (Syndicator)', icon: '🎉' },
+    { id: 'investment_opportunity', label: 'New Investment Opportunity', icon: '🏢' },
+    { id: 'sms_deal_alert', label: 'Deal Alert SMS', icon: '📱' },
+    { id: 'sms_welcome', label: 'Welcome SMS', icon: '📱' }
   ];
 
   return (
@@ -440,19 +719,33 @@ export function EmailPreview() {
             <div className="mt-6 bg-blue-50 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-blue-900 mb-2">Sample Data Used:</h3>
               <div className="text-sm text-blue-800">
-                {selectedEmail.includes('investor') ? (
+                {selectedEmail.includes('investor') && selectedEmail !== 'investment_opportunity' ? (
                   <div>
                     <p><strong>Name:</strong> {sampleData.investor.userName}</p>
                     <p><strong>Email:</strong> {sampleData.investor.userEmail}</p>
                     <p><strong>Type:</strong> Investor</p>
                   </div>
-                ) : (
+                ) : selectedEmail.includes('syndicator') ? (
                   <div>
                     <p><strong>Name:</strong> {sampleData.syndicator.userName}</p>
                     <p><strong>Email:</strong> {sampleData.syndicator.userEmail}</p>
                     <p><strong>Type:</strong> Syndicator</p>
                   </div>
-                )}
+                ) : selectedEmail === 'investment_opportunity' ? (
+                  <div>
+                    <p><strong>Deal:</strong> {sampleData.deal.title}</p>
+                    <p><strong>Location:</strong> {sampleData.deal.location}</p>
+                    <p><strong>Total Raise:</strong> {sampleData.deal.totalRaise}</p>
+                    <p><strong>Syndicator:</strong> {sampleData.deal.syndicatorName}</p>
+                  </div>
+                ) : selectedEmail.includes('sms') ? (
+                  <div>
+                    <p><strong>Message Type:</strong> SMS Alert</p>
+                    <p><strong>Platform:</strong> ClickSend</p>
+                    <p><strong>Target:</strong> Opted-in investors only</p>
+                    <p><strong>Frequency:</strong> 2-3 messages per week</p>
+                  </div>
+                ) : null}
                 <p><strong>Date:</strong> {new Date().toLocaleDateString()}</p>
               </div>
             </div>

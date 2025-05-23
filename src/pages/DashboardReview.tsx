@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building } from 'lucide-react';
+import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare } from 'lucide-react';
 
 export function DashboardReview() {
   const [activeTab, setActiveTab] = useState<'investor' | 'syndicator' | 'admin'>('investor');
@@ -424,7 +424,7 @@ export function DashboardReview() {
         return (
           <div className="space-y-8">
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex items-center justify-between">
                   <div className="p-3 bg-blue-100 rounded-lg">
@@ -482,6 +482,81 @@ export function DashboardReview() {
                 <div className="mt-4">
                   <div className="text-2xl font-bold">16.6%</div>
                   <div className="text-sm text-gray-500">Average Target IRR</div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between">
+                  <div className="p-3 bg-indigo-100 rounded-lg">
+                    <MessageSquare className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <div className="flex items-center text-green-600">
+                    <ArrowUp className="h-4 w-4" />
+                    <span className="ml-1">23.1%</span>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <div className="text-2xl font-bold">2,847</div>
+                  <div className="text-sm text-gray-500">SMS Opt-ins</div>
+                </div>
+              </div>
+            </div>
+
+            {/* SMS Analytics Section */}
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center">
+                <MessageSquare className="h-5 w-5 text-indigo-600 mr-2" />
+                SMS Campaign Analytics
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-indigo-600">2,847</div>
+                  <div className="text-sm text-gray-500">Total Opt-ins</div>
+                  <div className="text-xs text-green-600 mt-1">↗ +127 this week</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">76.3%</div>
+                  <div className="text-sm text-gray-500">Opt-in Rate</div>
+                  <div className="text-xs text-green-600 mt-1">↗ +2.1% vs last month</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-600">94.2%</div>
+                  <div className="text-sm text-gray-500">Delivery Rate</div>
+                  <div className="text-xs text-gray-500 mt-1">163 invalid numbers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-orange-600">$142.35</div>
+                  <div className="text-sm text-gray-500">Monthly SMS Cost</div>
+                  <div className="text-xs text-gray-500 mt-1">2,847 messages sent</div>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-6 border-t">
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="font-semibold">Recent SMS Campaigns</h4>
+                  <button className="text-blue-600 hover:text-blue-800 text-sm">View All</button>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <div className="font-medium">Austin Luxury Apartments - Deal Alert</div>
+                      <div className="text-sm text-gray-500">Sent 2 hours ago • 2,847 recipients</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-green-600">94.2% delivered</div>
+                      <div className="text-xs text-gray-500">$142.35 cost</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <div className="font-medium">Dallas Mixed-Use Development</div>
+                      <div className="text-sm text-gray-500">Sent yesterday • 2,720 recipients</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-green-600">95.1% delivered</div>
+                      <div className="text-xs text-gray-500">$136.00 cost</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
