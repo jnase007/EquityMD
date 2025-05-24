@@ -256,24 +256,24 @@ export function Home() {
     },
     // Starboard Realty Deals
     {
-      id: 'starboard-1',
+      id: 'starboard-2',
       syndicator_id: 'starboard-realty',
-      title: 'Orange County Multi-Family Portfolio',
-      location: 'Orange County, CA',
+      title: 'Multifamily ADU Opportunity',
+      location: 'Southern California',
       property_type: 'Multi-Family',
       status: 'active' as const,
-      target_irr: 23,
-      minimum_investment: 100000,
-      investment_term: 7,
-      description: 'Starboard Realty presents a unique opportunity to invest in a diversified portfolio of stabilized multifamily properties across Orange County. With over 30 years of experience and 2,115 units under management, Starboard focuses on well-located properties with growth potential acquired at below replacement cost.',
-      address: { street: '', city: 'Orange County', state: 'CA', zip: '' },
-      investment_highlights: ['Stabilized Cash Flow', 'Experienced Management', '7-10 Year Hold Period', 'Below Replacement Cost Acquisition', '23% Target IRR', 'Diversified Portfolio'],
-      total_equity: 15000000,
+      target_irr: 30,
+      minimum_investment: 50000,
+      investment_term: 3,
+      description: 'Starboard Realty Advisors is offering investors the opportunity to invest in the high-demand multifamily markets of Southern California. With a growing pipeline of opportunities, the Fund will be opportunistically deploying capital to acquire small multifamily buildings with the intent of maximizing revenue growth through renovations and the addition of units by leveraging California\'s recent Accessory Dwelling Unit (ADU) legislation.',
+      address: { street: '', city: 'Southern California', state: 'CA', zip: '' },
+      investment_highlights: ['30%+ Target Property IRR', '1.60X - 1.90X+ Equity Multiple', '2-3 Year Investment Horizon', 'ADU Legislation Leverage', 'Economies of Scale', 'Cost Segregation & Tax Benefits'],
+      total_equity: 5000000,
       featured: true,
-      cover_image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
-      created_at: '2025-01-27T00:00:00Z',
-      updated_at: '2025-01-27T00:00:00Z',
-      slug: 'orange-county-multi-family-portfolio'
+      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png',
+      created_at: '2025-01-31T00:00:00Z',
+      updated_at: '2025-01-31T00:00:00Z',
+      slug: 'multifamily-adu-opportunity'
     },
     // Other mock deals
     {
