@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { PageBanner } from '../../components/PageBanner';
+import { LoadingSpinner, PageLoader } from '../../components/LoadingSpinner';
 import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star } from 'lucide-react';
 
 interface MarketReport {
@@ -226,8 +227,34 @@ export function MarketReports() {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredReports, setFilteredReports] = useState(marketReports);
+  const [filteredReports, setFilteredReports] = useState<MarketReport[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [imagesLoading, setImagesLoading] = useState<Set<string>>(new Set());
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Initialize data with loading state
+  useEffect(() => {
+    setLoading(true);
+    // Simulate API call delay
+    const timer = setTimeout(() => {
+      setFilteredReports(marketReports);
+      setLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleImageLoad = (state: string) => {
+    setImagesLoading(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(state);
+      return newSet;
+    });
+  };
+
+  const handleImageStart = (state: string) => {
+    setImagesLoading(prev => new Set(prev).add(state));
+  };
 
   useEffect(() => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -292,6 +319,10 @@ export function MarketReports() {
     setShowSuggestions(false);
   };
 
+  if (loading) {
+    return <PageLoader text="Loading market reports..." />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -348,16 +379,24 @@ export function MarketReports() {
             {filteredReports.map(report => report.state === selectedState && (
               <div key={report.state}>
                 <div className="relative h-64 mb-8 rounded-lg overflow-hidden bg-gray-200">
+                  {imagesLoading.has(report.state) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                      <LoadingSpinner size="md" />
+                    </div>
+                  )}
                   <img
                     src={report.image}
                     alt={`${report.state} skyline`}
                     className="w-full h-full object-cover transition-opacity duration-300"
                     loading="eager"
+                    onLoadStart={() => handleImageStart(report.state)}
                     onLoad={(e) => {
                       e.currentTarget.style.opacity = '1';
+                      handleImageLoad(report.state);
                     }}
                     onError={(e) => {
                       e.currentTarget.src = defaultStateImage;
+                      handleImageLoad(report.state);
                     }}
                     style={{ opacity: 0 }}
                   />
@@ -443,24 +482,57 @@ export function MarketReports() {
             ))}
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8">
-            {filteredReports.map(report => (
+          <>
+            {filteredReports.length === 0 && searchTerm && (
+              <div className="text-center py-16">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 max-w-md mx-auto">
+                  <div className="flex items-center justify-center text-yellow-600 mb-4">
+                    <Search className="h-8 w-8 mr-3" />
+                    <span className="font-medium text-lg">No results found</span>
+                  </div>
+                  <p className="text-yellow-700">
+                    No market reports match "<span className="font-medium">{searchTerm}</span>". 
+                    Try searching for a different state or city.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSelectedState(null);
+                    }}
+                    className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
+                  >
+                    Clear Search
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            <div className="grid md:grid-cols-3 gap-8">
+              {filteredReports.map(report => (
               <div 
                 key={report.state}
                 className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer"
                 onClick={() => setSelectedState(report.state)}
               >
                 <div className="relative h-48 bg-gray-200">
+                  {imagesLoading.has(report.state) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                      <LoadingSpinner size="sm" />
+                    </div>
+                  )}
                   <img
                     src={report.thumbnail}
                     alt={`${report.state} skyline`}
                     className="w-full h-full object-cover transition-opacity duration-300"
                     loading="lazy"
+                    onLoadStart={() => handleImageStart(report.state)}
                     onLoad={(e) => {
                       e.currentTarget.style.opacity = '1';
+                      handleImageLoad(report.state);
                     }}
                     onError={(e) => {
                       e.currentTarget.src = defaultStateImage;
+                      handleImageLoad(report.state);
                     }}
                     style={{ opacity: 0 }}
                   />
@@ -497,7 +569,8 @@ export function MarketReports() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          </>
         )}
       </div>
 

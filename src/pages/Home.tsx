@@ -139,14 +139,184 @@ export function Home() {
 
       if (error) {
         console.error('Error fetching featured deals:', error);
+        setFeaturedDeals(fallbackMockDeals);
         return;
       }
 
-      setFeaturedDeals(data || []);
+      // Filter out unwanted deals like Innovation Square
+      const filteredData = data ? data.filter(deal => 
+        deal.title !== 'Innovation Square' && 
+        !deal.title.includes('Innovation Square')
+      ) : [];
+      
+      // Always include priority mock deals (BackBay and Starboard)
+      const today = new Date().toISOString();
+      const priorityDeals = fallbackMockDeals.filter(deal => 
+        deal.syndicator_id === 'back-bay-capital' || deal.syndicator_id === 'starboard-realty'
+      ).map(deal => ({
+        ...deal,
+        created_at: today,
+        updated_at: today
+      }));
+
+      // Combine database deals with priority mock deals
+      const allDeals = [...priorityDeals, ...filteredData];
+
+      // Remove any duplicates (in case priority deals exist in both mock and database)
+      const uniqueDeals = allDeals.filter((deal, index, self) => 
+        index === self.findIndex(d => d.title === deal.title)
+      );
+
+      // Sort with priority deals first (BackBay and Starboard), then by date
+      const sortedDeals = uniqueDeals.sort((a, b) => {
+        // Priority deals always come first
+        const aPriority = a.syndicator_id === 'back-bay-capital' || a.syndicator_id === 'starboard-realty';
+        const bPriority = b.syndicator_id === 'back-bay-capital' || b.syndicator_id === 'starboard-realty';
+        
+        if (aPriority && !bPriority) return -1;
+        if (!aPriority && bPriority) return 1;
+        
+        // Within same priority level, sort by date
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
+
+      if (sortedDeals.length === 0) {
+        setFeaturedDeals(fallbackMockDeals);
+      } else {
+        setFeaturedDeals(sortedDeals);
+      }
     } catch (error) {
       console.error('Error:', error);
+      setFeaturedDeals(fallbackMockDeals);
     }
   }
+
+  // Fallback mock deals for demo purposes
+  const fallbackMockDeals: Deal[] = [
+    // BackBay Capital Deals
+    {
+      id: 'backbay-1',
+      syndicator_id: 'back-bay-capital',
+      title: 'San Diego Multi-Family Offering',
+      location: 'San Diego, CA',
+      property_type: 'Multi-Family',
+      status: 'active' as const,
+      target_irr: 15,
+      minimum_investment: 500000,
+      investment_term: 5,
+      description: 'Back Bay Investment Group presents an opportunity to invest in a fund focused on multifamily development and value-add projects in Southern California. Leveraging the region\'s robust economy, diverse job market, and housing demand, the fund aims to capitalize on the region\'s housing shortage while delivering superior risk-adjusted returns.',
+      address: { street: '', city: 'San Diego', state: 'CA', zip: '' },
+      investment_highlights: ['Access to Institutional Grade Assets', 'Prime Residential Markets', 'Tax Deductions & Bonus Depreciation Benefits', 'Target 75% Cash on Cash', '15% Target Investor IRR', '1.75x Target Equity Multiple'],
+      total_equity: 10000000,
+      featured: true,
+      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_SanDeigo.jpg',
+      created_at: '2025-01-30T00:00:00Z',
+      updated_at: '2025-01-30T00:00:00Z',
+      slug: 'san-diego-multi-family-offering'
+    },
+    {
+      id: 'backbay-2',
+      syndicator_id: 'back-bay-capital',
+      title: 'Newport Beach Residential Offering',
+      location: 'Newport Beach, CA',
+      property_type: 'Residential',
+      status: 'active' as const,
+      target_irr: 20,
+      minimum_investment: 250000,
+      investment_term: 2,
+      description: 'Back Bay Investment Group is offering an exclusive opportunity to invest in residential real estate in Newport Beach and surrounding coastal communities, targeting high-demand neighborhoods with limited inventory and strong growth potential.',
+      address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
+      investment_highlights: ['Short Term Investment', 'Value-Add Strategy', 'Multiple Exit Options', 'Target 60% Cash on Cash', '20% Target Investor IRR', '1.6x Target Equity Multiple'],
+      total_equity: 10000000,
+      featured: true,
+      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg',
+      created_at: '2025-01-29T00:00:00Z',
+      updated_at: '2025-01-29T00:00:00Z',
+      slug: 'newport-beach-residential-offering'
+    },
+    {
+      id: 'backbay-3',
+      syndicator_id: 'back-bay-capital',
+      title: 'Orange County Pref Equity Offering',
+      location: 'Newport Beach, CA',
+      property_type: 'Preferred Equity',
+      status: 'active' as const,
+      target_irr: 15,
+      minimum_investment: 100000,
+      investment_term: 2,
+      description: 'Back Bay Investment Group is offering a preferred equity investment with a fixed 15% annual return, paid quarterly, and a targeted holding period of 1–3 years. Designed for investors seeking secure, predictable income, this offering provides priority in the capital stack above common equity.',
+      address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
+      investment_highlights: ['Quarterly Payments', 'Fixed 15% Return', 'Priority in the Equity Stack', 'Target 45% Cash on Cash', '15% Target Investor IRR', '1.45x Target Equity Multiple'],
+      total_equity: 10000000,
+      featured: true,
+      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_OrangeCounty.jpg',
+      created_at: '2025-01-28T00:00:00Z',
+      updated_at: '2025-01-28T00:00:00Z',
+      slug: 'orange-county-pref-equity-offering'
+    },
+    // Starboard Realty Deals
+    {
+      id: 'starboard-1',
+      syndicator_id: 'starboard-realty',
+      title: 'Orange County Multi-Family Portfolio',
+      location: 'Orange County, CA',
+      property_type: 'Multi-Family',
+      status: 'active' as const,
+      target_irr: 23,
+      minimum_investment: 100000,
+      investment_term: 7,
+      description: 'Starboard Realty presents a unique opportunity to invest in a diversified portfolio of stabilized multifamily properties across Orange County. With over 30 years of experience and 2,115 units under management, Starboard focuses on well-located properties with growth potential acquired at below replacement cost.',
+      address: { street: '', city: 'Orange County', state: 'CA', zip: '' },
+      investment_highlights: ['Stabilized Cash Flow', 'Experienced Management', '7-10 Year Hold Period', 'Below Replacement Cost Acquisition', '23% Target IRR', 'Diversified Portfolio'],
+      total_equity: 15000000,
+      featured: true,
+      cover_image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
+      created_at: '2025-01-27T00:00:00Z',
+      updated_at: '2025-01-27T00:00:00Z',
+      slug: 'orange-county-multi-family-portfolio'
+    },
+    // Other mock deals
+    {
+      id: 'mock-1',
+      syndicator_id: 'mock-syndicator-1',
+      title: 'Sunset Gardens Apartments',
+      location: 'Austin, TX',
+      property_type: 'Multi-Family',
+      status: 'active' as const,
+      target_irr: 18,
+      minimum_investment: 50000,
+      investment_term: 5,
+      description: 'A 120-unit multifamily property in a growing Austin suburb with strong rental demand.',
+      address: { street: '123 Sunset Blvd', city: 'Austin', state: 'TX', zip: '78701' },
+      investment_highlights: ['Strong rental demand', 'Growing market', 'Value-add opportunity'],
+      total_equity: 2500000,
+      featured: true,
+      cover_image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
+      created_at: '2024-01-15T00:00:00Z',
+      updated_at: '2024-01-15T00:00:00Z',
+      slug: 'sunset-gardens-apartments'
+    },
+    {
+      id: 'mock-2',
+      syndicator_id: 'mock-syndicator-2',
+      title: 'Downtown Office Plaza',
+      location: 'Dallas, TX',
+      property_type: 'Office',
+      status: 'active' as const,
+      target_irr: 15,
+      minimum_investment: 100000,
+      investment_term: 7,
+      description: 'Class A office building in downtown Dallas with long-term corporate tenants.',
+      address: { street: '456 Main St', city: 'Dallas', state: 'TX', zip: '75201' },
+      investment_highlights: ['Class A building', 'Long-term tenants', 'Downtown location'],
+      total_equity: 5000000,
+      featured: true,
+      cover_image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
+      created_at: '2024-01-10T00:00:00Z',
+      updated_at: '2024-01-10T00:00:00Z',
+      slug: 'downtown-office-plaza'
+    }
+  ];
 
   const handleGetStarted = () => {
     setAuthModalType('investor');

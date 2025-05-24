@@ -98,24 +98,35 @@ export function Directory() {
         return;
       }
 
+      // Always include Starboard Realty from mock data
+      const starboardRealty = mockSyndicators.find(s => s.company_name === 'Starboard Realty');
+
       // If no syndicators in database, use mock data for demo purposes
       if (!syndicatorData || syndicatorData.length === 0) {
         setSyndicators(mockSyndicators);
       } else {
         // Combine real data with enhanced properties
-        const combinedData = syndicatorData.map(s => ({
-          ...s,
-          average_rating: Math.round((Math.random() * 2 + 3) * 10) / 10,
-          total_reviews: Math.floor(Math.random() * 50) + 5,
-          active_deals: Math.floor(Math.random() * 10) + 1,
-          specialties: ['Multi-Family', 'Office', 'Retail'].slice(0, Math.floor(Math.random() * 3) + 1),
-          team_size: Math.floor(Math.random() * 20) + 5,
-          notable_projects: ['Project A', 'Project B'],
-          investment_focus: ['Value-Add', 'Core-Plus'],
-          min_investment: 50000,
-          target_markets: ['Texas', 'Florida'],
-          certifications: ['CCIM', 'CRE']
-        }));
+        const combinedData = syndicatorData
+          .filter(s => s.company_name !== 'Starboard Realty') // Remove any existing Starboard from DB
+          .map(s => ({
+            ...s,
+            average_rating: Math.round((Math.random() * 2 + 3) * 10) / 10,
+            total_reviews: Math.floor(Math.random() * 50) + 5,
+            active_deals: Math.floor(Math.random() * 10) + 1,
+            specialties: ['Multi-Family', 'Office', 'Retail'].slice(0, Math.floor(Math.random() * 3) + 1),
+            team_size: Math.floor(Math.random() * 20) + 5,
+            notable_projects: ['Project A', 'Project B'],
+            investment_focus: ['Value-Add', 'Core-Plus'],
+            min_investment: 50000,
+            target_markets: ['Texas', 'Florida'],
+            certifications: ['CCIM', 'CRE']
+          }));
+        
+        // Always add Starboard Realty
+        if (starboardRealty) {
+          combinedData.push(starboardRealty);
+        }
+        
         setSyndicators(combinedData);
       }
     } catch (error) {
@@ -194,6 +205,28 @@ export function Directory() {
       min_investment: 100000,
       target_markets: ['Miami', 'Tampa', 'Orlando'],
       certifications: ['CCIM', 'CRE', 'CPM']
+    },
+    {
+      id: 'starboard-realty',
+      company_name: 'Starboard Realty',
+      company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
+      company_description: 'Headquartered in Irvine, California, Starboard Realty Advisors, LLC, is a privately held, fully-integrated real estate firm, whose principals have more than 30 years of hands-on, cycle-tested experience in acquiring, developing, leasing, repositioning, managing, financing and disposing of retail, multifamily, office and industrial real estate. Starboard acquires multifamily, multi-tenant retail shopping centers, and NNN lease properties. Starboard\'s mission is to acquire well-located properties across the U.S., in which current rents have growth potential and which can be acquired at below replacement cost. Starboard acquires primarily stabilized properties with a 7- to 10-year hold period for its 1031 exchange clients and value added properties with a 1- to 5-year hold.',
+      state: 'California',
+      city: 'Newport Beach',
+      years_in_business: 10, // 2014 founding year
+      total_deal_volume: 608000000,
+      website_url: 'https://starboard-realty.com/',
+      average_rating: 5.0,
+      total_reviews: 15,
+      active_deals: 1,
+      slug: 'starboard-realty',
+      specialties: ['Multi-Family', 'Retail', 'NNN Lease'],
+      team_size: 25,
+      notable_projects: ['Orange County Portfolio', 'Multi-Tenant Retail Centers'],
+      investment_focus: ['Value-Add', 'Stabilized Properties'],
+      min_investment: 100000,
+      target_markets: ['California', 'Arizona', 'Texas'],
+      certifications: ['CCIM', 'CRE']
     }
   ];
 
@@ -262,7 +295,7 @@ export function Directory() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {syndicators
-              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital')
+              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital' || s.company_name === 'Starboard Realty')
               .map((syndicator) => (
                 <Link
                   key={syndicator.id}

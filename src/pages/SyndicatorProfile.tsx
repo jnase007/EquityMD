@@ -153,13 +153,50 @@ export function SyndicatorProfile() {
       }
 
       if (!syndicatorData) {
-        console.error('Syndicator not found');
-        return;
+        // Check if this is Starboard Realty - create mock data if so
+        if (slug === 'starboard-realty' || slug?.includes('starboard')) {
+          syndicatorData = {
+            id: 'starboard-realty-mock',
+            company_name: 'Starboard Realty',
+            company_description: 'Headquartered in Irvine, California, Starboard Realty Advisors, LLC, is a privately held, fully-integrated real estate firm, whose principals have more than 30 years of hands-on, cycle-tested experience in acquiring, developing, leasing, repositioning, managing, financing and disposing of retail, multifamily, office and industrial real estate. Starboard acquires multifamily, multi-tenant retail shopping centers, and NNN lease properties. Starboard\'s mission is to acquire well-located properties across the U.S., in which current rents have growth potential and which can be acquired at below replacement cost. Starboard acquires primarily stabilized properties with a 7- to 10-year hold period for its 1031 exchange clients and value added properties with a 1- to 5-year hold.',
+            company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
+            state: 'California',
+            city: 'Newport Beach',
+            years_in_business: 10,
+            total_deal_volume: 608000000,
+            website_url: 'https://starboard-realty.com/',
+            slug: 'starboard-realty',
+            profiles: null
+          };
+        } else {
+          console.error('Syndicator not found');
+          return;
+        }
       }
 
       setSyndicator({
         ...syndicatorData,
-        profile: syndicatorData.profiles
+        profile: syndicatorData.profiles,
+        // Override total deal volume for specific syndicators
+        total_deal_volume: syndicatorData.company_name === 'Back Bay Capital' ? 30000000 : 
+                          syndicatorData.company_name === 'Starboard Realty' ? 608000000 : 
+                          syndicatorData.total_deal_volume,
+        // Override profile info for specific syndicators
+        ...(syndicatorData.company_name === 'Back Bay Capital' && {
+          profile: {
+            full_name: 'Drew Fielder',
+            avatar_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/avatars/investors/DrewFielder.png',
+            email: 'andrew.fielder@backbayig.com'
+          }
+        }),
+        ...(syndicatorData.company_name === 'Starboard Realty' && {
+          profile: {
+            full_name: 'Daniel De Leon',
+            avatar_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/avatars/investors/dan.png',
+            email: 'info@starboard-realty.com'
+          },
+          website_url: 'https://starboard-realty.com/'
+        })
       });
 
       const { data: activeDealsData } = await supabase
@@ -168,7 +205,107 @@ export function SyndicatorProfile() {
         .eq('syndicator_id', syndicatorData.id)
         .eq('status', 'active');
 
-      setActiveDeals(activeDealsData || []);
+      // Filter out unwanted deals like Innovation Square
+      let finalActiveDeals = activeDealsData ? activeDealsData.filter(deal => 
+        deal.title !== 'Innovation Square' && 
+        !deal.title.includes('Innovation Square')
+      ) : [];
+
+      // If this is Back Bay Capital and no deals found in database, add mock deals
+      if (syndicatorData.company_name === 'Back Bay Capital' && finalActiveDeals.length === 0) {
+        const today = new Date().toISOString();
+        finalActiveDeals = [
+          {
+            id: 'backbay-1',
+            syndicator_id: syndicatorData.id,
+            title: 'San Diego Multi-Family Offering',
+            location: 'San Diego, CA',
+            property_type: 'Multi-Family',
+            status: 'active',
+            target_irr: 15,
+            minimum_investment: 500000,
+            investment_term: 5,
+            description: 'Back Bay Investment Group presents an opportunity to invest in a fund focused on multifamily development and value-add projects in Southern California. Leveraging the region\'s robust economy, diverse job market, and housing demand, the fund aims to capitalize on the region\'s housing shortage while delivering superior risk-adjusted returns.',
+            address: { street: '', city: 'San Diego', state: 'CA', zip: '' },
+            investment_highlights: ['Access to Institutional Grade Assets', 'Prime Residential Markets', 'Tax Deductions & Bonus Depreciation Benefits', 'Target 75% Cash on Cash', '15% Target Investor IRR', '1.75x Target Equity Multiple'],
+            total_equity: 10000000,
+            featured: true,
+            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_SanDeigo.jpg',
+            created_at: today,
+            updated_at: today,
+            slug: 'san-diego-multi-family-offering'
+          },
+          {
+            id: 'backbay-2',
+            syndicator_id: syndicatorData.id,
+            title: 'Newport Beach Residential Offering',
+            location: 'Newport Beach, CA',
+            property_type: 'Residential',
+            status: 'active',
+            target_irr: 20,
+            minimum_investment: 250000,
+            investment_term: 2,
+            description: 'Back Bay Investment Group is offering an exclusive opportunity to invest in residential real estate in Newport Beach and surrounding coastal communities, targeting high-demand neighborhoods with limited inventory and strong growth potential.',
+            address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
+            investment_highlights: ['Short Term Investment', 'Value-Add Strategy', 'Multiple Exit Options', 'Target 60% Cash on Cash', '20% Target Investor IRR', '1.6x Target Equity Multiple'],
+            total_equity: 10000000,
+            featured: true,
+            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg',
+            created_at: today,
+            updated_at: today,
+            slug: 'newport-beach-residential-offering'
+          },
+          {
+            id: 'backbay-3',
+            syndicator_id: syndicatorData.id,
+            title: 'Orange County Pref Equity Offering',
+            location: 'Newport Beach, CA',
+            property_type: 'Preferred Equity',
+            status: 'active',
+            target_irr: 15,
+            minimum_investment: 100000,
+            investment_term: 2,
+            description: 'Back Bay Investment Group is offering a preferred equity investment with a fixed 15% annual return, paid quarterly, and a targeted holding period of 1–3 years. Designed for investors seeking secure, predictable income, this offering provides priority in the capital stack above common equity.',
+            address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
+            investment_highlights: ['Quarterly Payments', 'Fixed 15% Return', 'Priority in the Equity Stack', 'Target 45% Cash on Cash', '15% Target Investor IRR', '1.45x Target Equity Multiple'],
+            total_equity: 10000000,
+            featured: true,
+            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_OrangeCounty.jpg',
+            created_at: today,
+            updated_at: today,
+            slug: 'orange-county-pref-equity-offering'
+          }
+        ];
+      }
+
+      // If this is Starboard Realty and no deals found in database, add mock deals
+      if (syndicatorData.company_name === 'Starboard Realty' && finalActiveDeals.length === 0) {
+        const today = new Date().toISOString();
+        finalActiveDeals = [
+          {
+            id: 'starboard-1',
+            syndicator_id: syndicatorData.id,
+            title: 'Orange County Multi-Family Portfolio',
+            location: 'Orange County, CA',
+            property_type: 'Multi-Family',
+            status: 'active',
+            target_irr: 23,
+            minimum_investment: 100000,
+            investment_term: 7,
+            description: 'Starboard Realty presents a unique opportunity to invest in a diversified portfolio of stabilized multifamily properties across Orange County. With over 30 years of experience and 2,115 units under management, Starboard focuses on well-located properties with growth potential acquired at below replacement cost.',
+            address: { street: '', city: 'Orange County', state: 'CA', zip: '' },
+            investment_highlights: ['Stabilized Cash Flow', 'Experienced Management', '7-10 Year Hold Period', 'Below Replacement Cost Acquisition', '23% Target IRR', 'Diversified Portfolio'],
+            total_equity: 15000000,
+            featured: true,
+            cover_image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
+            created_at: today,
+            updated_at: today,
+            slug: 'orange-county-multi-family-portfolio'
+          }
+        ];
+      }
+
+      setActiveDeals(finalActiveDeals);
 
       const { data: pastDealsData } = await supabase
         .from('deals')
@@ -192,7 +329,9 @@ export function SyndicatorProfile() {
       }
 
       // Override ratings for specific syndicators
-      if (syndicatorData.company_name === 'Sutera Properties' || syndicatorData.company_name === 'Back Bay Capital') {
+      if (syndicatorData.company_name === 'Sutera Properties' || 
+          syndicatorData.company_name === 'Back Bay Capital' || 
+          syndicatorData.company_name === 'Starboard Realty') {
         setAverageRating(5.0);
         // If no actual reviews exist, create some mock review data for display
         if (!reviewsData || reviewsData.length === 0) {
@@ -233,10 +372,10 @@ export function SyndicatorProfile() {
       }
 
       setProjectStats({
-        totalDeals: (activeDealsData?.length || 0) + (pastDealsData?.length || 0),
-        activeDeals: activeDealsData?.length || 0,
-        averageReturn: Math.round(Math.random() * 10 + 15),
-        totalInvestors: Math.floor(Math.random() * 500 + 100)
+        totalDeals: finalActiveDeals.length + (pastDealsData?.length || 0),
+        activeDeals: finalActiveDeals.length,
+        averageReturn: syndicatorData.company_name === 'Starboard Realty' ? 23 : Math.round(Math.random() * 10 + 15),
+        totalInvestors: syndicatorData.company_name === 'Starboard Realty' ? 445 : Math.floor(Math.random() * 500 + 100)
       });
 
     } catch (error) {
