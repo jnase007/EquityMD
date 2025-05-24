@@ -274,47 +274,6 @@ export function Home() {
       created_at: '2025-01-31T00:00:00Z',
       updated_at: '2025-01-31T00:00:00Z',
       slug: 'multifamily-adu-opportunity'
-    },
-    // Other mock deals
-    {
-      id: 'mock-1',
-      syndicator_id: 'mock-syndicator-1',
-      title: 'Sunset Gardens Apartments',
-      location: 'Austin, TX',
-      property_type: 'Multi-Family',
-      status: 'active' as const,
-      target_irr: 18,
-      minimum_investment: 50000,
-      investment_term: 5,
-      description: 'A 120-unit multifamily property in a growing Austin suburb with strong rental demand.',
-      address: { street: '123 Sunset Blvd', city: 'Austin', state: 'TX', zip: '78701' },
-      investment_highlights: ['Strong rental demand', 'Growing market', 'Value-add opportunity'],
-      total_equity: 2500000,
-      featured: true,
-      cover_image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
-      created_at: '2024-01-15T00:00:00Z',
-      updated_at: '2024-01-15T00:00:00Z',
-      slug: 'sunset-gardens-apartments'
-    },
-    {
-      id: 'mock-2',
-      syndicator_id: 'mock-syndicator-2',
-      title: 'Downtown Office Plaza',
-      location: 'Dallas, TX',
-      property_type: 'Office',
-      status: 'active' as const,
-      target_irr: 15,
-      minimum_investment: 100000,
-      investment_term: 7,
-      description: 'Class A office building in downtown Dallas with long-term corporate tenants.',
-      address: { street: '456 Main St', city: 'Dallas', state: 'TX', zip: '75201' },
-      investment_highlights: ['Class A building', 'Long-term tenants', 'Downtown location'],
-      total_equity: 5000000,
-      featured: true,
-      cover_image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80',
-      created_at: '2024-01-10T00:00:00Z',
-      updated_at: '2024-01-10T00:00:00Z',
-      slug: 'downtown-office-plaza'
     }
   ];
 
@@ -435,9 +394,9 @@ export function Home() {
           
           <div className="relative">
             <div className="overflow-x-auto pb-4 scrollbar-hide">
-              <div className="flex gap-6 deal-scroll" style={{ width: 'max-content' }}>
+              <div className="flex gap-6" style={{ width: 'max-content' }}>
                 {featuredDeals.map((deal, index) => (
-                  <div key={deal.id} className="w-[400px] relative">
+                  <div key={deal.id} className="w-[350px] relative">
                     <DealCard
                       id={deal.id}
                       slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
@@ -458,8 +417,8 @@ export function Home() {
             </div>
             
             {/* Gradient Overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
           </div>
         </div>
       </section>

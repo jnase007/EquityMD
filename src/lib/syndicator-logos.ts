@@ -9,7 +9,7 @@ const SYNDICATOR_LOGO_MAP: Record<string, string> = {
 const SYNDICATOR_LOCATION_MAP: Record<string, { city: string; state: string }> = {
   'Sutera Properties': { city: 'Nashville', state: 'TN' },
   'Back Bay Capital': { city: 'Newport Beach', state: 'CA' },
-  'Starboard Realty': { city: 'Newport Beach', state: 'CA' },
+  'Starboard Realty': { city: 'Irvine', state: 'CA' },
 };
 
 // Temporary description overrides for specific syndicators
