@@ -12,9 +12,11 @@ import { MessageModal } from '../components/MessageModal';
 import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
 import { ClaimSyndicatorModal } from '../components/ClaimSyndicatorModal';
+import { LoadingSpinner, PageLoader } from '../components/LoadingSpinner';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { Footer } from '../components/Footer';
+import { getSyndicatorLogo, getSyndicatorLocation, getSyndicatorDescription } from '../lib/syndicator-logos';
 
 interface Review {
   id: string;
@@ -23,7 +25,7 @@ interface Review {
   created_at: string;
   reviewer: {
     full_name: string;
-    avatar_url: string;
+    avatar_url: string | null;
   };
 }
 
@@ -87,8 +89,8 @@ export function SyndicatorProfile() {
   const { slug } = useParams();
   const { user, profile } = useAuthStore();
   const [syndicator, setSyndicator] = useState<any>(null);
-  const [activeDeals, setActiveDeals] = useState([]);
-  const [pastDeals, setPastDeals] = useState([]);
+  const [activeDeals, setActiveDeals] = useState<any[]>([]);
+  const [pastDeals, setPastDeals] = useState<any[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState(0);
   const [userReview, setUserReview] = useState({ rating: 0, review_text: '' });
@@ -127,6 +129,8 @@ export function SyndicatorProfile() {
 
       if (!syndicatorData) {
         const companyName = slug?.split('-').join(' ');
+        if (!companyName) return;
+        
         const { data: nameData, error: nameError } = await supabase
           .from('syndicator_profiles')
           .select(`
@@ -185,6 +189,47 @@ export function SyndicatorProfile() {
       if (reviewsData?.length) {
         const avg = reviewsData.reduce((acc, review) => acc + review.rating, 0) / reviewsData.length;
         setAverageRating(Math.round(avg * 10) / 10);
+      }
+
+      // Override ratings for specific syndicators
+      if (syndicatorData.company_name === 'Sutera Properties' || syndicatorData.company_name === 'Back Bay Capital') {
+        setAverageRating(5.0);
+        // If no actual reviews exist, create some mock review data for display
+        if (!reviewsData || reviewsData.length === 0) {
+          const mockReviews = [
+            {
+              id: 'mock-review-1',
+              rating: 5,
+              review_text: 'Exceptional investment opportunities and outstanding communication throughout the entire process. Highly professional team.',
+              created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
+              reviewer: {
+                full_name: 'Michael Johnson',
+                avatar_url: null
+              }
+            },
+            {
+              id: 'mock-review-2',
+              rating: 5,
+              review_text: 'Great returns and transparent reporting. The team is knowledgeable and responsive to investor questions.',
+              created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days ago
+              reviewer: {
+                full_name: 'Sarah Williams',
+                avatar_url: null
+              }
+            },
+            {
+              id: 'mock-review-3',
+              rating: 5,
+              review_text: 'Solid investment strategy and excellent execution. I highly recommend working with this team.',
+              created_at: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days ago
+              reviewer: {
+                full_name: 'David Chen',
+                avatar_url: null
+              }
+            }
+          ];
+          setReviews(mockReviews);
+        }
       }
 
       setProjectStats({
@@ -266,9 +311,9 @@ export function SyndicatorProfile() {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="flex-shrink-0">
-              {syndicator.company_logo_url ? (
+              {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
                 <img
-                  src={syndicator.company_logo_url}
+                  src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                   alt={syndicator.company_name}
                   className="w-32 h-32 object-contain rounded-lg border p-2"
                 />
@@ -287,7 +332,7 @@ export function SyndicatorProfile() {
               <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
                 <div className="flex items-center">
                   <MapPin className="h-5 w-5 mr-1" />
-                  <span>{syndicator.city}, {syndicator.state}</span>
+                  <span>{getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}</span>
                 </div>
                 <div className="flex items-center">
                   <Star className="h-5 w-5 mr-1 text-yellow-400" fill="currentColor" />
@@ -361,7 +406,7 @@ export function SyndicatorProfile() {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-4">About {syndicator.company_name}</h2>
               <p className="text-gray-600 whitespace-pre-line mb-6">
-                {syndicator.company_description || dummyCompanyDescription}
+                {getSyndicatorDescription(syndicator.company_name, syndicator.company_description)}
               </p>
 
               {syndicator.company_name === 'Sutera Properties' && (
@@ -374,6 +419,20 @@ export function SyndicatorProfile() {
                   />
                   <p className="text-sm text-gray-500">
                     Learn more about our approach to real estate investment and development.
+                  </p>
+                </div>
+              )}
+
+              {syndicator.company_name === 'Back Bay Capital' && (
+                <div className="mt-8">
+                  <h3 className="text-xl font-bold mb-4">Company Overview</h3>
+                  <VideoEmbed 
+                    url="https://www.youtube.com/watch?v=WgGIIgNZy8U"
+                    title="Back Bay Capital Overview"
+                    className="mb-4"
+                  />
+                  <p className="text-sm text-gray-500">
+                    Discover our investment philosophy and approach to real estate development.
                   </p>
                 </div>
               )}

@@ -341,6 +341,7 @@ export function Browse() {
                 }}
                 detailed
                 isAuthenticated={!!user}
+                onAuthRequired={() => setShowAuthModal(true)}
               />
             ))}
           </div>
@@ -361,6 +362,7 @@ export function Browse() {
                   term: `${deal.investment_term} years`
                 }}
                 isAuthenticated={!!user}
+                onAuthRequired={() => setShowAuthModal(true)}
               />
             ))}
           </div>

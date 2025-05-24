@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal, Globe, LayoutGrid, List } from 'lucide-react';
+import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal, Globe, LayoutGrid, List, ChevronRight } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { PageBanner } from '../components/PageBanner';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { supabase } from '../lib/supabase';
@@ -253,9 +254,86 @@ export function Directory() {
       />
 
       <div className="max-w-6xl mx-auto px-4 py-16">
+        {/* Featured Syndicators Section */}
+        <div className="mb-12">
+          <div className="flex items-center gap-2 mb-6">
+            <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
+            <h2 className="text-2xl font-bold text-gray-900">Featured Syndicators</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {syndicators
+              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital')
+              .map((syndicator) => (
+                <Link
+                  key={syndicator.id}
+                  to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                  className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg shadow-md hover:shadow-lg transition p-6 border-2 border-blue-200 relative overflow-hidden"
+                >
+                  {/* Featured Badge */}
+                  <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <Star className="h-3 w-3" fill="currentColor" />
+                    FEATURED
+                  </div>
+
+                  <div className="flex items-center gap-4 mb-4">
+                    {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
+                      <img
+                        src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
+                        alt={syndicator.company_name}
+                        className="w-20 h-20 object-contain rounded-lg border bg-white p-2"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Building2 className="w-10 h-10 text-blue-600" />
+                      </div>
+                    )}
+                                         <div>
+                       <h3 className="font-bold text-gray-900 text-lg">{syndicator.company_name}</h3>
+                       <div className="flex items-center text-gray-600 text-sm">
+                         <MapPin className="w-4 h-4 mr-1" />
+                         {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
+                       </div>
+                      <div className="flex items-center mt-1">
+                        <Star className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" />
+                        <span className="font-medium text-sm">5.0</span>
+                        <span className="text-sm text-gray-500 ml-1">(Premium Partner)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-sm text-gray-700 mb-4 line-clamp-2">
+                    {syndicator.company_description}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {syndicator.specialties?.slice(0, 3).map((specialty, index) => (
+                      <span
+                        key={`${syndicator.id}-specialty-${index}`}
+                        className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full font-medium"
+                      >
+                        {specialty}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center text-gray-600 text-sm">
+                      <TrendingUp className="w-4 h-4 mr-1" />
+                      ${syndicator.total_deal_volume?.toLocaleString()} volume
+                    </div>
+                    <div className="flex items-center text-blue-600 text-sm font-medium">
+                      View Profile
+                      <ChevronRight className="w-4 h-4 ml-1" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </div>
+
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">
-            {filteredSyndicators.length} Syndicators Found
+            All Syndicators ({filteredSyndicators.length})
           </h2>
           <div className="flex items-center space-x-4">
             <button
@@ -381,12 +459,12 @@ export function Directory() {
                 className="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
               >
                 <div className="flex items-center gap-4 mb-4">
-                  {syndicator.company_logo_url ? (
-                    <img
-                      src={syndicator.company_logo_url}
-                      alt={syndicator.company_name}
-                      className="w-16 h-16 object-contain rounded-lg"
-                    />
+                                  {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
+                  <img
+                    src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
+                    alt={syndicator.company_name}
+                    className="w-16 h-16 object-contain rounded-lg"
+                  />
                   ) : (
                     <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
                       <Building2 className="w-8 h-8 text-blue-600" />
@@ -396,7 +474,7 @@ export function Directory() {
                     <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
                     <div className="flex items-center text-gray-600 text-sm">
                       <MapPin className="w-4 h-4 mr-1" />
-                      {syndicator.city}, {syndicator.state}
+                      {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
                     </div>
                   </div>
                 </div>
@@ -473,7 +551,7 @@ export function Directory() {
                         <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
                         <div className="flex items-center text-gray-600 mt-1">
                           <MapPin className="w-4 h-4 mr-1" />
-                          {syndicator.city}, {syndicator.state}
+                          {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
                         </div>
                       </div>
                       <div className="flex items-center">

@@ -38,11 +38,19 @@ interface DealCardProps {
   className?: string;
   detailed?: boolean;
   isAuthenticated?: boolean;
+  onAuthRequired?: () => void;
 }
 
-export function DealCard({ id, slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false }: DealCardProps) {
+export function DealCard({ id, slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired }: DealCardProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated && onAuthRequired) {
+      e.preventDefault();
+      onAuthRequired();
+    }
+  };
+
   return (
-    <Link to={`/deals/${slug}`} className={`block ${className}`}>
+    <Link to={`/deals/${slug}`} className={`block ${className}`} onClick={handleClick}>
       <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
         <div className="relative">
           <OptimizedImage 
@@ -107,11 +115,19 @@ interface DealListItemProps {
   description: string;
   metrics: DealMetrics;
   isAuthenticated?: boolean;
+  onAuthRequired?: () => void;
 }
 
-export function DealListItem({ id, slug, image, title, location, description, metrics, isAuthenticated = false }: DealListItemProps) {
+export function DealListItem({ id, slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired }: DealListItemProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated && onAuthRequired) {
+      e.preventDefault();
+      onAuthRequired();
+    }
+  };
+
   return (
-    <Link to={`/deals/${slug}`} className="block">
+    <Link to={`/deals/${slug}`} className="block" onClick={handleClick}>
       <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
         <div className="flex gap-6">
           <div className="relative flex-shrink-0">

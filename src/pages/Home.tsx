@@ -115,7 +115,7 @@ export function Home() {
       name: "James Wilson",
       title: "Engineering Consultant",
       company: "Wilson Engineering Solutions",
-      image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&q=80&w=300&h=300",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.6M",
         activeDeals: 5,
