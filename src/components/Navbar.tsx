@@ -83,6 +83,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
+  const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
   useEffect(() => {
     if (user) {
@@ -177,11 +178,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
 
   const handleSignIn = () => {
     setAuthModalType('investor');
+    setAuthModalView('sign_in');
     setShowAuthModal(true);
   };
 
   const handleGetStarted = () => {
     setAuthModalType('investor');
+    setAuthModalView('sign_up');
     setShowAuthModal(true);
   };
 
@@ -438,6 +441,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   onClick={() => {
                     setIsMenuOpen(false);
                     setAuthModalType('investor');
+                    setAuthModalView('sign_in');
                     setShowAuthModal(true);
                   }}
                   className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
@@ -448,6 +452,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   onClick={() => {
                     setIsMenuOpen(false);
                     setAuthModalType('investor');
+                    setAuthModalView('sign_up');
                     setShowAuthModal(true);
                   }}
                   className="w-full bg-gray-100 text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition text-center"
@@ -518,7 +523,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
       )}
       
       {showAuthModal && (
-        <AuthModal onClose={() => setShowAuthModal(false)} defaultType={authModalType} />
+        <AuthModal onClose={() => setShowAuthModal(false)} defaultType={authModalType} defaultView={authModalView} />
       )}
     </nav>
   );

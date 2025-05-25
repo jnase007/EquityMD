@@ -76,10 +76,10 @@ export function Browse() {
         !deal.title.includes('Innovation Square')
       ) : [];
 
-      // Always include priority mock deals (BackBay and Starboard)
+      // Always include priority mock deals (BackBay, Starboard, and Sutera)
       const today = new Date().toISOString();
       const priorityDeals = fallbackMockDeals.filter(deal => 
-        deal.syndicator_id === 'back-bay-capital' || deal.syndicator_id === 'starboard-realty'
+        deal.syndicator_id === 'back-bay-capital' || deal.syndicator_id === 'starboard-realty' || deal.syndicator_id === 'sutera-properties'
       ).map(deal => ({
         ...deal,
         created_at: today,
@@ -94,11 +94,11 @@ export function Browse() {
         index === self.findIndex(d => d.title === deal.title)
       );
 
-      // Sort with priority deals first (BackBay and Starboard), then by date
+      // Sort with priority deals first (BackBay, Starboard, and Sutera), then by date
       const sortedDeals = uniqueDeals.sort((a, b) => {
         // Priority deals always come first
-        const aPriority = a.syndicator_id === 'back-bay-capital' || a.syndicator_id === 'starboard-realty';
-        const bPriority = b.syndicator_id === 'back-bay-capital' || b.syndicator_id === 'starboard-realty';
+        const aPriority = a.syndicator_id === 'back-bay-capital' || a.syndicator_id === 'starboard-realty' || a.syndicator_id === 'sutera-properties';
+        const bPriority = b.syndicator_id === 'back-bay-capital' || b.syndicator_id === 'starboard-realty' || b.syndicator_id === 'sutera-properties';
         
         if (aPriority && !bPriority) return -1;
         if (!aPriority && bPriority) return 1;
@@ -184,6 +184,36 @@ export function Browse() {
       created_at: '2025-01-28T00:00:00Z',
       updated_at: '2025-01-28T00:00:00Z',
       slug: 'orange-county-pref-equity-offering'
+    },
+    // Sutera Properties Deals
+    {
+      id: 'sutera-1',
+      syndicator_id: 'sutera-properties',
+      title: 'Greenville Apartment Complex',
+      location: 'Travelers Rest, SC',
+      property_type: 'Multi-Family',
+      status: 'active' as const,
+      target_irr: 17.19,
+      minimum_investment: 50000,
+      investment_term: 5,
+      description: 'Sutera Properties presents Liva, a ground-up multifamily development in Travelers Rest, South Carolina, a rapidly growing suburb of Greenville. The project spans 10.5 acres and includes 120 multifamily units and 32 individually platted townhomes, totaling 152 units.',
+      address: { street: '', city: 'Travelers Rest', state: 'SC', zip: '' },
+      investment_highlights: [
+        'Ground-up development',
+        '152 total units (120 multifamily + 32 townhomes)',
+        'Resort-style amenities',
+        'Pool and clubhouse',
+        'Fitness center',
+        'Dog park and bike barn',
+        'Prime location near Swamp Rabbit Trail',
+        'Shovel-ready with permits secured'
+      ],
+      total_equity: 12340000,
+      featured: true,
+      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Greenville.png',
+      created_at: '2025-02-01T00:00:00Z',
+      updated_at: '2025-02-01T00:00:00Z',
+      slug: 'greenville-apartment-complex'
     },
     // Starboard Realty Deals
     {

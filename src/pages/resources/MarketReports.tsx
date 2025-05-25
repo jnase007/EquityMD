@@ -507,8 +507,8 @@ export function MarketReports() {
               </div>
             )}
             
-            <div className="grid md:grid-cols-3 gap-8">
-              {filteredReports.map(report => (
+          <div className="grid md:grid-cols-3 gap-8">
+            {filteredReports.map(report => (
               <div 
                 key={report.state}
                 className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer"
@@ -569,7 +569,7 @@ export function MarketReports() {
                 </div>
               </div>
             ))}
-            </div>
+          </div>
           </>
         )}
       </div>

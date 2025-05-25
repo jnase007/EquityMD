@@ -109,10 +109,10 @@ export function Directory() {
         const combinedData = syndicatorData
           .filter(s => s.company_name !== 'Starboard Realty') // Remove any existing Starboard from DB
           .map(s => ({
-            ...s,
-            average_rating: Math.round((Math.random() * 2 + 3) * 10) / 10,
-            total_reviews: Math.floor(Math.random() * 50) + 5,
-            active_deals: Math.floor(Math.random() * 10) + 1,
+          ...s,
+          average_rating: Math.round((Math.random() * 2 + 3) * 10) / 10,
+          total_reviews: Math.floor(Math.random() * 50) + 5,
+          active_deals: Math.floor(Math.random() * 10) + 1,
             specialties: ['Multi-Family', 'Office', 'Retail'].slice(0, Math.floor(Math.random() * 3) + 1),
             team_size: Math.floor(Math.random() * 20) + 5,
             notable_projects: ['Project A', 'Project B'],
@@ -126,8 +126,8 @@ export function Directory() {
         if (starboardRealty) {
           combinedData.push(starboardRealty);
         }
-        
-        setSyndicators(combinedData);
+
+      setSyndicators(combinedData);
       }
     } catch (error) {
       console.error('Error fetching syndicators:', error);
@@ -493,11 +493,11 @@ export function Directory() {
               >
                 <div className="flex items-center gap-4 mb-4">
                                   {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
-                  <img
+                    <img
                     src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
-                    alt={syndicator.company_name}
-                    className="w-16 h-16 object-contain rounded-lg"
-                  />
+                      alt={syndicator.company_name}
+                      className="w-16 h-16 object-contain rounded-lg"
+                    />
                   ) : (
                     <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
                       <Building2 className="w-8 h-8 text-blue-600" />

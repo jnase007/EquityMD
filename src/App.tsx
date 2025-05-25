@@ -42,6 +42,7 @@ import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
 import { LoaderDemo } from './pages/LoaderDemo';
 import { TestMessaging } from './pages/TestMessaging';
+import { TestAuth } from './pages/TestAuth';
 import { OnboardingDemo } from './pages/OnboardingDemo';
 import { AuthModal } from './components/AuthModal';
 import { SignupStart } from './pages/auth/SignupStart';
@@ -219,7 +220,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/tooltip-demo', '/onboarding-demo', '/admin', '/admin/dashboard', '/dashboard-review'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/admin/dashboard', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -334,6 +335,9 @@ export default function App() {
 
         {/* Test Messaging Route */}
         <Route path="/test-messaging" element={<Suspense fallback={<PageLoadingFallback />}><TestMessaging /></Suspense>} />
+
+        {/* Test Auth Route */}
+        <Route path="/test-auth" element={<Suspense fallback={<PageLoadingFallback />}><TestAuth /></Suspense>} />
 
         {/* Tooltip Demo Route */}
         <Route path="/tooltip-demo" element={<Suspense fallback={<PageLoadingFallback />}><TooltipDemo /></Suspense>} />

@@ -189,6 +189,13 @@ export function SyndicatorProfile() {
             email: 'andrew.fielder@backbayig.com'
           }
         }),
+        ...(syndicatorData.company_name === 'Sutera Properties' && {
+          profile: {
+            full_name: 'Art Heckman',
+            avatar_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/avatars/investors/art.png',
+            email: 'art@suteraproperties.com'
+          }
+        }),
         ...(syndicatorData.company_name === 'Starboard Realty' && {
           profile: {
             full_name: 'Daniel De Leon',
@@ -205,10 +212,12 @@ export function SyndicatorProfile() {
         .eq('syndicator_id', syndicatorData.id)
         .eq('status', 'active');
 
-      // Filter out unwanted deals like Innovation Square
+      // Filter out unwanted deals like Innovation Square and Marina Residences
       let finalActiveDeals = activeDealsData ? activeDealsData.filter(deal => 
         deal.title !== 'Innovation Square' && 
-        !deal.title.includes('Innovation Square')
+        !deal.title.includes('Innovation Square') &&
+        deal.title !== 'The Marina Residences' &&
+        !deal.title.includes('Marina Residences')
       ) : [];
 
       // If this is Back Bay Capital and no deals found in database, add mock deals
@@ -274,6 +283,61 @@ export function SyndicatorProfile() {
             created_at: today,
             updated_at: today,
             slug: 'orange-county-pref-equity-offering'
+          }
+        ];
+      }
+
+      // If this is Sutera Properties, always add the Greenville deal
+      if (syndicatorData.company_name === 'Sutera Properties') {
+        const today = new Date().toISOString();
+        finalActiveDeals = [
+          {
+            id: 'sutera-1',
+            syndicator_id: syndicatorData.id,
+            title: 'Greenville Apartment Complex',
+            location: 'Travelers Rest, SC',
+            property_type: 'Multi-Family',
+            status: 'active',
+            target_irr: 17.19,
+            minimum_investment: 50000,
+            investment_term: 5,
+            description: `Project Overview:
+Sutera Properties presents Liva, a ground-up multifamily development in Travelers Rest, South Carolina, a rapidly growing suburb of Greenville. The project spans 10.5 acres and includes 120 multifamily units and 32 individually platted townhomes, totaling 152 units. The site is 100% shovel-ready with Land Disturbance Permits secured as of March 2025.
+
+Investment Highlights:
+• Updated Business Plan: The multifamily portion will be held as a rental property with a projected un-trended Yield on Cost of 7.19% (up from 6.8%), while townhomes will be sold to individual buyers, responding to strong local demand.
+• Cost Efficiency: Reduced per-unit basis for the multifamily to $205k (from $250k), compared to recent market comps like The Standard at Pinestone, which received bids at $230k/unit in 2024.
+• Prime Location: Located near the Swamp Rabbit Trail and half a mile from Travelers Rest's Main Street, with planned streetscape improvements enhancing connectivity.
+• Market Dynamics: Travelers Rest is experiencing 3.43% annual population growth, with zero projected multifamily deliveries in the North Greenville submarket, positioning Liva to capitalize on strong demand.
+
+Financial Snapshot:
+• Total Project Cost: $38,226,500
+• Equity Raise: $12,340,000
+• Construction LTV: 65%
+• Estimated Hold Period: 5 years
+
+Amenities & Design:
+Liva promotes an active lifestyle with resort-style amenities including a pool, clubhouse, fitness center, fire pit, dog park, bike barn, and a multi-use path connecting to the Main Street corridor. Units feature spacious, open floor plans tailored to the unique fabric of Travelers Rest.
+
+Why Invest?
+Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, strong risk-adjusted returns, and a prime position in a high-growth market. With construction set to begin upon capitalization, this is a timely opportunity to invest in the thriving Upstate South Carolina region.`,
+            address: { street: '', city: 'Travelers Rest', state: 'SC', zip: '' },
+            investment_highlights: [
+              'Ground-up development',
+              '152 total units (120 multifamily + 32 townhomes)',
+              'Resort-style amenities',
+              'Pool and clubhouse',
+              'Fitness center',
+              'Dog park and bike barn',
+              'Prime location near Swamp Rabbit Trail',
+              'Shovel-ready with permits secured'
+            ],
+            total_equity: 12340000,
+            featured: true,
+            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Greenville.png',
+            created_at: today,
+            updated_at: today,
+            slug: 'greenville-apartment-complex'
           }
         ];
       }
@@ -561,6 +625,8 @@ export function SyndicatorProfile() {
                   </p>
                 </div>
               )}
+
+
 
               {syndicator.company_name === 'Back Bay Capital' && (
                 <div className="mt-8">
@@ -863,7 +929,9 @@ export function SyndicatorProfile() {
                   )}
                   <div className="ml-4">
                     <div className="font-medium">{syndicator.profile?.full_name}</div>
-                    <div className="text-sm text-gray-500">Managing Partner</div>
+                    <div className="text-sm text-gray-500">
+                      {syndicator.company_name === 'Sutera Properties' ? 'Owner + Founder' : 'Managing Partner'}
+                    </div>
                   </div>
                 </div>
               </div>

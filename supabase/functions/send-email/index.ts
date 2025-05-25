@@ -121,12 +121,12 @@ serve(async (req) => {
         }
 
         html = getBaseTemplate({
-          title: subject,
-          content: content.split('\n').map(line => `<p>${line}</p>`).join(''),
-          buttonText: type === 'deal_update' ? 'View Investment Details' : undefined,
-          buttonUrl: type === 'deal_update' && data?.deal_slug ? 
-            `https://equitymd.com/deals/${data.deal_slug}` : undefined
-        });
+      title: subject,
+      content: content.split('\n').map(line => `<p>${line}</p>`).join(''),
+      buttonText: type === 'deal_update' ? 'View Investment Details' : undefined,
+      buttonUrl: type === 'deal_update' && data?.deal_slug ? 
+        `https://equitymd.com/deals/${data.deal_slug}` : undefined
+    });
         emailTo = to;
         emailSubject = subject;
         break;

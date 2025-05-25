@@ -79,7 +79,7 @@ export function DealDetails() {
       if (dealError || !dealData) {
         console.error('Error fetching deal:', dealError);
         
-        // Check if this is a BackBay deal and provide mock data
+        // Check if this is a mock deal (BackBay, Starboard, or Sutera) and provide mock data
         const mockPriorityDeals = [
           {
             id: 'backbay-1',
@@ -163,6 +163,62 @@ export function DealDetails() {
               company_description: 'Back Bay Investment Group specializes in real estate development and value-add projects across Southern California.',
               website_url: null,
               total_deal_volume: 30000000
+            }
+          },
+          {
+            id: 'sutera-1',
+            syndicator_id: 'sutera-properties',
+            title: 'Greenville Apartment Complex',
+            location: 'Travelers Rest, SC',
+            property_type: 'Multi-Family',
+            status: 'active' as const,
+            target_irr: 17.19,
+            minimum_investment: 50000,
+            investment_term: 5,
+            description: `Project Overview:
+Sutera Properties presents Liva, a ground-up multifamily development in Travelers Rest, South Carolina, a rapidly growing suburb of Greenville. The project spans 10.5 acres and includes 120 multifamily units and 32 individually platted townhomes, totaling 152 units. The site is 100% shovel-ready with Land Disturbance Permits secured as of March 2025.
+
+Investment Highlights:
+• Updated Business Plan: The multifamily portion will be held as a rental property with a projected un-trended Yield on Cost of 7.19% (up from 6.8%), while townhomes will be sold to individual buyers, responding to strong local demand.
+• Cost Efficiency: Reduced per-unit basis for the multifamily to $205k (from $250k), compared to recent market comps like The Standard at Pinestone, which received bids at $230k/unit in 2024.
+• Prime Location: Located near the Swamp Rabbit Trail and half a mile from Travelers Rest's Main Street, with planned streetscape improvements enhancing connectivity.
+• Market Dynamics: Travelers Rest is experiencing 3.43% annual population growth, with zero projected multifamily deliveries in the North Greenville submarket, positioning Liva to capitalize on strong demand.
+
+Financial Snapshot:
+• Total Project Cost: $38,226,500
+• Equity Raise: $12,340,000
+• Construction LTV: 65%
+• Estimated Hold Period: 5 years
+
+Amenities & Design:
+Liva promotes an active lifestyle with resort-style amenities including a pool, clubhouse, fitness center, fire pit, dog park, bike barn, and a multi-use path connecting to the Main Street corridor. Units feature spacious, open floor plans tailored to the unique fabric of Travelers Rest.
+
+Why Invest?
+Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, strong risk-adjusted returns, and a prime position in a high-growth market. With construction set to begin upon capitalization, this is a timely opportunity to invest in the thriving Upstate South Carolina region.`,
+            address: { street: '', city: 'Travelers Rest', state: 'SC', zip: '' },
+            investment_highlights: [
+              'Ground-up development',
+              '152 total units (120 multifamily + 32 townhomes)',
+              'Resort-style amenities',
+              'Pool and clubhouse',
+              'Fitness center',
+              'Dog park and bike barn',
+              'Prime location near Swamp Rabbit Trail',
+              'Shovel-ready with permits secured'
+            ],
+            total_equity: 12340000,
+            featured: true,
+            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Greenville.png',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            slug: 'greenville-apartment-complex',
+            syndicator: {
+              company_name: 'Sutera Properties',
+              company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos/suteraproperties.png',
+              years_in_business: 8,
+              company_description: 'Sutera is an emerging Multifamily Investment & Property Management firm based in Nashville, Tennessee focused on Value-Add Acquisitions and Management, primarily in the Southeast.',
+              website_url: null,
+              total_deal_volume: 15000000
             }
           },
           {
