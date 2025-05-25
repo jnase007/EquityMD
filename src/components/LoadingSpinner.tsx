@@ -107,12 +107,33 @@ export function LoadingSpinner({
   );
 }
 
-// Full page loader component
-export function PageLoader({ text = 'Loading your investment opportunities...' }: { text?: string }) {
+// Top loading bar component
+export function TopLoadingBar() {
   return (
-    <div className="fixed inset-0 bg-white bg-opacity-95 backdrop-blur-sm flex items-center justify-center z-50">
-      <LoadingSpinner variant="medical" size="xl" text={text} />
+    <div className="fixed top-0 left-0 right-0 z-50">
+      <div className="h-1 bg-blue-600 animate-pulse">
+        <div className="h-full bg-blue-500 animate-ping opacity-75"></div>
+      </div>
+      <div className="h-1 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 animate-pulse"></div>
     </div>
+  );
+}
+
+// Enhanced full page loader component
+export function PageLoader({ 
+  text = 'Loading your investment opportunities...', 
+  showTopBar = true 
+}: { 
+  text?: string;
+  showTopBar?: boolean; 
+}) {
+  return (
+    <>
+      {showTopBar && <TopLoadingBar />}
+      <div className="fixed inset-0 bg-white bg-opacity-95 backdrop-blur-sm flex items-center justify-center z-40">
+        <LoadingSpinner variant="medical" size="xl" text={text} />
+      </div>
+    </>
   );
 }
 

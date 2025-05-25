@@ -229,14 +229,14 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
           Find Syndicators
         </Link>
         <Link 
-          to="/pricing" 
+          to="/how-it-works" 
           className={`hover:text-blue-600 ${
             isTransparent 
               ? 'text-white hover:text-blue-200' 
               : 'text-gray-700'
           }`}
         >
-          Pricing
+          How it Works
         </Link>
         
         {user ? (
