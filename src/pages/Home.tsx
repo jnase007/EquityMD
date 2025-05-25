@@ -48,6 +48,7 @@ export function Home() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [useVideo, setUseVideo] = useState(true);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
+  const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
   // Mock investor data - replace with real data from your API
   const featuredInvestors = [
@@ -309,6 +310,7 @@ export function Home() {
 
   const handleGetStarted = () => {
     setAuthModalType('investor');
+    setAuthModalView('sign_up');
     setShowAuthModal(true);
   };
 
@@ -526,6 +528,7 @@ export function Home() {
             <button 
               onClick={() => {
                 setAuthModalType('investor');
+                setAuthModalView('sign_up');
                 setShowAuthModal(true);
               }}
               className="bg-white text-blue-600 text-lg px-8 py-3 rounded-lg hover:bg-blue-50 transition"
@@ -535,6 +538,7 @@ export function Home() {
             <button 
               onClick={() => {
                 setAuthModalType('syndicator');
+                setAuthModalView('sign_up');
                 setShowAuthModal(true);
               }}
               className="bg-blue-700 text-white text-lg px-8 py-3 rounded-lg hover:bg-blue-800 transition border border-white"
@@ -549,6 +553,7 @@ export function Home() {
         <AuthModal 
           onClose={() => setShowAuthModal(false)} 
           defaultType={authModalType}
+          defaultView={authModalView}
         />
       )}
 
