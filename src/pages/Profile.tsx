@@ -3,6 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { MessageModal } from '../components/MessageModal';
+import { AccountTypeBadge } from '../components/AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
 import { InvestorProfileForm } from '../components/InvestorProfileForm';
 import { SyndicatorProfileForm } from '../components/SyndicatorProfileForm';
@@ -84,6 +85,47 @@ export function Profile() {
       
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="space-y-8">
+          {/* Account Type Header */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center">
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name || 'User'}
+                      className="w-16 h-16 rounded-full"
+                    />
+                  ) : (
+                    <User className="h-8 w-8 text-white" />
+                  )}
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    {profile?.full_name || 'User Profile'}
+                  </h1>
+                  <div className="mt-2">
+                    <AccountTypeBadge
+                      userType={profile?.user_type || 'investor'}
+                      isAdmin={profile?.is_admin}
+                      isVerified={profile?.is_verified}
+                      size="md"
+                    />
+                  </div>
+                </div>
+              </div>
+              {profile?.is_admin && (
+                <Link
+                  to="/admin"
+                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+                >
+                  <Building2 className="h-4 w-4 mr-2" />
+                  Admin Dashboard
+                </Link>
+              )}
+            </div>
+          </div>
+
           {/* Email Update Form */}
           <div>
             <div className="flex justify-between items-center mb-4">

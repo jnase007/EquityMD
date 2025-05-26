@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
+import { AccountTypeBadge } from './AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 
@@ -267,9 +268,21 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             {/* User Menu */}
             <div className="relative" ref={dropdownRef}>
               <button 
-                className="flex items-center space-x-2 focus:outline-none"
+                className="flex items-center space-x-3 focus:outline-none"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
+                {/* Account Type Badge */}
+                {profile && (
+                  <AccountTypeBadge
+                    userType={profile.user_type}
+                    isAdmin={profile.is_admin}
+                    isVerified={profile.is_verified}
+                    size="sm"
+                    className={isTransparent ? 'bg-white/20 text-white border-white/30' : ''}
+                  />
+                )}
+                
+                {/* Avatar */}
                 <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
                   {profile?.avatar_url ? (
                     <img
@@ -393,8 +406,18 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                       <User className="h-6 w-6 text-white" />
                     )}
                   </div>
-                  <div className="ml-4">
-                    <div className="font-medium text-gray-900">{profile?.full_name || 'User'}</div>
+                  <div className="ml-4 flex-1">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium text-gray-900">{profile?.full_name || 'User'}</div>
+                      {profile && (
+                        <AccountTypeBadge
+                          userType={profile.user_type}
+                          isAdmin={profile.is_admin}
+                          isVerified={profile.is_verified}
+                          size="sm"
+                        />
+                      )}
+                    </div>
                     <div className="text-sm text-gray-500">{profile?.email}</div>
                   </div>
                 </div>
