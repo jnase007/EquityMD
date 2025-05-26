@@ -304,6 +304,15 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   >
                     Profile
                   </Link>
+                  {profile?.user_type === 'investor' && (
+                    <Link
+                      to="/favorites"
+                      className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      My Favorites
+                    </Link>
+                  )}
                   {profile?.user_type === 'syndicator' && (
                     <>
                       <Link
@@ -429,6 +438,15 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   >
                     Profile Settings
                   </Link>
+                  {profile?.user_type === 'investor' && (
+                    <Link
+                      to="/favorites"
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Favorites
+                    </Link>
+                  )}
                   {profile?.user_type === 'syndicator' && (
                     <>
                       <Link

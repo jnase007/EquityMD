@@ -90,3 +90,11 @@ export interface DealInterest {
   created_at: string;
   updated_at: string;
 }
+
+export interface Favorite {
+  id: string;
+  investor_id: string;
+  deal_id: string;
+  created_at: string;
+  updated_at: string;
+}

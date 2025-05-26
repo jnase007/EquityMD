@@ -18,6 +18,7 @@ const Directory = lazy(() => import('./pages/Directory').then(module => ({ defau
 const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
 const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
+const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ default: module.Favorites })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -389,6 +390,10 @@ export default function App() {
         <Route 
           path="/inbox" 
           element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Inbox /></Suspense>} 
+        />
+        <Route 
+          path="/favorites" 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Favorites /></Suspense>} 
         />
 
         {/* Admin Routes */}

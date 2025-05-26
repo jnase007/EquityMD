@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, User, Menu, X, ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
 import { OptimizedImage } from './OptimizedImage';
+import { FavoriteButton } from './FavoriteButton';
 import type { Deal, SyndicatorProfile } from '../types/database';
 
 interface FeatureCardProps {
@@ -61,6 +62,11 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
             height={192}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+          {isAuthenticated && (
+            <div className="absolute top-2 right-2">
+              <FavoriteButton dealId={id} size="md" />
+            </div>
+          )}
           {!isAuthenticated && (
             <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
               <Lock className="h-4 w-4 mr-1" />
