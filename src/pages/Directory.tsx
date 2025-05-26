@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal, Globe, LayoutGrid, List, ChevronRight } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { ShareButton } from '../components/ShareButton';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { PageBanner } from '../components/PageBanner';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -491,23 +492,37 @@ export function Directory() {
                 to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
                 className="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
               >
-                <div className="flex items-center gap-4 mb-4">
-                                  {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
-                    <img
-                    src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
-                      alt={syndicator.company_name}
-                      className="w-16 h-16 object-contain rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Building2 className="w-8 h-8 text-blue-600" />
+                <div className="relative">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="relative">
+                      {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
+                        <img
+                          src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
+                          alt={syndicator.company_name}
+                          className="w-16 h-16 object-contain rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Building2 className="w-8 h-8 text-blue-600" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div>
-                    <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
+                    <div>
+                      <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-0 right-0">
+                    <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                      <ShareButton 
+                        title={syndicator.company_name}
+                        url={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                        description={`Check out ${syndicator.company_name} - experienced real estate syndicator`}
+                        size="sm"
+                      />
                     </div>
                   </div>
                 </div>
@@ -567,17 +582,29 @@ export function Directory() {
                 className="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
               >
                 <div className="flex gap-6">
-                  {syndicator.company_logo_url ? (
-                    <img
-                      src={syndicator.company_logo_url}
-                      alt={syndicator.company_name}
-                      className="w-32 h-32 object-contain rounded-lg"
-                    />
-                  ) : (
-                    <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-16 h-16 text-blue-600" />
+                  <div className="relative flex-shrink-0">
+                    {syndicator.company_logo_url ? (
+                      <img
+                        src={syndicator.company_logo_url}
+                        alt={syndicator.company_name}
+                        className="w-32 h-32 object-contain rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Building2 className="w-16 h-16 text-blue-600" />
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2">
+                      <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                        <ShareButton 
+                          title={syndicator.company_name}
+                          url={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                          description={`Check out ${syndicator.company_name} - experienced real estate syndicator`}
+                          size="sm"
+                        />
+                      </div>
                     </div>
-                  )}
+                  </div>
                   <div className="flex-grow">
                     <div className="flex justify-between items-start">
                       <div>

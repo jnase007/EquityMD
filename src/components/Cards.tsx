@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Building2, User, Menu, X, ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
 import { OptimizedImage } from './OptimizedImage';
 import { FavoriteButton } from './FavoriteButton';
+import { ShareButton } from './ShareButton';
 import type { Deal, SyndicatorProfile } from '../types/database';
 
 interface FeatureCardProps {
@@ -62,12 +63,21 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
             height={192}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          {isAuthenticated && (
-            <div className="absolute top-2 right-2">
-              <FavoriteButton dealId={id} size="md" />
+          {isAuthenticated ? (
+            <div className="absolute top-3 right-3 flex gap-2">
+              <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                <ShareButton 
+                  title={title}
+                  url={`/deals/${slug}`}
+                  description={`Check out this investment opportunity in ${location}`}
+                  size="md"
+                />
+              </div>
+              <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                <FavoriteButton dealId={id} size="md" />
+              </div>
             </div>
-          )}
-          {!isAuthenticated && (
+          ) : (
             <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
               <Lock className="h-4 w-4 mr-1" />
               Sign in to view details
@@ -145,7 +155,21 @@ export function DealListItem({ id, slug, image, title, location, description, me
               height={192}
               sizes="192px"
             />
-            {!isAuthenticated && (
+            {isAuthenticated ? (
+              <div className="absolute top-3 right-3 flex gap-2">
+                <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                  <ShareButton 
+                    title={title}
+                    url={`/deals/${slug}`}
+                    description={`Check out this investment opportunity in ${location}`}
+                    size="sm"
+                  />
+                </div>
+                <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
+                  <FavoriteButton dealId={id} size="sm" />
+                </div>
+              </div>
+            ) : (
               <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
                 <Lock className="h-4 w-4 mr-1" />
                 Sign in
