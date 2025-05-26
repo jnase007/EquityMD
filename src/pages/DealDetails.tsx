@@ -7,6 +7,7 @@ import { MessageModal } from '../components/MessageModal';
 import { DealMediaGallery } from '../components/DealMediaGallery';
 import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import type { Deal, DealFile } from '../types/database';
@@ -355,7 +356,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         />
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto px-4 text-white">
+          <div className="max-w-7xl mx-auto px-4 text-white w-full">
             <div className="flex items-center text-sm mb-4">
               <span>Deals</span>
               <ChevronRight className="h-4 w-4 mx-2" />
@@ -363,7 +364,14 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
               <ChevronRight className="h-4 w-4 mx-2" />
               <span>{deal.title}</span>
             </div>
-            <h1 className="text-4xl font-bold mb-4">{deal.title}</h1>
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-4xl font-bold">{deal.title}</h1>
+              {user && (
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-2">
+                  <FavoriteButton dealId={deal.id} size="lg" className="text-white hover:text-red-300" />
+                </div>
+              )}
+            </div>
             <div className="flex items-center">
               <MapPin className="h-5 w-5 mr-2" />
               <span>{deal.location}</span>
@@ -575,6 +583,13 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   <MessageCircle className="h-5 w-5 mr-2" />
                   Contact Syndicator
                 </button>
+
+                {user && (
+                  <div className="flex items-center justify-center w-full border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition">
+                    <FavoriteButton dealId={deal.id} size="md" />
+                    <span className="ml-2 text-gray-600">Save to Favorites</span>
+                  </div>
+                )}
               </div>
             </div>
 
