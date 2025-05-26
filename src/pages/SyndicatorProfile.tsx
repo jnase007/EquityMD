@@ -660,6 +660,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                       term: `${deal.investment_term} years`
                     }}
                     detailed
+                    isAuthenticated={!!user}
                   />
                 ))}
               </div>
