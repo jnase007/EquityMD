@@ -55,7 +55,6 @@ import { SocialSignup } from './pages/auth/SocialSignup';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
-import { RouteLoader } from './components/RouteLoader';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Loading fallback component with timeout protection
@@ -235,7 +234,7 @@ export default function App() {
   }, [location.pathname, requireAuth, user]);
 
   return (
-    <RouteLoader>
+    <>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={
@@ -424,6 +423,6 @@ export default function App() {
       )}
 
       <PerformanceMonitor />
-    </RouteLoader>
+    </>
   );
 }
