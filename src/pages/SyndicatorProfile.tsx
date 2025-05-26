@@ -7,6 +7,7 @@ import {
   MessageCircle, User, Play, AlertCircle
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
+import { SyndicatorVerifiedBadge } from '../components/VerifiedBadge';
 import { DealCard } from '../components/Cards';
 import { MessageModal } from '../components/MessageModal';
 import { VideoEmbed } from '../components/VideoEmbed';
@@ -545,10 +546,11 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   <Briefcase className="h-5 w-5 mr-1" />
                   <span>{syndicator.years_in_business} years in business</span>
                 </div>
-                <div className="flex items-center">
-                  <Shield className="h-5 w-5 mr-1" />
-                  <span>Verified Syndicator</span>
-                </div>
+                <SyndicatorVerifiedBadge 
+                  isPremium={syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties'}
+                  isFeatured={syndicator.company_name === 'Starboard Realty'}
+                  size="md"
+                />
               </div>
 
               <div className="flex flex-wrap gap-4">

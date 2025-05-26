@@ -1,10 +1,13 @@
 import React from 'react';
 import { User, Building2, Shield, Star } from 'lucide-react';
+import { SyndicatorVerifiedBadge } from './VerifiedBadge';
 
 interface AccountTypeBadgeProps {
   userType: 'investor' | 'syndicator';
   isAdmin?: boolean;
   isVerified?: boolean;
+  isPremium?: boolean;
+  isFeatured?: boolean;
   size?: 'sm' | 'md' | 'lg';
   showIcon?: boolean;
   showText?: boolean;
@@ -15,6 +18,8 @@ export function AccountTypeBadge({
   userType, 
   isAdmin = false, 
   isVerified = false,
+  isPremium = false,
+  isFeatured = false,
   size = 'md', 
   showIcon = true, 
   showText = true,
@@ -79,6 +84,20 @@ export function AccountTypeBadge({
 
   const config = sizeConfig[size];
 
+  // For verified syndicators, show the premium gradient badge instead
+  if (userType === 'syndicator' && (isVerified || isPremium || isFeatured)) {
+    return (
+      <SyndicatorVerifiedBadge 
+        isPremium={isPremium}
+        isFeatured={isFeatured}
+        size={size}
+        showText={showText}
+        showIcon={showIcon}
+        className={className}
+      />
+    );
+  }
+
   return (
     <div className={`
       inline-flex items-center 
@@ -98,7 +117,7 @@ export function AccountTypeBadge({
           {accountInfo.label}
         </span>
       )}
-      {isVerified && (
+      {isVerified && userType !== 'syndicator' && (
         <Star className={`${config.icon} text-yellow-500`} fill="currentColor" />
       )}
     </div>

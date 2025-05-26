@@ -4,6 +4,7 @@ import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal,
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ShareButton } from '../components/ShareButton';
+import { SyndicatorVerifiedBadge } from '../components/VerifiedBadge';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { PageBanner } from '../components/PageBanner';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -507,8 +508,16 @@ export function Directory() {
                         </div>
                       )}
                     </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
+                        <SyndicatorVerifiedBadge 
+                          isPremium={syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties'}
+                          isFeatured={syndicator.company_name === 'Starboard Realty'}
+                          size="sm"
+                          showText={false}
+                        />
+                      </div>
                       <div className="flex items-center text-gray-600 text-sm">
                         <MapPin className="w-4 h-4 mr-1" />
                         {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
@@ -608,8 +617,15 @@ export function Directory() {
                   <div className="flex-grow">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
-                        <div className="flex items-center text-gray-600 mt-1">
+                        <div className="flex items-center gap-3 mb-1">
+                          <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
+                          <SyndicatorVerifiedBadge 
+                            isPremium={syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties'}
+                            isFeatured={syndicator.company_name === 'Starboard Realty'}
+                            size="sm"
+                          />
+                        </div>
+                        <div className="flex items-center text-gray-600">
                           <MapPin className="w-4 h-4 mr-1" />
                           {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
                         </div>
