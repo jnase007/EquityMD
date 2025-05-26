@@ -11,12 +11,13 @@ import { InvestorImport } from '../../components/admin/InvestorImport';
 import { SyndicatorImport } from '../../components/admin/SyndicatorImport';
 import { AnalyticsDashboard } from '../../components/admin/AnalyticsDashboard';
 import { ClaimRequests } from '../../components/admin/ClaimRequests';
+import { SyndicatorVerificationManager } from '../../components/admin/SyndicatorVerificationManager';
 import { useAuthStore } from '../../lib/store';
 import { BarChart, Users, Building2, CreditCard, Upload, Settings, CheckCircle, Shield } from 'lucide-react';
 
 export function AdminDashboard() {
   const { user, profile } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification'>('analytics');
 
   // Restrict access to specific admin user only
   if (!user || user.email !== 'justin@brandastic.com') {
@@ -46,6 +47,8 @@ export function AdminDashboard() {
         return <LogoManager />;
       case 'claims':
         return <ClaimRequests />;
+      case 'verification':
+        return <SyndicatorVerificationManager />;
       default:
         return null;
     }
@@ -144,6 +147,18 @@ export function AdminDashboard() {
             >
               <CheckCircle className="h-5 w-5 mr-2" />
               Claims
+            </button>
+
+            <button
+              onClick={() => setActiveTab('verification')}
+              className={`py-4 flex items-center whitespace-nowrap ${
+                activeTab === 'verification'
+                  ? 'border-b-2 border-purple-600 text-purple-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Shield className="h-5 w-5 mr-2" />
+              Verification
             </button>
 
             <button

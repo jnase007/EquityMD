@@ -1,8 +1,8 @@
-import React from 'react';
-import { Shield, Star, CheckCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Shield, Star, CheckCircle, Clock } from 'lucide-react';
 
 interface VerifiedBadgeProps {
-  type?: 'premium' | 'verified' | 'featured';
+  type?: 'premium' | 'verified' | 'featured' | 'unverified';
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
   showIcon?: boolean;
@@ -16,6 +16,7 @@ export function VerifiedBadge({
   showIcon = true,
   className = '' 
 }: VerifiedBadgeProps) {
+  const [showTooltip, setShowTooltip] = useState(false);
   
   const sizeConfig = {
     sm: {
@@ -46,31 +47,51 @@ export function VerifiedBadge({
         return {
           label: 'Premium Partner',
           icon: Shield,
-          bgGradient: 'bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-600',
+          bgColor: 'bg-blue-600',
           textColor: 'text-white',
-          borderColor: 'border-transparent',
-          shadow: 'shadow-lg shadow-purple-500/25',
-          glow: 'before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-400 before:via-blue-400 before:to-indigo-500 before:rounded-full before:blur-sm before:opacity-30 before:-z-10'
+          borderColor: 'border-blue-600',
+          shadow: 'shadow-sm',
+          tooltip: 'Premium Partner - Top-tier syndicator with exceptional track record, extensive experience, and priority platform features'
         };
       case 'featured':
         return {
           label: 'Featured',
           icon: Star,
-          bgGradient: 'bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500',
+          bgColor: 'bg-orange-500',
           textColor: 'text-white',
-          borderColor: 'border-transparent',
-          shadow: 'shadow-lg shadow-yellow-500/25',
-          glow: 'before:absolute before:inset-0 before:bg-gradient-to-r before:from-yellow-300 before:via-orange-400 before:to-red-400 before:rounded-full before:blur-sm before:opacity-30 before:-z-10'
+          borderColor: 'border-orange-500',
+          shadow: 'shadow-sm',
+          tooltip: 'Featured Syndicator - Highlighted for outstanding performance, innovative deals, and strong investor relationships'
         };
-      default: // verified
+      case 'verified':
         return {
           label: 'Verified',
           icon: CheckCircle,
-          bgGradient: 'bg-gradient-to-r from-green-500 to-emerald-600',
+          bgColor: 'bg-green-600',
           textColor: 'text-white',
-          borderColor: 'border-transparent',
-          shadow: 'shadow-lg shadow-green-500/25',
-          glow: 'before:absolute before:inset-0 before:bg-gradient-to-r before:from-green-400 before:to-emerald-500 before:rounded-full before:blur-sm before:opacity-30 before:-z-10'
+          borderColor: 'border-green-600',
+          shadow: 'shadow-sm',
+          tooltip: 'Verified Syndicator - Identity and credentials confirmed by EquityMD. Licensed and compliant real estate professional'
+        };
+      case 'unverified':
+        return {
+          label: 'Pending Verification',
+          icon: Clock,
+          bgColor: 'bg-gray-400',
+          textColor: 'text-white',
+          borderColor: 'border-gray-400',
+          shadow: 'shadow-sm',
+          tooltip: 'Pending Verification - This syndicator is undergoing background checks and credential verification'
+        };
+      default:
+        return {
+          label: 'Verified',
+          icon: CheckCircle,
+          bgColor: 'bg-green-600',
+          textColor: 'text-white',
+          borderColor: 'border-green-600',
+          shadow: 'shadow-sm',
+          tooltip: 'Verified Syndicator - Identity and credentials confirmed by EquityMD. Licensed and compliant real estate professional'
         };
     }
   };
@@ -79,26 +100,43 @@ export function VerifiedBadge({
   const IconComponent = badgeConfig.icon;
 
   return (
-    <div className={`
-      relative inline-flex items-center 
-      ${config.gap} 
-      ${config.padding} 
-      ${badgeConfig.bgGradient}
-      ${badgeConfig.textColor} 
-      ${badgeConfig.borderColor}
-      ${badgeConfig.shadow}
-      border rounded-full font-semibold
-      transition-all duration-300 hover:scale-105
-      ${badgeConfig.glow}
-      ${className}
-    `}>
-      {showIcon && (
-        <IconComponent className={`${config.icon} drop-shadow-sm`} />
-      )}
-      {showText && (
-        <span className={`${config.text} font-semibold drop-shadow-sm`}>
-          {badgeConfig.label}
-        </span>
+    <div 
+      className="relative inline-block"
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+    >
+      <div className={`
+        inline-flex items-center 
+        ${config.gap} 
+        ${config.padding} 
+        ${badgeConfig.bgColor}
+        ${badgeConfig.textColor} 
+        ${badgeConfig.borderColor}
+        ${badgeConfig.shadow}
+        border rounded-full font-semibold
+        transition-all duration-200 hover:opacity-90
+        cursor-help
+        ${className}
+      `}>
+        {showIcon && (
+          <IconComponent className={`${config.icon}`} />
+        )}
+        {showText && (
+          <span className={`${config.text} font-semibold`}>
+            {badgeConfig.label}
+          </span>
+        )}
+      </div>
+      
+      {/* Tooltip */}
+      {showTooltip && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50">
+          <div className="bg-gray-900 text-white text-sm rounded-lg py-3 px-4 w-80 text-center shadow-lg leading-relaxed">
+            {badgeConfig.tooltip}
+            {/* Arrow */}
+            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -106,47 +144,26 @@ export function VerifiedBadge({
 
 // Specialized component for syndicator verification status
 export function SyndicatorVerifiedBadge({ 
-  isPremium = false,
-  isFeatured = false,
+  verificationStatus = 'verified',
   size = 'md',
   showText = true,
   showIcon = true,
   className = ''
 }: {
-  isPremium?: boolean;
-  isFeatured?: boolean;
+  verificationStatus?: 'unverified' | 'verified' | 'featured' | 'premium';
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
   showIcon?: boolean;
   className?: string;
 }) {
-  if (isPremium) {
-    return (
-      <VerifiedBadge 
-        type="premium" 
-        size={size} 
-        showText={showText}
-        showIcon={showIcon}
-        className={className}
-      />
-    );
+  // Don't show badge for unverified syndicators
+  if (verificationStatus === 'unverified') {
+    return null;
   }
-  
-  if (isFeatured) {
-    return (
-      <VerifiedBadge 
-        type="featured" 
-        size={size} 
-        showText={showText}
-        showIcon={showIcon}
-        className={className}
-      />
-    );
-  }
-  
+
   return (
     <VerifiedBadge 
-      type="verified" 
+      type={verificationStatus} 
       size={size} 
       showText={showText}
       showIcon={showIcon}

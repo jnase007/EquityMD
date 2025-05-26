@@ -42,6 +42,10 @@ export interface SyndicatorProfile {
   years_in_business: number | null;
   total_deal_volume: number | null;
   verification_documents: Record<string, any>;
+  verification_status: 'unverified' | 'verified' | 'featured' | 'premium';
+  verification_notes: string | null;
+  verified_by: string | null;
+  verified_at: string | null;
   created_at: string;
   updated_at: string;
   state: string | null;
@@ -97,4 +101,14 @@ export interface Favorite {
   deal_id: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface SyndicatorVerificationHistory {
+  id: string;
+  syndicator_id: string;
+  previous_status: string | null;
+  new_status: string;
+  changed_by: string | null;
+  admin_notes: string | null;
+  created_at: string;
 }
