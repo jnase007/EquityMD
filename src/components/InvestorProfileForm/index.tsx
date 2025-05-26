@@ -89,7 +89,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       if (data) {
         setFormData(prev => ({
           ...prev,
-          investmentRange: data.minimum_investment?.toString() || '',
+          investmentRange: data.minimum_investment ? data.minimum_investment.toString() : '',
           preferredPropertyTypes: data.preferred_property_types || [],
           preferredLocations: data.preferred_locations || [],
           accreditedStatus: data.accredited_status || false,
@@ -103,6 +103,11 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       console.error('Error fetching investor profile:', error);
     }
   }
+
+  // Helper function to parse formatted numbers with commas
+  const parseFormattedNumber = (str: string): number => {
+    return parseInt(str.replace(/,/g, '')) || 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,12 +130,17 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
 
       if (profileError) throw profileError;
 
+      // Parse investment range correctly (handle comma-formatted numbers)
+      const investmentRangeValue = formData.investmentRange 
+        ? parseFormattedNumber(formData.investmentRange) 
+        : null;
+
       // Update investor profile
       const { error: investorError } = await supabase
         .from('investor_profiles')
         .update({
           accredited_status: formData.accreditedStatus,
-          minimum_investment: parseInt(formData.investmentRange),
+          minimum_investment: investmentRangeValue,
           preferred_property_types: formData.preferredPropertyTypes,
           preferred_locations: formData.preferredLocations,
           investment_preferences: {
@@ -146,6 +156,9 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       if (investorError) throw investorError;
 
       setMessage('Profile updated successfully!');
+      
+      // Refresh the investor profile to show the updated values
+      await fetchInvestorProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
       setMessage('Error updating profile. Please try again.');
