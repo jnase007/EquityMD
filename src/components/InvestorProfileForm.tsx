@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { ImageUpload } from './ImageUpload';
+import { InvestmentRangeSelector } from './InvestmentRangeSelector';
 import { Tooltip, InfoIcon } from './Tooltip';
 import { SMSOptIn } from './SMSOptIn';
 import type { InvestorProfile } from '../types/database';
@@ -200,17 +201,10 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         </label>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Minimum Investment ($)
-        </label>
-        <input
-          type="number"
-          value={formData.minimumInvestment}
-          onChange={(e) => setFormData(prev => ({ ...prev, minimumInvestment: e.target.value }))}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+      <InvestmentRangeSelector
+        value={formData.minimumInvestment}
+        onChange={(value) => setFormData(prev => ({ ...prev, minimumInvestment: value }))}
+      />
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">

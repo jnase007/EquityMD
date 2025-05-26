@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../../lib/store';
 import { supabase } from '../../lib/supabase';
 import { ImageUpload } from '../ImageUpload';
+import { InvestmentRangeSelector } from '../InvestmentRangeSelector';
 import { AlertCircle, HelpCircle } from 'lucide-react';
 import type { InvestorProfile } from '../../types/database';
 
@@ -217,24 +218,10 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           <div className="space-y-6">
             <h2 className="text-xl font-semibold">Investment Profile</h2>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Investment Range
-              </label>
-              <select
-                value={formData.investmentRange}
-                onChange={(e) => setFormData(prev => ({ ...prev, investmentRange: e.target.value }))}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required
-              >
-                <option value="">Select Investment Range</option>
-                {INVESTMENT_RANGES.map(range => (
-                  <option key={range.value} value={range.value}>
-                    {range.display}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <InvestmentRangeSelector
+              value={formData.investmentRange}
+              onChange={(value) => setFormData(prev => ({ ...prev, investmentRange: value }))}
+            />
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
