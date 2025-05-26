@@ -81,7 +81,7 @@ export function VerifiedBadge({
           textColor: 'text-white',
           borderColor: 'border-gray-400',
           shadow: 'shadow-sm',
-          tooltip: 'Pending Verification - This syndicator is undergoing background checks and credential verification'
+          tooltip: 'Pending Verification - To be verified, the company must claim this profile and complete background checks and credential verification by EquityMD'
         };
       default:
         return {

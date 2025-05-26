@@ -137,7 +137,7 @@ export function SyndicatorVerificationManager() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Syndicator Verification Management</h2>
-          <p className="text-gray-600">Review and manage syndicator verification statuses</p>
+          <p className="text-gray-600">Review and manage syndicator verification statuses. Companies must claim their profile and complete background checks to be verified.</p>
         </div>
         {pendingCount > 0 && (
           <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2">
@@ -232,16 +232,17 @@ export function SyndicatorVerificationManager() {
                     <select
                       value={syndicator.verification_status}
                       onChange={(e) => {
-                        const notes = prompt('Add verification notes (optional):') || '';
+                        const notes = prompt('Add verification notes (optional):\n\nNote: Companies must claim their profile and complete background checks to be verified.') || '';
                         updateVerificationStatus(syndicator.id, e.target.value, notes);
                       }}
                       disabled={updating === syndicator.id}
                       className="border border-gray-300 rounded px-2 py-1 text-xs focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      title="Companies must claim their profile and complete background checks to be verified"
                     >
-                      <option value="unverified">Unverified</option>
-                      <option value="verified">Verified</option>
-                      <option value="featured">Featured</option>
-                      <option value="premium">Premium</option>
+                      <option value="unverified">Unverified (Pending Claim & Verification)</option>
+                      <option value="verified">Verified (Claimed & Background Checked)</option>
+                      <option value="featured">Featured (Premium Status)</option>
+                      <option value="premium">Premium Partner (Top Tier)</option>
                     </select>
                     <button
                       onClick={() => {
