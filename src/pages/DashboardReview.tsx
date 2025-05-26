@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare } from 'lucide-react';
+import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare, Heart } from 'lucide-react';
 
 export function DashboardReview() {
   const [activeTab, setActiveTab] = useState<'investor' | 'syndicator' | 'admin'>('investor');
@@ -68,6 +68,34 @@ export function DashboardReview() {
         </div>
       </div>
 
+      {/* New Features Update Banner */}
+      <div className="bg-gradient-to-r from-pink-500 to-red-500 rounded-lg shadow-sm p-6 text-white">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="p-3 bg-white/20 rounded-lg">
+              <Heart className="h-6 w-6 text-white" />
+            </div>
+            <div className="ml-4">
+              <h3 className="text-xl font-bold">New: Favorites Feature! ❤️</h3>
+              <p className="text-white/90 mt-1">Save deals you're interested in for easy access later</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold">12</p>
+            <p className="text-sm text-white/80">Saved Favorites</p>
+          </div>
+        </div>
+        <div className="mt-4 flex gap-3">
+          <button className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm transition flex items-center">
+            <Heart className="h-4 w-4 mr-2" />
+            View My Favorites
+          </button>
+          <button className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg text-sm transition">
+            Browse New Deals
+          </button>
+        </div>
+      </div>
+
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Investments */}
@@ -123,6 +151,14 @@ export function DashboardReview() {
             <h3 className="text-lg font-bold mb-4">Notifications</h3>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
+                <div className="w-2 h-2 bg-pink-500 rounded-full mt-2"></div>
+                <div>
+                  <p className="text-sm font-medium">🎉 New Feature: Favorites</p>
+                  <p className="text-xs text-gray-500">Save deals with the ❤️ button to review later</p>
+                  <p className="text-xs text-gray-400">30 minutes ago</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                 <div>
                   <p className="text-sm font-medium">New deal available</p>
@@ -153,6 +189,10 @@ export function DashboardReview() {
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
             <div className="space-y-3">
+              <button className="w-full text-left p-3 border rounded-lg hover:bg-pink-50 hover:border-pink-200 flex items-center">
+                <Heart className="h-5 w-5 text-pink-600 mr-3" />
+                <span className="text-sm font-medium">My Favorites (12)</span>
+              </button>
               <button className="w-full text-left p-3 border rounded-lg hover:bg-gray-50 flex items-center">
                 <Building2 className="h-5 w-5 text-blue-600 mr-3" />
                 <span className="text-sm font-medium">Browse New Deals</span>
@@ -244,12 +284,12 @@ export function DashboardReview() {
 
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center">
-            <div className="p-3 bg-orange-100 rounded-lg">
-              <Eye className="h-6 w-6 text-orange-600" />
+            <div className="p-3 bg-pink-100 rounded-lg">
+              <Heart className="h-6 w-6 text-pink-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm text-gray-500">Profile Views</p>
-              <p className="text-2xl font-bold text-gray-800">1,247</p>
+              <p className="text-sm text-gray-500">Deal Favorites</p>
+              <p className="text-2xl font-bold text-gray-800">342</p>
             </div>
           </div>
         </div>
@@ -274,6 +314,7 @@ export function DashboardReview() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deal</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interested</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Favorites</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Raised</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -292,6 +333,12 @@ export function DashboardReview() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">24 investors</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center text-sm text-pink-600">
+                      <Heart className="h-4 w-4 mr-1" />
+                      <span>18</span>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1.8M (72%)</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
@@ -320,6 +367,12 @@ export function DashboardReview() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">18 investors</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center text-sm text-pink-600">
+                      <Heart className="h-4 w-4 mr-1" />
+                      <span>12</span>
+                    </div>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$950K (30%)</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
@@ -391,6 +444,10 @@ export function DashboardReview() {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Profile Views</span>
                 <span className="text-sm font-semibold text-blue-600">342</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">New Favorites</span>
+                <span className="text-sm font-semibold text-pink-600">+89</span>
               </div>
             </div>
           </div>
