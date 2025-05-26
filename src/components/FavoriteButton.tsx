@@ -63,25 +63,33 @@ export function FavoriteButton({
 
   async function toggleFavorite() {
     if (!user) {
+      console.log('No user - cannot favorite');
       // Could trigger auth modal here
       return;
     }
 
+    console.log('Toggling favorite for deal:', dealId, 'Current state:', isFavorited);
     setIsLoading(true);
 
     try {
       if (isFavorited) {
         // Remove favorite
+        console.log('Removing favorite...');
         const { error } = await supabase
           .from('favorites')
           .delete()
           .eq('investor_id', user.id)
           .eq('deal_id', dealId);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error removing favorite:', error);
+          throw error;
+        }
+        console.log('Favorite removed successfully');
         setIsFavorited(false);
       } else {
         // Add favorite
+        console.log('Adding favorite...');
         const { error } = await supabase
           .from('favorites')
           .insert({
@@ -89,12 +97,17 @@ export function FavoriteButton({
             deal_id: dealId
           });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Error adding favorite:', error);
+          throw error;
+        }
+        console.log('Favorite added successfully');
         setIsFavorited(true);
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      // You could show a toast notification here
+      // Show user-friendly error message
+      alert(`Error ${isFavorited ? 'removing' : 'adding'} favorite. Please try again.`);
     } finally {
       setIsLoading(false);
     }
@@ -114,19 +127,25 @@ export function FavoriteButton({
           ? 'text-red-500 hover:text-red-600' 
           : 'text-gray-400 hover:text-red-500'
         }
-        transition-colors duration-200
+        transition-all duration-200 ease-in-out
         disabled:opacity-50 disabled:cursor-not-allowed
         flex items-center gap-2
+        hover:scale-105 active:scale-95
         ${className}
       `}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
     >
       <Heart 
-        className={`${sizeClasses[size]} ${isFavorited ? 'fill-current' : ''}`} 
+        className={`
+          ${sizeClasses[size]} 
+          ${isFavorited ? 'fill-red-500 text-red-500' : 'fill-none'} 
+          transition-all duration-200 ease-in-out
+          ${isLoading ? 'animate-pulse' : ''}
+        `} 
       />
       {showText && (
         <span className="text-sm font-medium">
-          {isFavorited ? 'Favorited' : 'Favorite'}
+          {isLoading ? 'Saving...' : isFavorited ? 'Favorited' : 'Favorite'}
         </span>
       )}
     </button>
