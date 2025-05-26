@@ -17,7 +17,7 @@ const SyndicatorProfile = lazy(() => import('./pages/SyndicatorProfile').then(mo
 const Directory = lazy(() => import('./pages/Directory').then(module => ({ default: module.Directory })));
 const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
 const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
-const AdminDashboard = lazy(() => import('./pages/admin/Dashboard').then(module => ({ default: module.AdminDashboard })));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -220,7 +220,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/admin/dashboard', '/dashboard-review'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -326,8 +326,7 @@ export default function App() {
 
         {/* Admin Routes */}
         <Route path="/admin" element={<Suspense fallback={<PageLoadingFallback />}><AdminLogin /></Suspense>} />
-        <Route path="/admin/dashboard" element={<Suspense fallback={<PageLoadingFallback />}><DashboardOverview /></Suspense>} />
-        <Route path="/admin/dashboard/*" element={<Suspense fallback={<PageLoadingFallback />}><DashboardOverview /></Suspense>} />
+        <Route path="/admin/dashboard" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
         <Route path="/dev-admin/*" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
 
         {/* Dashboard Review Route - No Authentication Required */}

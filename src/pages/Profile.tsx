@@ -114,9 +114,9 @@ export function Profile() {
                   </div>
                 </div>
               </div>
-              {profile?.is_admin && (
+              {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
                 <Link
-                  to="/admin"
+                  to="/admin/dashboard"
                   className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
                 >
                   <Building2 className="h-4 w-4 mr-2" />
