@@ -55,11 +55,13 @@ import { SocialSignup } from './pages/auth/SocialSignup';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
+import { RouteLoader } from './components/RouteLoader';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
-// Loading fallback component
+// Loading fallback component with timeout protection
 const PageLoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center">
-    <LoadingSpinner size="lg" />
+    <LoadingSpinner variant="medical" size="lg" text="Loading your investment opportunities..." />
   </div>
 );
 
@@ -233,20 +235,86 @@ export default function App() {
   }, [location.pathname, requireAuth, user]);
 
   return (
-    <>
+    <RouteLoader>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Suspense fallback={<PageLoadingFallback />}><Home /></Suspense>} />
-        <Route path="/how-it-works" element={<Suspense fallback={<PageLoadingFallback />}><HowItWorks /></Suspense>} />
-        <Route path="/for-syndicators" element={<Suspense fallback={<PageLoadingFallback />}><ForSyndicators /></Suspense>} />
-        <Route path="/contact" element={<Suspense fallback={<PageLoadingFallback />}><Contact /></Suspense>} />
-        <Route path="/pricing" element={<Suspense fallback={<PageLoadingFallback />}><Pricing /></Suspense>} />
-        <Route path="/email-preview" element={<Suspense fallback={<PageLoadingFallback />}><EmailPreview /></Suspense>} />
-        <Route path="/email-test" element={<Suspense fallback={<PageLoadingFallback />}><EmailTest /></Suspense>} />
-        <Route path="/loader-demo" element={<Suspense fallback={<PageLoadingFallback />}><LoaderDemo /></Suspense>} />
-        <Route path="/legal/privacy" element={<Suspense fallback={<PageLoadingFallback />}><Privacy /></Suspense>} />
-        <Route path="/legal/terms" element={<Suspense fallback={<PageLoadingFallback />}><Terms /></Suspense>} />
-        <Route path="/legal/disclaimer" element={<Suspense fallback={<PageLoadingFallback />}><Disclaimer /></Suspense>} />
+        <Route path="/" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Home />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/how-it-works" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <HowItWorks />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/for-syndicators" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <ForSyndicators />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/contact" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Contact />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/pricing" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Pricing />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/email-preview" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <EmailPreview />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/email-test" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <EmailTest />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/loader-demo" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <LoaderDemo />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/legal/privacy" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Privacy />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/legal/terms" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Terms />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/legal/disclaimer" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Disclaimer />
+            </Suspense>
+          </ErrorBoundary>
+        } />
         <Route path="/resources/glossary" element={<Suspense fallback={<PageLoadingFallback />}><Glossary /></Suspense>} />
 
         {/* Signup Routes */}
@@ -356,6 +424,6 @@ export default function App() {
       )}
 
       <PerformanceMonitor />
-    </>
+    </RouteLoader>
   );
 }
