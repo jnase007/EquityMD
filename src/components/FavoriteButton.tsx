@@ -43,6 +43,7 @@ export function FavoriteButton({
     if (!user) return;
 
     try {
+      console.log('Checking favorite status for user:', user.id, 'deal:', dealId);
       const { data, error } = await supabase
         .from('favorites')
         .select('id')
@@ -55,6 +56,7 @@ export function FavoriteButton({
         return;
       }
 
+      console.log('Favorite status check result:', data);
       setIsFavorited(!!data);
     } catch (error) {
       console.error('Error checking favorite status:', error);
@@ -69,6 +71,7 @@ export function FavoriteButton({
     }
 
     console.log('Toggling favorite for deal:', dealId, 'Current state:', isFavorited);
+    console.log('User info:', { id: user.id, email: user.email });
     setIsLoading(true);
 
     try {
@@ -83,6 +86,12 @@ export function FavoriteButton({
 
         if (error) {
           console.error('Error removing favorite:', error);
+          console.error('Error details:', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint
+          });
           throw error;
         }
         console.log('Favorite removed successfully');
@@ -90,24 +99,40 @@ export function FavoriteButton({
       } else {
         // Add favorite
         console.log('Adding favorite...');
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('favorites')
           .insert({
             investor_id: user.id,
             deal_id: dealId
-          });
+          })
+          .select();
 
         if (error) {
           console.error('Error adding favorite:', error);
+          console.error('Error details:', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint
+          });
+          
+          // Check if it's a permission error
+          if (error.code === '42501' || error.message?.includes('permission') || error.message?.includes('policy')) {
+            alert('Permission denied: Admin users may not have access to favorites feature yet. Please contact support.');
+          } else {
+            alert(`Error adding favorite: ${error.message}. Please try again.`);
+          }
           throw error;
         }
-        console.log('Favorite added successfully');
+        console.log('Favorite added successfully:', data);
         setIsFavorited(true);
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      // Show user-friendly error message
-      alert(`Error ${isFavorited ? 'removing' : 'adding'} favorite. Please try again.`);
+      // Don't show alert for permission errors as we already handled them above
+      if (error instanceof Error && !error.message?.includes('permission') && !error.message?.includes('policy')) {
+        alert(`Error ${isFavorited ? 'removing' : 'adding'} favorite. Please try again.`);
+      }
     } finally {
       setIsLoading(false);
     }
