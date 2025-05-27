@@ -173,7 +173,19 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-800 flex justify-between items-center">
+      {/* SEC Compliance Disclaimer */}
+      <div className="max-w-6xl mx-auto mt-8 pt-6 border-t border-gray-800">
+        <div className="bg-gray-800 rounded-lg p-4 mb-6">
+          <p className="text-gray-300 text-sm leading-relaxed">
+            <strong className="text-white">Important Disclaimer:</strong> EquityMD is a marketplace platform that connects accredited investors with real estate syndicators. 
+            EquityMD is not a broker-dealer, investment adviser, or financial institution. We do not process investments, handle transactions, 
+            endorse deals, or provide investment advice. All investment decisions and due diligence are the sole responsibility of users. 
+            Users must vet syndicators and deals independently. Past performance does not guarantee future results.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto pt-4 border-t border-gray-800 flex justify-between items-center">
         <div className="text-gray-500 text-sm">
           © {new Date().getFullYear()} EquityMD. All rights reserved.
         </div>

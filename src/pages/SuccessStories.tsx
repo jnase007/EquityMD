@@ -120,15 +120,15 @@ export function SuccessStories() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold text-blue-600 mb-2">$500M+</div>
-              <div className="text-gray-600">Capital Raised</div>
+              <div className="text-gray-600">Deals Connected</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">20%</div>
-              <div className="text-gray-600">Average IRR</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
+              <div className="text-gray-600">Connections Made</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-blue-600 mb-2">150+</div>
-              <div className="text-gray-600">Successful Exits</div>
+              <div className="text-gray-600">Syndicators Listed</div>
             </div>
           </div>
         </div>
@@ -138,17 +138,17 @@ export function SuccessStories() {
       <div className="py-16">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-6">
-            Ready to Write Your Success Story?
+            Ready to Connect with Syndicators?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Join the growing community of successful real estate investors and syndicators.
+            Join the growing community connecting through EquityMD—stories illustrative, EquityMD doesn't guarantee outcomes.
           </p>
           <div className="flex justify-center gap-4">
             <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition">
-              Start Investing
+              Browse Syndicators
             </button>
             <button className="bg-white text-blue-600 px-8 py-3 rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition">
-              Partner with Us
+              Contact Us
             </button>
           </div>
         </div>

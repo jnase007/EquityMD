@@ -64,10 +64,10 @@ export function InvestmentCalculator() {
       <div className="bg-blue-600 text-white py-20">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h1 className="text-4xl font-bold mb-6">
-            Investment Return Calculator
+            Real Estate Calculator
           </h1>
           <p className="text-xl text-blue-100">
-            Analyze potential returns on your real estate investments
+            Educational tool for real estate analysis—contact syndicators for actual returns. EquityMD doesn't provide investment advice.
           </p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function InvestmentCalculator() {
         <div className="bg-white rounded-lg shadow-sm p-8">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-2xl font-bold mb-6">Investment Details</h2>
+              <h2 className="text-2xl font-bold mb-6">Property Details</h2>
               
               <div className="space-y-4">
                 <div>
@@ -218,7 +218,8 @@ export function InvestmentCalculator() {
           </div>
 
           <div className="mt-8 pt-8 border-t">
-            <h2 className="text-2xl font-bold mb-6">Investment Analysis</h2>
+            <h2 className="text-2xl font-bold mb-6">Property Analysis</h2>
+            <p className="text-sm text-gray-600 mb-4">For educational purposes only—contact syndicators for actual investment returns. EquityMD doesn't provide investment advice.</p>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-4 rounded-lg">

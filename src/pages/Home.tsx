@@ -411,7 +411,7 @@ export function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-800">
-              Featured Investment Opportunities
+              Featured Syndicator Listings
             </h2>
             {!user && (
               <button
@@ -463,7 +463,7 @@ export function Home() {
               Current Investors
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Join a community of successful real estate investors building wealth through strategic property investments.
+              Connect with a community of real estate professionals and syndicators—EquityMD doesn't endorse deals or provide investment advice.
             </p>
           </div>
           
@@ -519,10 +519,10 @@ export function Home() {
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4 py-20">
           <h2 className="text-3xl font-bold text-white mb-6">
-            Ready to Expand Your Investment Portfolio?
+            Ready to Connect with Syndicators?
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join EquityMD today to access exclusive real estate syndication opportunities.
+            Join EquityMD today to connect with real estate syndicators—EquityMD is a marketplace, not a broker-dealer.
           </p>
           <div className="flex justify-center gap-4">
             <button 

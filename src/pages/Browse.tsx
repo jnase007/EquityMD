@@ -282,8 +282,8 @@ export function Browse() {
       <Navbar />
       
       <PageBanner 
-        title="Browse Investment Opportunities"
-        subtitle="Discover and invest in institutional-quality real estate deals"
+        title="Browse Syndicator Listings"
+        subtitle="Connect with real estate syndicators and explore investment opportunities"
       >
         <div className="max-w-3xl mx-auto mt-8">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
@@ -326,7 +326,7 @@ export function Browse() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">
-            {filteredDeals.length} Investment Opportunities
+            {filteredDeals.length} Syndicator Listings
           </h2>
           <div className="flex items-center space-x-4">
             {!user && (
@@ -458,9 +458,9 @@ export function Browse() {
         )}
 
         {filteredDeals.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-500">No investment opportunities found matching your criteria</div>
-          </div>
+                      <div className="text-center py-12">
+              <div className="text-gray-500">No syndicator listings found matching your criteria</div>
+            </div>
         )}
       </div>
 

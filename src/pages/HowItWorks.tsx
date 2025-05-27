@@ -8,8 +8,8 @@ export function HowItWorks() {
   const steps = [
     {
       icon: <Search className="h-8 w-8 text-blue-600" />,
-      title: "Browse Investment Opportunities",
-      description: "Explore our curated selection of institutional-quality real estate investments across various property types and markets."
+      title: "Browse Syndicator Listings",
+      description: "Explore syndicator profiles and deal listings across various property types and markets—vet deals independently."
     },
     {
       icon: <Shield className="h-8 w-8 text-blue-600" />,
@@ -23,8 +23,8 @@ export function HowItWorks() {
     },
     {
       icon: <DollarSign className="h-8 w-8 text-blue-600" />,
-      title: "Invest Online",
-      description: "Complete your investment electronically through our secure platform with as little as $25,000."
+      title: "Connect with Syndicators",
+      description: "Contact syndicators directly for deals starting at $25,000—EquityMD doesn't process investments or handle transactions."
     }
   ];
 
@@ -66,8 +66,8 @@ export function HowItWorks() {
             How EquityMD Works
           </h1>
           <p className="text-xl text-blue-100">
-            Your gateway to institutional-quality real estate investments. 
-            Start building your real estate portfolio today.
+            Connect with real estate syndicators and explore opportunities. 
+            EquityMD doesn't process investments—users vet syndicators and deals independently.
           </p>
         </div>
       </div>
@@ -309,17 +309,17 @@ export function HowItWorks() {
       <div className="bg-gray-50 py-16">
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-6">
-            Ready to Start Investing?
+            Ready to Connect with Syndicators?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Join thousands of investors building their real estate portfolios with EQUITYMD.
+            Join thousands connecting with real estate syndicators through EquityMD—vet deals independently.
           </p>
           <div className="flex justify-center gap-4">
             <Link
-              to="/browse"
+              to="/directory"
               className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition"
             >
-              Browse Opportunities
+              Browse Syndicators
             </Link>
             <Link
               to="/contact"

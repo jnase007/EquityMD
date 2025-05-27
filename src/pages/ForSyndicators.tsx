@@ -93,11 +93,11 @@ export function ForSyndicators() {
         </div>
         <div className="relative z-10 max-w-4xl mx-auto px-4 py-20 text-center text-white">
           <h1 className="text-4xl font-bold mb-6">
-            Grow Your Syndication Business
+            Showcase Your CRE Deals
           </h1>
           <p className="text-xl mb-8">
-            Connect with qualified investors and streamline your fundraising process
-            with our comprehensive platform.
+            Connect directly with accredited investors—no intermediaries. 
+            EquityMD is a listing platform—syndicators handle all investor communications and compliance.
           </p>
           <Link
             to="/signup/syndicator/email"
