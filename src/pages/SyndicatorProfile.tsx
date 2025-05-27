@@ -7,7 +7,6 @@ import {
   MessageCircle, User, Play, AlertCircle
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
-import { SyndicatorVerifiedBadge } from '../components/VerifiedBadge';
 import { DealCard } from '../components/Cards';
 import { MessageModal } from '../components/MessageModal';
 import { VideoEmbed } from '../components/VideoEmbed';
@@ -512,7 +511,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
       <Navbar />
 
       <div className="bg-white border-b">
-        <div className="max-w-[1200px] mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="flex-shrink-0">
               {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
@@ -546,13 +545,10 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   <Briefcase className="h-5 w-5 mr-1" />
                   <span>{syndicator.years_in_business} years in business</span>
                 </div>
-                <SyndicatorVerifiedBadge 
-                  verificationStatus={
-                    syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties' ? 'premium' :
-                    syndicator.company_name === 'Starboard Realty' ? 'featured' : 'verified'
-                  }
-                  size="md"
-                />
+                <div className="flex items-center">
+                  <Shield className="h-5 w-5 mr-1" />
+                  <span>Verified Syndicator</span>
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-4">
@@ -607,7 +603,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-lg shadow-sm p-6">
@@ -630,6 +626,8 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                 </div>
               )}
 
+
+
               {syndicator.company_name === 'Back Bay Capital' && (
                 <div className="mt-8">
                   <h3 className="text-xl font-bold mb-4">Company Overview</h3>
@@ -645,71 +643,35 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
               )}
             </div>
 
-            {/* Verified Projects Section */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold mb-4">Verified Projects</h2>
-              <div className="bg-blue-50 rounded-lg p-4 mb-6">
-                <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
-                  <div>
-                    <p className="text-gray-700 mb-2">
-                      <strong>Self-reported:</strong> {syndicator.company_name === 'Starboard Realty' ? '150+ projects, $608M+ deal volume' : 
-                      syndicator.company_name === 'Back Bay Capital' ? '25+ projects, $30M+ deal volume' :
-                      syndicator.company_name === 'Sutera Properties' ? '40+ projects, $125M+ deal volume' :
-                      '50+ projects, $100M+ deal volume'} 
-                      <span className="text-green-600 font-semibold ml-2">[Verified]</span>
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Data from syndicators—EquityMD verifies project claims via admin review of LinkedIn profiles, project documentation, and third-party references.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center mb-2">
-                    <Building2 className="h-5 w-5 text-blue-600 mr-2" />
-                    <span className="font-semibold">Project Portfolio</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Verified through property records, development permits, and completion certificates.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center mb-2">
-                    <ExternalLink className="h-5 w-5 text-blue-600 mr-2" />
-                    <span className="font-semibold">Professional Network</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    LinkedIn profiles and industry references confirm experience and track record.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-6">Active Investment Opportunities</h2>
-              <div className="grid gap-6">
-                {activeDeals.map((deal: any) => (
-                  <DealCard
-                    key={deal.id}
-                    id={deal.id}
-                    slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                    image={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
-                    title={deal.title}
-                    location={deal.location}
-                    metrics={{
-                      target: `${deal.target_irr}% IRR`,
-                      minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                      term: `${deal.investment_term} years`
-                    }}
-                    detailed
-                    isAuthenticated={!!user}
-                  />
-                ))}
-              </div>
+              {activeDeals.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {activeDeals.map((deal: any) => (
+                    <div key={deal.id} className="h-full">
+                      <DealCard
+                        id={deal.id}
+                        slug={deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
+                        image={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
+                        title={deal.title}
+                        location={deal.location}
+                        metrics={{
+                          target: `${deal.target_irr}% IRR`,
+                          minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                          term: `${deal.investment_term} years`
+                        }}
+                        detailed
+                        isAuthenticated={!!user}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Building2 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>No active investment opportunities at this time.</p>
+                </div>
+              )}
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">
