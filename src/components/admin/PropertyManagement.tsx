@@ -42,7 +42,14 @@ export function PropertyManagement() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDeals(data || []);
+      
+      // Only include deals from the three real syndicators
+      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
+      const filteredDeals = data ? data.filter(deal => 
+        allowedSyndicators.includes(deal.syndicator_id)
+      ) : [];
+      
+      setDeals(filteredDeals);
     } catch (error) {
       console.error('Error fetching deals:', error);
     } finally {

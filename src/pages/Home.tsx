@@ -60,9 +60,9 @@ export function Home() {
   // Mock investor data - replace with real data from your API
   const featuredInvestors = [
     {
-      name: "Sarah Chen",
+      name: "Sarah",
       title: "Technology Executive",
-      company: "Tech Innovations Inc",
+      company: "",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$2.5M",
@@ -72,9 +72,9 @@ export function Home() {
       specialties: ["Multi-Family", "Mixed-Use", "Value-Add"]
     },
     {
-      name: "Michael Rodriguez",
+      name: "Michael",
       title: "Business Owner",
-      company: "Rodriguez Manufacturing",
+      company: "",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.8M",
@@ -84,9 +84,9 @@ export function Home() {
       specialties: ["Multi-Family", "Workforce Housing", "Passive Income"]
     },
     {
-      name: "Jennifer Kim",
+      name: "Jennifer",
       title: "Financial Advisor",
-      company: "Wealth Management Partners",
+      company: "",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$3.2M",
@@ -96,9 +96,9 @@ export function Home() {
       specialties: ["Multi-Family", "Student Housing", "Long-term Growth"]
     },
     {
-      name: "David Thompson",
+      name: "David",
       title: "Attorney",
-      company: "Thompson & Associates Law",
+      company: "",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.4M",
@@ -108,9 +108,9 @@ export function Home() {
       specialties: ["Multi-Family", "Tax Benefits", "Passive Income"]
     },
     {
-      name: "Lisa Patel",
+      name: "Lisa",
       title: "Healthcare Executive",
-      company: "Regional Medical Group",
+      company: "",
       image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$2.9M",
@@ -120,9 +120,9 @@ export function Home() {
       specialties: ["Multi-Family", "Workforce Housing", "Diversification"]
     },
     {
-      name: "James Wilson",
+      name: "James",
       title: "Engineering Consultant",
-      company: "Wilson Engineering Solutions",
+      company: "",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
         totalInvested: "$1.6M",
@@ -178,16 +178,16 @@ export function Home() {
         return;
       }
 
-      // Filter out unwanted deals like Innovation Square
+      // Only include deals from the three real syndicators
+      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
       const filteredData = data ? data.filter(deal => 
-        deal.title !== 'Innovation Square' && 
-        !deal.title.includes('Innovation Square')
+        allowedSyndicators.includes(deal.syndicator_id)
       ) : [];
       
       // Always include priority mock deals (BackBay, Starboard, and Sutera)
       const today = new Date().toISOString();
       const priorityDeals = fallbackMockDeals.filter(deal => 
-        deal.syndicator_id === 'back-bay-capital' || deal.syndicator_id === 'starboard-realty' || deal.syndicator_id === 'sutera-properties'
+        allowedSyndicators.includes(deal.syndicator_id)
       ).map(deal => ({
         ...deal,
         created_at: today,
@@ -202,26 +202,9 @@ export function Home() {
         index === self.findIndex(d => d.title === deal.title)
       );
 
-      // Sort with priority deals first (BackBay, Starboard, and Sutera), then by date
-      const sortedDeals = uniqueDeals.sort((a, b) => {
-        // Priority deals always come first
-        const aPriority = a.syndicator_id === 'back-bay-capital' || a.syndicator_id === 'starboard-realty' || a.syndicator_id === 'sutera-properties';
-        const bPriority = b.syndicator_id === 'back-bay-capital' || b.syndicator_id === 'starboard-realty' || b.syndicator_id === 'sutera-properties';
-        
-        if (aPriority && !bPriority) return -1;
-        if (!aPriority && bPriority) return 1;
-        
-        // Within same priority level, sort by date
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      });
-
-      if (sortedDeals.length === 0) {
-        setFeaturedDeals(fallbackMockDeals);
-      } else {
-        setFeaturedDeals(sortedDeals);
-      }
+      setFeaturedDeals(uniqueDeals.slice(0, 6)); // Limit to 6 featured deals
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching featured deals:', error);
       setFeaturedDeals(fallbackMockDeals);
     }
   }

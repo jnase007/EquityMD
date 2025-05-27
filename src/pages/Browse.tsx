@@ -79,16 +79,16 @@ export function Browse() {
         return;
       }
 
-      // Filter out unwanted deals like Innovation Square
+      // Only include deals from the three real syndicators
+      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
       let filteredData = data ? data.filter(deal => 
-        deal.title !== 'Innovation Square' && 
-        !deal.title.includes('Innovation Square')
+        allowedSyndicators.includes(deal.syndicator_id)
       ) : [];
 
       // Always include priority mock deals (BackBay, Starboard, and Sutera)
       const today = new Date().toISOString();
       const priorityDeals = fallbackMockDeals.filter(deal => 
-        deal.syndicator_id === 'back-bay-capital' || deal.syndicator_id === 'starboard-realty' || deal.syndicator_id === 'sutera-properties'
+        allowedSyndicators.includes(deal.syndicator_id)
       ).map(deal => ({
         ...deal,
         created_at: today,
@@ -103,28 +103,10 @@ export function Browse() {
         index === self.findIndex(d => d.title === deal.title)
       );
 
-      // Sort with priority deals first (BackBay, Starboard, and Sutera), then by date
-      const sortedDeals = uniqueDeals.sort((a, b) => {
-        // Priority deals always come first
-        const aPriority = a.syndicator_id === 'back-bay-capital' || a.syndicator_id === 'starboard-realty' || a.syndicator_id === 'sutera-properties';
-        const bPriority = b.syndicator_id === 'back-bay-capital' || b.syndicator_id === 'starboard-realty' || b.syndicator_id === 'sutera-properties';
-        
-        if (aPriority && !bPriority) return -1;
-        if (!aPriority && bPriority) return 1;
-        
-        // Within same priority level, sort by date
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      });
-
-      // If no deals at all, use full fallback mock data
-      if (sortedDeals.length === 0) {
-        setDeals(fallbackMockDeals);
-      } else {
-        setDeals(sortedDeals);
-      }
+      setDeals(uniqueDeals);
     } catch (error) {
-      console.error('Error:', error);
-      // Use fallback mock data if there's an error
+      console.error('Error fetching deals:', error);
+      // Use fallback mock data on error
       setDeals(fallbackMockDeals);
     } finally {
       setLoading(false);
