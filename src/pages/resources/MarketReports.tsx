@@ -27,6 +27,8 @@ interface MarketReport {
   }[];
   image: string;
   thumbnail: string;
+  imageFallback: string;
+  thumbnailFallback: string;
 }
 
 const US_STATES = [
@@ -40,7 +42,7 @@ const US_STATES = [
   'Wisconsin', 'Wyoming'
 ];
 
-// Function to get state image from Supabase storage
+// Function to get state image from Supabase storage with optimized parameters
 const getStateImage = (state: string, size: 'thumb' | 'full' = 'full'): string => {
   const baseUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/states`;
   
@@ -101,19 +103,93 @@ const getStateImage = (state: string, size: 'thumb' | 'full' = 'full'): string =
   const filename = stateImageMap[state];
   if (!filename) return defaultStateImage;
   
-  // Add transformation parameters for better performance
+  // Optimized transformation parameters for much better performance
   const params = size === 'thumb' 
-    ? '?width=400&height=300&resize=cover&quality=80'
-    : '?width=800&height=600&resize=cover&quality=85';
+    ? '?width=300&height=200&resize=cover&quality=70&format=webp'
+    : '?width=600&height=400&resize=cover&quality=75&format=webp';
   
   return `${baseUrl}/${filename}${params}`;
 };
 
+// Fallback function for browsers that don't support WebP
+const getStateImageFallback = (state: string, size: 'thumb' | 'full' = 'full'): string => {
+  const baseUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/states`;
+  
+  const stateImageMap: { [key: string]: string } = {
+    'Alabama': 'Alabama.jpg',
+    'Alaska': 'Alaska.jpg',
+    'Arizona': 'Arizona.jpg',
+    'Arkansas': 'Arkansas.jpg',
+    'California': 'California.jpg',
+    'Colorado': 'Colorado.jpg',
+    'Connecticut': 'Connecticut.jpg',
+    'Delaware': 'Delaware.jpg',
+    'Florida': 'Florida.jpg',
+    'Georgia': 'Georgia.jpg',
+    'Hawaii': 'Hawaii.jpg',
+    'Idaho': 'Idaho.jpg',
+    'Illinois': 'Illinois.jpg',
+    'Indiana': 'Indiana.jpg',
+    'Iowa': 'Iowa.jpg',
+    'Kansas': 'Kansas.jpg',
+    'Kentucky': 'Kentucky.jpg',
+    'Louisiana': 'Louisiana.jpg',
+    'Maine': 'Maine.jpg',
+    'Maryland': 'Maryland.jpg',
+    'Massachusetts': 'Massachusetts.jpg',
+    'Michigan': 'Michigan.jpg',
+    'Minnesota': 'Minnesota.jpg',
+    'Mississippi': 'Mississippi.jpg',
+    'Missouri': 'Missouri.jpg',
+    'Montana': 'Montana.jpg',
+    'Nebraska': 'Nebraska.jpg',
+    'Nevada': 'Nevada.jpg',
+    'New Hampshire': 'NewHampshire.jpg',
+    'New Jersey': 'NewJersey.jpg',
+    'New Mexico': 'NewMexico.jpg',
+    'New York': 'NewYork.jpg',
+    'North Carolina': 'NorthCarolina.jpg',
+    'North Dakota': 'NorthDakota.jpg',
+    'Ohio': 'Ohio.jpg',
+    'Oklahoma': 'Oklahoma.jpg',
+    'Oregon': 'Oregon.jpg',
+    'Pennsylvania': 'Pennsylvania.jpg',
+    'Rhode Island': 'RhodeIsland.jpg',
+    'South Carolina': 'SouthCarolina.jpg',
+    'South Dakota': 'SouthDakota.jpg',
+    'Tennessee': 'Tennessee.jpg',
+    'Texas': 'Texas.jpg',
+    'Utah': 'Utah.jpg',
+    'Vermont': 'Vermont.jpg',
+    'Virginia': 'Virginia.jpg',
+    'Washington': 'Washington.jpg',
+    'West Virginia': 'WestVirginia.jpg',
+    'Wisconsin': 'Wisconsin.jpg',
+    'Wyoming': 'Wyoming.jpg'
+  };
+  
+  const filename = stateImageMap[state];
+  if (!filename) return defaultStateImage;
+  
+  // JPEG fallback with aggressive compression
+  const params = size === 'thumb' 
+    ? '?width=300&height=200&resize=cover&quality=60'
+    : '?width=600&height=400&resize=cover&quality=65';
+  
+  return `${baseUrl}/${filename}${params}`;
+};
+
+// Generate optimized image URLs with WebP support and fallbacks
 const stateImages: { [key: string]: string } = {};
 const stateImagesThumbs: { [key: string]: string } = {};
+const stateImagesFallback: { [key: string]: string } = {};
+const stateImagesThumbsFallback: { [key: string]: string } = {};
+
 US_STATES.forEach(state => {
   stateImages[state] = getStateImage(state, 'full');
   stateImagesThumbs[state] = getStateImage(state, 'thumb');
+  stateImagesFallback[state] = getStateImageFallback(state, 'full');
+  stateImagesThumbsFallback[state] = getStateImageFallback(state, 'thumb');
 });
 
 const defaultStateImage = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80';
@@ -216,11 +292,73 @@ const generateStateReport = (state: string): MarketReport => {
       }
     ],
     image: stateImages[state] || defaultStateImage,
-    thumbnail: stateImagesThumbs[state] || defaultStateImage
+    thumbnail: stateImagesThumbs[state] || defaultStateImage,
+    imageFallback: stateImagesFallback[state] || defaultStateImage,
+    thumbnailFallback: stateImagesThumbsFallback[state] || defaultStateImage
   };
 };
 
 const marketReports: MarketReport[] = US_STATES.map(state => generateStateReport(state));
+
+// Optimized image component with WebP support and fallbacks
+interface OptimizedImageProps {
+  src: string;
+  fallbackSrc: string;
+  alt: string;
+  className?: string;
+  loading?: 'lazy' | 'eager';
+  onLoad?: () => void;
+  onError?: () => void;
+  onLoadStart?: () => void;
+}
+
+const OptimizedImage: React.FC<OptimizedImageProps> = ({
+  src,
+  fallbackSrc,
+  alt,
+  className = '',
+  loading = 'lazy',
+  onLoad,
+  onError,
+  onLoadStart
+}) => {
+  const [imageError, setImageError] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+
+  const handleLoad = () => {
+    setIsLoaded(true);
+    onLoad?.();
+  };
+
+  const handleError = () => {
+    if (!imageError) {
+      setImageError(true);
+      onError?.();
+    }
+  };
+
+  const handleLoadStart = () => {
+    onLoadStart?.();
+  };
+
+  return (
+    <picture>
+      {!imageError && (
+        <source srcSet={src} type="image/webp" />
+      )}
+      <img
+        src={imageError ? fallbackSrc : src}
+        alt={alt}
+        className={`${className} transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+        loading={loading}
+        onLoad={handleLoad}
+        onError={handleError}
+        onLoadStart={handleLoadStart}
+        style={{ backgroundColor: '#f3f4f6' }}
+      />
+    </picture>
+  );
+};
 
 export function MarketReports() {
   const [selectedState, setSelectedState] = useState<string | null>(null);
@@ -384,21 +522,15 @@ export function MarketReports() {
                       <LoadingSpinner size="md" />
                     </div>
                   )}
-                  <img
+                  <OptimizedImage
                     src={report.image}
+                    fallbackSrc={report.imageFallback}
                     alt={`${report.state} skyline`}
-                    className="w-full h-full object-cover transition-opacity duration-300"
+                    className="w-full h-full object-cover"
                     loading="eager"
                     onLoadStart={() => handleImageStart(report.state)}
-                    onLoad={(e) => {
-                      e.currentTarget.style.opacity = '1';
-                      handleImageLoad(report.state);
-                    }}
-                    onError={(e) => {
-                      e.currentTarget.src = defaultStateImage;
-                      handleImageLoad(report.state);
-                    }}
-                    style={{ opacity: 0 }}
+                    onLoad={() => handleImageLoad(report.state)}
+                    onError={() => handleImageLoad(report.state)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-6 left-6">

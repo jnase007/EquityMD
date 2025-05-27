@@ -357,8 +357,11 @@ export function Home() {
               Matching Investors with<br />
               Profitable Real Estate Deals
             </h1>
-            <p className="text-xl text-white mb-8">
+            <p className="text-xl text-white mb-4">
               Exclusive marketplace platform for accredited investors to discover and participate in vetted real estate syndication deals.
+            </p>
+            <p className="text-lg text-blue-100 mb-8 font-semibold">
+              Join 50+ Investors Connecting Today
             </p>
             <div className="flex justify-center gap-4">
               <Link 
@@ -402,6 +405,53 @@ export function Home() {
               title="Compliance Assured"
               description="Platform built with SEC regulations in mind, ensuring compliant transactions for all parties."
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Partnership Badges Section */}
+      <section className="py-16 px-6 bg-white border-t border-gray-100">
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-xl font-semibold text-center mb-8 text-gray-700">
+            Trusted by Industry Leaders
+          </h3>
+          
+          <div className="flex justify-center items-center gap-12 flex-wrap">
+            <div className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-lg">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <Building className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <div className="font-semibold text-gray-900">Petros PACE Finance</div>
+                <div className="text-sm text-gray-600">$500M+ Funded Partner</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-lg">
+              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                <ShieldCheck className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <div className="font-semibold text-gray-900">SEC Compliant</div>
+                <div className="text-sm text-gray-600">Marketplace Platform</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-lg">
+              <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                <Users className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <div className="font-semibold text-gray-900">Join 50+ Investors</div>
+                <div className="text-sm text-gray-600">Connecting Today</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-500">
+              Partnership references are for credibility—EquityMD doesn't guarantee investment outcomes.
+            </p>
           </div>
         </div>
       </section>

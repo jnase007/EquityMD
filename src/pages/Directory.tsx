@@ -285,7 +285,7 @@ export function Directory() {
 
       <PageBanner 
         title="Syndicator Directory"
-        subtitle="Connect with experienced real estate investment firms"
+        subtitle="Connect with experienced real estate investment firms • $1M+ in Active Listings"
       />
 
       <div className="max-w-6xl mx-auto px-4 py-16">
@@ -512,8 +512,10 @@ export function Directory() {
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
                         <SyndicatorVerifiedBadge 
-                          isPremium={syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties'}
-                          isFeatured={syndicator.company_name === 'Starboard Realty'}
+                          verificationStatus={
+                            syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties' ? 'premium' :
+                            syndicator.company_name === 'Starboard Realty' ? 'featured' : 'verified'
+                          }
                           size="sm"
                           showText={false}
                         />
@@ -620,8 +622,10 @@ export function Directory() {
                         <div className="flex items-center gap-3 mb-1">
                           <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
                           <SyndicatorVerifiedBadge 
-                            isPremium={syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties'}
-                            isFeatured={syndicator.company_name === 'Starboard Realty'}
+                            verificationStatus={
+                              syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties' ? 'premium' :
+                              syndicator.company_name === 'Starboard Realty' ? 'featured' : 'verified'
+                            }
                             size="sm"
                           />
                         </div>
