@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal, Globe, LayoutGrid, List, ChevronRight } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { ShareButton } from '../components/ShareButton';
-import { SyndicatorVerifiedBadge } from '../components/VerifiedBadge';
+import { SEO } from '../components/SEO';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { PageBanner } from '../components/PageBanner';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -281,11 +280,17 @@ export function Directory() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        title="Top CRE Syndicator Directory | Deals on Equitymd.com"
+        description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 10K elite investors on Equitymd.com. Browse free—join today!"
+        keywords="CRE syndicator directory, real estate syndicators, multifamily syndicators, industrial real estate, commercial real estate directory"
+        canonical="https://equitymd.com/directory"
+      />
       <Navbar />
 
       <PageBanner 
         title="Syndicator Directory"
-        subtitle="Connect with experienced real estate investment firms • $1M+ in Active Listings"
+        subtitle="Connect with experienced real estate investment firms"
       />
 
       <div className="max-w-6xl mx-auto px-4 py-16">
@@ -493,47 +498,23 @@ export function Directory() {
                 to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
                 className="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
               >
-                <div className="relative">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="relative">
-                      {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
-                        <img
-                          src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
-                          alt={syndicator.company_name}
-                          className="w-16 h-16 object-contain rounded-lg"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                          <Building2 className="w-8 h-8 text-blue-600" />
-                        </div>
-                      )}
+                <div className="flex items-center gap-4 mb-4">
+                                  {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
+                    <img
+                    src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
+                      alt={syndicator.company_name}
+                      className="w-16 h-16 object-contain rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Building2 className="w-8 h-8 text-blue-600" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
-                        <SyndicatorVerifiedBadge 
-                          verificationStatus={
-                            syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties' ? 'premium' :
-                            syndicator.company_name === 'Starboard Realty' ? 'featured' : 'verified'
-                          }
-                          size="sm"
-                          showText={false}
-                        />
-                      </div>
-                      <div className="flex items-center text-gray-600 text-sm">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="absolute top-0 right-0">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                      <ShareButton 
-                        title={syndicator.company_name}
-                        url={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                        description={`Check out ${syndicator.company_name} - experienced real estate syndicator`}
-                        size="sm"
-                      />
+                  )}
+                  <div>
+                    <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
+                    <div className="flex items-center text-gray-600 text-sm">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
                     </div>
                   </div>
                 </div>
@@ -593,43 +574,22 @@ export function Directory() {
                 className="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
               >
                 <div className="flex gap-6">
-                  <div className="relative flex-shrink-0">
-                    {syndicator.company_logo_url ? (
-                      <img
-                        src={syndicator.company_logo_url}
-                        alt={syndicator.company_name}
-                        className="w-32 h-32 object-contain rounded-lg"
-                      />
-                    ) : (
-                      <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-16 h-16 text-blue-600" />
-                      </div>
-                    )}
-                    <div className="absolute top-2 right-2">
-                      <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                        <ShareButton 
-                          title={syndicator.company_name}
-                          url={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                          description={`Check out ${syndicator.company_name} - experienced real estate syndicator`}
-                          size="sm"
-                        />
-                      </div>
+                  {syndicator.company_logo_url ? (
+                    <img
+                      src={syndicator.company_logo_url}
+                      alt={syndicator.company_name}
+                      className="w-32 h-32 object-contain rounded-lg"
+                    />
+                  ) : (
+                    <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Building2 className="w-16 h-16 text-blue-600" />
                     </div>
-                  </div>
+                  )}
                   <div className="flex-grow">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="flex items-center gap-3 mb-1">
-                          <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
-                          <SyndicatorVerifiedBadge 
-                            verificationStatus={
-                              syndicator.company_name === 'Back Bay Capital' || syndicator.company_name === 'Sutera Properties' ? 'premium' :
-                              syndicator.company_name === 'Starboard Realty' ? 'featured' : 'verified'
-                            }
-                            size="sm"
-                          />
-                        </div>
-                        <div className="flex items-center text-gray-600">
+                        <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
+                        <div className="flex items-center text-gray-600 mt-1">
                           <MapPin className="w-4 h-4 mr-1" />
                           {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
                         </div>

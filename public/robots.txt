@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and test pages
+Disallow: /admin/
+Disallow: /dev-admin/
+Disallow: /test-*
+Disallow: /loader-demo
+Disallow: /email-preview
+Disallow: /email-test
+Disallow: /tooltip-demo
+Disallow: /onboarding-demo
+
+# Allow important pages
+Allow: /
+Allow: /directory
+Allow: /pricing
+Allow: /about
+Allow: /blog
+Allow: /browse
+Allow: /contact
+Allow: /how-it-works
+Allow: /for-syndicators
+
+# Sitemap location
+Sitemap: https://equitymd.com/sitemap.xml 

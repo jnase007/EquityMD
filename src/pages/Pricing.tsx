@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { Building2, Users, Mail, CheckCircle, DollarSign, Star, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
@@ -108,6 +109,12 @@ export function Pricing() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO 
+        title="CRE Syndicator Pricing | List Deals on Equitymd.com"
+        description="List CRE deals for just $149–$699/month! Reach 10K elite investors instantly. Start with a free deal on Equitymd.com—sign up now, no success fees!"
+        keywords="CRE syndication pricing, real estate listing fees, syndicator plans, commercial real estate platform pricing"
+        canonical="https://equitymd.com/pricing"
+      />
       <Navbar />
 
       <div className="bg-blue-600 text-white py-20">

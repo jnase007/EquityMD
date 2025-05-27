@@ -37,6 +37,8 @@ import { Disclaimer } from './pages/legal/Disclaimer';
 import { Accreditation } from './pages/legal/Accreditation';
 import { Compliance } from './pages/legal/Compliance';
 import { Contact } from './pages/Contact';
+import { About } from './pages/About';
+import { Blog } from './pages/Blog';
 import { AdminLogin } from './pages/admin/Login';
 import { DashboardOverview } from './pages/DashboardOverview';
 import { Pricing } from './pages/Pricing';
@@ -229,7 +231,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
+  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -270,6 +272,20 @@ export default function App() {
           <ErrorBoundary>
             <Suspense fallback={<PageLoadingFallback />}>
               <Contact />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/about" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <About />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/blog" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <Blog />
             </Suspense>
           </ErrorBoundary>
         } />
