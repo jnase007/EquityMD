@@ -18,7 +18,7 @@ const SyndicatorProfile = lazy(() => import('./pages/SyndicatorProfile').then(mo
 const Directory = lazy(() => import('./pages/Directory').then(module => ({ default: module.Directory })));
 const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
 const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
-const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard').then(module => ({ default: module.AdminDashboard })));
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ default: module.Favorites })));
 
 // Keep lightweight components as regular imports
@@ -60,6 +60,7 @@ import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { AdminErrorBoundary } from './components/AdminErrorBoundary';
 
 // Simple loading fallback
 const PageLoadingFallback = () => (
@@ -420,9 +421,27 @@ export default function App() {
         />
 
         {/* Admin Routes */}
-        <Route path="/admin" element={<Suspense fallback={<PageLoadingFallback />}><AdminLogin /></Suspense>} />
-        <Route path="/admin/dashboard" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
-        <Route path="/dev-admin/*" element={<Suspense fallback={<PageLoadingFallback />}><AdminDashboard /></Suspense>} />
+        <Route path="/admin" element={
+          <AdminErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <AdminLogin />
+            </Suspense>
+          </AdminErrorBoundary>
+        } />
+        <Route path="/admin/dashboard" element={
+          <AdminErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <AdminDashboard />
+            </Suspense>
+          </AdminErrorBoundary>
+        } />
+        <Route path="/dev-admin/*" element={
+          <AdminErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <AdminDashboard />
+            </Suspense>
+          </AdminErrorBoundary>
+        } />
 
         {/* Dashboard Review Route - No Authentication Required */}
         <Route path="/dashboard-review" element={<Suspense fallback={<PageLoadingFallback />}><DashboardReview /></Suspense>} />
