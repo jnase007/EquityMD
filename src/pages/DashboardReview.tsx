@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare, Heart } from 'lucide-react';
+import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare, Heart, AlertTriangle } from 'lucide-react';
 
 export function DashboardReview() {
   const [activeTab, setActiveTab] = useState<'investor' | 'syndicator' | 'admin'>('investor');
@@ -7,6 +7,20 @@ export function DashboardReview() {
 
   const renderInvestorDashboard = () => (
     <div className="space-y-8">
+      {/* SEC Compliance Notice */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="flex items-start">
+          <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 mr-3" />
+          <div className="text-sm">
+            <p className="text-yellow-800 font-medium mb-1">Demonstration Dashboard - Mock Data</p>
+            <p className="text-yellow-700">
+              This dashboard displays sample data for demonstration purposes only. All figures, returns, and investments shown are hypothetical. 
+              Past performance does not guarantee future results. Real estate investments involve significant risks including potential loss of principal.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Investor Dashboard</h1>
         <div className="flex gap-4">
@@ -27,6 +41,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Active Investments</p>
               <p className="text-2xl font-bold text-gray-800">5</p>
+              <p className="text-xs text-gray-400">Sample data</p>
             </div>
           </div>
         </div>
@@ -39,6 +54,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Portfolio Value</p>
               <p className="text-2xl font-bold text-gray-800">$250,000</p>
+              <p className="text-xs text-gray-400">Sample data</p>
             </div>
           </div>
         </div>
@@ -51,6 +67,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Avg Return</p>
               <p className="text-2xl font-bold text-green-600">22.5%</p>
+              <p className="text-xs text-gray-400">Hypothetical</p>
             </div>
           </div>
         </div>
@@ -63,6 +80,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Pending Documents</p>
               <p className="text-2xl font-bold text-orange-600">3</p>
+              <p className="text-xs text-gray-400">Sample data</p>
             </div>
           </div>
         </div>
@@ -226,6 +244,20 @@ export function DashboardReview() {
 
   const renderSyndicatorDashboard = () => (
     <div className="space-y-8">
+      {/* SEC Compliance Notice */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="flex items-start">
+          <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 mr-3" />
+          <div className="text-sm">
+            <p className="text-yellow-800 font-medium mb-1">Demonstration Dashboard - Mock Data</p>
+            <p className="text-yellow-700">
+              This dashboard displays sample data for demonstration purposes only. All metrics, deal information, and investor data shown are hypothetical. 
+              Actual results may vary significantly. Real estate investments involve substantial risks.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Syndicator Dashboard</h1>
         <div className="flex gap-4">
@@ -254,6 +286,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Active Deals</p>
               <p className="text-2xl font-bold text-gray-800">8</p>
+              <p className="text-xs text-gray-400">Sample data</p>
             </div>
           </div>
         </div>
@@ -266,6 +299,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Total Investors</p>
               <p className="text-2xl font-bold text-gray-800">156</p>
+              <p className="text-xs text-gray-400">Sample data</p>
             </div>
           </div>
         </div>
@@ -278,6 +312,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Total Raised</p>
               <p className="text-2xl font-bold text-gray-800">$12.5M</p>
+              <p className="text-xs text-gray-400">Hypothetical</p>
             </div>
           </div>
         </div>
@@ -290,6 +325,7 @@ export function DashboardReview() {
             <div className="ml-4">
               <p className="text-sm text-gray-500">Deal Favorites</p>
               <p className="text-2xl font-bold text-gray-800">342</p>
+              <p className="text-xs text-gray-400">Sample data</p>
             </div>
           </div>
         </div>
