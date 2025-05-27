@@ -6,6 +6,7 @@ import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
 
+// Force deployment refresh - production loading fix
 // Lazy load heavy components
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const Browse = lazy(() => import('./pages/Browse').then(module => ({ default: module.Browse })));
