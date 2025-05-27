@@ -189,12 +189,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
     setShowAuthModal(true);
   };
 
-  const baseClasses = "relative flex justify-between items-center px-6 py-4";
+  const baseClasses = "relative";
   const bgClasses = isTransparent ? "" : "bg-white shadow-sm";
 
   return (
     <nav className={`${baseClasses} ${bgClasses}`}>
-      <Link to="/" className="flex items-center">
+      <div className="max-w-[1200px] mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
+        <Link to="/" className="flex items-center">
         <img 
           src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
           alt="EquityMD"
@@ -567,6 +568,8 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
           </div>
         </div>
       )}
+      
+      </div>
       
       {showAuthModal && (
         <AuthModal onClose={() => setShowAuthModal(false)} defaultType={authModalType} defaultView={authModalView} />

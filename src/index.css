@@ -250,3 +250,33 @@ button, a, [role="button"] {
     background-position: 20px 20px, 20px 30px, 30px 10px, 10px 20px;
   }
 }
+
+/* Mobile hero section optimizations */
+@media (max-width: 640px) {
+  .hero-mobile {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .hero-content-mobile {
+    padding-top: 80px; /* Account for navbar */
+    padding-bottom: 40px;
+  }
+  
+  .hero-buttons-mobile {
+    gap: 12px;
+    padding: 0 16px;
+  }
+  
+  .hero-buttons-mobile > * {
+    min-width: 120px;
+    font-size: 14px;
+    padding: 12px 16px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

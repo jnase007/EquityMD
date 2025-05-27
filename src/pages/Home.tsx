@@ -332,7 +332,7 @@ export function Home() {
               muted
               loop
               playsInline
-              className="w-full h-[600px] object-cover brightness-50"
+              className="w-full h-[500px] sm:h-[600px] object-cover brightness-50"
               onError={() => setUseVideo(false)}
             >
               <source
@@ -342,14 +342,14 @@ export function Home() {
               <img 
                 src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
                 alt="Modern Apartment Building"
-                className="w-full h-[600px] object-cover brightness-50"
+                className="w-full h-[500px] sm:h-[600px] object-cover brightness-50"
               />
             </video>
           ) : (
             <img 
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
               alt="Modern Apartment Building"
-              className="w-full h-[600px] object-cover brightness-50"
+              className="w-full h-[500px] sm:h-[600px] object-cover brightness-50"
             />
           )}
         </div>
@@ -357,26 +357,26 @@ export function Home() {
         <div className="relative z-20">
           <Navbar isTransparent />
           
-          <div className="max-w-4xl mx-auto text-center px-4 py-20 md:py-32 safe-area-top">
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 mobile-heading-responsive">
+          <div className="max-w-4xl mx-auto text-center px-4 pt-28 pb-16 sm:py-24 md:py-36 safe-area-top">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-4 sm:mb-6 mobile-heading-responsive">
               Matching Investors with<br className="hidden sm:block" />
-              <span className="sm:hidden">Profitable </span>
-              <span className="hidden sm:inline">Profitable </span>Real Estate Deals
+              <span className="sm:hidden"> Profitable </span>
+              <span className="hidden sm:inline"> Profitable </span>Real Estate Deals
             </h1>
-            <p className="text-lg md:text-xl text-white mb-8 mobile-text-responsive max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-white mb-6 sm:mb-8 mobile-text-responsive max-w-2xl mx-auto">
               Exclusive marketplace platform for accredited investors to discover and participate in vetted real estate syndication deals.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+            <div className="flex flex-row justify-center gap-3 sm:gap-4 px-2">
               <Link 
                 to="/browse"
-                className="bg-blue-600 text-white text-lg px-6 sm:px-8 py-3 sm:py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center touch-manipulation min-h-touch"
+                className="bg-blue-600 text-white text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center touch-manipulation min-h-touch flex-1 sm:flex-initial min-w-0"
               >
-                Browse Opportunities
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <span className="truncate">Browse Opportunities</span>
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               </Link>
               <button 
                 onClick={handleGetStarted}
-                className="bg-white text-blue-600 text-lg px-6 sm:px-8 py-3 sm:py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center touch-manipulation min-h-touch"
+                className="bg-white text-blue-600 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center touch-manipulation min-h-touch flex-1 sm:flex-initial min-w-0 max-w-[140px] whitespace-nowrap"
               >
                 Get Started
               </button>
@@ -386,9 +386,9 @@ export function Home() {
       </div>
 
       {/* Features Section */}
-      <section className="py-20 px-6">
+      <section className="py-16 sm:py-20 px-6 mt-8 sm:mt-0">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-16 text-gray-800">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12 sm:mb-16 text-gray-800">
             Why Choose EquityMD?
           </h2>
           
