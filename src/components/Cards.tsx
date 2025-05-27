@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, User, Menu, X, ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
 import { OptimizedImage } from './OptimizedImage';
-import { FavoriteButton } from './FavoriteButton';
-import { ShareButton } from './ShareButton';
 import type { Deal, SyndicatorProfile } from '../types/database';
 
 interface FeatureCardProps {
@@ -52,71 +50,58 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
   };
 
   return (
-    <Link to={`/deals/${slug}`} className={`block ${className}`} onClick={handleClick}>
-      <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-        <div className="relative">
+    <Link to={`/deals/${slug}`} className={`block h-full ${className}`} onClick={handleClick}>
+      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col">
+        <div className="relative p-4 pb-0">
           <OptimizedImage 
             src={image} 
             alt={title} 
-            className="w-full h-48 object-cover rounded-lg mb-4"
+            className="w-full h-48 object-cover rounded-lg"
             width={400}
             height={192}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          {isAuthenticated ? (
-            <div className="absolute top-3 right-3 flex gap-2">
-              <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                <ShareButton 
-                  title={title}
-                  url={`/deals/${slug}`}
-                  description={`Check out this investment opportunity in ${location}`}
-                  size="md"
-                />
-              </div>
-              <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                <FavoriteButton dealId={id} size="md" />
-              </div>
-            </div>
-          ) : (
-            <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
+          {!isAuthenticated && (
+            <div className="absolute top-6 right-6 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
               <Lock className="h-4 w-4 mr-1" />
               Sign in to view details
             </div>
           )}
         </div>
-        <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
-        <p className="text-gray-600 mb-4">{location}</p>
-        
-        {isAuthenticated ? (
-          <div className="grid grid-cols-3 gap-4 border-t pt-4">
-            <div>
-              <p className="text-sm text-gray-500">Target Return</p>
-              <p className="font-semibold text-blue-600">{metrics.target}</p>
+        <div className="p-4 pt-3 flex-grow flex flex-col">
+          <h3 className="text-lg font-bold mb-2 text-gray-800 line-clamp-2">{title}</h3>
+          <p className="text-gray-600 mb-4 text-sm">{location}</p>
+          
+          {isAuthenticated ? (
+            <div className="grid grid-cols-3 gap-2 border-t pt-3 mt-auto">
+              <div>
+                <p className="text-xs text-gray-500">Target Return</p>
+                <p className="font-semibold text-blue-600 text-sm">{metrics.target}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Minimum</p>
+                <p className="font-semibold text-blue-600 text-sm">{metrics.minimum}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Term</p>
+                <p className="font-semibold text-blue-600 text-sm">{metrics.term}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Minimum</p>
-              <p className="font-semibold text-blue-600">{metrics.minimum}</p>
+          ) : (
+            <div className="border-t pt-3 mt-auto">
+              <div className="text-center text-gray-500">
+                <Lock className="h-4 w-4 mx-auto mb-1" />
+                <p className="text-xs">Sign in to view investment details</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Term</p>
-              <p className="font-semibold text-blue-600">{metrics.term}</p>
-            </div>
-          </div>
-        ) : (
-          <div className="border-t pt-4">
-            <div className="text-center text-gray-500">
-              <Lock className="h-5 w-5 mx-auto mb-2" />
-              <p className="text-sm">Sign in to view investment details</p>
-            </div>
-          </div>
-        )}
+          )}
 
-        {detailed && (
-          <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center">
-            View Details
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </button>
-        )}
+          {detailed && (
+            <button className="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center text-sm">
+              View Details
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </button>
+          )}
+        </div>
       </div>
     </Link>
   );
@@ -153,23 +138,8 @@ export function DealListItem({ id, slug, image, title, location, description, me
               className="w-48 h-48 object-cover rounded-lg"
               width={192}
               height={192}
-              sizes="192px"
             />
-            {isAuthenticated ? (
-              <div className="absolute top-3 right-3 flex gap-2">
-                <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                  <ShareButton 
-                    title={title}
-                    url={`/deals/${slug}`}
-                    description={`Check out this investment opportunity in ${location}`}
-                    size="sm"
-                  />
-                </div>
-                <div className="bg-white/90 backdrop-blur-sm rounded-full shadow-lg">
-                  <FavoriteButton dealId={id} size="sm" />
-                </div>
-              </div>
-            ) : (
+            {!isAuthenticated && (
               <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
                 <Lock className="h-4 w-4 mr-1" />
                 Sign in
@@ -262,7 +232,6 @@ export function InvestorCard({ name, title, company, image, portfolio, specialti
           className="w-20 h-20 object-cover rounded-full mx-auto mb-4"
           width={80}
           height={80}
-          sizes="80px"
         />
         <h3 className="text-xl font-bold text-gray-800">{name}</h3>
         <p className="text-gray-600">{title}</p>
