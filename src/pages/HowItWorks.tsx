@@ -31,29 +31,22 @@ export function HowItWorks() {
   const benefits = [
     {
       icon: <TrendingUp className="h-12 w-12 text-blue-600" />,
-      title: "Institutional Quality",
-      description: "Access real estate investments previously reserved for institutional investors."
+      title: "Quality Connections",
+      description: "Connect with experienced real estate syndicators and explore institutional-quality opportunities."
     },
     {
       icon: <Shield className="h-12 w-12 text-blue-600" />,
-      title: "Rigorous Due Diligence",
-      description: "Every investment opportunity undergoes thorough vetting by our experienced team."
+      title: "Verified Syndicators",
+      description: "Browse profiles of verified syndicators with established track records in commercial real estate."
     },
     {
       icon: <Users className="h-12 w-12 text-blue-600" />,
-      title: "Expert Partners",
-      description: "Work with experienced real estate operators with proven track records."
+      title: "Direct Communication",
+      description: "Communicate directly with syndicators to explore opportunities and build relationships."
     }
   ];
 
-  const competitors = [
-    { name: 'CrowdStreet', x: 6, y: 10, color: '#4338ca' },
-    { name: 'EquityMultiple', x: 7, y: 9, color: '#4338ca' },
-    { name: 'RealtyMogul', x: 5, y: 8, color: '#4338ca' },
-    { name: 'Fundrise', x: 4, y: 7, color: '#4338ca' },
-    { name: 'Yieldstreet', x: 3, y: 7, color: '#4338ca' },
-    { name: 'EquityMD', x: 8, y: 6, color: '#ef4444' }
-  ];
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -126,7 +119,7 @@ export function HowItWorks() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-blue-600 mr-2" />
-                    <span>Professional due diligence and management</span>
+                    <span>Professional property management and oversight</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="h-5 w-5 text-blue-600 mr-2" />
@@ -179,105 +172,50 @@ export function HowItWorks() {
         </div>
       </div>
 
-      {/* Competitive Analysis Section */}
+      {/* Why Choose EquityMD Section */}
       <div className="bg-white py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Market Leadership Analysis
+          <h2 className="text-3xl font-bold text-center mb-12 text-blue-900">
+            Why Choose EquityMD?
           </h2>
           
-          <div className="bg-white rounded-lg shadow-sm p-8">
-            <div className="relative" style={{ height: '600px' }}>
-              {/* Y-axis label */}
-              <div 
-                className="absolute -left-12 top-1/2 transform -translate-y-1/2 -rotate-90 text-sm text-gray-600"
-                style={{ width: '400px' }}
-              >
-                Ability to Deliver (Higher = Stronger Market Presence & Execution)
-              </div>
-
-              {/* X-axis label */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 mt-8">
-                Focus (Higher = More Specialized in Syndicator Matchmaking)
-              </div>
-
-              {/* Grid */}
-              <div className="relative h-full">
-                {/* Plot points */}
-                {competitors.map((competitor, index) => (
-                  <div
-                    key={index}
-                    className="absolute"
-                    style={{
-                      left: `${(competitor.x / 10) * 100}%`,
-                      bottom: `${(competitor.y / 10) * 100}%`,
-                      transform: 'translate(-50%, 50%)'
-                    }}
-                  >
-                    {/* Competitor marker */}
-                    <div className="relative">
-                      <div 
-                        className="w-6 h-6 transform rotate-45"
-                        style={{ backgroundColor: competitor.color }}
-                      />
-                      <div className="absolute whitespace-nowrap mt-2 text-sm font-medium" style={{ 
-                        left: '50%',
-                        transform: 'translateX(-50%)'
-                      }}>
-                        {competitor.name}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Grid lines */}
-                <div className="absolute inset-0 grid grid-cols-10 grid-rows-10">
-                  {[...Array(11)].map((_, i) => (
-                    <React.Fragment key={i}>
-                      <div 
-                        className="absolute left-0 right-0 border-t border-gray-200"
-                        style={{ bottom: `${(i / 10) * 100}%` }}
-                      />
-                      <div 
-                        className="absolute top-0 bottom-0 border-l border-gray-200"
-                        style={{ left: `${(i / 10) * 100}%` }}
-                      />
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Analysis */}
-            <div className="mt-12 grid md:grid-cols-2 gap-8">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-lg text-gray-700 mb-8 text-center">
+              Your trusted marketplace for CRE syndication connections—designed for accredited investors and experienced syndicators.
+            </p>
+            
+            <div className="space-y-8">
               <div>
-                <h3 className="text-xl font-bold mb-4">Key Differentiators</h3>
-                <ul className="space-y-4">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
-                    <span>Highest focus on syndicator matchmaking and relationship building</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
-                    <span>Curated network of verified, high-quality syndicators</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
-                    <span>Rigorous due diligence and verification process</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-blue-600 mt-1 mr-2" />
-                    <span>Focus on long-term relationship building over transaction volume</span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold mb-4">Our Approach</h3>
-                <p className="text-gray-600 mb-4">
-                  While established platforms like CrowdStreet and EquityMultiple excel in transaction execution, EquityMD takes a different approach. We focus on creating meaningful connections between accredited investors and experienced real estate syndicators, prioritizing relationship quality over transaction quantity.
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Specialized Connections</h3>
+                <p className="text-gray-700">
+                  We prioritize quality over quantity, connecting you with syndicators who align with your CRE goals—building relationships that last.
                 </p>
-                <p className="text-gray-600">
-                  Our specialized focus allows us to better understand the unique needs and preferences of our investors, leading to more targeted and relevant investment opportunities. As we grow, we're building the infrastructure and partnerships to increase our execution capabilities while maintaining our core focus on quality matchmaking.
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Direct Engagement</h3>
+                <p className="text-gray-700">
+                  Engage directly with syndicators to explore listings and vet deals on your terms—EquityMD empowers your decisions, staying hands-off.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Future-Forward Vision</h3>
+                <p className="text-gray-700 mb-6">
+                  Join a platform built for the future—AI-driven matchmaking and expanded market insights are coming soon to enhance your CRE syndication experience.
+                </p>
+              </div>
+              
+              <div className="text-center">
+                <Link
+                  to="/directory"
+                  className="inline-block bg-green-600 text-white px-8 py-3 rounded-lg text-lg hover:bg-green-700 transition mb-6"
+                >
+                  Start Connecting Today
+                </Link>
+                
+                <p className="text-sm text-gray-500 max-w-3xl mx-auto">
+                  EquityMD is a listing platform, not a broker-dealer or investment adviser—users connect with syndicators directly and assume all responsibility for vetting deals.
                 </p>
               </div>
             </div>
