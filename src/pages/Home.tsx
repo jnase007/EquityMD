@@ -357,25 +357,26 @@ export function Home() {
         <div className="relative z-20">
           <Navbar isTransparent />
           
-          <div className="max-w-4xl mx-auto text-center px-4 py-32">
-            <h1 className="text-5xl font-bold text-white mb-6">
-              Matching Investors with<br />
-              Profitable Real Estate Deals
+          <div className="max-w-4xl mx-auto text-center px-4 py-20 md:py-32 safe-area-top">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 mobile-heading-responsive">
+              Matching Investors with<br className="hidden sm:block" />
+              <span className="sm:hidden">Profitable </span>
+              <span className="hidden sm:inline">Profitable </span>Real Estate Deals
             </h1>
-            <p className="text-xl text-white mb-8">
+            <p className="text-lg md:text-xl text-white mb-8 mobile-text-responsive max-w-2xl mx-auto">
               Exclusive marketplace platform for accredited investors to discover and participate in vetted real estate syndication deals.
             </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
               <Link 
                 to="/browse"
-                className="bg-blue-600 text-white text-lg px-8 py-3 rounded-lg hover:bg-blue-700 transition flex items-center"
+                className="bg-blue-600 text-white text-lg px-6 sm:px-8 py-3 sm:py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center touch-manipulation min-h-touch"
               >
                 Browse Opportunities
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
               <button 
                 onClick={handleGetStarted}
-                className="bg-white text-blue-600 text-lg px-8 py-3 rounded-lg hover:bg-blue-50 transition flex items-center"
+                className="bg-white text-blue-600 text-lg px-6 sm:px-8 py-3 sm:py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center touch-manipulation min-h-touch"
               >
                 Get Started
               </button>
@@ -430,10 +431,10 @@ export function Home() {
           </div>
           
           <div className="relative">
-            <div className="overflow-x-auto pb-4 scrollbar-hide">
-              <div className="flex gap-6" style={{ width: 'max-content' }}>
+            <div className="overflow-x-auto pb-4 scrollbar-hide horizontal-scroll mobile-scroll touch-pan-x">
+              <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
                 {featuredDeals.map((deal, index) => (
-                  <div key={deal.id} className="w-[350px] relative">
+                  <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0">
                     <DealCard
                       id={deal.id}
                       slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
@@ -473,10 +474,10 @@ export function Home() {
           </div>
           
           <div className="relative">
-            <div className="overflow-x-auto pb-4 scrollbar-hide">
-              <div className="flex gap-6" style={{ width: 'max-content' }}>
+            <div className="overflow-x-auto pb-4 scrollbar-hide horizontal-scroll mobile-scroll touch-pan-x">
+              <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
                 {featuredInvestors.map((investor, index) => (
-                  <div key={index} className="w-[350px] relative">
+                  <div key={index} className="w-[300px] md:w-[350px] relative flex-shrink-0">
                     <InvestorCard
                       name={investor.name}
                       title={investor.title}

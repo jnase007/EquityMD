@@ -375,7 +375,8 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="md:hidden"
+        className="md:hidden touch-manipulation min-h-touch min-w-touch flex items-center justify-center tap-highlight-none"
+        aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
       >
         {isMenuOpen ? (
           <X className={`h-6 w-6 ${isTransparent ? 'text-white' : 'text-gray-900'}`} />
@@ -386,17 +387,21 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-white z-50 md:hidden overflow-y-auto">
-          <div className="p-4">
+        <div className="fixed inset-0 bg-white z-50 md:hidden overflow-y-auto mobile-scroll safe-area-inset">
+          <div className="p-4 safe-area-top">
             <div className="flex justify-between items-center mb-6">
-              <Link to="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/" className="flex items-center touch-manipulation" onClick={() => setIsMenuOpen(false)}>
                 <img 
                   src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
                   alt="EquityMD"
                   className="h-10"
                 />
               </Link>
-              <button onClick={() => setIsMenuOpen(false)}>
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="touch-manipulation min-h-touch min-w-touch flex items-center justify-center tap-highlight-none"
+                aria-label="Close menu"
+              >
                 <X className="h-6 w-6 text-gray-900" />
               </button>
             </div>
