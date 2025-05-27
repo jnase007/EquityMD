@@ -2,7 +2,7 @@
 export class LoadingManager {
   private static instance: LoadingManager;
   private loadingStates: Map<string, { startTime: number; timeout?: NodeJS.Timeout }> = new Map();
-  private readonly DEFAULT_TIMEOUT = 15000; // 15 seconds
+  private readonly DEFAULT_TIMEOUT = 25000; // 25 seconds (increased for production)
 
   static getInstance(): LoadingManager {
     if (!LoadingManager.instance) {

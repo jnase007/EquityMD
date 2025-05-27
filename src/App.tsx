@@ -1,12 +1,10 @@
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { SEO } from './components/SEO';
-import { LoadingSpinner } from './components/LoadingSpinner';
-import { LoadingInterceptor } from './components/LoadingInterceptor';
+import { SimpleLoader } from './components/SimpleLoader';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
-import { loadingManager } from './utils/loadingManager';
 
 // Lazy load heavy components
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
@@ -60,34 +58,13 @@ import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-// Loading fallback component with timeout protection
-const PageLoadingFallback = () => {
-  const handleTimeout = () => {
-    console.warn('Page loading timed out - component may have failed to load');
-    // Force a page refresh if loading takes too long
-    setTimeout(() => {
-      if (window.confirm('The page is taking too long to load. Would you like to refresh?')) {
-        window.location.reload();
-      }
-    }, 1000);
-  };
-
-  const handleRetry = () => {
-    window.location.reload();
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <LoadingSpinner 
-        variant="medical" 
-        size="lg" 
-        text="Loading your investment opportunities..." 
-        timeout={12000}
-        onTimeout={handleTimeout}
-      />
-    </div>
-  );
-};
+// Simple loading fallback
+const PageLoadingFallback = () => (
+  <SimpleLoader 
+    text="Loading your investment opportunities..." 
+    timeout={15000}
+  />
+);
 
 export default function App() {
   const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
@@ -117,8 +94,6 @@ export default function App() {
 
   useEffect(() => {
     const initAuth = async () => {  
-      loadingManager.startLoading('auth-init', 10000);
-      
       try {
         const { error: refreshError } = await supabase.auth.refreshSession();
         if (refreshError) {
@@ -149,12 +124,9 @@ export default function App() {
     
         await fetchSiteSettings();
         
-        loadingManager.stopLoading('auth-init');
-        
         return () => subscription.unsubscribe();
       } catch (error) {
         console.error('Auth initialization error:', error);
-        loadingManager.stopLoading('auth-init');
       }
     };
   
@@ -269,7 +241,7 @@ export default function App() {
   }, [location.pathname, requireAuth, user]);
 
   return (
-    <LoadingInterceptor>
+    <>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={
@@ -462,6 +434,6 @@ export default function App() {
       )}
 
       <PerformanceMonitor />
-    </LoadingInterceptor>
+    </>
   );
 }

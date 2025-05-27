@@ -131,7 +131,7 @@ export function LoadingSpinner({
 }
 
 // Top loading bar component with auto-hide
-export function TopLoadingBar({ timeout = 15000 }: { timeout?: number }) {
+export function TopLoadingBar({ timeout = 25000 }: { timeout?: number }) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -159,7 +159,7 @@ export function TopLoadingBar({ timeout = 15000 }: { timeout?: number }) {
 export function PageLoader({ 
   text = 'Loading your investment opportunities...', 
   showTopBar = true,
-  timeout = 15000, // 15 second timeout
+  timeout = 25000, // 25 second timeout (increased for production)
   onTimeout,
   onRetry
 }: { 

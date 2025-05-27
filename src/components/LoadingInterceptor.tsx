@@ -8,14 +8,19 @@ interface LoadingInterceptorProps {
 export function LoadingInterceptor({ children }: LoadingInterceptorProps) {
   const [stuckLoadings, setStuckLoadings] = useState<string[]>([]);
   const [showRecovery, setShowRecovery] = useState(false);
+  
+  // More generous timeouts for production
+  const isProduction = process.env.NODE_ENV === 'production';
+  const stuckThreshold = isProduction ? 45000 : 30000; // 45s in prod, 30s in dev
+  const checkInterval = isProduction ? 15000 : 10000; // Check every 15s in prod, 10s in dev
 
   useEffect(() => {
-    // Check for stuck loading states every 5 seconds
+    // Check for stuck loading states every 10 seconds (less aggressive)
     const checkInterval = setInterval(() => {
       const activeLoadings = loadingManager.getActiveLoadings();
       const stuck = activeLoadings.filter(key => {
         const duration = loadingManager.getLoadingDuration(key);
-        return duration > 20000; // Consider stuck after 20 seconds
+        return duration > 30000; // Consider stuck after 30 seconds (increased from 20)
       });
 
       if (stuck.length > 0) {
@@ -23,7 +28,7 @@ export function LoadingInterceptor({ children }: LoadingInterceptorProps) {
         setStuckLoadings(stuck);
         setShowRecovery(true);
       }
-    }, 5000);
+    }, 10000); // Check every 10 seconds instead of 5
 
     // Listen for loading timeout events
     const handleLoadingTimeout = (event: CustomEvent) => {
