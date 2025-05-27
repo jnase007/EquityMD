@@ -113,9 +113,14 @@ export function DueDiligence() {
               <p className="text-gray-600 mb-4">
                 Get our comprehensive due diligence checklist and guide in PDF format.
               </p>
-              <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+              <a 
+                href="https://docs.google.com/document/d/1qJKIcjieUUuU--2m0janFH7o1BGhVpXl9kvw3U4XXxw/edit?tab=t.0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
                 Download PDF
-              </button>
+              </a>
             </div>
           </div>
         </div>
