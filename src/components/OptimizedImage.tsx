@@ -6,9 +6,8 @@ interface OptimizedImageProps {
   className?: string;
   width?: number;
   height?: number;
-  priority?: boolean;
-  placeholder?: string;
-  sizes?: string;
+  priority?: boolean; // Load immediately for above-the-fold images
+  placeholder?: string; // Base64 or low-res placeholder
 }
 
 export function OptimizedImage({
@@ -18,17 +17,16 @@ export function OptimizedImage({
   width,
   height,
   priority = false,
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+',
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+  placeholder
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
-  const [imageSrc, setImageSrc] = useState(priority ? src : placeholder);
+  const [error, setError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
   // Intersection Observer for lazy loading
   useEffect(() => {
-    if (priority) return;
+    if (priority) return; // Skip lazy loading for priority images
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -47,55 +45,76 @@ export function OptimizedImage({
     return () => observer.disconnect();
   }, [priority]);
 
-  // Load image when in view
-  useEffect(() => {
-    if (isInView && imageSrc === placeholder) {
-      // Try WebP first, fallback to original
-      const webpSrc = src.includes('unsplash.com') 
-        ? `${src}&fm=webp&q=80`
-        : src;
-      
-      const img = new Image();
-      img.onload = () => {
-        setImageSrc(webpSrc);
-        setIsLoaded(true);
-      };
-      img.onerror = () => {
-        setImageSrc(src);
-        setIsLoaded(true);
-      };
-      img.src = webpSrc;
+  // Generate optimized image URLs
+  const getOptimizedSrc = (originalSrc: string, width?: number) => {
+    // If using a CDN like Cloudinary, Imgix, or similar
+    // Replace this with your actual image optimization service
+    if (originalSrc.includes('supabase')) {
+      // Supabase storage optimization
+      const url = new URL(originalSrc);
+      if (width) {
+        url.searchParams.set('width', width.toString());
+        url.searchParams.set('quality', '80');
+      }
+      return url.toString();
     }
-  }, [isInView, src, placeholder, imageSrc]);
-
-  // Generate responsive srcSet for Unsplash images
-  const generateSrcSet = (baseSrc: string) => {
-    if (!baseSrc.includes('unsplash.com')) return undefined;
     
-    const sizes = [400, 800, 1200, 1600];
-    return sizes
-      .map(size => `${baseSrc}&w=${size}&fm=webp&q=80 ${size}w`)
-      .join(', ');
+    return originalSrc;
   };
 
+  const optimizedSrc = getOptimizedSrc(src, width);
+
   return (
-    <img
+    <div 
       ref={imgRef}
-      src={imageSrc}
-      srcSet={generateSrcSet(src)}
-      sizes={sizes}
-      alt={alt}
-      width={width}
-      height={height}
-      className={`transition-opacity duration-300 ${
-        isLoaded ? 'opacity-100' : 'opacity-0'
-      } ${className}`}
-      loading={priority ? 'eager' : 'lazy'}
-      decoding="async"
-      onLoad={() => setIsLoaded(true)}
-      style={{
-        aspectRatio: width && height ? `${width}/${height}` : undefined
-      }}
-    />
+      className={`relative overflow-hidden ${className}`}
+      style={{ width, height }}
+    >
+      {/* Placeholder */}
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
+          {placeholder ? (
+            <img 
+              src={placeholder} 
+              alt="" 
+              className="w-full h-full object-cover opacity-50"
+            />
+          ) : (
+            <div className="text-gray-400">
+              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+              </svg>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Error state */}
+      {error && (
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <div className="text-center text-gray-500">
+            <svg className="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <p className="text-sm">Failed to load</p>
+          </div>
+        </div>
+      )}
+
+      {/* Actual image - only load when in view */}
+      {isInView && (
+        <img
+          src={optimizedSrc}
+          alt={alt}
+          className={`w-full h-full object-cover transition-opacity duration-300 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setError(true)}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      )}
+    </div>
   );
 } 
