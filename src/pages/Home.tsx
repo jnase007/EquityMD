@@ -50,13 +50,6 @@ export function Home() {
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
   const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_in');
   
-  // Dynamic activity metrics
-  const [activityMetrics, setActivityMetrics] = useState({
-    dailyInvestors: 0,
-    weeklyDeals: 0,
-    recentInvestment: 0
-  });
-
   // Mock investor data - replace with real data from your API
   const featuredInvestors = [
     {
@@ -135,34 +128,7 @@ export function Home() {
 
   useEffect(() => {
     fetchFeaturedDeals();
-    generateActivityMetrics();
-    
-    // Update activity metrics every 30 seconds to show dynamic activity
-    const interval = setInterval(generateActivityMetrics, 30000);
-    
-    return () => clearInterval(interval);
   }, []);
-
-  function generateActivityMetrics() {
-    // Generate realistic numbers that vary by time of day and day of week
-    const now = new Date();
-    const hour = now.getHours();
-    const dayOfWeek = now.getDay();
-    
-    // More activity during business hours and weekdays
-    const timeMultiplier = hour >= 9 && hour <= 17 ? 1.5 : 0.8;
-    const dayMultiplier = dayOfWeek >= 1 && dayOfWeek <= 5 ? 1.2 : 0.9;
-    
-    const baseInvestors = Math.floor((35 + Math.random() * 25) * timeMultiplier * dayMultiplier);
-    const baseDeals = Math.floor((8 + Math.random() * 8) * dayMultiplier);
-    const baseInvestment = (1.5 + Math.random() * 2.0) * timeMultiplier;
-    
-    setActivityMetrics({
-      dailyInvestors: baseInvestors,
-      weeklyDeals: baseDeals,
-      recentInvestment: parseFloat(baseInvestment.toFixed(1))
-    });
-  }
 
   async function fetchFeaturedDeals() {
     try {
@@ -344,7 +310,7 @@ export function Home() {
       <div className="bg-blue-600 text-white py-2 px-4 text-center">
         <div className="max-w-[1200px] mx-auto">
           <p className="text-sm sm:text-base">
-            🔥 <strong>{activityMetrics.dailyInvestors}+ investors</strong> joined today • <strong>{activityMetrics.weeklyDeals} new deals</strong> added this week • <strong>${activityMetrics.recentInvestment}M</strong> invested in the last 24 hours
+            🔥 <strong>25+ investors</strong> joined today • <strong>3 new deals</strong> added this week • <strong>Active marketplace</strong> for accredited investors
           </p>
         </div>
       </div>
