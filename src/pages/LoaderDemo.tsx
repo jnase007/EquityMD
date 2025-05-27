@@ -41,7 +41,7 @@ export function LoaderDemo() {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Loading Animation Showcase</h1>
           <p className="text-gray-600">Choose your favorite loading animation for EquityMD</p>

@@ -29,7 +29,7 @@ export function About() {
 
       {/* Mission Section */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">
               Our Mission
@@ -80,7 +80,7 @@ export function About() {
 
       {/* Stats Section */}
       <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">
               Platform Impact
@@ -113,7 +113,7 @@ export function About() {
 
       {/* Values Section */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">
               Our Values

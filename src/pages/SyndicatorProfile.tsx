@@ -512,7 +512,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
       <Navbar />
 
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-[1200px] mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="flex-shrink-0">
               {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
@@ -607,7 +607,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-lg shadow-sm p-6">

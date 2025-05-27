@@ -107,7 +107,7 @@ export function Blog() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         {/* Category Filter */}
         <div className="mb-12">
           <div className="flex flex-wrap gap-2 justify-center">

@@ -53,7 +53,7 @@ export function DashboardHeader({
 
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             {/* Avatar */}

@@ -387,7 +387,7 @@ export function Home() {
 
       {/* Features Section */}
       <section className="py-16 sm:py-20 px-6 mt-8 sm:mt-0">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12 sm:mb-16 text-gray-800">
             Why Choose EquityMD?
           </h2>
@@ -414,7 +414,7 @@ export function Home() {
 
       {/* Featured Deals Section */}
       <section className="bg-slate-50 py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-gray-800">
               Featured Investment Opportunities
@@ -463,7 +463,7 @@ export function Home() {
 
       {/* Current Investors Section */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
               Current Investors
@@ -500,7 +500,7 @@ export function Home() {
 
       {/* Stats Section */}
       <section className="py-20 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <StatCard number="$450M+" label="Total Deal Volume" icon={<Building className="h-8 w-8 text-blue-600" />} />
             <StatCard number="10K+" label="Accredited Investors" icon={<Briefcase className="h-8 w-8 text-blue-600" />} />

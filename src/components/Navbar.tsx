@@ -568,12 +568,11 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
           </div>
         </div>
       )}
-      
-      </div>
-      
+
       {showAuthModal && (
         <AuthModal onClose={() => setShowAuthModal(false)} defaultType={authModalType} defaultView={authModalView} />
       )}
+      </div>
     </nav>
   );
 }

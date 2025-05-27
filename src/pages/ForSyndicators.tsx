@@ -111,7 +111,7 @@ export function ForSyndicators() {
 
       {/* Benefits Section */}
       <div className="py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Why Partner with EquityMD?
           </h2>
@@ -131,7 +131,7 @@ export function ForSyndicators() {
 
       {/* Integrations Section */}
       <div className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
             Seamless Integrations
           </h2>
@@ -167,7 +167,7 @@ export function ForSyndicators() {
 
       {/* Features Section */}
       <div className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Platform Features
           </h2>
@@ -189,7 +189,7 @@ export function ForSyndicators() {
 
       {/* Stats Section */}
       <div className="bg-blue-600 text-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold mb-2">$500M+</div>

@@ -511,7 +511,7 @@ export function MarketReports() {
         </div>
       </PageBanner>
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         {selectedState ? (
           <div className="bg-white rounded-lg shadow-sm p-8">
             {filteredReports.map(report => report.state === selectedState && (

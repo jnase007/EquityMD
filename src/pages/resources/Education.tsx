@@ -76,7 +76,7 @@ export function Education() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         {/* Featured Courses */}
         <div className="mb-16">
           <h2 className="text-2xl font-bold mb-8">Featured Courses</h2>

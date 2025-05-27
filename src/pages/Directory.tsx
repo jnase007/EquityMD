@@ -293,7 +293,7 @@ export function Directory() {
         subtitle="Connect with experienced real estate investment firms"
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         {/* Featured Syndicators Section */}
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-6">

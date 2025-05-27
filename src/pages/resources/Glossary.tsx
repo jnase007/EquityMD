@@ -373,7 +373,7 @@ export function Glossary() {
         subtitle="Essential terms and definitions for real estate investors"
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         <div className="bg-white rounded-lg shadow-sm p-8">
           {/* Search and Filter */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">

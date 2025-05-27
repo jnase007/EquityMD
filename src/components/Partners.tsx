@@ -57,7 +57,7 @@ const partners: Partner[] = [
 export function Partners({ variant = 'light', showFeatures = false, showCTA = false }: PartnersProps) {
   return (
     <div className={`py-16 ${variant === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-[1200px] mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className={`text-3xl font-bold ${variant === 'dark' ? 'text-white' : 'text-gray-900'}`}>
             Integrated with Industry-Leading Platforms

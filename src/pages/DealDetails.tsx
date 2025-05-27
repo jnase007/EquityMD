@@ -356,7 +356,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         />
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl mx-auto px-4 text-white w-full">
+          <div className="max-w-[1200px] mx-auto px-4 text-white w-full">
             <div className="flex items-center text-sm mb-4">
               <span>Deals</span>
               <ChevronRight className="h-4 w-4 mx-2" />
@@ -380,7 +380,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">

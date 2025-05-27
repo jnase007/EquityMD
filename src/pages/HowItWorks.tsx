@@ -66,7 +66,7 @@ export function HowItWorks() {
       </div>
 
       {/* Understanding Real Estate Syndication */}
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         <div className="bg-white rounded-xl shadow-sm p-8 mb-16">
           <h2 className="text-3xl font-bold mb-8">Understanding Real Estate Syndication</h2>
           
@@ -174,7 +174,7 @@ export function HowItWorks() {
 
       {/* Why Choose EquityMD Section */}
       <div className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-blue-900">
             Why Choose EquityMD?
           </h2>
@@ -225,7 +225,7 @@ export function HowItWorks() {
 
       {/* Benefits Section */}
       <div className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Why Choose EQUITYMD?
           </h2>

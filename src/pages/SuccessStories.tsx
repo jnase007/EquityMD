@@ -63,7 +63,7 @@ export function SuccessStories() {
       </div>
 
       {/* Stories Section */}
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         <div className="space-y-16">
           {stories.map((story, index) => (
             <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -116,7 +116,7 @@ export function SuccessStories() {
 
       {/* Investor Testimonials Section */}
       <div className="bg-gray-50 py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Investor Success Stories</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg p-6 shadow-sm">
@@ -232,7 +232,7 @@ export function SuccessStories() {
 
       {/* Stats Section */}
       <div className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-[1200px] mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold text-blue-600 mb-2">$500M+</div>

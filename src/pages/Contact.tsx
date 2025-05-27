@@ -64,7 +64,7 @@ export function Contact() {
         subtitle="We're here to help with any questions or feedback"
       />
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Contact Information */}
           <div className="space-y-8">

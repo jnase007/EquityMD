@@ -158,7 +158,7 @@ export function OnboardingDemo() {
         {/* Header */}
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" />
-          <div className="relative max-w-7xl mx-auto px-4 py-8">
+          <div className="relative max-w-[1200px] mx-auto px-4 py-8">
             <div className="flex justify-between items-center">
               <Link to="/" className="flex items-center">
                 <img
@@ -327,7 +327,7 @@ export function OnboardingDemo() {
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" />
-        <div className="relative max-w-7xl mx-auto px-4 py-6">
+        <div className="relative max-w-[1200px] mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
             <Link to="/" className="flex items-center">
               <img

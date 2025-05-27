@@ -66,7 +66,7 @@ export function DueDiligence() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-16">
+      <div className="max-w-[1200px] mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-8">
           {sections.map((section, index) => (
             <div key={index} className="bg-white rounded-lg shadow-sm p-6">
