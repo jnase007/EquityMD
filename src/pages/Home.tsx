@@ -377,7 +377,7 @@ export function Home() {
       </div>
 
       {/* Features Section */}
-      <section className="py-16 sm:py-20 px-6 mt-8 sm:mt-0">
+      <section className="py-16 sm:py-20 px-6 mt-16 sm:mt-0">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12 sm:mb-16 text-gray-800">
             Why Choose EquityMD?

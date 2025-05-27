@@ -123,7 +123,9 @@ export function Directory() {
                                          s.company_name === 'Sutera Properties' ? 18 : 15) : 0,
               active_deals: isVerified ? (s.company_name === 'Back Bay Capital' ? 3 : 
                                         s.company_name === 'Sutera Properties' ? 1 : 1) : 0,
-              total_deal_volume: isVerified ? s.total_deal_volume : 0,
+              total_deal_volume: isVerified ? (s.company_name === 'Back Bay Capital' ? 30000000 : 
+                                              s.company_name === 'Sutera Properties' ? 38000000 :
+                                              s.company_name === 'Starboard Realty' ? 608000000 : 0) : 0,
               specialties: isVerified ? (s.company_name === 'Back Bay Capital' ? ['Multi-Family', 'Preferred Equity', 'Value-Add'] :
                                        s.company_name === 'Sutera Properties' ? ['Multi-Family', 'Ground-Up Development'] :
                                        ['Multi-Family', 'Retail', 'NNN Lease']) : [],
@@ -242,6 +244,28 @@ export function Directory() {
       min_investment: 100000,
       target_markets: ['California', 'Arizona', 'Texas'],
       certifications: ['CCIM', 'CRE']
+    },
+    {
+      id: 'sutera-properties',
+      company_name: 'Sutera Properties',
+      company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Sutera_Properties.jpg',
+      company_description: 'Sutera Properties is a real estate investment and development company focused on creating value through strategic acquisitions and developments in high-growth markets.',
+      state: 'Florida',
+      city: 'Miami',
+      years_in_business: 15,
+      total_deal_volume: 38000000,
+      website_url: 'https://suteraproperties.com/',
+      average_rating: 4.8,
+      total_reviews: 18,
+      active_deals: 1,
+      slug: 'sutera-properties',
+      specialties: ['Multi-Family', 'Mixed-Use', 'Development'],
+      team_size: 20,
+      notable_projects: ['Bayfront Towers', 'Ocean View Resort'],
+      investment_focus: ['Opportunistic', 'Value-Add'],
+      min_investment: 100000,
+      target_markets: ['Miami', 'Tampa', 'Orlando'],
+      certifications: ['CCIM', 'CRE', 'CPM']
     }
   ];
 

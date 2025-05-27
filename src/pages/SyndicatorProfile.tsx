@@ -172,6 +172,7 @@ export function SyndicatorProfile() {
         })(),
         // Override total deal volume for specific syndicators
         total_deal_volume: syndicatorData.company_name === 'Back Bay Capital' ? 30000000 : 
+                          syndicatorData.company_name === 'Sutera Properties' ? 38000000 :
                           syndicatorData.company_name === 'Starboard Realty' ? 608000000 : 
                           syndicatorData.total_deal_volume,
         // Override profile info for specific syndicators
