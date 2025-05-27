@@ -414,24 +414,25 @@ export function Browse() {
         </div>
 
         {viewMode === 'grid' ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
             {filteredDeals.map((deal, index) => (
-              <DealCard
-                key={deal.id}
-                id={deal.id}
-                slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
-                title={deal.title}
-                location={deal.location}
-                metrics={{
-                  target: `${deal.target_irr}% IRR`,
-                  minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                  term: `${deal.investment_term} years`
-                }}
-                detailed
-                isAuthenticated={!!user}
-                onAuthRequired={() => setShowAuthModal(true)}
-              />
+              <div key={deal.id} className="h-full">
+                <DealCard
+                  id={deal.id}
+                  slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
+                  image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                  title={deal.title}
+                  location={deal.location}
+                  metrics={{
+                    target: `${deal.target_irr}% IRR`,
+                    minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                    term: `${deal.investment_term} years`
+                  }}
+                  detailed
+                  isAuthenticated={!!user}
+                  onAuthRequired={() => setShowAuthModal(true)}
+                />
+              </div>
             ))}
           </div>
         ) : (

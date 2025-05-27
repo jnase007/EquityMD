@@ -51,17 +51,17 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
 
   return (
     <Link to={`/deals/${slug}`} className={`block h-full ${className}`} onClick={handleClick}>
-      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col">
-        <div className="relative p-4 pb-0">
+      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col overflow-hidden">
+        <div className="relative">
           <OptimizedImage 
             src={image} 
             alt={title} 
-            className="w-full h-48 object-cover rounded-lg"
+            className="w-full h-48 object-cover"
             width={400}
             height={192}
           />
           {!isAuthenticated && (
-            <div className="absolute top-6 right-6 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
+            <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
               <Lock className="h-4 w-4 mr-1" />
               Sign in to view details
             </div>
