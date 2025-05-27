@@ -2,9 +2,11 @@ import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { SEO } from './components/SEO';
 import { LoadingSpinner } from './components/LoadingSpinner';
+import { LoadingInterceptor } from './components/LoadingInterceptor';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
+import { loadingManager } from './utils/loadingManager';
 
 // Lazy load heavy components
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
@@ -59,11 +61,33 @@ import { TooltipDemo } from './pages/TooltipDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Loading fallback component with timeout protection
-const PageLoadingFallback = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <LoadingSpinner variant="medical" size="lg" text="Loading your investment opportunities..." />
-  </div>
-);
+const PageLoadingFallback = () => {
+  const handleTimeout = () => {
+    console.warn('Page loading timed out - component may have failed to load');
+    // Force a page refresh if loading takes too long
+    setTimeout(() => {
+      if (window.confirm('The page is taking too long to load. Would you like to refresh?')) {
+        window.location.reload();
+      }
+    }, 1000);
+  };
+
+  const handleRetry = () => {
+    window.location.reload();
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <LoadingSpinner 
+        variant="medical" 
+        size="lg" 
+        text="Loading your investment opportunities..." 
+        timeout={12000}
+        onTimeout={handleTimeout}
+      />
+    </div>
+  );
+};
 
 export default function App() {
   const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
@@ -93,35 +117,45 @@ export default function App() {
 
   useEffect(() => {
     const initAuth = async () => {  
-      const { error: refreshError } = await supabase.auth.refreshSession();
-      if (refreshError) {
-        console.warn('Refresh session error:', refreshError);
-      }
-  
-      const { data: { session }, error } = await supabase.auth.getSession();
-      console.log('Initial session check:', session?.user?.id);
-  
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange(async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        if (event === 'SIGNED_OUT') {
-          clearAuth();
-        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          setUser(session?.user ?? null);
-          if (session?.user) {
-            await fetchProfile(session.user.id);
-          }
+      loadingManager.startLoading('auth-init', 10000);
+      
+      try {
+        const { error: refreshError } = await supabase.auth.refreshSession();
+        if (refreshError) {
+          console.warn('Refresh session error:', refreshError);
         }
-      });
-  
-      fetchSiteSettings();
-  
-      return () => subscription.unsubscribe();
+    
+        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log('Initial session check:', session?.user?.id);
+    
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user.id);
+        }
+        
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+          console.log('Auth state changed:', event, session?.user?.id);
+          if (event === 'SIGNED_OUT') {
+            clearAuth();
+          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+              await fetchProfile(session.user.id);
+            }
+          }
+        });
+    
+        await fetchSiteSettings();
+        
+        loadingManager.stopLoading('auth-init');
+        
+        return () => subscription.unsubscribe();
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        loadingManager.stopLoading('auth-init');
+      }
     };
   
     initAuth();
@@ -235,7 +269,7 @@ export default function App() {
   }, [location.pathname, requireAuth, user]);
 
   return (
-    <>
+    <LoadingInterceptor>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={
@@ -428,6 +462,6 @@ export default function App() {
       )}
 
       <PerformanceMonitor />
-    </>
+    </LoadingInterceptor>
   );
 }
