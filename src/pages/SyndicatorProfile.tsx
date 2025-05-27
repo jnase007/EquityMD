@@ -4,7 +4,7 @@ import {
   Building2, Star, Calendar, TrendingUp, DollarSign, Users, MapPin, ExternalLink,
   Globe, Briefcase, Mail, Phone, Award, CheckCircle,
   BarChart, Target, Clock, Percent, Shield, Building, ChevronRight,
-  MessageCircle, User, Play, AlertCircle
+  MessageCircle, User, Play, AlertCircle, Lock
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { DealCard } from '../components/Cards';
@@ -646,23 +646,78 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-6">Active Investment Opportunities</h2>
               {activeDeals.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-6">
                   {activeDeals.map((deal: any) => (
-                    <div key={deal.id} className="h-full">
-                      <DealCard
-                        id={deal.id}
-                        slug={deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                        image={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
-                        title={deal.title}
-                        location={deal.location}
-                        metrics={{
-                          target: `${deal.target_irr}% IRR`,
-                          minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                          term: `${deal.investment_term} years`
-                        }}
-                        detailed
-                        isAuthenticated={!!user}
-                      />
+                    <div key={deal.id} className="flex flex-col md:flex-row gap-6 border-b pb-6 last:border-0 last:pb-0">
+                      <div className="md:w-64 md:flex-shrink-0">
+                        <img
+                          src={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
+                          alt={deal.title}
+                          className="w-full h-48 md:h-32 object-cover rounded-lg"
+                        />
+                      </div>
+                      <div className="flex-grow">
+                        <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                          <div>
+                            <h3 className="text-xl font-bold mb-2 text-gray-800">{deal.title}</h3>
+                            <div className="flex items-center text-gray-600 mb-3">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {deal.location}
+                            </div>
+                          </div>
+                          {!user && (
+                            <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center md:ml-4 w-fit">
+                              <Lock className="h-4 w-4 mr-1" />
+                              Sign in to view details
+                            </div>
+                          )}
+                        </div>
+                        
+                        {user ? (
+                          <div className="grid grid-cols-3 gap-6 mb-4">
+                            <div className="flex items-center">
+                              <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
+                              <div>
+                                <p className="text-sm text-gray-500">Target Return</p>
+                                <p className="font-semibold text-blue-600">{deal.target_irr}% IRR</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center">
+                              <DollarSign className="h-5 w-5 text-blue-600 mr-2" />
+                              <div>
+                                <p className="text-sm text-gray-500">Minimum</p>
+                                <p className="font-semibold text-blue-600">${deal.minimum_investment.toLocaleString()}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center">
+                              <Clock className="h-5 w-5 text-blue-600 mr-2" />
+                              <div>
+                                <p className="text-sm text-gray-500">Term</p>
+                                <p className="font-semibold text-blue-600">{deal.investment_term} years</p>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center text-gray-500 mb-4">
+                            <Lock className="h-5 w-5 mr-2" />
+                            <p>Sign in to view investment details and metrics</p>
+                          </div>
+                        )}
+                        
+                        <Link
+                          to={`/deals/${deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                          onClick={(e) => {
+                            if (!user) {
+                              e.preventDefault();
+                              setShowAuthModal(true);
+                            }
+                          }}
+                        >
+                          View Details
+                          <ChevronRight className="h-4 w-4 ml-1" />
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>
