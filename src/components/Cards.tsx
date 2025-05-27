@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, User, Menu, X, ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
 import { OptimizedImage } from './OptimizedImage';
+import { VerificationBadge, VerificationStatus } from './VerificationBadge';
 import type { Deal, SyndicatorProfile } from '../types/database';
 
 interface FeatureCardProps {
@@ -39,9 +40,10 @@ interface DealCardProps {
   detailed?: boolean;
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
+  verificationStatus?: VerificationStatus;
 }
 
-export function DealCard({ id, slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired }: DealCardProps) {
+export function DealCard({ id, slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired, verificationStatus }: DealCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated && onAuthRequired) {
       e.preventDefault();
@@ -68,7 +70,14 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
           )}
         </div>
         <div className="p-4 pt-3 flex-grow flex flex-col">
-          <h3 className="text-lg font-bold mb-2 text-gray-800 line-clamp-2">{title}</h3>
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-lg font-bold text-gray-800 line-clamp-2 flex-grow">{title}</h3>
+            {verificationStatus && (
+              <div className="ml-2 flex-shrink-0">
+                <VerificationBadge status={verificationStatus} size="sm" />
+              </div>
+            )}
+          </div>
           <p className="text-gray-600 mb-4 text-sm">{location}</p>
           
           {isAuthenticated ? (
@@ -117,9 +126,10 @@ interface DealListItemProps {
   metrics: DealMetrics;
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
+  verificationStatus?: VerificationStatus;
 }
 
-export function DealListItem({ id, slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired }: DealListItemProps) {
+export function DealListItem({ id, slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired, verificationStatus }: DealListItemProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated && onAuthRequired) {
       e.preventDefault();
@@ -147,7 +157,14 @@ export function DealListItem({ id, slug, image, title, location, description, me
             )}
           </div>
           <div className="flex-grow">
-            <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="text-xl font-bold text-gray-800 flex-grow">{title}</h3>
+              {verificationStatus && (
+                <div className="ml-4 flex-shrink-0">
+                  <VerificationBadge status={verificationStatus} size="sm" />
+                </div>
+              )}
+            </div>
             <div className="flex items-center text-gray-600 mb-3">
               <MapPin className="h-4 w-4 mr-1" />
               {location}

@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { VerificationBadge, VerificationStatus } from '../components/VerificationBadge';
 import type { Deal } from '../types/database';
 
 // Property type to image mapping
@@ -36,6 +37,14 @@ const fallbackImages = [
 // Get image URL based on property type or fallback to random default
 const getPropertyImage = (propertyType: string, index: number) => {
   return propertyTypeImages[propertyType] || fallbackImages[index % fallbackImages.length];
+};
+
+// Map syndicator IDs to their verification status
+const syndicatorVerificationStatus: Record<string, VerificationStatus> = {
+  'back-bay-capital': 'premier',
+  'sutera-properties': 'premier', 
+  'starboard-realty': 'premier',
+  // Add other syndicators as needed with their appropriate status
 };
 
 export function Browse() {
@@ -431,6 +440,7 @@ export function Browse() {
                   detailed
                   isAuthenticated={!!user}
                   onAuthRequired={() => setShowAuthModal(true)}
+                  verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
                 />
               </div>
             ))}
@@ -453,6 +463,7 @@ export function Browse() {
                 }}
                 isAuthenticated={!!user}
                 onAuthRequired={() => setShowAuthModal(true)}
+                verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
               />
             ))}
           </div>

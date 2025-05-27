@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Building2, Star, Calendar, TrendingUp, Users, MapPin, ExternalLink,
   Globe, Briefcase, Mail, Phone, Award, CheckCircle, DollarSign,
   BarChart, Target, Clock, Percent, Shield, Building, ChevronRight,
-  MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck
+  MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck, Bell
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { DealCard, FeatureCard, StatCard, InvestorCard } from '../components/Cards';
@@ -441,14 +441,14 @@ export function Home() {
               description="Every syndication deal undergoes thorough due diligence and verification before listing."
             />
             <FeatureCard 
-              icon={<BarChart className="h-8 w-8 text-blue-600" />}
-              title="Performance Tracking"
-              description="Monitor your investments with real-time analytics and comprehensive reporting tools."
+              icon={<Bell className="h-8 w-8 text-blue-600" />}
+              title="New Deal Alerts"
+              description="Get new CRE deal alerts on Equitymd.com. Browse and email syndicators. No deal recommendations. Contact off-platform."
             />
             <FeatureCard 
-              icon={<Scale className="h-8 w-8 text-blue-600" />}
-              title="Compliance Assured"
-              description="Platform built with SEC regulations in mind, ensuring compliant transactions for all parties."
+              icon={<Mail className="h-8 w-8 text-blue-600" />}
+              title="Direct Syndicator Access"
+              description="Email CRE syndicators directly on Equitymd.com. No investor fees, no transactions here. No deal endorsements."
             />
           </div>
         </div>

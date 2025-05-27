@@ -13,6 +13,8 @@ import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
 import { ClaimSyndicatorModal } from '../components/ClaimSyndicatorModal';
 import { LoadingSpinner, PageLoader } from '../components/LoadingSpinner';
+import { VerificationBadge, VerificationDescription, VerificationStatus } from '../components/VerificationBadge';
+import { AccreditationForm } from '../components/AccreditationForm';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { Footer } from '../components/Footer';
@@ -98,6 +100,7 @@ export function SyndicatorProfile() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
+  const [showAccreditationForm, setShowAccreditationForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [projectStats, setProjectStats] = useState<ProjectStats>({
     totalDeals: 0,
@@ -177,6 +180,14 @@ export function SyndicatorProfile() {
       setSyndicator({
         ...syndicatorData,
         profile: syndicatorData.profiles,
+        // Set verification status - Premier Partners get 'premier', others get 'verified' or 'unverified'
+        verification_status: (() => {
+          const companyName = syndicatorData.company_name;
+          if (companyName === 'Back Bay Capital' || companyName === 'Sutera Properties' || companyName === 'Starboard Realty') {
+            return 'premier' as VerificationStatus;
+          }
+          return (syndicatorData.verification_status || 'unverified') as VerificationStatus;
+        })(),
         // Override total deal volume for specific syndicators
         total_deal_volume: syndicatorData.company_name === 'Back Bay Capital' ? 30000000 : 
                           syndicatorData.company_name === 'Starboard Realty' ? 608000000 : 
@@ -545,19 +556,38 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   <Briefcase className="h-5 w-5 mr-1" />
                   <span>{syndicator.years_in_business} years in business</span>
                 </div>
-                <div className="flex items-center">
-                  <Shield className="h-5 w-5 mr-1" />
-                  <span>Verified Syndicator</span>
-                </div>
+                <VerificationBadge status={syndicator.verification_status} />
               </div>
 
               <div className="flex flex-wrap gap-4">
                 <button
-                  onClick={() => setShowMessageModal(true)}
+                  onClick={() => {
+                    if (!user) {
+                      setShowAuthModal(true);
+                    } else if (!profile?.accredited_status) {
+                      setShowAccreditationForm(true);
+                    } else {
+                      setShowMessageModal(true);
+                    }
+                  }}
                   className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 >
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  Contact Syndicator
+                  {!user ? (
+                    <>
+                      <Lock className="h-5 w-5 mr-2" />
+                      Login to Contact
+                    </>
+                  ) : !profile?.accredited_status ? (
+                    <>
+                      <Shield className="h-5 w-5 mr-2" />
+                      Verify to Contact
+                    </>
+                  ) : (
+                    <>
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      Contact Syndicator
+                    </>
+                  )}
                 </button>
 
                 {syndicator.website_url && (
@@ -625,8 +655,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   </p>
                 </div>
               )}
-
-
 
               {syndicator.company_name === 'Back Bay Capital' && (
                 <div className="mt-8">
@@ -1026,6 +1054,16 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
           syndicatorId={syndicator.id}
           syndicatorName={syndicator.company_name}
           onClose={() => setShowClaimModal(false)}
+        />
+      )}
+
+      {showAccreditationForm && (
+        <AccreditationForm
+          onVerify={() => {
+            setShowAccreditationForm(false);
+            // Optionally show a success message or refresh profile data
+          }}
+          onClose={() => setShowAccreditationForm(false)}
         />
       )}
 

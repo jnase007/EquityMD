@@ -173,7 +173,23 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto mt-8 pt-8 border-t border-gray-800 flex justify-between items-center">
+      {/* Brief Disclaimer with Link to Full Page */}
+      <div className="max-w-[1200px] mx-auto mt-6 pt-4 border-t border-gray-800">
+        <div className="text-center">
+          <p className="text-xs text-gray-400 mb-2">
+            <strong className="text-gray-300">Important:</strong> EquityMD is a marketplace only. We do not verify, endorse, or guarantee any investment opportunities. 
+            Real estate investments carry significant risk and may result in loss of capital.
+          </p>
+          <button
+            onClick={() => handleNavigation('/legal/disclaimer')}
+            className="text-xs text-blue-400 hover:text-blue-300 transition underline"
+          >
+            View Full Disclaimer & Risk Disclosures
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-[1200px] mx-auto pt-8 border-t border-gray-800 flex justify-between items-center">
         <div className="text-gray-500 text-sm">
           © {new Date().getFullYear()} EquityMD. All rights reserved.
         </div>

@@ -10,13 +10,14 @@ import { InvestorImport } from '../../components/admin/InvestorImport';
 import { SyndicatorImport } from '../../components/admin/SyndicatorImport';
 import { AnalyticsDashboard } from '../../components/admin/AnalyticsDashboard';
 import { ClaimRequests } from '../../components/admin/ClaimRequests';
+import { SyndicatorVerificationAdmin } from '../../components/SyndicatorVerificationAdmin';
 import { useAuthStore } from '../../lib/store';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield } from 'lucide-react';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification'>('analytics');
 
   // Allow access if path starts with /dev-admin or user is admin
   const isDevAdmin = location.pathname.startsWith('/dev-admin');
@@ -42,6 +43,8 @@ export function AdminDashboard() {
         return <LogoManager />;
       case 'claims':
         return <ClaimRequests />;
+      case 'verification':
+        return <SyndicatorVerificationAdmin />;
       default:
         return null;
     }
@@ -146,6 +149,18 @@ export function AdminDashboard() {
             >
               <Upload className="h-5 w-5 mr-2" />
               Import Syndicators
+            </button>
+
+            <button
+              onClick={() => setActiveTab('verification')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'verification'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Shield className="h-5 w-5 mr-2" />
+              Syndicator Verification
             </button>
 
             <button
