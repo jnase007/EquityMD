@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Building2, Star } from 'lucide-react';
+import { User, Star } from 'lucide-react';
 import { AccountTypeBadge } from './AccountTypeBadge';
 
 interface DashboardHeaderProps {

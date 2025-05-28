@@ -1,7 +1,6 @@
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Building2, User } from 'lucide-react';
-import { useAuthStore } from '../lib/store';
 
 interface Conversation {
   userId: string;

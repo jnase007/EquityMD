@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, User, Menu, X, ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
+import { ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
 import { OptimizedImage } from './OptimizedImage';
 import { VerificationBadge, VerificationStatus } from './VerificationBadge';
-import type { Deal, SyndicatorProfile } from '../types/database';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -30,7 +29,6 @@ interface DealMetrics {
 }
 
 interface DealCardProps {
-  id: string;
   slug: string;
   image: string;
   title: string;
@@ -43,7 +41,7 @@ interface DealCardProps {
   verificationStatus?: VerificationStatus;
 }
 
-export function DealCard({ id, slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired, verificationStatus }: DealCardProps) {
+export function DealCard({ slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired, verificationStatus }: DealCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated && onAuthRequired) {
       e.preventDefault();
@@ -117,7 +115,6 @@ export function DealCard({ id, slug, image, title, location, metrics, className 
 }
 
 interface DealListItemProps {
-  id: string;
   slug: string;
   image: string;
   title: string;
@@ -129,7 +126,7 @@ interface DealListItemProps {
   verificationStatus?: VerificationStatus;
 }
 
-export function DealListItem({ id, slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired, verificationStatus }: DealListItemProps) {
+export function DealListItem({ slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired, verificationStatus }: DealListItemProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated && onAuthRequired) {
       e.preventDefault();

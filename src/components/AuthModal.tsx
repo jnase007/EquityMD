@@ -15,162 +15,7 @@ interface AuthModalProps {
 export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: AuthModalProps) {
   const [userType, setUserType] = useState<'investor' | 'syndicator'>(defaultType || 'investor');
   const [error, setError] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<'sign_in' | 'sign_up'>(defaultView);
   const navigate = useNavigate();
-
-  const handleSignUp = async ({ email, password }: { email: string; password: string }) => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            user_type: userType,
-          },
-        },
-      });
-
-      if (error) throw error;
-
-      if (data.user) {
-        // Create profile
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: data.user.email,
-              user_type: userType,
-            },
-          ]);
-
-        if (profileError) throw profileError;
-
-        // Create type-specific profile
-        if (userType === 'investor') {
-          const { error: investorError } = await supabase
-            .from('investor_profiles')
-            .insert([{ id: data.user.id }]);
-          
-          if (investorError) throw investorError;
-        } else {
-          const { error: syndicatorError } = await supabase
-            .from('syndicator_profiles')
-            .insert([{ id: data.user.id }]);
-          
-          if (syndicatorError) throw syndicatorError;
-        }
-
-        // Send signup notification emails
-        try {
-          await sendSignupEmails({
-            userName: data.user.email?.split('@')[0] || 'New User',
-            userEmail: data.user.email || '',
-            userType: userType
-          });
-        } catch (emailError) {
-          console.error('Failed to send signup emails:', emailError);
-          // Don't throw here - we don't want email failures to break signup
-        }
-
-        // Close modal and redirect to dashboard
-        onClose();
-        navigate('/dashboard');
-      }
-    } catch (err) {
-      console.error('Error in signup process:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred during signup');
-    }
-  };
-
-  const handleAuthSuccess = async ({ event, session }: { event: any; session: any }) => {
-    try {
-      if (event === 'SIGNED_IN') {
-        const user = session?.user;
-        if (!user) throw new Error('No user data available');
-
-        // Check if profile exists
-        const { data: existingProfile, error: profileCheckError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (profileCheckError && profileCheckError.code !== 'PGRST116') {
-          throw profileCheckError;
-        }
-
-        if (!existingProfile) {
-          // If user signed in with social provider but has no profile, redirect to social signup
-          if (user.app_metadata?.provider && user.app_metadata.provider !== 'email') {
-            onClose();
-            navigate('/social-signup');
-            return;
-          }
-
-          // Create new profile for email users
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([
-              {
-                id: user.id,
-                email: user.email,
-                full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
-                avatar_url: user.user_metadata?.avatar_url,
-                user_type: userType,
-                is_verified: true, // Auto-verify OAuth users
-              },
-            ]);
-
-          if (profileError) throw profileError;
-
-          // Create type-specific profile
-          if (userType === 'investor') {
-            const { error: investorError } = await supabase
-              .from('investor_profiles')
-              .insert([{ 
-                id: user.id,
-                accredited_status: false,
-                investment_preferences: {},
-                preferred_property_types: [],
-                preferred_locations: []
-              }]);
-            
-            if (investorError) throw investorError;
-          } else {
-            const { error: syndicatorError } = await supabase
-              .from('syndicator_profiles')
-              .insert([{ 
-                id: user.id,
-                company_name: user.user_metadata?.full_name || 'My Company',
-                verification_documents: {}
-              }]);
-            
-            if (syndicatorError) throw syndicatorError;
-          }
-        }
-
-        // Check if user is admin
-        if (existingProfile?.is_admin) {
-          onClose();
-          navigate('/admin/dashboard');
-          return;
-        }
-
-        // Close modal and redirect to dashboard
-        onClose();
-        navigate('/dashboard');
-      }
-    } catch (error) {
-      console.error('Error in auth success handler:', error);
-      setError('Error setting up user profile. Please try again.');
-    }
-  };
-
-  // Track view changes from the Auth component
-  const handleViewChange = (view: 'sign_in' | 'sign_up') => {
-    setCurrentView(view);
-  };
 
   useEffect(() => {
     const buttons = document.querySelectorAll('.supabase-auth-ui_ui-button');
@@ -267,7 +112,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            {currentView === 'sign_in' ? 'Sign In' : 'Sign Up / Register'}
+            {defaultView === 'sign_in' ? 'Sign In' : 'Sign Up / Register'}
           </h2>
           <button
             onClick={onClose}
@@ -355,7 +200,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
       providers={['google', 'facebook', 'linkedin_oidc']}
       onlyThirdPartyProviders={false}
       redirectTo={window.location.origin}
-      view={currentView}
+      view={defaultView}
       socialLayout="horizontal"
       localization={{
         variables: {

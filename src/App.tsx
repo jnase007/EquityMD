@@ -1,6 +1,5 @@
-import React, { useEffect, useState, Suspense, lazy } from 'react';
+import React, { useEffect, useState, Suspense, lazy, useCallback } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { SEO } from './components/SEO';
 import { SimpleLoader } from './components/SimpleLoader';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
@@ -41,7 +40,6 @@ import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Blog } from './pages/Blog';
 import { AdminLogin } from './pages/admin/Login';
-import { DashboardOverview } from './pages/DashboardOverview';
 import { Pricing } from './pages/Pricing';
 import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
@@ -72,7 +70,7 @@ const PageLoadingFallback = () => (
 );
 
 export default function App() {
-  const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
+  const { user, setUser, setProfile, clearAuth } = useAuthStore();
   const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [requireAuth, setRequireAuth] = useState(false);
@@ -97,63 +95,7 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-    const initAuth = async () => {  
-      try {
-        const { error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError) {
-          console.warn('Refresh session error:', refreshError);
-        }
-    
-        const { data: { session }, error } = await supabase.auth.getSession();
-        console.log('Initial session check:', session?.user?.id);
-    
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        }
-        
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-          console.log('Auth state changed:', event, session?.user?.id);
-          if (event === 'SIGNED_OUT') {
-            clearAuth();
-          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            setUser(session?.user ?? null);
-            if (session?.user) {
-              await fetchProfile(session.user.id);
-            }
-          }
-        });
-    
-        await fetchSiteSettings();
-        
-        return () => subscription.unsubscribe();
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-      }
-    };
-  
-    initAuth();
-  }, []);
-  
-
-  async function fetchSiteSettings() {
-    try {
-      const { data, error } = await supabase
-        .from('site_settings')
-        .select('require_auth')
-        .single();
-
-      if (error) throw error;
-      setRequireAuth(data?.require_auth || false);
-    } catch (error) {
-      console.error('Error fetching site settings:', error);
-    }
-  }
-
-  async function fetchProfile(userId: string, retryCount = 0) {
+  const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
     try {
       console.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
@@ -230,6 +172,65 @@ export default function App() {
       console.error('Error in fetchProfile:', error);
       clearAuth();
     }
+  }, [clearAuth, setProfile]);
+
+  useEffect(() => {
+    const initAuth = async () => {  
+      try {
+        const { error: refreshError } = await supabase.auth.refreshSession();
+        if (refreshError) {
+          console.warn('Refresh session error:', refreshError);
+        }
+    
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.warn('Session retrieval error:', error);
+        }
+        console.log('Initial session check:', session?.user?.id);
+    
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user.id);
+        }
+        
+        const {
+          data: { subscription },
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+          console.log('Auth state changed:', event, session?.user?.id);
+          if (event === 'SIGNED_OUT') {
+            clearAuth();
+          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+              await fetchProfile(session.user.id);
+            }
+          }
+        });
+    
+        await fetchSiteSettings();
+        
+        return () => subscription.unsubscribe();
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+      }
+    };
+  
+    initAuth();
+  }, [clearAuth, setUser, fetchProfile]);
+  
+
+  async function fetchSiteSettings() {
+    try {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('require_auth')
+        .single();
+
+      if (error) throw error;
+      setRequireAuth(data?.require_auth || false);
+    } catch (error) {
+      console.error('Error fetching site settings:', error);
+    }
   }
 
   // Public routes that don't require authentication
@@ -243,7 +244,7 @@ export default function App() {
     if (requireAuth && requiresAuth && !user) {
       setShowAuthModal(true);
     }
-  }, [location.pathname, requireAuth, user]);
+  }, [location.pathname, requireAuth, user, requiresAuth]);
 
   return (
     <>
