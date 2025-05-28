@@ -32,7 +32,7 @@ export function Footer() {
             />
           </Link>
           <p className="text-gray-400 mb-4">
-            Unlocking Real Estate Profits for Investors
+            Exclusive marketplace platform for accredited investors
           </p>
           <button 
             onClick={() => handleNavigation('/contact')}
