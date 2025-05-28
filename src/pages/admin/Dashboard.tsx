@@ -11,19 +11,34 @@ import { SyndicatorImport } from '../../components/admin/SyndicatorImport';
 import { AnalyticsDashboard } from '../../components/admin/AnalyticsDashboard';
 import { ClaimRequests } from '../../components/admin/ClaimRequests';
 import { SyndicatorVerificationAdmin } from '../../components/SyndicatorVerificationAdmin';
+import { SystemManagement } from '../../components/admin/SystemManagement';
 import { useAuthStore } from '../../lib/store';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database } from 'lucide-react';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('analytics');
 
   // Allow access if path starts with /dev-admin or user is admin
   const isDevAdmin = location.pathname.startsWith('/dev-admin');
   if (!isDevAdmin && !profile?.is_admin) {
     return <Navigate to="/" replace />;
   }
+
+  const quickClearCache = async () => {
+    if (confirm('Clear browser cache? This will refresh the page.')) {
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('Cache cleared successfully!');
+        window.location.reload();
+      } catch (error) {
+        console.error('Error clearing cache:', error);
+        alert('Error clearing cache. Check console for details.');
+      }
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -45,6 +60,8 @@ export function AdminDashboard() {
         return <ClaimRequests />;
       case 'verification':
         return <SyndicatorVerificationAdmin />;
+      case 'system':
+        return <SystemManagement />;
       default:
         return null;
     }
@@ -57,11 +74,20 @@ export function AdminDashboard() {
       <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          {isDevAdmin && (
-            <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg text-sm">
-              Development Mode
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={quickClearCache}
+              className="flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+            >
+              <Database className="h-4 w-4 mr-2" />
+              Quick Clear Cache
+            </button>
+            {isDevAdmin && (
+              <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg text-sm">
+                Development Mode
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Tab Navigation */}
@@ -161,6 +187,18 @@ export function AdminDashboard() {
             >
               <Shield className="h-5 w-5 mr-2" />
               Syndicator Verification
+            </button>
+
+            <button
+              onClick={() => setActiveTab('system')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'system'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Database className="h-5 w-5 mr-2" />
+              System Management
             </button>
 
             <button

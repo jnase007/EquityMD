@@ -76,9 +76,22 @@ export class LoadingManager {
     }
   }
 
-  // Get all active loading operations
+  // Get all active loading keys (useful for admin debugging)
   getActiveLoadings(): string[] {
     return Array.from(this.loadingStates.keys());
+  }
+
+  // Get loading statistics (useful for admin monitoring)
+  getLoadingStats(): { total: number; longest: number; average: number } {
+    const loadings = Array.from(this.loadingStates.values());
+    const now = Date.now();
+    const durations = loadings.map(state => now - state.startTime);
+    
+    return {
+      total: loadings.length,
+      longest: durations.length > 0 ? Math.max(...durations) : 0,
+      average: durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0
+    };
   }
 }
 
