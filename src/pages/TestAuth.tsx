@@ -41,6 +41,69 @@ export function TestAuth() {
     }
   };
 
+  // Manual profile creation test
+  const testManualProfileCreation = async () => {
+    if (!user) {
+      setDirectTestResult('❌ No user found. Please sign in first.');
+      return;
+    }
+
+    try {
+      setDirectTestResult('Testing manual profile creation...');
+
+      // Check if profile already exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (existingProfile) {
+        setDirectTestResult('✅ Profile already exists: ' + JSON.stringify(existingProfile, null, 2));
+        return;
+      }
+
+      // Create profile manually
+      const { data: newProfile, error: profileError } = await supabase
+        .from('profiles')
+        .insert([{
+          id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
+          avatar_url: user.user_metadata?.avatar_url,
+          user_type: 'investor',
+          is_verified: true
+        }])
+        .select()
+        .single();
+
+      if (profileError) {
+        setDirectTestResult(`❌ Profile creation error: ${profileError.message}`);
+        return;
+      }
+
+      // Create investor profile
+      const { error: investorError } = await supabase
+        .from('investor_profiles')
+        .insert([{
+          id: user.id,
+          accredited_status: false,
+          investment_preferences: {},
+          preferred_property_types: [],
+          preferred_locations: []
+        }]);
+
+      if (investorError) {
+        setDirectTestResult(`❌ Investor profile creation error: ${investorError.message}`);
+        return;
+      }
+
+      setDirectTestResult('✅ Profile created successfully: ' + JSON.stringify(newProfile, null, 2));
+    } catch (error) {
+      setDirectTestResult(`❌ Exception: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const runComprehensiveTest = async () => {
     setTesting(true);
     const results: Record<string, any> = {};
@@ -156,6 +219,36 @@ export function TestAuth() {
                 <p><strong>Email:</strong> {user.email}</p>
                 <p><strong>Provider:</strong> {user.app_metadata?.provider || 'email'}</p>
                 <p><strong>Profile Type:</strong> {profile?.user_type || 'Not set'}</p>
+                <p><strong>Profile Full Name:</strong> {profile?.full_name || 'Not set'}</p>
+                <p><strong>Profile Verified:</strong> {profile?.is_verified ? 'Yes' : 'No'}</p>
+                <p><strong>Profile Admin:</strong> {profile?.is_admin ? 'Yes' : 'No'}</p>
+                <p><strong>User Metadata:</strong> {JSON.stringify(user.user_metadata, null, 2)}</p>
+                <p><strong>App Metadata:</strong> {JSON.stringify(user.app_metadata, null, 2)}</p>
+                
+                {/* Profile Actions */}
+                <div className="mt-4 space-x-2">
+                  <Link 
+                    to="/profile" 
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition inline-block"
+                  >
+                    Go to Profile
+                  </Link>
+                  <Link 
+                    to="/dashboard" 
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition inline-block"
+                  >
+                    Go to Dashboard
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      const { error } = await supabase.auth.signOut();
+                      if (error) console.error('Sign out error:', error);
+                    }}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                  >
+                    Sign Out
+                  </button>
+                </div>
               </div>
             ) : (
               <p className="text-gray-600">Not signed in</p>

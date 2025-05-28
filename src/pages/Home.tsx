@@ -132,6 +132,7 @@ export function Home() {
 
   async function fetchFeaturedDeals() {
     try {
+      console.log('Fetching featured deals...');
       const { data, error } = await supabase
         .from('deals')
         .select('*')
@@ -140,15 +141,20 @@ export function Home() {
 
       if (error) {
         console.error('Error fetching featured deals:', error);
+        console.log('Using fallback mock deals:', fallbackMockDeals.length, 'deals');
         setFeaturedDeals(fallbackMockDeals);
         return;
       }
+
+      console.log('Database deals fetched:', data?.length || 0);
 
       // Only include deals from the three real syndicators
       const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
       const filteredData = data ? data.filter(deal => 
         allowedSyndicators.includes(deal.syndicator_id)
       ) : [];
+      
+      console.log('Filtered database deals:', filteredData.length);
       
       // Always include priority mock deals (BackBay, Starboard, and Sutera)
       const today = new Date().toISOString();
@@ -160,6 +166,8 @@ export function Home() {
         updated_at: today
       }));
 
+      console.log('Priority mock deals:', priorityDeals.length);
+
       // Combine database deals with priority mock deals
       const allDeals = [...priorityDeals, ...filteredData];
 
@@ -168,9 +176,13 @@ export function Home() {
         index === self.findIndex(d => d.title === deal.title)
       );
 
+      console.log('Final unique deals:', uniqueDeals.length);
+      console.log('Featured deals to display:', uniqueDeals.slice(0, 6));
+
       setFeaturedDeals(uniqueDeals.slice(0, 6)); // Limit to 6 featured deals
     } catch (error) {
       console.error('Error fetching featured deals:', error);
+      console.log('Using fallback mock deals due to error:', fallbackMockDeals.length, 'deals');
       setFeaturedDeals(fallbackMockDeals);
     }
   }
@@ -425,32 +437,54 @@ export function Home() {
             )}
           </div>
           
+          {/* Debug info */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mb-4 p-3 bg-yellow-100 rounded-lg text-sm">
+              <p><strong>Debug:</strong> Displaying {featuredDeals.length} featured deals</p>
+              <p><strong>User authenticated:</strong> {user ? 'Yes' : 'No'}</p>
+            </div>
+          )}
+          
           <div className="relative">
             <div className="overflow-x-auto pb-4 scrollbar-hide horizontal-scroll mobile-scroll touch-pan-x">
               <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
-                {featuredDeals.map((deal, index) => (
-                  <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0">
-                    <DealCard
-                      slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                      image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
-                      title={deal.title}
-                      location={deal.location}
-                      metrics={{
-                        target: `${deal.target_irr}% IRR`,
-                        minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                        term: `${deal.investment_term} years`
-                      }}
-                      detailed
-                      isAuthenticated={!!user}
-                    />
+                {featuredDeals.length > 0 ? (
+                  featuredDeals.map((deal, index) => {
+                    console.log('Rendering deal:', deal.title, 'at index:', index);
+                    return (
+                      <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0">
+                        <DealCard
+                          slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
+                          image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                          title={deal.title}
+                          location={deal.location}
+                          metrics={{
+                            target: `${deal.target_irr}% IRR`,
+                            minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                            term: `${deal.investment_term} years`
+                          }}
+                          detailed
+                          isAuthenticated={!!user}
+                        />
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="w-full text-center py-12">
+                    <p className="text-gray-500 text-lg">No featured deals available at the moment.</p>
+                    <p className="text-gray-400 text-sm mt-2">Please check back later for new investment opportunities.</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
             
             {/* Gradient Overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+            {featuredDeals.length > 0 && (
+              <>
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+              </>
+            )}
           </div>
         </div>
       </section>
