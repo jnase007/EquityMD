@@ -26,8 +26,8 @@ export function HowItWorks() {
     },
     {
       icon: <DollarSign className="h-10 w-10 text-white" />,
-      title: "Invest Online",
-      description: "Complete your investment electronically through our secure platform with as little as $25,000.",
+      title: "Invest",
+      description: "Complete your investment in working with the Syndicator of your choice for as little as $25,000.",
       color: "bg-gradient-to-br from-orange-500 to-orange-600"
     }
   ];
