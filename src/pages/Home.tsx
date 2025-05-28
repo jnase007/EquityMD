@@ -263,7 +263,7 @@ export function Home() {
       ],
       total_equity: 12340000,
       featured: true,
-      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Greenville.png',
+      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//greenville_2.jpg',
       created_at: '2025-02-01T00:00:00Z',
       updated_at: '2025-02-01T00:00:00Z',
       slug: 'greenville-apartment-complex'
