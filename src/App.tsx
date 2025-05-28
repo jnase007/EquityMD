@@ -24,6 +24,7 @@ const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ defau
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
 import { HowItWorks } from './pages/HowItWorks';
+import { HowItWorksImproved } from './pages/HowItWorksImproved';
 import { ForSyndicators } from './pages/ForSyndicators';
 import { SuccessStories } from './pages/SuccessStories';
 import { DueDiligence } from './pages/resources/DueDiligence';
@@ -259,6 +260,13 @@ export default function App() {
           <ErrorBoundary>
             <Suspense fallback={<PageLoadingFallback />}>
               <HowItWorks />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/how-it-works-improved" element={
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <HowItWorksImproved />
             </Suspense>
           </ErrorBoundary>
         } />

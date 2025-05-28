@@ -4,7 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award } from 'lucide-react';
 
-export function HowItWorks() {
+export function HowItWorksImproved() {
   const steps = [
     {
       icon: <Search className="h-10 w-10 text-white" />,
@@ -311,4 +311,4 @@ export function HowItWorks() {
       <Footer />
     </div>
   );
-}
+} 
