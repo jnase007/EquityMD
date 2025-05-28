@@ -45,10 +45,10 @@ const mobileMenuItems: MobileMenuItem[] = [
     label: "Find Syndicators",
     path: "/directory"
   },
-  {
-    label: "Success Stories",
-    path: "/success-stories"
-  },
+  // {
+  //   label: "Success Stories",
+  //   path: "/success-stories"
+  // },
   {
     label: "Pricing",
     path: "/pricing"
