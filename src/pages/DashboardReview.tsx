@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare, Heart } from 'lucide-react';
+import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare, Heart, Target } from 'lucide-react';
+import { InvestmentReadinessFlow } from '../components/InvestmentReadinessFlow';
 
 export function DashboardReview() {
   const [activeTab, setActiveTab] = useState<'investor' | 'syndicator' | 'admin'>('investor');
   const [adminActiveTab, setAdminActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'claims' | 'import-investors' | 'import-syndicators' | 'settings'>('analytics');
+  const [showReadinessFlow, setShowReadinessFlow] = useState(false);
+  const [readinessData, setReadinessData] = useState(null);
+
+  const handleReadinessComplete = (data: any) => {
+    setReadinessData(data);
+    setShowReadinessFlow(false);
+    // Here you would save to database in the investor_profiles table
+    console.log('Investment readiness data:', data);
+  };
 
   const renderInvestorDashboard = () => (
     <div className="space-y-8">
@@ -192,6 +202,19 @@ export function DashboardReview() {
               <button className="w-full text-left p-3 border rounded-lg hover:bg-pink-50 hover:border-pink-200 flex items-center">
                 <Heart className="h-5 w-5 text-pink-600 mr-3" />
                 <span className="text-sm font-medium">My Favorites (12)</span>
+              </button>
+              <button 
+                onClick={() => setShowReadinessFlow(true)}
+                className="w-full text-left p-3 border-2 border-gradient rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:border-blue-300 flex items-center group transition-all duration-200"
+              >
+                <Target className="h-5 w-5 text-blue-600 mr-3 group-hover:text-purple-600 transition-colors" />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-gray-900 group-hover:text-blue-700">Investment Readiness Check</div>
+                  <div className="text-xs text-gray-500">Tell us about your investment goals</div>
+                </div>
+                {readinessData && (
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                )}
               </button>
               <button className="w-full text-left p-3 border rounded-lg hover:bg-gray-50 flex items-center">
                 <Building2 className="h-5 w-5 text-blue-600 mr-3" />
