@@ -253,7 +253,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/how-it-works', '/for-syndicators', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
+  const publicRoutes = ['/', '/browse', '/directory', '/how-it-works', '/for-syndicators', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -377,15 +377,17 @@ export default function App() {
         <Route path="/signup/:type/accreditation" element={<Suspense fallback={<PageLoadingFallback />}><SignupAccreditation /></Suspense>} />
         <Route path="/signup/:type/continue" element={<Suspense fallback={<PageLoadingFallback />}><SignupContinue /></Suspense>} />
 
-        {/* Protected Routes */}
+        {/* Public Browse Routes - No Authentication Required */}
         <Route 
           path="/browse" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Browse /></Suspense>} 
+          element={<Suspense fallback={<PageLoadingFallback />}><Browse /></Suspense>} 
         />
         <Route 
           path="/directory" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><Directory /></Suspense>} 
+          element={<Suspense fallback={<PageLoadingFallback />}><Directory /></Suspense>} 
         />
+        
+        {/* Protected Routes */}
         <Route 
           path="/success-stories" 
           element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<PageLoadingFallback />}><SuccessStories /></Suspense>} 
