@@ -365,12 +365,16 @@ export function Home() {
                 Browse Opportunities
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <Link 
-                to="/signup/start"
+              <button 
+                onClick={() => {
+                  setAuthModalType('investor');
+                  setAuthModalView('sign_up');
+                  setShowAuthModal(true);
+                }}
                 className="bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-400 transition-colors border-2 border-blue-400"
               >
                 Sign Up
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -427,7 +431,6 @@ export function Home() {
                 {featuredDeals.map((deal, index) => (
                   <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0">
                     <DealCard
-                      id={deal.id}
                       slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
                       image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
                       title={deal.title}
