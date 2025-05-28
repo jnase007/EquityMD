@@ -31,6 +31,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
       if (event === 'SIGNED_IN' && session?.user) {
         try {
           const user = session.user;
+          console.log('AuthModal: User signed in:', user.id);
+          console.log('AuthModal: User metadata:', user.user_metadata);
+          console.log('AuthModal: App metadata:', user.app_metadata);
           
           // Check if this is a new user by looking for existing profile
           const { data: existingProfile, error: profileCheckError } = await supabase
@@ -40,16 +43,21 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             .single();
 
           if (profileCheckError && profileCheckError.code !== 'PGRST116') {
+            console.error('AuthModal: Error checking existing profile:', profileCheckError);
             throw profileCheckError;
           }
 
           // If no existing profile, this is a new user - create profile automatically
           if (!existingProfile) {
+            console.log('AuthModal: No existing profile found, creating new profile...');
+            
             // For social users, default to investor unless specified
             // For email users, use the selected userType
             const finalUserType = user.app_metadata?.provider && user.app_metadata.provider !== 'email' 
               ? 'investor' // Default social users to investor
               : userType; // Use selected type for email users
+
+            console.log('AuthModal: Creating profile with user type:', finalUserType);
 
             // Create profile
             const { error: profileError } = await supabase
@@ -65,10 +73,16 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                 },
               ]);
 
-            if (profileError) throw profileError;
+            if (profileError) {
+              console.error('AuthModal: Error creating profile:', profileError);
+              throw profileError;
+            }
+
+            console.log('AuthModal: Profile created successfully');
 
             // Create type-specific profile
             if (finalUserType === 'investor') {
+              console.log('AuthModal: Creating investor profile...');
               const { error: investorError } = await supabase
                 .from('investor_profiles')
                 .insert([{ 
@@ -79,8 +93,13 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                   preferred_locations: []
                 }]);
               
-              if (investorError) throw investorError;
+              if (investorError) {
+                console.error('AuthModal: Error creating investor profile:', investorError);
+                throw investorError;
+              }
+              console.log('AuthModal: Investor profile created successfully');
             } else {
+              console.log('AuthModal: Creating syndicator profile...');
               const { error: syndicatorError } = await supabase
                 .from('syndicator_profiles')
                 .insert([{ 
@@ -89,7 +108,11 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                   verification_documents: {}
                 }]);
               
-              if (syndicatorError) throw syndicatorError;
+              if (syndicatorError) {
+                console.error('AuthModal: Error creating syndicator profile:', syndicatorError);
+                throw syndicatorError;
+              }
+              console.log('AuthModal: Syndicator profile created successfully');
             }
 
             // Send signup notification emails for new users
@@ -103,14 +126,17 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
               console.error('Failed to send signup emails:', emailError);
               // Don't throw here - we don't want email failures to break signup
             }
+          } else {
+            console.log('AuthModal: Existing profile found:', existingProfile);
           }
 
-          // Close modal and redirect to dashboard
+          // Close modal and navigate to dashboard
+          console.log('AuthModal: Closing modal and navigating to dashboard');
           onClose();
           navigate('/dashboard');
-        } catch (err) {
-          console.error('Error in signup process:', err);
-          setError(err instanceof Error ? err.message : 'An error occurred during signup');
+        } catch (error) {
+          console.error('AuthModal: Error in auth state change handler:', error);
+          setError(error instanceof Error ? error.message : 'An error occurred during sign in');
         }
       }
     });

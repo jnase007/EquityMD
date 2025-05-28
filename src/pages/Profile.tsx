@@ -32,10 +32,28 @@ export function Profile() {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showAccountTypeForm, setShowAccountTypeForm] = useState(false);
   const [changingAccountType, setChangingAccountType] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
 
   useEffect(() => {
     if (user && profile?.user_type === 'investor') {
       fetchSyndicators();
+    }
+  }, [user, profile]);
+
+  // Handle profile loading state
+  useEffect(() => {
+    if (user) {
+      // If user exists but no profile, wait a bit for profile to load
+      if (!profile) {
+        const timer = setTimeout(() => {
+          setProfileLoading(false);
+        }, 3000); // Wait 3 seconds max for profile to load
+        return () => clearTimeout(timer);
+      } else {
+        setProfileLoading(false);
+      }
+    } else {
+      setProfileLoading(false);
     }
   }, [user, profile]);
 
@@ -148,6 +166,54 @@ export function Profile() {
 
   if (!user) {
     return <Navigate to="/" replace />;
+  }
+
+  // Show loading state while profile is being created/fetched
+  if (user && !profile && profileLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Setting up your profile...</h2>
+                <p className="text-gray-600">This will only take a moment.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If user exists but no profile after loading timeout, show error
+  if (user && !profile && !profileLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="text-center py-12">
+              <div className="text-red-600 mb-4">
+                <svg className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Profile Setup Error</h2>
+              <p className="text-gray-600 mb-4">There was an issue setting up your profile. Please try refreshing the page.</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Refresh Page
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -298,7 +364,7 @@ export function Profile() {
             )}
 
             {profile?.user_type === 'investor' ? (
-              <InvestorProfileForm setMessage={setMessage} />
+              <InvestorProfileForm onComplete={() => setMessage('Profile updated successfully!')} />
             ) : (
               <SyndicatorProfileForm setMessage={setMessage} />
             )}

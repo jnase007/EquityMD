@@ -117,9 +117,14 @@ export default function App() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('User not found');
 
+        console.log('User metadata:', user.user_metadata);
+        console.log('App metadata:', user.app_metadata);
+
         // For social users, create profile automatically as investor (default)
         // For email users, also create profile automatically
         const userType = user.user_metadata?.user_type || 'investor';
+        
+        console.log('Creating profile with user type:', userType);
         
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
@@ -134,11 +139,17 @@ export default function App() {
           .select()
           .single();
 
-        if (createError) throw createError;
+        if (createError) {
+          console.error('Error creating profile:', createError);
+          throw createError;
+        }
+
+        console.log('Profile created successfully:', newProfile);
 
         // Create type-specific profile
         if (newProfile.user_type === 'investor') {
-          await supabase
+          console.log('Creating investor profile...');
+          const { error: investorError } = await supabase
             .from('investor_profiles')
             .insert([{ 
               id: userId,
@@ -147,14 +158,27 @@ export default function App() {
               preferred_property_types: [],
               preferred_locations: []
             }]);
+          
+          if (investorError) {
+            console.error('Error creating investor profile:', investorError);
+          } else {
+            console.log('Investor profile created successfully');
+          }
         } else {
-          await supabase
+          console.log('Creating syndicator profile...');
+          const { error: syndicatorError } = await supabase
             .from('syndicator_profiles')
             .insert([{ 
               id: userId,
               company_name: user.user_metadata?.full_name || 'My Company',
               verification_documents: {}
             }]);
+          
+          if (syndicatorError) {
+            console.error('Error creating syndicator profile:', syndicatorError);
+          } else {
+            console.log('Syndicator profile created successfully');
+          }
         }
 
         setProfile(newProfile);
