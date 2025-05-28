@@ -373,7 +373,7 @@ export function Home() {
                 }}
                 className="bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-400 transition-colors border-2 border-blue-400"
               >
-                Sign Up
+                Get Started
               </button>
             </div>
           </div>
