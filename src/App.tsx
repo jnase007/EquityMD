@@ -54,7 +54,6 @@ import { SignupPassword } from './pages/auth/SignupPassword';
 import { SignupName } from './pages/auth/SignupName';
 import { SignupAccreditation } from './pages/auth/SignupAccreditation';
 import { SignupContinue } from './pages/auth/SignupContinue';
-import { SocialSignup } from './pages/auth/SocialSignup';
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
@@ -114,18 +113,14 @@ export default function App() {
       }
 
       if (!data) {
-        console.log('No profile found, redirecting to social signup...');
+        console.log('No profile found, creating profile automatically...');
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('User not found');
 
-        // If user signed in with social provider but has no profile, redirect to social signup
-        if (user.app_metadata?.provider && user.app_metadata.provider !== 'email') {
-          setProfile(null);
-          window.location.href = '/social-signup';
-          return;
-        }
-
-        // Create profile for email users
+        // For social users, create profile automatically as investor (default)
+        // For email users, also create profile automatically
+        const userType = user.user_metadata?.user_type || 'investor';
+        
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert([{
@@ -133,7 +128,7 @@ export default function App() {
             email: user.email,
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
             avatar_url: user.user_metadata?.avatar_url,
-            user_type: user.user_metadata?.user_type || 'investor',
+            user_type: userType,
             is_verified: true
           }])
           .select()
@@ -357,7 +352,6 @@ export default function App() {
         <Route path="/signup/:type/name" element={<Suspense fallback={<PageLoadingFallback />}><SignupName /></Suspense>} />
         <Route path="/signup/:type/accreditation" element={<Suspense fallback={<PageLoadingFallback />}><SignupAccreditation /></Suspense>} />
         <Route path="/signup/:type/continue" element={<Suspense fallback={<PageLoadingFallback />}><SignupContinue /></Suspense>} />
-        <Route path="/social-signup" element={<Suspense fallback={<PageLoadingFallback />}><SocialSignup /></Suspense>} />
 
         {/* Protected Routes */}
         <Route 

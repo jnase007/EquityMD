@@ -26,9 +26,9 @@ This comprehensive testing plan covers all critical user flows and features of t
 
 - [ ] **Social Signup (Google/OAuth)**
   - Use social login button
-  - Complete user type selection on `/social-signup`
-  - Verify profile creation and email notifications
-  - Test redirect to dashboard
+  - Verify automatic profile creation as investor
+  - Verify redirect to dashboard
+  - Test that users can change account type later in profile
 
 #### **Syndicator Registration**
 - [ ] **Email/Password Signup**
@@ -39,8 +39,9 @@ This comprehensive testing plan covers all critical user flows and features of t
   - Test company information fields
 
 - [ ] **Social Signup**
-  - Complete social signup as syndicator
-  - Verify company profile setup
+  - Complete social signup (will default to investor)
+  - Navigate to profile to change account type to syndicator
+  - Verify syndicator profile setup
 
 ### 2. Authentication Edge Cases
 - [ ] **Existing User Login**
@@ -55,6 +56,26 @@ This comprehensive testing plan covers all critical user flows and features of t
 - [ ] **Email Verification**
   - Test email confirmation process for new accounts
   - Verify account activation
+
+## Social Authentication Testing
+
+### Google OAuth
+- Click "Continue with Google" button
+- Complete Google authentication
+- Verify automatic profile creation as investor
+- Verify redirect to dashboard
+
+### Facebook OAuth  
+- Click "Continue with Facebook" button
+- Complete Facebook authentication
+- Verify automatic profile creation as investor
+- Verify redirect to dashboard
+
+### LinkedIn OAuth
+- Click "Continue with LinkedIn" button  
+- Complete LinkedIn authentication
+- Verify automatic profile creation as investor
+- Verify redirect to dashboard
 
 ---
 

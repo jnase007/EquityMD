@@ -43,8 +43,14 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             throw profileCheckError;
           }
 
-          // If no existing profile, this is a new user
+          // If no existing profile, this is a new user - create profile automatically
           if (!existingProfile) {
+            // For social users, default to investor unless specified
+            // For email users, use the selected userType
+            const finalUserType = user.app_metadata?.provider && user.app_metadata.provider !== 'email' 
+              ? 'investor' // Default social users to investor
+              : userType; // Use selected type for email users
+
             // Create profile
             const { error: profileError } = await supabase
               .from('profiles')
@@ -54,23 +60,34 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                   email: user.email,
                   full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
                   avatar_url: user.user_metadata?.avatar_url,
-                  user_type: userType,
+                  user_type: finalUserType,
+                  is_verified: true // Auto-verify all users
                 },
               ]);
 
             if (profileError) throw profileError;
 
             // Create type-specific profile
-            if (userType === 'investor') {
+            if (finalUserType === 'investor') {
               const { error: investorError } = await supabase
                 .from('investor_profiles')
-                .insert([{ id: user.id }]);
+                .insert([{ 
+                  id: user.id,
+                  accredited_status: false,
+                  investment_preferences: {},
+                  preferred_property_types: [],
+                  preferred_locations: []
+                }]);
               
               if (investorError) throw investorError;
             } else {
               const { error: syndicatorError } = await supabase
                 .from('syndicator_profiles')
-                .insert([{ id: user.id }]);
+                .insert([{ 
+                  id: user.id,
+                  company_name: user.user_metadata?.full_name || 'My Company',
+                  verification_documents: {}
+                }]);
               
               if (syndicatorError) throw syndicatorError;
             }
@@ -80,7 +97,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
               await sendSignupEmails({
                 userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'New User',
                 userEmail: user.email || '',
-                userType: userType
+                userType: finalUserType
               });
             } catch (emailError) {
               console.error('Failed to send signup emails:', emailError);
@@ -126,6 +143,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
           <label className="block text-sm font-medium text-gray-700 mb-2">
             I am a:
           </label>
+          <p className="text-xs text-gray-500 mb-3">
+            Social login users will be set up as investors by default. You can change this later in your profile.
+          </p>
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setUserType('investor')}
@@ -199,7 +219,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
       }}
       providers={['google', 'facebook', 'linkedin_oidc']}
       onlyThirdPartyProviders={false}
-      redirectTo={window.location.origin}
+      redirectTo={`${window.location.origin}/dashboard`}
       view={defaultView}
       socialLayout="horizontal"
       localization={{
