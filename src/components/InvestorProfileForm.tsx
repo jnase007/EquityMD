@@ -6,15 +6,20 @@ import { InvestmentRangeSelector } from './InvestmentRangeSelector';
 import { Tooltip, InfoIcon } from './Tooltip';
 import { SMSOptIn } from './SMSOptIn';
 import type { InvestorProfile } from '../types/database';
+import { Upload, User, DollarSign, MapPin, Target, MessageSquare, Phone } from 'lucide-react';
+import { useAutoSave } from '../hooks/useAutoSave';
+import { AutoSaveIndicator } from './AutoSaveIndicator';
 
 interface InvestorProfileFormProps {
-  setMessage: (message: string) => void;
+  onComplete: () => void;
 }
 
-export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
+export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
   const { user, profile } = useAuthStore();
-  const [loading, setLoading] = useState(false);
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
     avatarUrl: profile?.avatar_url || '',
@@ -26,6 +31,50 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
     riskTolerance: '',
     investmentGoals: '',
     smsOptIn: profile?.sms_opt_in || false,
+  });
+
+  // Auto-save hook
+  const autoSave = useAutoSave(formData, {
+    delay: 2000, // Save after 2 seconds of no changes
+    onSave: async (data) => {
+      if (!user) throw new Error('User not authenticated');
+
+      // Save profile data
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: data.fullName,
+          avatar_url: data.avatarUrl,
+          phone_number: data.phoneNumber,
+          sms_opt_in: data.smsOptIn,
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      // Save investor profile data
+      const investorData = {
+        user_id: user.id,
+        accredited_status: data.accreditedStatus,
+        minimum_investment: data.minimumInvestment ? parseInt(data.minimumInvestment) : null,
+        preferred_property_types: data.preferredPropertyTypes,
+        preferred_locations: data.preferredLocations,
+        risk_tolerance: data.riskTolerance,
+        investment_goals: data.investmentGoals,
+      };
+
+      const { error: investorError } = await supabase
+        .from('investor_profiles')
+        .upsert(investorData, { onConflict: 'user_id' });
+
+      if (investorError) throw investorError;
+    },
+    onSuccess: () => {
+      console.log('Profile saved successfully');
+    },
+    onError: (error) => {
+      console.error('Failed to save profile:', error);
+    }
   });
 
   useEffect(() => {
@@ -85,7 +134,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
+    setSaving(true);
 
     try {
       // Update basic profile
@@ -122,15 +171,16 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
 
       if (investorError) throw investorError;
 
-      setMessage('Profile updated successfully!');
+      console.log('Profile updated successfully');
       
       // Refresh the investor profile to show the updated values
       await fetchInvestorProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
-      setMessage('Error updating profile. Please try again.');
+      setSaving(false);
     } finally {
       setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -145,173 +195,204 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   const accreditedInvestorTooltip = "An accredited investor has an annual income over $200,000 ($300,000 joint) for 2 years, or a net worth over $1M (excluding home), or specific professional licenses. This SEC definition allows you to invest in private deals on Equitymd.com.";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          disabled
-          value={user?.email}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
+    <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold">Investor Profile</h2>
+        <AutoSaveIndicator 
+          state={autoSave.state} 
+          showDetails={false}
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Full Name
-        </label>
-        <input
-          type="text"
-          value={formData.fullName}
-          onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Profile Picture
-        </label>
-        <ImageUpload
-          currentImageUrl={formData.avatarUrl}
-          onImageUploaded={(url) => setFormData(prev => ({ ...prev, avatarUrl: url }))}
-          bucket="avatars"
-          folder="investors"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Phone Number
-        </label>
-        <input
-          type="tel"
-          value={formData.phoneNumber}
-          onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          placeholder="+1-555-123-4567"
-        />
-      </div>
-
-      {/* SMS Opt-in Component */}
-      <SMSOptIn
-        userId={user?.id || ''}
-        currentPhone={formData.phoneNumber}
-        currentOptIn={formData.smsOptIn}
-        onUpdate={handleSMSUpdate}
-      />
-
-      <div>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={formData.accreditedStatus}
-            onChange={(e) => setFormData(prev => ({ ...prev, accreditedStatus: e.target.checked }))}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+      {/* Auto-save status details */}
+      {(autoSave.hasUnsavedChanges || autoSave.lastSaved) && (
+        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <AutoSaveIndicator 
+            state={autoSave.state} 
+            showDetails={true}
           />
-          <span className="ml-2 text-sm text-gray-700">
-            I am an accredited investor
-          </span>
-          <Tooltip content={accreditedInvestorTooltip} position="right" maxWidth="320px">
-            <div className="ml-2 cursor-help">
-              <InfoIcon className="w-4 h-4 text-blue-500 hover:text-blue-600" />
-            </div>
-          </Tooltip>
-        </label>
-      </div>
+        </div>
+      )}
 
-      <InvestmentRangeSelector
-        value={formData.minimumInvestment}
-        onChange={(value) => setFormData(prev => ({ ...prev, minimumInvestment: value }))}
-      />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            disabled
+            value={user?.email}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Preferred Property Types
-        </label>
-        <div className="grid grid-cols-2 gap-2">
-          {propertyTypes.map((type) => (
-            <label key={type} className="flex items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Full Name
+            </label>
+            <input
+              type="text"
+              value={autoSave.data.fullName}
+              onChange={(e) => autoSave.updateData(prev => ({ ...prev, fullName: e.target.value }))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Phone Number
+            </label>
+            <input
+              type="tel"
+              value={autoSave.data.phoneNumber}
+              onChange={(e) => autoSave.updateData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Profile Picture
+          </label>
+          <ImageUpload
+            currentImageUrl={formData.avatarUrl}
+            onImageUploaded={(url) => setFormData(prev => ({ ...prev, avatarUrl: url }))}
+            bucket="avatars"
+            folder="investors"
+          />
+        </div>
+
+        {/* Investment Preferences */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Investment Preferences</h3>
+          
+          <div>
+            <label className="flex items-center">
               <input
                 type="checkbox"
-                checked={formData.preferredPropertyTypes.includes(type)}
-                onChange={(e) => {
-                  const newTypes = e.target.checked
-                    ? [...formData.preferredPropertyTypes, type]
-                    : formData.preferredPropertyTypes.filter(t => t !== type);
-                  setFormData(prev => ({ ...prev, preferredPropertyTypes: newTypes }));
-                }}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                checked={autoSave.data.accreditedStatus}
+                onChange={(e) => autoSave.updateData(prev => ({ ...prev, accreditedStatus: e.target.checked }))}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-700">{type}</span>
+              <span className="ml-2 text-sm text-gray-700">I am an accredited investor</span>
             </label>
-          ))}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Minimum Investment Amount
+            </label>
+            <input
+              type="number"
+              value={autoSave.data.minimumInvestment}
+              onChange={(e) => autoSave.updateData(prev => ({ ...prev, minimumInvestment: e.target.value }))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              placeholder="25000"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Preferred Property Types
+            </label>
+            <div className="mt-2 space-y-2">
+              {['Multifamily', 'Commercial', 'Industrial', 'Retail', 'Mixed-Use', 'Land Development'].map((type) => (
+                <label key={type} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={autoSave.data.preferredPropertyTypes.includes(type)}
+                    onChange={(e) => {
+                      const types = e.target.checked
+                        ? [...autoSave.data.preferredPropertyTypes, type]
+                        : autoSave.data.preferredPropertyTypes.filter(t => t !== type);
+                      autoSave.updateData(prev => ({ ...prev, preferredPropertyTypes: types }));
+                    }}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2 text-sm text-gray-700">{type}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Preferred Locations (comma-separated)
+            </label>
+            <input
+              type="text"
+              value={Array.isArray(autoSave.data.preferredLocations) ? autoSave.data.preferredLocations.join(', ') : ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                console.log('Preferred locations input value:', value);
+                const locations = value
+                  .split(',')
+                  .map(l => l.trim())
+                  .filter(l => l.length > 0);
+                console.log('Parsed locations array:', locations);
+                autoSave.updateData(prev => ({ ...prev, preferredLocations: locations }));
+              }}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Austin, Dallas, Houston"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Risk Tolerance
+            </label>
+            <select
+              value={autoSave.data.riskTolerance}
+              onChange={(e) => autoSave.updateData(prev => ({ ...prev, riskTolerance: e.target.value }))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select risk tolerance</option>
+              <option value="conservative">Conservative</option>
+              <option value="moderate">Moderate</option>
+              <option value="aggressive">Aggressive</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Investment Goals
+            </label>
+            <textarea
+              value={autoSave.data.investmentGoals}
+              onChange={(e) => autoSave.updateData(prev => ({ ...prev, investmentGoals: e.target.value }))}
+              rows={3}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Describe your investment goals and objectives..."
+            />
+          </div>
         </div>
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Preferred Locations (comma-separated)
-        </label>
-        <input
-          type="text"
-          value={Array.isArray(formData.preferredLocations) ? formData.preferredLocations.join(', ') : ''}
-          onChange={(e) => {
-            const value = e.target.value;
-            console.log('Preferred locations input value:', value);
-            const locations = value
-              .split(',')
-              .map(l => l.trim())
-              .filter(l => l.length > 0);
-            console.log('Parsed locations array:', locations);
-            setFormData(prev => ({ ...prev, preferredLocations: locations }));
+        {/* SMS Opt-in Component */}
+        <SMSOptIn
+          userId={user?.id || ''}
+          currentPhone={autoSave.data.phoneNumber}
+          currentOptIn={autoSave.data.smsOptIn}
+          onUpdate={(optIn: boolean, phone: string) => {
+            autoSave.updateData(prev => ({ 
+              ...prev, 
+              smsOptIn: optIn,
+              phoneNumber: phone
+            }));
           }}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          placeholder="e.g., New York, California, Texas"
         />
-        <p className="mt-1 text-sm text-gray-500">
-          Enter locations separated by commas. Example: New York, California, Texas
-        </p>
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Risk Tolerance
-        </label>
-        <select
-          value={formData.riskTolerance}
-          onChange={(e) => setFormData(prev => ({ ...prev, riskTolerance: e.target.value }))}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
         >
-          <option value="">Select Risk Tolerance</option>
-          <option value="conservative">Conservative</option>
-          <option value="moderate">Moderate</option>
-          <option value="aggressive">Aggressive</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Investment Goals
-        </label>
-        <textarea
-          value={formData.investmentGoals}
-          onChange={(e) => setFormData(prev => ({ ...prev, investmentGoals: e.target.value }))}
-          rows={4}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Describe your investment goals and strategy..."
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-      >
-        {loading ? 'Saving...' : 'Save Changes'}
-      </button>
-    </form>
+          {loading ? 'Saving...' : 'Save Changes'}
+        </button>
+      </form>
+    </div>
   );
 }
