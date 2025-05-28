@@ -53,12 +53,15 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
 
     setInvestorProfile(data);
     if (data) {
+      console.log('Fetched investor profile data:', data);
+      console.log('Preferred locations from DB:', data.preferred_locations);
+      
       setFormData(prev => ({
         ...prev,
         accreditedStatus: data.accredited_status || false,
         minimumInvestment: data.minimum_investment ? data.minimum_investment.toString() : '',
-        preferredPropertyTypes: data.preferred_property_types || [],
-        preferredLocations: data.preferred_locations || [],
+        preferredPropertyTypes: Array.isArray(data.preferred_property_types) ? data.preferred_property_types : [],
+        preferredLocations: Array.isArray(data.preferred_locations) ? data.preferred_locations : [],
         riskTolerance: data.risk_tolerance || '',
         investmentGoals: data.investment_goals || '',
       }));
@@ -254,14 +257,23 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         </label>
         <input
           type="text"
-          value={formData.preferredLocations.join(', ')}
+          value={Array.isArray(formData.preferredLocations) ? formData.preferredLocations.join(', ') : ''}
           onChange={(e) => {
-            const locations = e.target.value.split(',').map(l => l.trim()).filter(Boolean);
+            const value = e.target.value;
+            console.log('Preferred locations input value:', value);
+            const locations = value
+              .split(',')
+              .map(l => l.trim())
+              .filter(l => l.length > 0);
+            console.log('Parsed locations array:', locations);
             setFormData(prev => ({ ...prev, preferredLocations: locations }));
           }}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           placeholder="e.g., New York, California, Texas"
         />
+        <p className="mt-1 text-sm text-gray-500">
+          Enter locations separated by commas. Example: New York, California, Texas
+        </p>
       </div>
 
       <div>
