@@ -119,8 +119,6 @@ export function Accreditation() {
             </p>
             <ul className="space-y-2 text-gray-600">
               <li>Email: hello@equitymd.com</li>
-              <li>Phone: (888) 555-0123</li>
-              <li>Hours: Monday - Friday, 9:00 AM - 5:00 PM EST</li>
             </ul>
           </div>
         </div>

@@ -169,10 +169,6 @@ export function Terms() {
                   <span className="font-medium w-24">Address:</span>
                   <span>3525 Hyland Ave Suite 235, Costa Mesa, CA 92626</span>
                 </div>
-                <div className="flex items-center">
-                  <span className="font-medium w-24">Phone:</span>
-                  <span>(888) 555-0123</span>
-                </div>
               </div>
             </div>
 

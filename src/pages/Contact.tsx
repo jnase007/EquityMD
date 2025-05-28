@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { PageBanner } from '../components/PageBanner';
-import { Mail, Phone, MessageSquare, Building2, MapPin, Clock, Send } from 'lucide-react';
+import { Mail, Building2, Send } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 
@@ -85,17 +85,6 @@ export function Contact() {
 
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <Phone className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="font-medium">Phone</h3>
-                    <p className="text-gray-600">(888) 555-0123</p>
-                    <p className="text-sm text-gray-500">Mon-Fri 9am-6pm EST</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
                     <Building2 className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="ml-4">
@@ -104,33 +93,6 @@ export function Contact() {
                       3525 Hyland Ave Suite 235<br />
                       Costa Mesa, CA 92626
                     </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold mb-6">Business Hours</h2>
-              <div className="space-y-3">
-                <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-blue-600 mr-2" />
-                  <div>
-                    <div className="font-medium">Monday - Friday</div>
-                    <div className="text-gray-600">9:00 AM - 6:00 PM EST</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-blue-600 mr-2" />
-                  <div>
-                    <div className="font-medium">Saturday</div>
-                    <div className="text-gray-600">10:00 AM - 4:00 PM EST</div>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-blue-600 mr-2" />
-                  <div>
-                    <div className="font-medium">Sunday</div>
-                    <div className="text-gray-600">Closed</div>
                   </div>
                 </div>
               </div>
