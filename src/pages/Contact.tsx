@@ -78,7 +78,7 @@ export function Contact() {
                   </div>
                   <div className="ml-4">
                     <h3 className="font-medium">Email</h3>
-                    <p className="text-gray-600">support@equitymd.com</p>
+                    <p className="text-gray-600">hello@equitymd.com</p>
                     <p className="text-sm text-gray-500">24/7 support</p>
                   </div>
                 </div>
@@ -101,8 +101,8 @@ export function Contact() {
                   <div className="ml-4">
                     <h3 className="font-medium">Office</h3>
                     <p className="text-gray-600">
-                      123 Investment Plaza<br />
-                      New York, NY 10001
+                      3525 Hyland Ave Suite 235<br />
+                      Costa Mesa, CA 92626
                     </p>
                   </div>
                 </div>

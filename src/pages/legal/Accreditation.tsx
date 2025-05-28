@@ -118,7 +118,7 @@ export function Accreditation() {
               Our team is available to help you with the accreditation process. Contact us for support:
             </p>
             <ul className="space-y-2 text-gray-600">
-              <li>Email: accreditation@equitymd.com</li>
+              <li>Email: hello@equitymd.com</li>
               <li>Phone: (888) 555-0123</li>
               <li>Hours: Monday - Friday, 9:00 AM - 5:00 PM EST</li>
             </ul>

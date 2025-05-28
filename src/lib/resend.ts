@@ -29,7 +29,7 @@ export async function listApiKeys() {
 export async function sendEmail(to: string, subject: string, content: string) {
   try {
     const data = await resend.emails.send({
-      from: 'notifications@equitymd.com',
+      from: 'hello@equitymd.com',
       to,
       subject,
       html: content

@@ -15,7 +15,7 @@ async function testResend() {
     // Test sending email
     console.log('\nSending test email...');
     const emailResult = await resend.emails.send({
-      from: 'notifications@equitymd.com',
+      from: 'hello@equitymd.com',
       to: 'test@example.com', // Replace with your test email
       subject: 'Test Email from EquityMD',
       html: `

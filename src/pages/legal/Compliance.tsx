@@ -159,7 +159,7 @@ export function Compliance() {
               For questions about our marketplace guidelines or to report concerns, please contact our compliance team:
             </p>
             <ul className="space-y-2 text-gray-600">
-              <li>Email: compliance@equitymd.com</li>
+              <li>Email: hello@equitymd.com</li>
               <li>Phone: (888) 555-0124</li>
               <li>Hours: Monday - Friday, 9:00 AM - 5:00 PM EST</li>
             </ul>

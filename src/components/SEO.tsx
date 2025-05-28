@@ -106,6 +106,10 @@ export function SEO({
             },
             "address": {
               "@type": "PostalAddress",
+              "streetAddress": "3525 Hyland Ave Suite 235",
+              "addressLocality": "Costa Mesa",
+              "addressRegion": "CA",
+              "postalCode": "92626",
               "addressCountry": "US"
             },
             "aggregateRating": {

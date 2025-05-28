@@ -99,8 +99,8 @@ export function Disclaimer() {
               <p className="text-gray-600 mb-4">
                 For questions about this disclaimer or EquityMD's services, please contact us at:
               </p>
-              <a href="mailto:legal@equitymd.com" className="text-blue-600 hover:text-blue-700">
-                legal@equitymd.com
+              <a href="mailto:hello@equitymd.com" className="text-blue-600 hover:text-blue-700">
+                hello@equitymd.com
               </a>
             </div>
 

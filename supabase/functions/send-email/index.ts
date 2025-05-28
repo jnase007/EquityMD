@@ -2,8 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
-const FROM_EMAIL = 'notifications@equitymd.com';
-const ADMIN_EMAIL = 'admin@equitymd.com'; // Replace with your admin email
+const FROM_EMAIL = 'hello@equitymd.com';
+const ADMIN_EMAIL = 'hello@equitymd.com'; // Replace with your admin email
 
 serve(async (req) => {
   // Handle CORS preflight

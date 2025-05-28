@@ -132,7 +132,7 @@ export function EmailTest() {
               <ul className="space-y-2 text-sm text-gray-700">
                 <li className="flex items-center">
                   <Mail className="h-4 w-4 mr-2 text-blue-600" />
-                  <strong>Admin Notification:</strong> Sent to admin@equitymd.com with new {userType} signup details
+                  <strong>Admin Notification:</strong> Sent to hello@equitymd.com with new {userType} signup details
                 </li>
                 <li className="flex items-center">
                   <Mail className="h-4 w-4 mr-2 text-green-600" />
@@ -200,7 +200,7 @@ export function EmailTest() {
           <h3 className="text-sm font-semibold text-yellow-900 mb-2">⚠️ Important Notes:</h3>
           <ul className="text-sm text-yellow-800 space-y-1">
             <li>• This will send real emails to the specified addresses</li>
-            <li>• Admin notifications will always go to admin@equitymd.com</li>
+            <li>• Admin notifications will always go to hello@equitymd.com</li>
             <li>• Make sure your Resend API key is properly configured</li>
             <li>• Check your spam folder if emails don't appear in inbox</li>
           </ul>

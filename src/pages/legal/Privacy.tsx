@@ -171,13 +171,13 @@ export function Privacy() {
               <div className="space-y-2">
                 <div className="flex items-center">
                   <span className="font-medium w-24">Email:</span>
-                  <a href="mailto:privacy@equitymd.com" className="text-blue-600 hover:text-blue-700">
-                    privacy@equitymd.com
+                  <a href="mailto:hello@equitymd.com" className="text-blue-600 hover:text-blue-700">
+                    hello@equitymd.com
                   </a>
                 </div>
                 <div className="flex items-center">
                   <span className="font-medium w-24">Address:</span>
-                  <span>123 Investment Plaza, New York, NY 10001</span>
+                  <span>3525 Hyland Ave Suite 235, Costa Mesa, CA 92626</span>
                 </div>
                 <div className="flex items-center">
                   <span className="font-medium w-24">Phone:</span>
