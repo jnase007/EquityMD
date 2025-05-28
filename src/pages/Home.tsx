@@ -357,20 +357,20 @@ export function Home() {
             <p className="text-base sm:text-lg md:text-xl text-white mb-6 sm:mb-8 mobile-text-responsive max-w-2xl mx-auto">
               Exclusive marketplace platform for accredited investors to discover and participate in vetted real estate syndication deals.
             </p>
-            <div className="flex flex-row justify-center gap-3 sm:gap-4 px-2">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-2">
               <Link 
                 to="/browse"
-                className="bg-blue-600 text-white text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center touch-manipulation min-h-touch flex-1 sm:flex-initial min-w-0"
+                className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors inline-flex items-center justify-center"
               >
-                <span className="truncate">Browse Opportunities</span>
-                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                Browse Opportunities
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <button 
-                onClick={handleGetStarted}
-                className="bg-white text-blue-600 text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center touch-manipulation min-h-touch flex-1 sm:flex-initial min-w-0 max-w-[140px] whitespace-nowrap"
+              <Link 
+                to="/signup/start"
+                className="bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-400 transition-colors border-2 border-blue-400"
               >
-                Get Started
-              </button>
+                Sign Up
+              </Link>
             </div>
           </div>
         </div>

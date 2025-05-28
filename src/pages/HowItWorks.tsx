@@ -299,10 +299,10 @@ export function HowItWorks() {
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
             <Link
-              to="/contact"
+              to="/signup/start"
               className="bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-400 transition-colors border-2 border-blue-400"
             >
-              Schedule a Call
+              Sign Up
             </Link>
           </div>
         </div>
