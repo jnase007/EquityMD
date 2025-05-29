@@ -512,7 +512,7 @@ export function Home() {
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <StatCard number="$450M+" label="Total Deal Volume" icon={<Building className="h-8 w-8 text-blue-600" />} />
             <StatCard number="10K+" label="Accredited Investors" icon={<Briefcase className="h-8 w-8 text-blue-600" />} />
-            <StatCard number="150+" label="Active Syndications" icon={<Users className="h-8 w-8 text-blue-600" />} />
+            <StatCard number="20+" label="Active Syndications" icon={<Users className="h-8 w-8 text-blue-600" />} />
           </div>
         </div>
       </section>
