@@ -170,7 +170,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             I am a:
           </label>
           <p className="text-xs text-gray-500 mb-3">
-            Social login users will be set up as investors by default. You can change this later in your profile.
+            Investors can invest in deals. Syndicators can list their real estate deals.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <button
