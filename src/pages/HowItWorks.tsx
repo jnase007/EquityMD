@@ -86,7 +86,7 @@ export function HowItWorks() {
         
         <div className="relative max-w-6xl mx-auto px-4 py-24">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               How <span className="text-blue-300">EquityMD</span> Works
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -97,7 +97,7 @@ export function HowItWorks() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-                <div className="text-3xl font-bold text-blue-200">$500M+</div>
+                <div className="text-3xl font-bold text-blue-200">450+</div>
                 <div className="text-blue-100">Total Investments</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
