@@ -420,7 +420,7 @@ export function Home() {
                 className="flex items-center text-blue-600 hover:text-blue-700"
               >
                 <Lock className="h-4 w-4 mr-1" />
-                Sign in to view details
+                Sign in for full details
               </button>
             )}
           </div>
@@ -444,6 +444,7 @@ export function Home() {
                           }}
                           detailed
                           isAuthenticated={!!user}
+                          onAuthRequired={() => setShowAuthModal(true)}
                         />
                       </div>
                     );
