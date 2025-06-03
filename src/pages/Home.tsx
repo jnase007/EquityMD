@@ -45,10 +45,11 @@ const getPropertyImage = (propertyType: string, index: number) => {
 export function Home() {
   const { user } = useAuthStore();
   const [featuredDeals, setFeaturedDeals] = useState<Deal[]>([]);
+  const [totalDealVolume, setTotalDealVolume] = useState<string>('$450M+'); // Default fallback
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [useVideo, setUseVideo] = useState(true);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
-  const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_in');
+  const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
   
   // Mock investor data - replace with real data from your API
   const featuredInvestors = [
@@ -128,6 +129,7 @@ export function Home() {
 
   useEffect(() => {
     fetchFeaturedDeals();
+    fetchTotalDealVolume();
   }, []);
 
   async function fetchFeaturedDeals() {
@@ -172,6 +174,37 @@ export function Home() {
     } catch (error) {
       console.error('Error fetching featured deals:', error);
       setFeaturedDeals(fallbackMockDeals);
+    }
+  }
+
+  async function fetchTotalDealVolume() {
+    try {
+      const { data, error } = await supabase
+        .from('syndicator_profiles')
+        .select('total_deal_volume')
+        .not('total_deal_volume', 'is', null);
+
+      if (error) {
+        console.error('Error fetching deal volumes:', error);
+        return;
+      }
+
+      // Calculate total deal volume from all syndicators
+      const total = data.reduce((sum, syndicator) => {
+        return sum + (syndicator.total_deal_volume || 0);
+      }, 0);
+
+      // Format the total in a readable way
+      if (total >= 1000000000) {
+        setTotalDealVolume(`$${(total / 1000000000).toFixed(1)}B+`);
+      } else if (total >= 1000000) {
+        setTotalDealVolume(`$${Math.floor(total / 1000000)}M+`);
+      } else {
+        setTotalDealVolume(`$${Math.floor(total / 1000)}K+`);
+      }
+    } catch (error) {
+      console.error('Error calculating total deal volume:', error);
+      // Keep the default fallback value
     }
   }
 
@@ -510,9 +543,9 @@ export function Home() {
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid md:grid-cols-3 gap-8 text-center">
-            <StatCard number="$450M+" label="Total Deal Volume" icon={<Building className="h-8 w-8 text-blue-600" />} />
+            <StatCard number={totalDealVolume} label="Total Deal Volume" icon={<Building className="h-8 w-8 text-blue-600" />} />
             <StatCard number="10K+" label="Accredited Investors" icon={<Briefcase className="h-8 w-8 text-blue-600" />} />
-            <StatCard number="20+" label="Active Syndications" icon={<Users className="h-8 w-8 text-blue-600" />} />
+            <StatCard number="20+" label="Syndications" icon={<Users className="h-8 w-8 text-blue-600" />} />
           </div>
         </div>
       </section>

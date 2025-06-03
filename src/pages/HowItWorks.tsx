@@ -97,12 +97,12 @@ export function HowItWorks() {
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-                <div className="text-3xl font-bold text-blue-200">450+</div>
-                <div className="text-blue-100">Total Investments</div>
+                <div className="text-3xl font-bold text-blue-200">20+</div>
+                <div className="text-blue-100">Syndicators</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
                 <div className="text-3xl font-bold text-blue-200">10,000+</div>
-                <div className="text-blue-100">Active Investors</div>
+                <div className="text-blue-100">Investors</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
                 <div className="text-3xl font-bold text-blue-200">18.5%</div>
