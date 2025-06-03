@@ -29,14 +29,31 @@ export function TestMessaging() {
       // Fetch some syndicators for testing
       const { data: syndicatorData, error: syndicatorError } = await supabase
         .from('syndicator_profiles')
-        .select('id, company_name, company_description')
+        .select('id, company_name, company_description, state, city')
         .not('company_name', 'ilike', '%equitymd admin%')
         .not('company_name', 'ilike', '%admin%')
         .not('company_name', 'ilike', '%test%')
         .limit(5);
 
       if (syndicatorError) throw syndicatorError;
-      setSyndicators(syndicatorData || []);
+      
+      // Filter for complete profiles only
+      const completeProfiles = (syndicatorData || []).filter(item => {
+        const hasRequiredFields = item.company_name && 
+          item.company_name.length >= 3 &&
+          item.state && 
+          item.city &&
+          item.company_description && 
+          item.company_description.length >= 50;
+        
+        return hasRequiredFields || 
+          // Always include verified premier syndicators
+          item.company_name === 'Back Bay Capital' || 
+          item.company_name === 'Sutera Properties' || 
+          item.company_name === 'Starboard Realty';
+      });
+      
+      setSyndicators(completeProfiles);
 
       // Fetch recent messages if user is logged in
       if (user) {

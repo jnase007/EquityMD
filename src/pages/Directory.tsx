@@ -7,6 +7,7 @@ import { SEO } from '../components/SEO';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { PageBanner } from '../components/PageBanner';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { isProfileCompleteForDirectory } from '../lib/syndicator-completion';
 import { supabase } from '../lib/supabase';
 
 interface Syndicator {
@@ -112,6 +113,21 @@ export function Directory() {
           .filter(s => !s.company_name.toLowerCase().includes('equitymd admin')) // Remove admin accounts
           .filter(s => !s.company_name.toLowerCase().includes('admin')) // Remove any admin accounts
           .filter(s => !s.company_name.toLowerCase().includes('test')) // Remove test accounts
+          .filter(s => {
+            // Only show syndicators with complete profiles (80%+ completion)
+            const hasRequiredFields = s.company_name && 
+              s.company_name.length >= 3 &&
+              s.state && 
+              s.city &&
+              s.company_description && 
+              s.company_description.length >= 50;
+            
+            return hasRequiredFields || 
+              // Always include verified premier syndicators
+              s.company_name === 'Back Bay Capital' || 
+              s.company_name === 'Sutera Properties' || 
+              s.company_name === 'Starboard Realty';
+          })
           .map(s => {
             // Only show real data for verified syndicators
             const isVerified = s.company_name === 'Back Bay Capital' || 

@@ -3,8 +3,9 @@ import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { ImageUpload } from './ImageUpload';
 import { DealMediaUpload } from './DealMediaUpload';
-import { Building2, Plus, X } from 'lucide-react';
+import { Building2, Plus, X, CheckCircle, AlertCircle, Info } from 'lucide-react';
 import type { SyndicatorProfile } from '../types/database';
+import { calculateProfileCompletion, getCompletionStatusMessage } from '../lib/syndicator-completion';
 
 interface SyndicatorProfileFormProps {
   setMessage: (message: string) => void;
@@ -165,6 +166,28 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
   const handleRemoveDeal = (index: number) => {
     setPastDeals(pastDeals.filter((_, i) => i !== index));
   };
+
+  const profileCompletion = syndicatorProfile ? calculateProfileCompletion({
+    company_name: syndicatorProfile.company_name,
+    company_description: syndicatorProfile.company_description,
+    company_logo_url: syndicatorProfile.company_logo_url,
+    state: syndicatorProfile.state,
+    city: syndicatorProfile.city,
+    website_url: syndicatorProfile.website_url,
+    years_in_business: syndicatorProfile.years_in_business,
+    total_deal_volume: syndicatorProfile.total_deal_volume
+  }) : { percentage: 0, isComplete: false, missingFields: [] };
+  
+  const completionStatusMessage = syndicatorProfile ? getCompletionStatusMessage({
+    company_name: syndicatorProfile.company_name,
+    company_description: syndicatorProfile.company_description,
+    company_logo_url: syndicatorProfile.company_logo_url,
+    state: syndicatorProfile.state,
+    city: syndicatorProfile.city,
+    website_url: syndicatorProfile.website_url,
+    years_in_business: syndicatorProfile.years_in_business,
+    total_deal_volume: syndicatorProfile.total_deal_volume
+  }) : "Complete your profile to appear in the directory.";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -461,6 +484,22 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-6">
+        <h2 className="text-lg font-medium">Profile Completion</h2>
+        <div className="mt-2">
+          <div className="flex items-center">
+            <div className="h-4 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-4 bg-blue-600 rounded-full"
+                style={{ width: `${profileCompletion.percentage}%` }}
+              ></div>
+            </div>
+            <span className="ml-2 text-sm font-medium text-gray-500">{profileCompletion.percentage}%</span>
+          </div>
+        </div>
+        <p className="mt-2 text-sm text-gray-500">{completionStatusMessage}</p>
       </div>
 
       <button

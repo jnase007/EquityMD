@@ -67,7 +67,9 @@ export function Profile() {
           company_name,
           company_description,
           location,
-          profile_id
+          profile_id,
+          state,
+          city
         `)
         .not('company_name', 'ilike', '%equitymd admin%')
         .not('company_name', 'ilike', '%admin%')
@@ -76,14 +78,30 @@ export function Profile() {
 
       if (error) throw error;
       
-      // Transform the data to match our interface
-      const transformedData: Syndicator[] = (data || []).map(item => ({
-        id: item.id,
-        company_name: item.company_name,
-        company_description: item.company_description,
-        location: item.location,
-        profile: null // We'll keep it simple for now
-      }));
+      // Transform the data and filter for complete profiles
+      const transformedData: Syndicator[] = (data || [])
+        .filter(item => {
+          // Only show syndicators with complete profiles
+          const hasRequiredFields = item.company_name && 
+            item.company_name.length >= 3 &&
+            item.state && 
+            item.city &&
+            item.company_description && 
+            item.company_description.length >= 50;
+          
+          return hasRequiredFields || 
+            // Always include verified premier syndicators
+            item.company_name === 'Back Bay Capital' || 
+            item.company_name === 'Sutera Properties' || 
+            item.company_name === 'Starboard Realty';
+        })
+        .map(item => ({
+          id: item.id,
+          company_name: item.company_name,
+          company_description: item.company_description,
+          location: `${item.city}, ${item.state}`,
+          profile: null // We'll keep it simple for now
+        }));
       
       setSyndicators(transformedData);
     } catch (error) {
