@@ -4,22 +4,23 @@ import { Footer } from '../components/Footer';
 import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
 
 export function EmailPreview() {
-  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome'>('investor');
+  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message'>('investor');
   const [copied, setCopied] = useState(false);
 
   // Sample data for previews
   const sampleData = {
     investor: {
-      userName: 'Dr. Sarah Chen',
-      userEmail: 'sarah.chen@example.com',
+      userName: 'Dr. Sarah Johnson',
+      userEmail: 'sarah.johnson@email.com',
       userType: 'investor' as const,
-      signupDate: new Date().toLocaleDateString()
+      signupDate: new Date().toLocaleDateString(),
     },
     syndicator: {
-      userName: 'Michael Rodriguez',
-      userEmail: 'michael@rodriguezpartners.com',
+      userName: 'Michael Chen',
+      userEmail: 'michael.chen@realestate.com',
       userType: 'syndicator' as const,
-      signupDate: new Date().toLocaleDateString()
+      signupDate: new Date().toLocaleDateString(),
+      companyName: 'Premier Real Estate Ventures'
     },
     deal: {
       id: 'deal-123',
@@ -38,6 +39,14 @@ export function EmailPreview() {
         'Strong rental demand from tech professionals',
         'Projected 18-22% IRR over 3-5 year hold period'
       ]
+    },
+    message: {
+      senderName: 'Dr. Sarah Johnson',
+      senderEmail: 'sarah.johnson@email.com',
+      recipientName: 'Austin Property Group',
+      dealTitle: 'Luxury Apartments in Downtown Austin',
+      messageContent: 'Hi, I\'m very interested in this investment opportunity. Could you please provide more details about the projected cash flow and the timeline for returns? I\'m looking to invest around $100,000. Thank you!',
+      sentDate: new Date().toLocaleDateString()
     }
   };
 
@@ -113,6 +122,18 @@ export function EmailPreview() {
           margin: 0;
           color: #4b5563;
           font-size: 14px;
+        }
+        .message-box {
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 16px;
+          margin: 16px 0;
+          font-style: italic;
+        }
+        .urgent {
+          background-color: #fef2f2;
+          border-left: 4px solid #ef4444;
         }
       </style>
     `;
@@ -574,6 +595,185 @@ export function EmailPreview() {
           </html>
         `;
 
+      case 'admin_new_investor':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>🎉 New Investor Signup - EquityMD Admin Alert</title>
+              ${baseStyles}
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">🎉 New Investor Signup Alert</div>
+                  
+                  <div class="content">
+                    <p>Great news! A new investor has just signed up for EquityMD.</p>
+                    
+                    <div class="info-box">
+                      <h4>New Investor Details:</h4>
+                      <p><strong>Name:</strong> ${sampleData.investor.userName}</p>
+                      <p><strong>Email:</strong> ${sampleData.investor.userEmail}</p>
+                      <p><strong>Signup Date:</strong> ${sampleData.investor.signupDate}</p>
+                      <p><strong>Account Type:</strong> Investor</p>
+                      <p><strong>Status:</strong> Pending verification</p>
+                    </div>
+                    
+                    <p><strong>Next Steps:</strong></p>
+                    <ul>
+                      <li>Review their profile for completeness</li>
+                      <li>Monitor their accreditation verification process</li>
+                      <li>Send welcome email if not already automated</li>
+                      <li>Add to investor newsletter if opted-in</li>
+                    </ul>
+                    
+                    <p>This investor can now browse investment opportunities and begin the accreditation process. Consider reaching out to welcome them and offer onboarding assistance.</p>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/admin/dashboard?tab=users" class="button">
+                      View User in Admin Dashboard
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this admin notification because user signup alerts are enabled.</p>
+                  <p>EquityMD Admin Team • hello@equitymd.com</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'admin_new_syndicator':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>🏗️ New Syndicator Signup - EquityMD Admin Alert</title>
+              ${baseStyles}
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">🏗️ New Syndicator Signup Alert</div>
+                  
+                  <div class="content">
+                    <p>Exciting news! A new syndicator has joined the EquityMD platform.</p>
+                    
+                    <div class="info-box urgent">
+                      <h4>⚠️ ACTION REQUIRED - New Syndicator Details:</h4>
+                      <p><strong>Name:</strong> ${sampleData.syndicator.userName}</p>
+                      <p><strong>Email:</strong> ${sampleData.syndicator.userEmail}</p>
+                      <p><strong>Company:</strong> ${sampleData.syndicator.companyName}</p>
+                      <p><strong>Signup Date:</strong> ${sampleData.syndicator.signupDate}</p>
+                      <p><strong>Account Type:</strong> Syndicator</p>
+                      <p><strong>Status:</strong> Pending verification & approval</p>
+                    </div>
+                    
+                    <p><strong>URGENT - Required Actions:</strong></p>
+                    <ul>
+                      <li><strong>Verify credentials and business registration</strong></li>
+                      <li><strong>Review company profile and documentation</strong></li>
+                      <li><strong>Approve account for deal creation privileges</strong></li>
+                      <li><strong>Schedule onboarding call if needed</strong></li>
+                      <li><strong>Set up compliance monitoring</strong></li>
+                    </ul>
+                    
+                    <p>⏰ <strong>Note:</strong> Syndicator accounts require manual approval before they can list investment opportunities. Please review and approve within 24-48 hours.</p>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/admin/dashboard?tab=verification" class="button">
+                      Review & Approve Syndicator
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this admin notification because syndicator signup alerts are enabled.</p>
+                  <p>EquityMD Admin Team • hello@equitymd.com</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'admin_user_message':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>💬 New User Message - EquityMD Admin Alert</title>
+              ${baseStyles}
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">💬 New User-to-Syndicator Message Alert</div>
+                  
+                  <div class="content">
+                    <p>A user has sent a message to a syndicator through the platform.</p>
+                    
+                    <div class="info-box">
+                      <h4>Message Details:</h4>
+                      <p><strong>From:</strong> ${sampleData.message.senderName} (${sampleData.message.senderEmail})</p>
+                      <p><strong>To:</strong> ${sampleData.message.recipientName}</p>
+                      <p><strong>Regarding:</strong> ${sampleData.message.dealTitle}</p>
+                      <p><strong>Sent:</strong> ${sampleData.message.sentDate}</p>
+                    </div>
+                    
+                    <div class="message-box">
+                      <p><strong>Message Content:</strong></p>
+                      <p>"${sampleData.message.messageContent}"</p>
+                    </div>
+                    
+                    <p><strong>Platform Activity:</strong></p>
+                    <ul>
+                      <li>User engagement with syndicator content</li>
+                      <li>Potential investment interest generated</li>
+                      <li>Active communication facilitated through platform</li>
+                    </ul>
+                    
+                    <p>This activity indicates healthy platform engagement. Monitor for successful connections and potential deal flow.</p>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/admin/dashboard?tab=analytics" class="button">
+                      View Analytics Dashboard
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this admin notification because user activity alerts are enabled.</p>
+                  <p>EquityMD Admin Team • hello@equitymd.com</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
       default:
         return '<p>Email type not found</p>';
     }
@@ -619,13 +819,16 @@ Msg & data rates may apply.`;
   };
 
   const emailTypes = [
-    { id: 'investor', label: 'New Investor Notification (Admin)', icon: '👤' },
-    { id: 'syndicator', label: 'New Syndicator Notification (Admin)', icon: '🏢' },
-    { id: 'welcome_investor', label: 'Welcome Email (Investor)', icon: '🎉' },
-    { id: 'welcome_syndicator', label: 'Welcome Email (Syndicator)', icon: '🎉' },
-    { id: 'investment_opportunity', label: 'New Investment Opportunity', icon: '🏢' },
-    { id: 'sms_deal_alert', label: 'Deal Alert SMS', icon: '📱' },
-    { id: 'sms_welcome', label: 'Welcome SMS', icon: '📱' }
+    { id: 'investor', label: 'New Investor (Admin)', icon: '🎉' },
+    { id: 'syndicator', label: 'New Syndicator (Admin)', icon: '🏢' },
+    { id: 'admin_new_investor', label: 'Admin: New Investor Signup', icon: '👥' },
+    { id: 'admin_new_syndicator', label: 'Admin: New Syndicator Signup', icon: '🏗️' },
+    { id: 'admin_user_message', label: 'Admin: User-to-Syndicator Message', icon: '💬' },
+    { id: 'welcome_investor', label: 'Welcome Investor', icon: '👋' },
+    { id: 'welcome_syndicator', label: 'Welcome Syndicator', icon: '🤝' },
+    { id: 'investment_opportunity', label: 'New Investment Alert', icon: '🏢' },
+    { id: 'sms_deal_alert', label: 'SMS Deal Alert', icon: '📱' },
+    { id: 'sms_welcome', label: 'SMS Welcome', icon: '📲' }
   ];
 
   return (
@@ -719,16 +922,17 @@ Msg & data rates may apply.`;
             <div className="mt-6 bg-blue-50 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-blue-900 mb-2">Sample Data Used:</h3>
               <div className="text-sm text-blue-800">
-                {selectedEmail.includes('investor') && selectedEmail !== 'investment_opportunity' ? (
+                {(selectedEmail.includes('investor') && selectedEmail !== 'investment_opportunity') || selectedEmail === 'admin_new_investor' ? (
                   <div>
                     <p><strong>Name:</strong> {sampleData.investor.userName}</p>
                     <p><strong>Email:</strong> {sampleData.investor.userEmail}</p>
                     <p><strong>Type:</strong> Investor</p>
                   </div>
-                ) : selectedEmail.includes('syndicator') ? (
+                ) : (selectedEmail.includes('syndicator') || selectedEmail === 'admin_new_syndicator') ? (
                   <div>
                     <p><strong>Name:</strong> {sampleData.syndicator.userName}</p>
                     <p><strong>Email:</strong> {sampleData.syndicator.userEmail}</p>
+                    <p><strong>Company:</strong> {sampleData.syndicator.companyName}</p>
                     <p><strong>Type:</strong> Syndicator</p>
                   </div>
                 ) : selectedEmail === 'investment_opportunity' ? (
@@ -737,6 +941,13 @@ Msg & data rates may apply.`;
                     <p><strong>Location:</strong> {sampleData.deal.location}</p>
                     <p><strong>Total Raise:</strong> {sampleData.deal.totalRaise}</p>
                     <p><strong>Syndicator:</strong> {sampleData.deal.syndicatorName}</p>
+                  </div>
+                ) : selectedEmail === 'admin_user_message' ? (
+                  <div>
+                    <p><strong>From:</strong> {sampleData.message.senderName}</p>
+                    <p><strong>To:</strong> {sampleData.message.recipientName}</p>
+                    <p><strong>Deal:</strong> {sampleData.message.dealTitle}</p>
+                    <p><strong>Message Type:</strong> User-to-Syndicator Contact</p>
                   </div>
                 ) : selectedEmail.includes('sms') ? (
                   <div>

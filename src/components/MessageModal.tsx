@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
+import { trackSyndicatorContact, trackInvestmentInterest } from '../lib/analytics';
 
 interface MessageModalProps {
   dealId?: string;
@@ -74,34 +75,32 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
         }
       }
 
-      const { error: sendError } = await supabase
+      // Send message
+      const { error: messageError } = await supabase
         .from('messages')
         .insert(messageData);
 
-      if (sendError) throw sendError;
+      if (messageError) throw messageError;
 
-      // If this is an investment interest and we have a deal ID, record it in deal_interests
-      if (isInvestment && dealId) {
-        const { error: interestError } = await supabase
-          .from('deal_interests')
-          .insert({
-            deal_id: dealId,
-            investor_id: user.id,
-            status: 'interested',
-            notes: `Initial investment interest: $${investmentAmount}`
-          });
-
-        if (interestError) throw interestError;
+      // Track analytics events
+      if (isInvestment && investmentAmount) {
+        // Track investment interest
+        trackInvestmentInterest(dealId || '', parseInt(investmentAmount), user.id);
+      } else {
+        // Track syndicator contact
+        trackSyndicatorContact(syndicatorId, dealId, user.id);
       }
-      
+
       setSuccess(true);
       setMessage('');
       setInvestmentAmount('');
+
+      // Close modal after 3 seconds
       setTimeout(() => {
         onClose();
-      }, 2000);
-    } catch (err) {
-      console.error('Error sending message:', err);
+      }, 3000);
+    } catch (error) {
+      console.error('Error sending message:', error);
       setError('Failed to send message. Please try again.');
     } finally {
       setSending(false);

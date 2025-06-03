@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+import { trackUserSignup } from '../../lib/analytics';
 
 export function SignupContinue() {
   const navigate = useNavigate();
@@ -8,10 +9,18 @@ export function SignupContinue() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem('signup_user_id');
+    const userEmail = sessionStorage.getItem('signup_email');
+    
     if (!userId) {
       navigate('/signup/start');
+      return;
     }
-  }, [navigate]);
+
+    // Track the signup conversion in Google Analytics
+    if (userId && userEmail && type) {
+      trackUserSignup(type as 'investor' | 'syndicator', userId, userEmail);
+    }
+  }, [navigate, type]);
 
   const handleContinue = () => {
     // Clear signup session data

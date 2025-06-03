@@ -12,13 +12,14 @@ import { AnalyticsDashboard } from '../../components/admin/AnalyticsDashboard';
 import { ClaimRequests } from '../../components/admin/ClaimRequests';
 import { SyndicatorVerificationAdmin } from '../../components/SyndicatorVerificationAdmin';
 import { SystemManagement } from '../../components/admin/SystemManagement';
+import { DeactivatedAccountsManagement } from '../../components/admin/DeactivatedAccountsManagement';
 import { useAuthStore } from '../../lib/store';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX } from 'lucide-react';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'deactivated' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('analytics');
 
   // Allow access if path starts with /dev-admin or user is admin
   const isDevAdmin = location.pathname.startsWith('/dev-admin');
@@ -46,6 +47,8 @@ export function AdminDashboard() {
         return <AnalyticsDashboard />;
       case 'users':
         return <UserManagement />;
+      case 'deactivated':
+        return <DeactivatedAccountsManagement />;
       case 'properties':
         return <PropertyManagement />;
       case 'credits':
@@ -115,6 +118,18 @@ export function AdminDashboard() {
             >
               <Users className="h-5 w-5 mr-2" />
               Users
+            </button>
+
+            <button
+              onClick={() => setActiveTab('deactivated')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'deactivated'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <UserX className="h-5 w-5 mr-2" />
+              Deactivated Users
             </button>
             
             <button

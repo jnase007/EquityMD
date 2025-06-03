@@ -9,6 +9,7 @@ import type { InvestorProfile } from '../types/database';
 import { Upload, User, DollarSign, MapPin, Target, MessageSquare, Phone } from 'lucide-react';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { AutoSaveIndicator } from './AutoSaveIndicator';
+import { LocationAutocomplete } from './LocationAutocomplete';
 
 interface InvestorProfileFormProps {
   onComplete: () => void;
@@ -320,24 +321,14 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Preferred Locations (comma-separated)
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Preferred Investment Locations
             </label>
-            <input
-              type="text"
-              value={Array.isArray(autoSave.data.preferredLocations) ? autoSave.data.preferredLocations.join(', ') : ''}
-              onChange={(e) => {
-                const value = e.target.value;
-                console.log('Preferred locations input value:', value);
-                const locations = value
-                  .split(',')
-                  .map(l => l.trim())
-                  .filter(l => l.length > 0);
-                console.log('Parsed locations array:', locations);
-                autoSave.updateData(prev => ({ ...prev, preferredLocations: locations }));
-              }}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Austin, Dallas, Houston"
+            <LocationAutocomplete
+              value={autoSave.data.preferredLocations}
+              onChange={(locations) => autoSave.updateData(prev => ({ ...prev, preferredLocations: locations }))}
+              placeholder="Start typing a state name (e.g., Texas, California, Florida)"
+              className="mt-1"
             />
           </div>
 

@@ -4,6 +4,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { sendSignupEmails } from '../lib/emailService';
+import { trackUserLogin, trackUserSignup } from '../lib/analytics';
 import { X, User, Building2 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -82,40 +83,36 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
 
             // Create type-specific profile
             if (finalUserType === 'investor') {
-              console.log('AuthModal: Creating investor profile...');
               const { error: investorError } = await supabase
                 .from('investor_profiles')
-                .insert([{ 
-                  id: user.id,
-                  accredited_status: false,
-                  investment_preferences: {},
-                  preferred_property_types: [],
-                  preferred_locations: []
-                }]);
-              
+                .insert([
+                  {
+                    id: user.id,
+                    accredited_status: false
+                  },
+                ]);
+
               if (investorError) {
                 console.error('AuthModal: Error creating investor profile:', investorError);
                 throw investorError;
               }
-              console.log('AuthModal: Investor profile created successfully');
             } else {
-              console.log('AuthModal: Creating syndicator profile...');
               const { error: syndicatorError } = await supabase
                 .from('syndicator_profiles')
-                .insert([{ 
-                  id: user.id,
-                  company_name: user.user_metadata?.full_name || 'My Company',
-                  verification_documents: {}
-                }]);
-              
+                .insert([
+                  {
+                    id: user.id,
+                    company_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Company Name'
+                  },
+                ]);
+
               if (syndicatorError) {
                 console.error('AuthModal: Error creating syndicator profile:', syndicatorError);
                 throw syndicatorError;
               }
-              console.log('AuthModal: Syndicator profile created successfully');
             }
 
-            // Send signup notification emails for new users
+            // Send signup email notifications for new users
             try {
               await sendSignupEmails({
                 userName: user.user_metadata?.full_name || user.email?.split('@')[0] || 'New User',
@@ -123,11 +120,18 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                 userType: finalUserType
               });
             } catch (emailError) {
-              console.error('Failed to send signup emails:', emailError);
+              console.error('AuthModal: Failed to send signup emails:', emailError);
               // Don't throw here - we don't want email failures to break signup
             }
+
+            // Track signup conversion for new users
+            trackUserSignup(finalUserType, user.id, user.email);
+
           } else {
             console.log('AuthModal: Existing profile found:', existingProfile);
+            
+            // Track login for existing users
+            trackUserLogin(existingProfile.user_type, user.id);
           }
 
           // Close modal and navigate to dashboard

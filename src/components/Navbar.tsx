@@ -45,10 +45,10 @@ const mobileMenuItems: MobileMenuItem[] = [
     label: "Find Syndicators",
     path: "/directory"
   },
-  // {
-  //   label: "Success Stories",
-  //   path: "/success-stories"
-  // },
+  {
+    label: "Success Stories",
+    path: "/success-stories"
+  },
   {
     label: "Pricing",
     path: "/pricing"
@@ -218,7 +218,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
               : 'text-gray-700'
           }`}
         >
-          Browse Deals
+          Browse Real Estate Deals
         </Link>
         <Link 
           to="/directory" 
@@ -568,11 +568,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
           </div>
         </div>
       )}
-
+      
+      </div>
+      
       {showAuthModal && (
         <AuthModal onClose={() => setShowAuthModal(false)} defaultType={authModalType} defaultView={authModalView} />
       )}
-      </div>
     </nav>
   );
 }
