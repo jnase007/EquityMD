@@ -13,8 +13,6 @@ import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
 import { ClaimSyndicatorModal } from '../components/ClaimSyndicatorModal';
 import { LoadingSpinner, PageLoader } from '../components/LoadingSpinner';
-import { VerificationBadge, VerificationDescription, VerificationStatus } from '../components/VerificationBadge';
-import { AccreditationForm } from '../components/AccreditationForm';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { Footer } from '../components/Footer';
@@ -38,22 +36,40 @@ interface ProjectStats {
   totalInvestors: number;
 }
 
-interface PastProject {
-  id: number;
-  name: string;
-  location: string;
-  type: string;
-  units?: number;
-  sqft?: string;
-  totalValue: string;
-  irr: string;
-  exitYear: number;
-  image: string;
-}
-
-const dummyPastProjects: PastProject[] = [
-  // Only show past projects for verified syndicators
-  // Back Bay Capital, Sutera Properties, and Starboard Realty
+const dummyPastProjects = [
+  {
+    id: 1,
+    name: "The Grand Residences",
+    location: "Austin, TX",
+    type: "Multi-Family",
+    units: 250,
+    totalValue: "$45M",
+    irr: "22%",
+    exitYear: 2022,
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
+  },
+  {
+    id: 2,
+    name: "Parkview Commons",
+    location: "Denver, CO",
+    type: "Mixed-Use",
+    units: 180,
+    totalValue: "$38M",
+    irr: "19%",
+    exitYear: 2023,
+    image: "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&q=80"
+  },
+  {
+    id: 3,
+    name: "The Metropolitan",
+    location: "Nashville, TN",
+    type: "Office",
+    sqft: "125,000",
+    totalValue: "$52M",
+    irr: "21%",
+    exitYear: 2023,
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80"
+  }
 ];
 
 const dummyCompanyDescription = `
@@ -82,7 +98,6 @@ export function SyndicatorProfile() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
-  const [showAccreditationForm, setShowAccreditationForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [projectStats, setProjectStats] = useState<ProjectStats>({
     totalDeals: 0,
@@ -162,17 +177,8 @@ export function SyndicatorProfile() {
       setSyndicator({
         ...syndicatorData,
         profile: syndicatorData.profiles,
-        // Set verification status - Premier Partners get 'premier', others get 'verified' or 'unverified'
-        verification_status: (() => {
-          const companyName = syndicatorData.company_name;
-          if (companyName === 'Back Bay Capital' || companyName === 'Sutera Properties' || companyName === 'Starboard Realty') {
-            return 'premier' as VerificationStatus;
-          }
-          return (syndicatorData.verification_status || 'unverified') as VerificationStatus;
-        })(),
         // Override total deal volume for specific syndicators
         total_deal_volume: syndicatorData.company_name === 'Back Bay Capital' ? 30000000 : 
-                          syndicatorData.company_name === 'Sutera Properties' ? 38000000 :
                           syndicatorData.company_name === 'Starboard Realty' ? 608000000 : 
                           syndicatorData.total_deal_volume,
         // Override profile info for specific syndicators
@@ -206,10 +212,12 @@ export function SyndicatorProfile() {
         .eq('syndicator_id', syndicatorData.id)
         .eq('status', 'active');
 
-      // Only include deals from the three real syndicators
-      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
+      // Filter out unwanted deals like Innovation Square and Marina Residences
       let finalActiveDeals = activeDealsData ? activeDealsData.filter(deal => 
-        allowedSyndicators.includes(deal.syndicator_id)
+        deal.title !== 'Innovation Square' && 
+        !deal.title.includes('Innovation Square') &&
+        deal.title !== 'The Marina Residences' &&
+        !deal.title.includes('Marina Residences')
       ) : [];
 
       // If this is Back Bay Capital and no deals found in database, add mock deals
@@ -430,12 +438,8 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
       setProjectStats({
         totalDeals: finalActiveDeals.length + (pastDealsData?.length || 0),
         activeDeals: finalActiveDeals.length,
-        averageReturn: syndicatorData.company_name === 'Starboard Realty' ? 30 : 
-                      syndicatorData.company_name === 'Back Bay Capital' ? 18 :
-                      syndicatorData.company_name === 'Sutera Properties' ? 17 : 0,
-        totalInvestors: syndicatorData.company_name === 'Starboard Realty' ? 445 : 
-                       syndicatorData.company_name === 'Back Bay Capital' ? 250 :
-                       syndicatorData.company_name === 'Sutera Properties' ? 180 : 0
+        averageReturn: syndicatorData.company_name === 'Starboard Realty' ? 30 : Math.round(Math.random() * 10 + 15),
+        totalInvestors: syndicatorData.company_name === 'Starboard Realty' ? 445 : Math.floor(Math.random() * 500 + 100)
       });
 
     } catch (error) {
@@ -541,7 +545,10 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   <Briefcase className="h-5 w-5 mr-1" />
                   <span>{syndicator.years_in_business} years in business</span>
                 </div>
-                <VerificationBadge status={syndicator.verification_status} />
+                <div className="flex items-center">
+                  <Shield className="h-5 w-5 mr-1" />
+                  <span>Verified Syndicator</span>
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-4">
@@ -549,8 +556,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   onClick={() => {
                     if (!user) {
                       setShowAuthModal(true);
-                    } else if (!profile?.accredited_status) {
-                      setShowAccreditationForm(true);
                     } else {
                       setShowMessageModal(true);
                     }
@@ -561,11 +566,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                     <>
                       <Lock className="h-5 w-5 mr-2" />
                       Login to Contact
-                    </>
-                  ) : !profile?.accredited_status ? (
-                    <>
-                      <Shield className="h-5 w-5 mr-2" />
-                      Verify to Contact
                     </>
                   ) : (
                     <>
@@ -641,6 +641,8 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                 </div>
               )}
 
+
+
               {syndicator.company_name === 'Back Bay Capital' && (
                 <div className="mt-8">
                   <h3 className="text-xl font-bold mb-4">Company Overview</h3>
@@ -658,134 +660,60 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
 
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-6">Active Investment Opportunities</h2>
-              {activeDeals.length > 0 ? (
-                <div className="space-y-6">
-                  {activeDeals.map((deal: any) => (
-                    <div key={deal.id} className="flex flex-col md:flex-row gap-6 border-b pb-6 last:border-0 last:pb-0">
-                      <div className="md:w-64 md:flex-shrink-0">
-                        <img
-                          src={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
-                          alt={deal.title}
-                          className="w-full h-48 md:h-32 object-cover rounded-lg"
-                        />
-                      </div>
-                      <div className="flex-grow">
-                        <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                          <div>
-                            <h3 className="text-xl font-bold mb-2 text-gray-800">{deal.title}</h3>
-                            <div className="flex items-center text-gray-600 mb-3">
-                              <MapPin className="h-4 w-4 mr-1" />
-                              {deal.location}
-                            </div>
-                          </div>
-                          {!user && (
-                            <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center md:ml-4 w-fit">
-                              <Lock className="h-4 w-4 mr-1" />
-                              Sign in to view details
-                            </div>
-                          )}
-                        </div>
-                        
-                        {user ? (
-                          <div className="grid grid-cols-3 gap-6 mb-4">
-                            <div className="flex items-center">
-                              <TrendingUp className="h-5 w-5 text-blue-600 mr-2" />
-                              <div>
-                                <p className="text-sm text-gray-500">Target Return</p>
-                                <p className="font-semibold text-blue-600">{deal.target_irr}% IRR</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center">
-                              <DollarSign className="h-5 w-5 text-blue-600 mr-2" />
-                              <div>
-                                <p className="text-sm text-gray-500">Minimum</p>
-                                <p className="font-semibold text-blue-600">${deal.minimum_investment.toLocaleString()}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center">
-                              <Clock className="h-5 w-5 text-blue-600 mr-2" />
-                              <div>
-                                <p className="text-sm text-gray-500">Term</p>
-                                <p className="font-semibold text-blue-600">{deal.investment_term} years</p>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center text-gray-500 mb-4">
-                            <Lock className="h-5 w-5 mr-2" />
-                            <p>Sign in to view investment details and metrics</p>
-                          </div>
-                        )}
-                        
-                        <Link
-                          to={`/deals/${deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                          onClick={(e) => {
-                            if (!user) {
-                              e.preventDefault();
-                              setShowAuthModal(true);
-                            }
-                          }}
-                        >
-                          View Details
-                          <ChevronRight className="h-4 w-4 ml-1" />
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Building2 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No active investment opportunities at this time.</p>
-                </div>
-              )}
+              <div className="grid gap-6">
+                {activeDeals.map((deal: any) => (
+                  <DealCard
+                    key={deal.id}
+                    id={deal.id}
+                    slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
+                    image={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
+                    title={deal.title}
+                    location={deal.location}
+                    metrics={{
+                      target: `${deal.target_irr}% IRR`,
+                      minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                      term: `${deal.investment_term} years`
+                    }}
+                    detailed
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-6">Past Projects</h2>
-              {syndicator.company_name === 'Back Bay Capital' || 
-               syndicator.company_name === 'Sutera Properties' || 
-               syndicator.company_name === 'Starboard Realty' ? (
-                <div className="grid gap-6">
-                  {dummyPastProjects.map((project) => (
-                    <div key={project.id} className="flex gap-6 border-b pb-6 last:border-0 last:pb-0">
-                      <img
-                        src={project.image}
-                        alt={project.name}
-                        className="w-48 h-32 object-cover rounded-lg"
-                      />
-                      <div>
-                        <h3 className="text-xl font-bold mb-2">{project.name}</h3>
-                        <div className="flex items-center text-gray-600 mb-2">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {project.location}
+              <div className="grid gap-6">
+                {dummyPastProjects.map((project) => (
+                  <div key={project.id} className="flex gap-6 border-b pb-6 last:border-0 last:pb-0">
+                    <img
+                      src={project.image}
+                      alt={project.name}
+                      className="w-48 h-32 object-cover rounded-lg"
+                    />
+                    <div>
+                      <h3 className="text-xl font-bold mb-2">{project.name}</h3>
+                      <div className="flex items-center text-gray-600 mb-2">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {project.location}
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <div className="text-sm text-gray-500">IRR</div>
+                          <div className="font-semibold text-green-600">{project.irr}</div>
                         </div>
-                        <div className="grid grid-cols-3 gap-4">
-                          <div>
-                            <div className="text-sm text-gray-500">IRR</div>
-                            <div className="font-semibold text-green-600">{project.irr}</div>
-                          </div>
-                          <div>
-                            <div className="text-sm text-gray-500">Total Value</div>
-                            <div className="font-semibold">{project.totalValue}</div>
-                          </div>
-                          <div>
-                            <div className="text-sm text-gray-500">Exit Year</div>
-                            <div className="font-semibold">{project.exitYear}</div>
-                          </div>
+                        <div>
+                          <div className="text-sm text-gray-500">Total Value</div>
+                          <div className="font-semibold">{project.totalValue}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm text-gray-500">Exit Year</div>
+                          <div className="font-semibold">{project.exitYear}</div>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Building2 className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>Past project information not available.</p>
-                  <p className="text-sm mt-2">This syndicator profile has not been verified or claimed.</p>
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">
@@ -975,38 +903,28 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold mb-6">Track Record</h2>
-              {syndicator.company_name === 'Back Bay Capital' || 
-               syndicator.company_name === 'Sutera Properties' || 
-               syndicator.company_name === 'Starboard Realty' ? (
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-sm text-gray-500">Total Deal Volume</div>
-                    <div className="text-2xl font-bold">
-                      ${syndicator.total_deal_volume?.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Active Deals</div>
-                    <div className="text-2xl font-bold">{projectStats.activeDeals}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Average Return</div>
-                    <div className="text-2xl font-bold text-green-600">
-                      {projectStats.averageReturn}%
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Total Investors</div>
-                    <div className="text-2xl font-bold">{projectStats.totalInvestors}</div>
+              <div className="space-y-4">
+                <div>
+                  <div className="text-sm text-gray-500">Total Deal Volume</div>
+                  <div className="text-2xl font-bold">
+                    ${syndicator.total_deal_volume?.toLocaleString()}
                   </div>
                 </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <BarChart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>Track record information not available.</p>
-                  <p className="text-sm mt-2">This syndicator profile has not been verified or claimed.</p>
+                <div>
+                  <div className="text-sm text-gray-500">Active Deals</div>
+                  <div className="text-2xl font-bold">{projectStats.activeDeals}</div>
                 </div>
-              )}
+                <div>
+                  <div className="text-sm text-gray-500">Average Return</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {projectStats.averageReturn}%
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm text-gray-500">Total Investors</div>
+                  <div className="text-2xl font-bold">{projectStats.totalInvestors}</div>
+                </div>
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">
@@ -1059,16 +977,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
           syndicatorId={syndicator.id}
           syndicatorName={syndicator.company_name}
           onClose={() => setShowClaimModal(false)}
-        />
-      )}
-
-      {showAccreditationForm && (
-        <AccreditationForm
-          onVerify={() => {
-            setShowAccreditationForm(false);
-            // Optionally show a success message or refresh profile data
-          }}
-          onClose={() => setShowAccreditationForm(false)}
         />
       )}
 
