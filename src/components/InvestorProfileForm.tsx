@@ -193,7 +193,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
     }));
   };
 
-  const accreditedInvestorTooltip = "An accredited investor has an annual income over $200,000 ($300,000 joint) for 2 years, or a net worth over $1M (excluding home), or specific professional licenses. This SEC definition allows you to invest in private deals on Equitymd.com.";
+  const accreditedInvestorTooltip = "High net worth investors typically have an annual income over $200,000 (or $300,000 joint) and are qualified to invest in private real estate deals.";
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -279,7 +279,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
                 onChange={(e) => autoSave.updateData(prev => ({ ...prev, accreditedStatus: e.target.checked }))}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-700">I am an accredited investor</span>
+              <span className="ml-2 text-sm text-gray-700">I am a high net worth investor</span>
             </label>
           </div>
 

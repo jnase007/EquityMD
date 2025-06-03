@@ -273,7 +273,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             <div>
               <div className="flex items-center justify-between">
                 <label className="block text-sm font-medium text-gray-700">
-                  Accredited Investor Status
+                  High Net Worth Investor Status
                 </label>
                 <button
                   type="button"
@@ -292,47 +292,29 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <span className="ml-2 text-sm text-gray-700">
-                    I certify that I am an accredited investor
+                    I am a high net worth investor
                   </span>
                 </label>
               </div>
-              <div className="mt-3 p-4 bg-gray-50 rounded-lg text-sm">
-                <h4 className="font-medium text-gray-900 mb-2">Accredited Investor Requirements</h4>
-                <p className="text-gray-600 mb-3">
-                  Under SEC rules, you qualify as an accredited investor if you meet at least ONE of the following criteria:
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">1.</div>
-                    <p className="text-gray-600">
-                      <span className="font-medium">Income:</span> Individual income exceeding $200,000 in each of the past two years, with expectation of the same in current year (or $300,000 combined income if married)
-                    </p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">2.</div>
-                    <p className="text-gray-600">
-                      <span className="font-medium">Net Worth:</span> Individual or joint net worth exceeding $1 million, excluding the value of your primary residence
-                    </p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">3.</div>
-                    <p className="text-gray-600">
-                      <span className="font-medium">Professional Certifications:</span> Hold certain professional certifications, designations, or credentials (Series 7, 65, or 82 licenses)
-                    </p>
-                  </div>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">4.</div>
-                    <p className="text-gray-600">
-                      <span className="font-medium">Business Ownership:</span> Executive officer, director, or general partner of the company selling the securities
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-blue-50 rounded border border-blue-100">
-                  <p className="text-blue-800 text-xs">
-                    <strong>Important:</strong> Making false statements about your accredited investor status may constitute securities fraud. Please ensure you meet at least one of these criteria before certifying.
+              {showAccreditedInfo && (
+                <div className="mt-3 p-4 bg-gray-50 rounded-lg text-sm">
+                  <h4 className="font-medium text-gray-900 mb-2">High Net Worth Qualification</h4>
+                  <p className="text-gray-600 mb-3">
+                    To qualify as a high net worth investor, you should have:
                   </p>
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">•</div>
+                    <p className="text-gray-600">
+                      <span className="font-medium">Income:</span> Individual income exceeding $200,000 in each of the past two years (or $300,000 combined income if married)
+                    </p>
+                  </div>
+                  <div className="mt-4 p-3 bg-blue-50 rounded border border-blue-100">
+                    <p className="text-blue-800 text-xs">
+                      <strong>Note:</strong> This helps syndicators understand your investment capacity and ensures suitable deal recommendations.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         );
