@@ -30,6 +30,9 @@ export function TestMessaging() {
       const { data: syndicatorData, error: syndicatorError } = await supabase
         .from('syndicator_profiles')
         .select('id, company_name, company_description')
+        .not('company_name', 'ilike', '%equitymd admin%')
+        .not('company_name', 'ilike', '%admin%')
+        .not('company_name', 'ilike', '%test%')
         .limit(5);
 
       if (syndicatorError) throw syndicatorError;

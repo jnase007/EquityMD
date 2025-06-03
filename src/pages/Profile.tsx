@@ -69,6 +69,9 @@ export function Profile() {
           location,
           profile_id
         `)
+        .not('company_name', 'ilike', '%equitymd admin%')
+        .not('company_name', 'ilike', '%admin%')
+        .not('company_name', 'ilike', '%test%')
         .limit(6);
 
       if (error) throw error;

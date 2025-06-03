@@ -109,6 +109,9 @@ export function Directory() {
         // Combine real data with enhanced properties
         const combinedData = syndicatorData
           .filter(s => s.company_name !== 'Starboard Realty') // Remove any existing Starboard from DB
+          .filter(s => !s.company_name.toLowerCase().includes('equitymd admin')) // Remove admin accounts
+          .filter(s => !s.company_name.toLowerCase().includes('admin')) // Remove any admin accounts
+          .filter(s => !s.company_name.toLowerCase().includes('test')) // Remove test accounts
           .map(s => {
             // Only show real data for verified syndicators
             const isVerified = s.company_name === 'Back Bay Capital' || 
@@ -139,9 +142,12 @@ export function Directory() {
             };
           });
         
-        // Always add Starboard Realty
+        // Always add Starboard Realty with the correct type structure
         if (starboardRealty) {
-          combinedData.push(starboardRealty);
+          combinedData.push({
+            ...starboardRealty,
+            total_deal_volume: starboardRealty.total_deal_volume || 0
+          });
         }
 
       setSyndicators(combinedData);
