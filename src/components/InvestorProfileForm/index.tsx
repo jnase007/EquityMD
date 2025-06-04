@@ -273,7 +273,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             <div>
               <div className="flex items-center justify-between">
                 <label className="block text-sm font-medium text-gray-700">
-                  High Net Worth Investor Status
+                  Accredited Investor Status
                 </label>
                 <button
                   type="button"
@@ -292,25 +292,33 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                   <span className="ml-2 text-sm text-gray-700">
-                    I am a high net worth investor
+                    I am an accredited investor
                   </span>
                 </label>
               </div>
               {showAccreditedInfo && (
                 <div className="mt-3 p-4 bg-gray-50 rounded-lg text-sm">
-                  <h4 className="font-medium text-gray-900 mb-2">High Net Worth Qualification</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">SEC Accredited Investor Definition</h4>
                   <p className="text-gray-600 mb-3">
-                    To qualify as a high net worth investor, you should have:
+                    Under SEC regulations, an accredited investor is someone who:
                   </p>
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">•</div>
-                    <p className="text-gray-600">
-                      <span className="font-medium">Income:</span> Individual income exceeding $200,000 in each of the past two years (or $300,000 combined income if married)
-                    </p>
+                  <div className="space-y-2">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">•</div>
+                      <p className="text-gray-600">
+                        <span className="font-medium">Income Test:</span> Has earned income that exceeded $200,000 (or $300,000 together with a spouse) in each of the prior two years, and reasonably expects the same for the current year, OR
+                      </p>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 h-5 w-5 text-blue-600 mr-2">•</div>
+                      <p className="text-gray-600">
+                        <span className="font-medium">Net Worth Test:</span> Has a net worth over $1 million, either alone or together with a spouse (excluding the value of their primary residence)
+                      </p>
+                    </div>
                   </div>
                   <div className="mt-4 p-3 bg-blue-50 rounded border border-blue-100">
                     <p className="text-blue-800 text-xs">
-                      <strong>Note:</strong> This helps syndicators understand your investment capacity and ensures suitable deal recommendations.
+                      <strong>Note:</strong> Accredited investor status is required for participation in many private real estate investment opportunities and helps syndicators ensure compliance with SEC regulations.
                     </p>
                   </div>
                 </div>

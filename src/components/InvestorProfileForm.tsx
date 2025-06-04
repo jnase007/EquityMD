@@ -6,7 +6,7 @@ import { InvestmentRangeSelector } from './InvestmentRangeSelector';
 import { Tooltip, InfoIcon } from './Tooltip';
 import { SMSOptIn } from './SMSOptIn';
 import type { InvestorProfile } from '../types/database';
-import { Upload, User, DollarSign, MapPin, Target, MessageSquare, Phone } from 'lucide-react';
+import { Upload, User, DollarSign, MapPin, Target, MessageSquare, Phone, HelpCircle } from 'lucide-react';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { AutoSaveIndicator } from './AutoSaveIndicator';
 import { LocationAutocomplete } from './LocationAutocomplete';
@@ -193,7 +193,23 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
     }));
   };
 
-  const accreditedInvestorTooltip = "High net worth investors typically have an annual income over $200,000 (or $300,000 joint) and are qualified to invest in private real estate deals.";
+  const accreditedInvestorTooltip = "An accredited investor is defined by the SEC as someone who: (1) has earned income that exceeded $200,000 (or $300,000 together with a spouse) in each of the prior two years, and reasonably expects the same for the current year, OR (2) has a net worth over $1 million, either alone or together with a spouse (excluding the value of their primary residence). This status allows participation in certain private investment opportunities.";
+
+  // Helper function to format numbers with commas
+  const formatNumberWithCommas = (value: string): string => {
+    // Remove all non-digits
+    const numericValue = value.replace(/\D/g, '');
+    
+    // Format with commas
+    if (numericValue === '') return '';
+    return new Intl.NumberFormat('en-US').format(parseInt(numericValue));
+  };
+
+  // Helper function to handle minimum investment input change
+  const handleMinimumInvestmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedValue = formatNumberWithCommas(e.target.value);
+    autoSave.updateData(prev => ({ ...prev, minimumInvestment: formattedValue }));
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
@@ -272,28 +288,47 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           <h3 className="text-lg font-medium">Investment Preferences</h3>
           
           <div>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={autoSave.data.accreditedStatus}
-                onChange={(e) => autoSave.updateData(prev => ({ ...prev, accreditedStatus: e.target.checked }))}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="ml-2 text-sm text-gray-700">I am a high net worth investor</span>
-            </label>
+            <div className="flex items-center gap-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={autoSave.data.accreditedStatus}
+                  onChange={(e) => autoSave.updateData(prev => ({ ...prev, accreditedStatus: e.target.checked }))}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">I am an accredited investor</span>
+              </label>
+              <div className="relative group">
+                <button
+                  type="button"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  <HelpCircle className="h-4 w-4" />
+                </button>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-2 px-3 whitespace-normal w-80 z-10">
+                  {accreditedInvestorTooltip}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Minimum Investment Amount
             </label>
-            <input
-              type="number"
-              value={autoSave.data.minimumInvestment}
-              onChange={(e) => autoSave.updateData(prev => ({ ...prev, minimumInvestment: e.target.value }))}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              placeholder="25000"
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 text-sm">$</span>
+              </div>
+              <input
+                type="text"
+                value={autoSave.data.minimumInvestment}
+                onChange={handleMinimumInvestmentChange}
+                className="pl-8 mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                placeholder="25,000"
+              />
+            </div>
           </div>
 
           <div>
