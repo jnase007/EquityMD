@@ -8,6 +8,7 @@ const SYNDICATOR_LOGO_MAP: Record<string, string> = {
   'Horizon Investment Group': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//HorizonInvestmentGroup.png',
   'Cardone Capital': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//Cardone.png',
   'Blackstone Real Estate': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//BlackstoneRealEstate.png',
+  'Nuveen Real Estate': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//nuveen.png',
 };
 
 // Temporary location overrides for specific syndicators
