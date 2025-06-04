@@ -74,6 +74,7 @@ export function Profile() {
         .not('company_name', 'ilike', '%equitymd admin%')
         .not('company_name', 'ilike', '%admin%')
         .not('company_name', 'ilike', '%test%')
+        .neq('company_name', 'Metropolitan Real Estate')
         .limit(6);
 
       if (error) throw error;
