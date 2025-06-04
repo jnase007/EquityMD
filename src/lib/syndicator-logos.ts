@@ -10,6 +10,12 @@ const SYNDICATOR_LOGO_MAP: Record<string, string> = {
   'Blackstone Real Estate': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//BlackstoneRealEstate.png',
   'Nuveen Real Estate': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//nuveen.png',
   'Prologis': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//Prologis.png',
+  'DLP Capital': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//DLPCapital.png',
+  'Ashcroft Capital': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//AshcroftCapital.png',
+  'Simon Property Group': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//SimonPropertyGroup.png',
+  'Hunt Capital Partners': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//Hunt.png',
+  'WNC': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//WNC.png',
+  'Crow Holdings': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//Crow_Holdings_Logo_Stacked_08-2021.jpg',
 };
 
 // Temporary location overrides for specific syndicators
