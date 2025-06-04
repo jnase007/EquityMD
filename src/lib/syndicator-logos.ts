@@ -5,6 +5,7 @@ const SYNDICATOR_LOGO_MAP: Record<string, string> = {
   'Starboard Realty': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
   '37th Parallel Properties': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//37thParallelProperties.jpg',
   'Summit Capital Partners': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//Summit.png',
+  'Horizon Investment Group': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//HorizonInvestmentGroup.png',
 };
 
 // Temporary location overrides for specific syndicators
