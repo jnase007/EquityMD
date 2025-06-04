@@ -4,6 +4,7 @@ const SYNDICATOR_LOGO_MAP: Record<string, string> = {
   'Back Bay Capital': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/backbay.png`,
   'Starboard Realty': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
   '37th Parallel Properties': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//37thParallelProperties.jpg',
+  'Summit Capital Partners': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//Summit.png',
 };
 
 // Temporary location overrides for specific syndicators
