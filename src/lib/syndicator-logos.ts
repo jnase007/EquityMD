@@ -3,6 +3,7 @@ const SYNDICATOR_LOGO_MAP: Record<string, string> = {
   'Sutera Properties': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/suteraproperties.png`,
   'Back Bay Capital': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/backbay.png`,
   'Starboard Realty': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
+  '37th Parallel Properties': 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//37thParallelProperties.jpg',
 };
 
 // Temporary location overrides for specific syndicators
