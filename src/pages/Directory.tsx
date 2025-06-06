@@ -335,7 +335,7 @@ export function Directory() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {syndicators
-              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital' || s.company_name === 'Starboard Realty' || s.company_name === 'Clarion Partners')
+              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital' || s.company_name === 'Starboard Realty')
               .map((syndicator) => (
                 <Link
                   key={syndicator.id}
