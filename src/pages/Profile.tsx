@@ -525,6 +525,8 @@ export function Profile() {
   const [showProfilePreview, setShowProfilePreview] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [deactivateConfirmation, setDeactivateConfirmation] = useState('');
 
   // Check if mobile
   useEffect(() => {
@@ -771,6 +773,39 @@ export function Profile() {
     }
   };
 
+  const handleAccountDeactivation = async () => {
+    if (!user || deactivateConfirmation !== 'DEACTIVATE') {
+      toast.error('Please type DEACTIVATE to confirm');
+      return;
+    }
+
+    try {
+      // Update profile to mark as deactivated
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ 
+          is_active: false,
+          deactivated_at: new Date().toISOString(),
+          full_name: `[DEACTIVATED] ${profile?.full_name || 'User'}`
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      toast.success('Account successfully deactivated');
+      
+      // Sign out the user
+      await supabase.auth.signOut();
+      
+      // Redirect to home page
+      window.location.href = '/';
+      
+    } catch (error) {
+      console.error('Error deactivating account:', error);
+      toast.error('Error deactivating account. Please try again.');
+    }
+  };
+
   if (!user) {
     return <Navigate to="/" replace />;
   }
@@ -958,6 +993,12 @@ export function Profile() {
                   className="text-blue-600 hover:text-blue-700 transition font-medium"
                 >
                   {showEmailForm ? 'Cancel' : 'Update Email'}
+                </button>
+                <button
+                  onClick={() => setShowDeactivateModal(true)}
+                  className="text-red-600 hover:text-red-700 transition font-medium"
+                >
+                  Deactivate Account
                 </button>
               </div>
             </div>
@@ -1172,6 +1213,65 @@ export function Profile() {
         profile={profile}
         userType={profile?.user_type || 'investor'}
       />
+
+      {/* Account Deactivation Modal */}
+      <Modal
+        isOpen={showDeactivateModal}
+        onRequestClose={() => {
+          setShowDeactivateModal(false);
+          setDeactivateConfirmation('');
+        }}
+        className="max-w-md mx-auto bg-white rounded-xl shadow-2xl p-6 m-4"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div className="text-center">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="h-6 w-6 text-red-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Deactivate Account</h3>
+          <p className="text-sm text-gray-600 mb-4 text-left">
+            This action will deactivate your account. Your profile will be hidden from other users and you will be signed out.
+          </p>
+          
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-red-800">
+              <strong>Warning:</strong> This action cannot be easily undone. You will need to contact support to reactivate your account.
+            </p>
+          </div>
+
+          <div className="mb-4 text-left">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Type "DEACTIVATE" to confirm:
+            </label>
+            <input
+              type="text"
+              value={deactivateConfirmation}
+              onChange={(e) => setDeactivateConfirmation(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500"
+              placeholder="DEACTIVATE"
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setShowDeactivateModal(false);
+                setDeactivateConfirmation('');
+              }}
+              className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAccountDeactivation}
+              disabled={deactivateConfirmation !== 'DEACTIVATE'}
+              className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Deactivate
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       <Footer />
     </div>
