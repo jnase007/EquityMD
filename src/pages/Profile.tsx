@@ -4,14 +4,50 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { MessageModal } from '../components/MessageModal';
 import { AccountTypeBadge } from '../components/AccountTypeBadge';
-import { ProfileCompletionCard } from '../components/ProfileCompletionCard';
 import { useAuthStore } from '../lib/store';
 import { InvestorProfileForm } from '../components/InvestorProfileForm';
 import { SyndicatorProfileForm } from '../components/SyndicatorProfileForm';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
 import { supabase } from '../lib/supabase';
 import { calculateProfileCompletion } from '../lib/profileCompletion';
-import { MessageCircle, Star, Building2, User, Eye } from 'lucide-react';
+import { 
+  MessageCircle, 
+  Star, 
+  Building2, 
+  User, 
+  Eye, 
+  CheckCircle, 
+  Phone, 
+  MapPin, 
+  Target,
+  Award,
+  Users,
+  TrendingUp,
+  ArrowRight,
+  Settings,
+  Bell,
+  Shield,
+  Download,
+  Upload,
+  Camera,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Play,
+  Sparkles
+} from 'lucide-react';
+import { Tooltip } from 'react-tooltip';
+import Modal from 'react-modal';
+import { useDropzone } from 'react-dropzone';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import Select from 'react-select';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import toast, { Toaster } from 'react-hot-toast';
+
+// Set the app element for react-modal accessibility
+Modal.setAppElement('#root');
 
 interface Syndicator {
   id: string;
@@ -23,6 +59,348 @@ interface Syndicator {
     avatar_url: string;
   } | null;
 }
+
+// US States for dropdowns
+const US_STATES = [
+  { value: 'AL', label: 'Alabama' },
+  { value: 'AK', label: 'Alaska' },
+  { value: 'AZ', label: 'Arizona' },
+  { value: 'AR', label: 'Arkansas' },
+  { value: 'CA', label: 'California' },
+  { value: 'CO', label: 'Colorado' },
+  { value: 'CT', label: 'Connecticut' },
+  { value: 'DE', label: 'Delaware' },
+  { value: 'FL', label: 'Florida' },
+  { value: 'GA', label: 'Georgia' },
+  { value: 'HI', label: 'Hawaii' },
+  { value: 'ID', label: 'Idaho' },
+  { value: 'IL', label: 'Illinois' },
+  { value: 'IN', label: 'Indiana' },
+  { value: 'IA', label: 'Iowa' },
+  { value: 'KS', label: 'Kansas' },
+  { value: 'KY', label: 'Kentucky' },
+  { value: 'LA', label: 'Louisiana' },
+  { value: 'ME', label: 'Maine' },
+  { value: 'MD', label: 'Maryland' },
+  { value: 'MA', label: 'Massachusetts' },
+  { value: 'MI', label: 'Michigan' },
+  { value: 'MN', label: 'Minnesota' },
+  { value: 'MS', label: 'Mississippi' },
+  { value: 'MO', label: 'Missouri' },
+  { value: 'MT', label: 'Montana' },
+  { value: 'NE', label: 'Nebraska' },
+  { value: 'NV', label: 'Nevada' },
+  { value: 'NH', label: 'New Hampshire' },
+  { value: 'NJ', label: 'New Jersey' },
+  { value: 'NM', label: 'New Mexico' },
+  { value: 'NY', label: 'New York' },
+  { value: 'NC', label: 'North Carolina' },
+  { value: 'ND', label: 'North Dakota' },
+  { value: 'OH', label: 'Ohio' },
+  { value: 'OK', label: 'Oklahoma' },
+  { value: 'OR', label: 'Oregon' },
+  { value: 'PA', label: 'Pennsylvania' },
+  { value: 'RI', label: 'Rhode Island' },
+  { value: 'SC', label: 'South Carolina' },
+  { value: 'SD', label: 'South Dakota' },
+  { value: 'TN', label: 'Tennessee' },
+  { value: 'TX', label: 'Texas' },
+  { value: 'UT', label: 'Utah' },
+  { value: 'VT', label: 'Vermont' },
+  { value: 'VA', label: 'Virginia' },
+  { value: 'WA', label: 'Washington' },
+  { value: 'WV', label: 'West Virginia' },
+  { value: 'WI', label: 'Wisconsin' },
+  { value: 'WY', label: 'Wyoming' }
+];
+
+// Circular Progress Bar Component
+const CircularProgressBar = ({ percentage, size = 120, strokeWidth = 8 }: { 
+  percentage: number; 
+  size?: number; 
+  strokeWidth?: number; 
+}) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
+  const isComplete = percentage === 100;
+
+  return (
+    <div 
+      className={`relative inline-flex items-center justify-center ${isComplete ? 'animate-pulse' : ''}`}
+      style={{ width: size, height: size }}
+    >
+      <svg
+        width={size}
+        height={size}
+        className={`transform -rotate-90 ${isComplete ? 'filter drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]' : ''}`}
+      >
+        {/* Background circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#e5e7eb"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+        />
+        {/* Progress circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={isComplete ? "#22c55e" : "#3b82f6"}
+          strokeWidth={strokeWidth}
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="transition-all duration-1000 ease-out"
+          style={{
+            animation: 'drawCircle 2s ease-out forwards'
+          }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-lg font-bold text-gray-900">
+          {percentage}%
+        </span>
+      </div>
+      {isComplete && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <CheckCircle className="h-6 w-6 text-green-600 animate-bounce" style={{ marginTop: '24px' }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Onboarding Wizard Component
+const OnboardingWizard = ({ isOpen, onClose, userType, missingFields }: {
+  isOpen: boolean;
+  onClose: () => void;
+  userType: 'investor' | 'syndicator';
+  missingFields: string[];
+}) => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const steps = missingFields.slice(0, 3); // Show first 3 missing fields
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className="max-w-md mx-auto bg-white rounded-xl shadow-2xl p-6 m-4"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div className="text-center">
+        <div className="mb-6">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Sparkles className="h-8 w-8 text-blue-600" />
+          </div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            Complete Your Profile
+          </h2>
+          <p className="text-gray-600">
+            Let's get you set up! Step {currentStep + 1} of {steps.length}
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex justify-center mb-4">
+            {steps.map((_, index) => (
+              <div
+                key={index}
+                className={`w-3 h-3 rounded-full mx-1 ${
+                  index <= currentStep ? 'bg-blue-600' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+          
+          {steps[currentStep] && (
+            <div className="text-left p-4 bg-blue-50 rounded-lg">
+              <h3 className="font-semibold text-blue-900 mb-2">
+                Step {currentStep + 1}: Add your {steps[currentStep]}
+              </h3>
+              <p className="text-blue-700 text-sm">
+                {userType === 'investor' 
+                  ? `Adding your ${steps[currentStep]} helps syndicators understand your investment preferences.`
+                  : `Adding your ${steps[currentStep]} helps investors learn more about your company.`
+                }
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-between">
+          <button
+            onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+            disabled={currentStep === 0}
+            className="px-4 py-2 text-gray-600 hover:text-gray-900 disabled:opacity-50"
+          >
+            Back
+          </button>
+          
+          {currentStep < steps.length - 1 ? (
+            <button
+              onClick={() => setCurrentStep(currentStep + 1)}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              onClick={onClose}
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            >
+              Get Started!
+            </button>
+          )}
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+// Profile Preview Modal
+const ProfilePreviewModal = ({ isOpen, onClose, profile, userType }: {
+  isOpen: boolean;
+  onClose: () => void;
+  profile: any;
+  userType: 'investor' | 'syndicator';
+}) => {
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className="max-w-2xl mx-auto bg-white rounded-xl shadow-2xl m-4 max-h-[90vh] overflow-y-auto"
+      overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-gray-900">Profile Preview</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-6 mb-4">
+          <div className="flex items-center space-x-4">
+            <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center">
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.full_name || 'User'}
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <User className="h-8 w-8 text-white" />
+              )}
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">
+                {profile?.full_name || 'Your Name'}
+              </h3>
+              <AccountTypeBadge
+                userType={userType}
+                isVerified={profile?.is_verified}
+                size="sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center text-gray-600">
+          <p className="text-sm">This is how other users will see your profile</p>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+// Enhanced Profile Completion Card
+const EnhancedProfileCompletionCard = ({ 
+  completion, 
+  userType, 
+  onFieldFocus 
+}: { 
+  completion: any; 
+  userType: 'investor' | 'syndicator';
+  onFieldFocus: (field: string) => void;
+}) => {
+  if (!completion) return null;
+
+  const percentage = Math.round((completion.completedFields / completion.totalFields) * 100);
+  const isComplete = percentage === 100;
+
+  return (
+    <div className="sticky top-4 z-10 bg-white rounded-lg shadow-md p-6 border border-gray-200">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Profile Completion</h3>
+          <p className="text-sm text-gray-600">
+            {completion.completedFields} of {completion.totalFields} fields completed
+          </p>
+        </div>
+        <div 
+          data-tooltip-id="progress-tooltip"
+          data-tooltip-content={isComplete ? "🎉 Profile Complete! You're ready to get verified!" : "Complete your profile to get a Verified badge!"}
+        >
+          <CircularProgressBar percentage={percentage} />
+        </div>
+      </div>
+
+      {!isComplete && completion.missingFields.length > 0 && (
+        <div>
+          <h4 className="text-sm font-medium text-gray-900 mb-3">Quick Actions</h4>
+          <div className="flex flex-wrap gap-2">
+            {completion.missingFields.slice(0, 3).map((field: string) => (
+              <button
+                key={field}
+                onClick={() => onFieldFocus(field)}
+                className="bg-blue-100 text-blue-600 px-3 py-1 rounded-md hover:bg-blue-200 transition text-xs font-medium"
+              >
+                Add {field}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isComplete && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <div className="flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+            <span className="text-sm font-medium text-green-800">
+              Profile Complete! 🎉
+            </span>
+          </div>
+        </div>
+      )}
+
+      <Tooltip 
+        id="progress-tooltip" 
+        place="left"
+        className="bg-gray-900 text-white text-xs rounded-lg px-2 py-1"
+      />
+    </div>
+  );
+};
+
+// Add CSS for circular progress animation
+const progressStyles = `
+  @keyframes drawCircle {
+    from {
+      stroke-dashoffset: ${2 * Math.PI * 56};
+    }
+    to {
+      stroke-dashoffset: var(--progress-offset);
+    }
+  }
+`;
 
 export function Profile() {
   const { user, profile } = useAuthStore();
@@ -38,6 +416,27 @@ export function Profile() {
   const [profileLoading, setProfileLoading] = useState(true);
   const [additionalProfile, setAdditionalProfile] = useState<any>(null);
   const [profileCompletion, setProfileCompletion] = useState<any>(null);
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  const [showProfilePreview, setShowProfilePreview] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Show onboarding wizard for new users
+  useEffect(() => {
+    if (profile && profileCompletion && !profile.full_name) {
+      setShowOnboardingWizard(true);
+    }
+  }, [profile, profileCompletion]);
 
   useEffect(() => {
     if (user && profile?.user_type === 'investor') {
@@ -85,11 +484,10 @@ export function Profile() {
   // Handle profile loading state
   useEffect(() => {
     if (user) {
-      // If user exists but no profile, wait a bit for profile to load
       if (!profile) {
         const timer = setTimeout(() => {
           setProfileLoading(false);
-        }, 3000); // Wait 3 seconds max for profile to load
+        }, 3000);
         return () => clearTimeout(timer);
       } else {
         setProfileLoading(false);
@@ -121,10 +519,8 @@ export function Profile() {
 
       if (error) throw error;
       
-      // Transform the data and filter for complete profiles
       const transformedData: Syndicator[] = (data || [])
         .filter(item => {
-          // Only show syndicators with complete profiles
           const hasRequiredFields = item.company_name && 
             item.company_name.length >= 3 &&
             item.state && 
@@ -133,7 +529,6 @@ export function Profile() {
             item.company_description.length >= 50;
           
           return hasRequiredFields || 
-            // Always include verified premier syndicators
             item.company_name === 'Back Bay Capital' || 
             item.company_name === 'Sutera Properties' || 
             item.company_name === 'Starboard Realty';
@@ -143,7 +538,7 @@ export function Profile() {
           company_name: item.company_name,
           company_description: item.company_description,
           location: `${item.city}, ${item.state}`,
-          profile: null // We'll keep it simple for now
+          profile: null
         }));
       
       setSyndicators(transformedData);
@@ -159,12 +554,24 @@ export function Profile() {
     setShowMessageModal(true);
   };
 
+  const handleFieldFocus = (field: string) => {
+    // Scroll to and highlight the field
+    const element = document.querySelector(`[data-field="${field}"]`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.classList.add('outline', 'outline-2', 'outline-blue-500');
+      setTimeout(() => {
+        element.classList.remove('outline', 'outline-2', 'outline-blue-500');
+      }, 3000);
+    }
+    toast.success(`Focus on completing: ${field}`);
+  };
+
   const handleAccountTypeChange = async (newType: 'investor' | 'syndicator') => {
     if (!user || !profile || newType === profile.user_type) return;
     
     setChangingAccountType(true);
     try {
-      // Update profile user_type
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ user_type: newType })
@@ -172,9 +579,7 @@ export function Profile() {
 
       if (profileError) throw profileError;
 
-      // Create type-specific profile if it doesn't exist
       if (newType === 'investor') {
-        // Check if investor profile exists
         const { data: existingInvestor } = await supabase
           .from('investor_profiles')
           .select('id')
@@ -195,7 +600,6 @@ export function Profile() {
           if (investorError) throw investorError;
         }
       } else {
-        // Check if syndicator profile exists
         const { data: existingSyndicator } = await supabase
           .from('syndicator_profiles')
           .select('id')
@@ -215,14 +619,12 @@ export function Profile() {
         }
       }
 
-      setMessage(`Account type successfully changed to ${newType}`);
+      toast.success(`Account type successfully changed to ${newType}`);
       setShowAccountTypeForm(false);
-      
-      // Refresh the page to update the UI
       window.location.reload();
     } catch (error) {
       console.error('Error changing account type:', error);
-      setMessage('Error changing account type. Please try again.');
+      toast.error('Error changing account type. Please try again.');
     } finally {
       setChangingAccountType(false);
     }
@@ -252,7 +654,6 @@ export function Profile() {
     );
   }
 
-  // If user exists but no profile after loading timeout, show error
   if (user && !profile && !profileLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -282,25 +683,30 @@ export function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <style dangerouslySetInnerHTML={{ __html: progressStyles }} />
       <Navbar />
+      <Toaster position="top-right" />
       
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="space-y-8">
-          {/* Welcome Message for New Users */}
+        <div className="space-y-6">
+          {/* Welcome Banner for New Users */}
           {profile && !profile.full_name && (
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-6 mb-8">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md p-6 animate-fade-in">
               <div className="flex items-center">
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold mb-2">Welcome to EquityMD! 🎉</h2>
+                  <h2 className="text-2xl font-bold mb-2">Welcome to EquityMD! 🎉</h2>
                   <p className="text-blue-100 mb-3">
                     You're just a few steps away from {profile.user_type === 'investor' 
                       ? 'discovering exclusive real estate investment opportunities'
                       : 'showcasing your deals to qualified investors'
                     }.
                   </p>
-                  <p className="text-blue-100 text-sm">
-                    Complete your profile below to get started with our enhanced image upload features.
-                  </p>
+                  <button
+                    onClick={() => setShowOnboardingWizard(true)}
+                    className="bg-white text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition font-medium"
+                  >
+                    Get Started <ArrowRight className="inline h-4 w-4 ml-1" />
+                  </button>
                 </div>
                 <div className="ml-4">
                   <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -315,279 +721,275 @@ export function Profile() {
             </div>
           )}
 
-          {/* Profile Completion Card */}
+          {/* Enhanced Profile Completion Card */}
           {profile && profileCompletion && (
-            <ProfileCompletionCard 
+            <EnhancedProfileCompletionCard 
               completion={profileCompletion}
               userType={profile.user_type}
+              onFieldFocus={handleFieldFocus}
             />
           )}
 
-          {/* Account Type Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+          {/* Header Card with Profile Preview */}
+          <div className="bg-white rounded-lg shadow-md p-6 animate-fade-in">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden">
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
                       alt={profile.full_name || 'User'}
-                      className="w-16 h-16 rounded-full"
+                      className="w-16 h-16 rounded-full object-cover"
                     />
                   ) : (
                     <User className="h-8 w-8 text-white" />
                   )}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
-                    {profile?.full_name || 'User Profile'}
+                  <h1 className="text-2xl font-semibold text-gray-900">
+                    {profile?.full_name || 'Your Profile'}
                   </h1>
-                  <div className="mt-2">
+                  <div className="mt-2 flex items-center space-x-3">
                     <AccountTypeBadge
                       userType={profile?.user_type || 'investor'}
                       isAdmin={profile?.is_admin}
                       isVerified={profile?.is_verified}
                       size="md"
                     />
+                    {profile?.is_verified && (
+                      <span className="text-sm text-green-600 flex items-center">
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Verified
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
-              {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
-                <Link
-                  to="/admin/dashboard"
-                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => setShowProfilePreview(true)}
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition hover:scale-105 transform"
                 >
-                  <Building2 className="h-4 w-4 mr-2" />
-                  Admin Dashboard
-                </Link>
-              )}
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview Profile
+                </button>
+                {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
+                  <Link
+                    to="/admin/dashboard"
+                    className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition hover:scale-105 transform"
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Admin Dashboard
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Email Update Form */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Account Settings</h2>
+          {/* Trending Banner for Investors */}
+          {profile?.user_type === 'investor' && (
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <TrendingUp className="h-5 w-5 text-green-600 mr-2" />
+                <span className="text-sm font-medium text-green-800">
+                  Multifamily properties are trending! 📈 Complete your property preferences to see matching deals.
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Account Settings Card */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Account Settings</h2>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowAccountTypeForm(!showAccountTypeForm)}
-                  className="text-blue-600 hover:text-blue-700"
+                  className="text-blue-600 hover:text-blue-700 transition font-medium"
                 >
                   {showAccountTypeForm ? 'Cancel' : 'Change Account Type'}
                 </button>
                 <button
                   onClick={() => setShowEmailForm(!showEmailForm)}
-                  className="text-blue-600 hover:text-blue-700"
+                  className="text-blue-600 hover:text-blue-700 transition font-medium"
                 >
                   {showEmailForm ? 'Cancel' : 'Update Email'}
                 </button>
               </div>
             </div>
 
-            {showAccountTypeForm ? (
-              <div className="bg-white p-6 rounded-lg shadow-sm mb-4">
+            {showAccountTypeForm && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
                 <h3 className="text-lg font-semibold mb-4">Change Account Type</h3>
                 <p className="text-gray-600 mb-4">
                   You can switch between investor and syndicator accounts. Your existing data will be preserved.
                 </p>
                 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <button
                     onClick={() => handleAccountTypeChange('investor')}
                     disabled={changingAccountType || profile?.user_type === 'investor'}
-                    className={`p-4 border rounded-lg text-center flex items-center justify-center ${
+                    className={`p-4 border rounded-lg text-center flex items-center justify-center transition hover:scale-105 transform ${
                       profile?.user_type === 'investor'
-                        ? 'bg-blue-50 border-blue-200 text-blue-800'
-                        : 'border-gray-300 hover:border-blue-300 hover:bg-blue-50'
-                    } disabled:opacity-50`}
+                        ? 'bg-blue-100 border-blue-300 text-blue-800'
+                        : 'bg-white border-gray-300 text-gray-700 hover:border-blue-300'
+                    }`}
                   >
-                    <User className="h-5 w-5 mr-2" />
+                    <User className="h-6 w-6 mr-2" />
                     <div>
-                      <div className="font-medium">Investor</div>
-                      <div className="text-sm text-gray-500">Browse and invest in opportunities</div>
+                      <div className="font-semibold">Investor</div>
+                      <div className="text-sm">Find investment opportunities</div>
                     </div>
                   </button>
-                  
                   <button
                     onClick={() => handleAccountTypeChange('syndicator')}
                     disabled={changingAccountType || profile?.user_type === 'syndicator'}
-                    className={`p-4 border rounded-lg text-center flex items-center justify-center ${
+                    className={`p-4 border rounded-lg text-center flex items-center justify-center transition hover:scale-105 transform ${
                       profile?.user_type === 'syndicator'
-                        ? 'bg-blue-50 border-blue-200 text-blue-800'
-                        : 'border-gray-300 hover:border-blue-300 hover:bg-blue-50'
-                    } disabled:opacity-50`}
+                        ? 'bg-blue-100 border-blue-300 text-blue-800'
+                        : 'bg-white border-gray-300 text-gray-700 hover:border-blue-300'
+                    }`}
                   >
-                    <Building2 className="h-5 w-5 mr-2" />
+                    <Building2 className="h-6 w-6 mr-2" />
                     <div>
-                      <div className="font-medium">Syndicator</div>
-                      <div className="text-sm text-gray-500">List investment opportunities</div>
+                      <div className="font-semibold">Syndicator</div>
+                      <div className="text-sm">List deals for investors</div>
                     </div>
                   </button>
                 </div>
-                
-                {changingAccountType && (
-                  <div className="text-center text-gray-600">
-                    Updating account type...
-                  </div>
-                )}
               </div>
-            ) : null}
+            )}
 
-            {showEmailForm ? (
-              <EmailUpdateForm
-                currentEmail={user.email!}
-                onSuccess={() => setShowEmailForm(false)}
-              />
-            ) : (
-              <div className="bg-white p-6 rounded-lg shadow-sm">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-gray-500">Email Address</div>
-                    <div className="font-medium">{user.email}</div>
-                  </div>
-                </div>
+            {showEmailForm && (
+              <div className="mb-6">
+                <EmailUpdateForm 
+                  currentEmail={user.email!}
+                  onSuccess={() => setShowEmailForm(false)}
+                />
               </div>
             )}
           </div>
 
           {/* Profile Form */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-            
-            {message && (
-              <div 
-                className={`p-4 rounded-md mb-6 ${
-                  message.includes('Error') ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'
-                }`}
-              >
-                {message}
-              </div>
-            )}
-
+          <div className="bg-white rounded-lg shadow-md p-6">
             {profile?.user_type === 'investor' ? (
               <InvestorProfileForm 
                 onComplete={() => {
-                  setMessage('Profile updated successfully!');
+                  toast.success('Profile updated successfully!');
                   fetchAdditionalProfile();
                 }}
               />
             ) : (
               <SyndicatorProfileForm 
                 setMessage={(msg) => {
-                  setMessage(msg);
                   if (msg.includes('successfully')) {
+                    toast.success(msg);
                     fetchAdditionalProfile();
+                  } else {
+                    toast.error(msg);
                   }
                 }}
               />
             )}
           </div>
 
-          {/* Syndicator Directory - Only for Investors */}
+          {/* Connect with Syndicators (Investor Only) */}
           {profile?.user_type === 'investor' && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold">Connect with Syndicators</h2>
-                  <p className="text-gray-600 mt-1">Message syndicators directly or view their profiles</p>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-semibold text-gray-900">Connect with Syndicators</h2>
+                  <span className="text-sm text-gray-500">{syndicators.length} featured syndicators</span>
                 </div>
-                <Link
-                  to="/directory"
-                  className="text-blue-600 hover:text-blue-700 flex items-center"
-                >
-                  <Eye className="h-4 w-4 mr-1" />
-                  View All
-                </Link>
+                
+                {/* Testimonial Banner */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 text-blue-600 mr-2" />
+                    <span className="text-sm font-medium text-blue-800">
+                      Over 500 syndicators joined this month! Connect with top-performing sponsors.
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {loadingSyndicators ? (
-                <div className="text-center py-8">
-                  <div className="text-gray-500">Loading syndicators...</div>
-                </div>
-              ) : syndicators.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {syndicators.map((syndicator) => {
-                    const slug = syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                    return (
-                      <div key={syndicator.id} className="border rounded-lg p-4 hover:bg-gray-50 transition">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center mb-3">
-                            {syndicator.profile?.avatar_url ? (
-                              <img
-                                src={syndicator.profile.avatar_url}
-                                alt={syndicator.company_name}
-                                className="w-10 h-10 rounded-full"
-                              />
-                            ) : (
-                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                <Building2 className="h-5 w-5 text-blue-600" />
-                              </div>
-                            )}
-                            <div className="ml-3">
-                              <h3 className="font-medium text-gray-900">{syndicator.company_name}</h3>
-                              <p className="text-sm text-gray-500">{syndicator.location}</p>
-                            </div>
-                          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {loadingSyndicators ? (
+                  Array.from({ length: 6 }).map((_, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <Skeleton height={40} className="mb-2" />
+                      <Skeleton height={20} className="mb-2" />
+                      <Skeleton height={60} className="mb-3" />
+                      <Skeleton height={32} />
+                    </div>
+                  ))
+                ) : (
+                  syndicators.map((syndicator) => (
+                    <div 
+                      key={syndicator.id}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition hover:scale-105 transform"
+                    >
+                      <div className="flex items-center mb-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                          <Building2 className="h-5 w-5 text-white" />
                         </div>
-                        
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                          {syndicator.company_description || 'Real estate investment company'}
-                        </p>
-                        
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleMessageSyndicator(syndicator)}
-                            className="flex items-center px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition"
-                          >
-                            <MessageCircle className="h-4 w-4 mr-1" />
-                            Message
-                          </button>
-                          <Link
-                            to={`/syndicators/${slug}`}
-                            className="flex items-center px-3 py-2 bg-white border text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View Profile
-                          </Link>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{syndicator.company_name}</h3>
+                          <p className="text-sm text-gray-600">{syndicator.location}</p>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Building2 className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No syndicators found</h3>
-                  <p className="text-gray-500 mb-4">
-                    Check back later or browse our directory to find syndicators.
-                  </p>
-                  <Link
-                    to="/directory"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition inline-flex items-center"
-                  >
-                    <Building2 className="h-4 w-4 mr-2" />
-                    Browse Directory
-                  </Link>
-                </div>
-              )}
+                      <p className="text-sm text-gray-700 mb-3 line-clamp-3">
+                        {syndicator.company_description}
+                      </p>
+                      <button
+                        onClick={() => handleMessageSyndicator(syndicator)}
+                        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center hover:scale-105 transform"
+                      >
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Connect
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           )}
         </div>
       </div>
 
+      {/* Mobile Sticky Save Button */}
+      {isMobile && (
+        <div className="fixed bottom-4 left-4 right-4 z-20">
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg shadow-lg hover:bg-blue-700 transition font-medium">
+            Save Changes
+          </button>
+        </div>
+      )}
+
       {/* Message Modal */}
       {showMessageModal && selectedSyndicator && (
         <MessageModal
-          dealId=""
-          dealTitle=""
           syndicatorId={selectedSyndicator.id}
           syndicatorName={selectedSyndicator.company_name}
-          onClose={() => {
-            setShowMessageModal(false);
-            setSelectedSyndicator(null);
-          }}
+          onClose={() => setShowMessageModal(false)}
         />
       )}
+
+      {/* Onboarding Wizard */}
+      <OnboardingWizard
+        isOpen={showOnboardingWizard}
+        onClose={() => setShowOnboardingWizard(false)}
+        userType={profile?.user_type || 'investor'}
+        missingFields={profileCompletion?.missingFields || []}
+      />
+
+      {/* Profile Preview Modal */}
+      <ProfilePreviewModal
+        isOpen={showProfilePreview}
+        onClose={() => setShowProfilePreview(false)}
+        profile={profile}
+        userType={profile?.user_type || 'investor'}
+      />
 
       <Footer />
     </div>

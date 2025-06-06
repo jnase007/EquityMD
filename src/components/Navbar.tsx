@@ -195,7 +195,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   return (
     <nav className={`${baseClasses} ${bgClasses}`}>
       <div className="max-w-[1200px] mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center hover:scale-105 transition-transform">
         <img 
           src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
           alt="EquityMD"
@@ -209,37 +209,42 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
       </Link>
 
       {/* Desktop Navigation */}
-      <div className="hidden md:flex space-x-6 items-center">
+      <div className="hidden md:flex items-center space-x-8">
+        {/* Primary CTA */}
         <Link 
           to="/browse" 
-          className={`hover:text-blue-600 ${
+          className={`font-medium px-4 py-2 rounded-lg transition hover:scale-105 transform ${
             isTransparent 
-              ? 'text-white hover:text-blue-200' 
-              : 'text-gray-700'
+              ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm' 
+              : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
           }`}
         >
-          Browse Real Estate Deals
+          Browse Deals
         </Link>
-        <Link 
-          to="/directory" 
-          className={`hover:text-blue-600 ${
-            isTransparent 
-              ? 'text-white hover:text-blue-200' 
-              : 'text-gray-700'
-          }`}
-        >
-          Find Syndicators
-        </Link>
-        <Link 
-          to="/how-it-works" 
-          className={`hover:text-blue-600 ${
-            isTransparent 
-              ? 'text-white hover:text-blue-200' 
-              : 'text-gray-700'
-          }`}
-        >
-          How it Works
-        </Link>
+        
+        {/* Secondary Navigation */}
+        <div className="flex items-center space-x-6">
+          <Link 
+            to="/directory" 
+            className={`font-medium transition hover:scale-105 ${
+              isTransparent 
+                ? 'text-white hover:text-blue-200' 
+                : 'text-gray-700 hover:text-blue-600'
+            }`}
+          >
+            Find Syndicators
+          </Link>
+          <Link 
+            to="/how-it-works" 
+            className={`font-medium transition hover:scale-105 ${
+              isTransparent 
+                ? 'text-white hover:text-blue-200' 
+                : 'text-gray-700 hover:text-blue-600'
+            }`}
+          >
+            How it Works
+          </Link>
+        </div>
         
         {user ? (
           <div className="flex items-center space-x-4">
@@ -269,7 +274,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             {/* User Menu */}
             <div className="relative" ref={dropdownRef}>
               <button 
-                className="flex items-center space-x-3 focus:outline-none"
+                className="flex items-center space-x-3 focus:outline-none hover:scale-105 transition-transform"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 {/* Account Type Badge */}
@@ -284,12 +289,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 )}
                 
                 {/* Avatar */}
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center ring-2 ring-white/20">
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
                       alt={profile.full_name || 'User'}
-                      className="w-8 h-8 rounded-full"
+                      className="w-8 h-8 rounded-full object-cover"
                     />
                   ) : (
                     <User className="h-5 w-5 text-white" />

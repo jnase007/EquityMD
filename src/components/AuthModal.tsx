@@ -60,7 +60,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
 
             console.log('AuthModal: Creating profile with user type:', finalUserType);
 
-            // Create profile
+            // Create profile with explicit safeguards
             const { error: profileError } = await supabase
               .from('profiles')
               .insert([
@@ -71,7 +71,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                   avatar_url: user.user_metadata?.avatar_url,
                   user_type: finalUserType,
                   is_verified: true, // Auto-verify all users
-                  is_admin: false // Explicitly set new users as non-admin
+                  is_admin: user.email === 'justin@brandastic.com' ? true : false // Only justin@brandastic.com is admin
                 },
               ]);
 
