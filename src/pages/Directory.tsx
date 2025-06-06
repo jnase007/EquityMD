@@ -114,6 +114,7 @@ export function Directory() {
           .filter(s => !s.company_name.toLowerCase().includes('admin')) // Remove any admin accounts
           .filter(s => !s.company_name.toLowerCase().includes('test')) // Remove test accounts
           .filter(s => s.company_name !== 'Metropolitan Real Estate') // Remove Metropolitan Real Estate
+          .filter(s => s.company_name !== 'Evergreen Residential') // Remove Evergreen Residential
           .filter(s => {
             // Only show syndicators with complete profiles (80%+ completion)
             const hasRequiredFields = s.company_name && 
