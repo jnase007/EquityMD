@@ -244,6 +244,35 @@ export function Profile() {
       
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="space-y-8">
+          {/* Welcome Message for New Users */}
+          {profile && !profile.full_name && (
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg p-6 mb-8">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold mb-2">Welcome to EquityMD! 🎉</h2>
+                  <p className="text-blue-100 mb-3">
+                    You're just a few steps away from {profile.user_type === 'investor' 
+                      ? 'discovering exclusive real estate investment opportunities'
+                      : 'showcasing your deals to qualified investors'
+                    }.
+                  </p>
+                  <p className="text-blue-100 text-sm">
+                    Complete your profile below to get started with our enhanced image upload features.
+                  </p>
+                </div>
+                <div className="ml-4">
+                  <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    {profile.user_type === 'investor' ? (
+                      <User className="h-8 w-8 text-white" />
+                    ) : (
+                      <Building2 className="h-8 w-8 text-white" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Account Type Header */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex items-center justify-between">
