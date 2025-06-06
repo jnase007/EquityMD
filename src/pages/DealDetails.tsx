@@ -7,6 +7,7 @@ import { MessageModal } from '../components/MessageModal';
 import { DealMediaGallery } from '../components/DealMediaGallery';
 import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import type { Deal, DealFile } from '../types/database';
@@ -577,6 +578,11 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                   <MessageCircle className="h-5 w-5 mr-2" />
                   Contact Syndicator
                 </button>
+
+                <FavoriteButton 
+                  dealId={deal.id} 
+                  className="w-full py-3"
+                />
               </div>
             </div>
 
