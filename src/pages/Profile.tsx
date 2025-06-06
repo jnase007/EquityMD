@@ -384,7 +384,7 @@ const EnhancedProfileCompletionCard = ({
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className={`font-bold ${isMobile ? 'text-xs' : 'text-sm'}`}>{percentage}%</span>
+                <span className={`font-semibold ${isMobile ? 'text-xs' : 'text-xs'}`}>{percentage}%</span>
               </div>
             </div>
             <div>

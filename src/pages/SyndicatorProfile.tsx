@@ -112,6 +112,11 @@ export function SyndicatorProfile() {
     }
   }, [slug]);
 
+  // Scroll to top when component mounts or slug changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
   async function fetchSyndicatorData() {
     try {
       let { data: syndicatorData, error: slugError } = await supabase

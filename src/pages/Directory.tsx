@@ -100,8 +100,9 @@ export function Directory() {
         return;
       }
 
-      // Always include Starboard Realty from mock data
+      // Always include Starboard Realty and Clarion Partners from mock data
       const starboardRealty = mockSyndicators.find(s => s.company_name === 'Starboard Realty');
+      const clarionPartners = mockSyndicators.find(s => s.company_name === 'Clarion Partners');
 
       // If no syndicators in database, use mock data for demo purposes
       if (!syndicatorData || syndicatorData.length === 0) {
@@ -128,30 +129,38 @@ export function Directory() {
               // Always include verified premier syndicators
               s.company_name === 'Back Bay Capital' || 
               s.company_name === 'Sutera Properties' || 
-              s.company_name === 'Starboard Realty';
+              s.company_name === 'Starboard Realty' ||
+              s.company_name === 'Clarion Partners';
           })
           .map(s => {
             // Only show real data for verified syndicators
             const isVerified = s.company_name === 'Back Bay Capital' || 
                               s.company_name === 'Sutera Properties' || 
-                              s.company_name === 'Starboard Realty';
+                              s.company_name === 'Starboard Realty' ||
+                              s.company_name === 'Clarion Partners';
             
             return {
               ...s,
               average_rating: isVerified ? (s.company_name === 'Back Bay Capital' ? 4.9 : 
-                                          s.company_name === 'Sutera Properties' ? 4.8 : 5.0) : 0,
+                                          s.company_name === 'Sutera Properties' ? 4.8 : 
+                                          s.company_name === 'Clarion Partners' ? 4.9 : 5.0) : 0,
               total_reviews: isVerified ? (s.company_name === 'Back Bay Capital' ? 25 : 
-                                         s.company_name === 'Sutera Properties' ? 18 : 15) : 0,
+                                         s.company_name === 'Sutera Properties' ? 18 : 
+                                         s.company_name === 'Clarion Partners' ? 42 : 15) : 0,
               active_deals: isVerified ? (s.company_name === 'Back Bay Capital' ? 3 : 
-                                        s.company_name === 'Sutera Properties' ? 1 : 1) : 0,
+                                        s.company_name === 'Sutera Properties' ? 1 :
+                                        s.company_name === 'Clarion Partners' ? 3 : 1) : 0,
               total_deal_volume: isVerified ? (s.company_name === 'Back Bay Capital' ? 30000000 : 
                                               s.company_name === 'Sutera Properties' ? 38000000 :
-                                              s.company_name === 'Starboard Realty' ? 608000000 : 0) : 0,
+                                              s.company_name === 'Starboard Realty' ? 608000000 :
+                                              s.company_name === 'Clarion Partners' ? 73100000000 : 0) : 0,
               specialties: isVerified ? (s.company_name === 'Back Bay Capital' ? ['Multi-Family', 'Preferred Equity', 'Value-Add'] :
                                        s.company_name === 'Sutera Properties' ? ['Multi-Family', 'Ground-Up Development'] :
+                                       s.company_name === 'Clarion Partners' ? ['Industrial', 'Multifamily', 'Office', 'Retail'] :
                                        ['Multi-Family', 'Retail', 'NNN Lease']) : [],
               team_size: isVerified ? (s.company_name === 'Back Bay Capital' ? 15 : 
-                                     s.company_name === 'Sutera Properties' ? 12 : 25) : 0,
+                                     s.company_name === 'Sutera Properties' ? 12 : 
+                                     s.company_name === 'Clarion Partners' ? 150 : 25) : 0,
               notable_projects: isVerified ? ['Verified Projects'] : [],
               investment_focus: isVerified ? ['Value-Add', 'Core-Plus'] : [],
               min_investment: isVerified ? 50000 : 0,
@@ -160,11 +169,17 @@ export function Directory() {
             };
           });
         
-        // Always add Starboard Realty with the correct type structure
+        // Always add Starboard Realty and Clarion Partners with the correct type structure
         if (starboardRealty) {
           combinedData.push({
             ...starboardRealty,
             total_deal_volume: starboardRealty.total_deal_volume || 0
+          });
+        }
+        if (clarionPartners) {
+          combinedData.push({
+            ...clarionPartners,
+            total_deal_volume: clarionPartners.total_deal_volume || 0
           });
         }
 
@@ -224,6 +239,28 @@ export function Directory() {
       min_investment: 100000,
       target_markets: ['Miami', 'Tampa', 'Orlando'],
       certifications: ['CCIM', 'CRE', 'CPM']
+    },
+    {
+      id: 'clarion-partners',
+      company_name: 'Clarion Partners',
+      company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//clarionpartners.png',
+      company_description: 'Clarion Partners is a leading global real estate investment company with over 40 years of experience, managing $73.1 billion in assets under management. We combine our broad scale and execution capabilities with our deep market and property expertise to identify and leverage the true drivers of long-term value in real estate.',
+      state: 'New York',
+      city: 'New York',
+      years_in_business: 40,
+      total_deal_volume: 73100000000,
+      website_url: 'https://www.clarionpartners.com/',
+      average_rating: 4.9,
+      total_reviews: 42,
+      active_deals: 3,
+      slug: 'clarion-partners',
+      specialties: ['Industrial', 'Multifamily', 'Office', 'Retail', 'Life Science'],
+      team_size: 150,
+      notable_projects: ['Industrial Portfolio Nationwide', 'Multifamily Communities', 'Life Science Facilities'],
+      investment_focus: ['Core', 'Core-Plus', 'Value-Add', 'Opportunistic'],
+      min_investment: 1000000,
+      target_markets: ['Nationwide', 'Global'],
+      certifications: ['CRE', 'CCIM', 'CAIA', 'CFA']
     }
   ];
 
@@ -296,9 +333,9 @@ export function Directory() {
             <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
             <h2 className="text-2xl font-bold text-gray-900">Featured Syndicators</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {syndicators
-              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital' || s.company_name === 'Starboard Realty')
+              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital' || s.company_name === 'Starboard Realty' || s.company_name === 'Clarion Partners')
               .map((syndicator) => (
                 <Link
                   key={syndicator.id}

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { AuthModal } from '../components/AuthModal';
 import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award } from 'lucide-react';
 
 export function HowItWorks() {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   const steps = [
     {
       icon: <Search className="h-10 w-10 text-white" />,
@@ -298,17 +301,25 @@ export function HowItWorks() {
               Browse Opportunities
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
-            <Link
-              to="/signup/start"
+            <button
+              onClick={() => setShowAuthModal(true)}
               className="bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-400 transition-colors border-2 border-blue-400"
             >
-              Sign Up
-            </Link>
+              Get Started
+            </button>
           </div>
         </div>
       </div>
 
       <Footer />
+      
+      {showAuthModal && (
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          defaultType="investor"
+          defaultView="sign_up"
+        />
+      )}
     </div>
   );
 }
