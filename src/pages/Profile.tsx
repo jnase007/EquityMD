@@ -994,12 +994,6 @@ export function Profile() {
                 >
                   {showEmailForm ? 'Cancel' : 'Update Email'}
                 </button>
-                <button
-                  onClick={() => setShowDeactivateModal(true)}
-                  className="text-red-600 hover:text-red-700 transition font-medium"
-                >
-                  Deactivate Account
-                </button>
               </div>
             </div>
 
@@ -1053,6 +1047,22 @@ export function Profile() {
                 />
               </div>
             )}
+
+            {/* Danger Zone - Hidden at bottom */}
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500">Danger Zone</h4>
+                  <p className="text-xs text-gray-400 mt-1">Irreversible account actions</p>
+                </div>
+                <button
+                  onClick={() => setShowDeactivateModal(true)}
+                  className="text-xs text-gray-400 hover:text-red-500 transition underline"
+                >
+                  Deactivate account
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Section Divider */}
