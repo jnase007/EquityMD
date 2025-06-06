@@ -120,7 +120,8 @@ export function FavoriteButton({
           if (error.code === '42501' || error.message?.includes('permission') || error.message?.includes('policy')) {
             alert('Permission denied: Admin users may not have access to favorites feature yet. Please contact support.');
           } else {
-            alert(`Error adding favorite: ${error.message}. Please try again.`);
+            const errorMessage = error.message || 'Unknown error occurred';
+            alert(`Error adding favorite: ${errorMessage}. Please try again.`);
           }
           throw error;
         }
@@ -131,7 +132,9 @@ export function FavoriteButton({
       console.error('Error toggling favorite:', error);
       // Don't show alert for permission errors as we already handled them above
       if (error instanceof Error && !error.message?.includes('permission') && !error.message?.includes('policy')) {
-        alert(`Error ${isFavorited ? 'removing' : 'adding'} favorite. Please try again.`);
+        const action = isFavorited ? 'removing' : 'adding';
+        const errorMessage = error.message || 'Unknown error occurred';
+        alert(`Error ${action} favorite: ${errorMessage}. Please try again.`);
       }
     } finally {
       setIsLoading(false);
@@ -149,13 +152,14 @@ export function FavoriteButton({
       className={`
         ${buttonSizeClasses[size]}
         ${isFavorited 
-          ? 'text-red-500 hover:text-red-600' 
-          : 'text-gray-400 hover:text-red-500'
+          ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' 
+          : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
         }
+        border-2 rounded-lg
         transition-all duration-200 ease-in-out
         disabled:opacity-50 disabled:cursor-not-allowed
-        flex items-center gap-2
-        hover:scale-105 active:scale-95
+        flex items-center justify-center gap-2
+        font-medium
         ${className}
       `}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
@@ -168,9 +172,9 @@ export function FavoriteButton({
           ${isLoading ? 'animate-pulse' : ''}
         `} 
       />
-      {showText && (
+      {(showText || className.includes('w-full')) && (
         <span className="text-sm font-medium">
-          {isLoading ? 'Saving...' : isFavorited ? 'Favorited' : 'Favorite'}
+          {isLoading ? 'Saving...' : isFavorited ? 'Favorited' : 'Add to Favorites'}
         </span>
       )}
     </button>
