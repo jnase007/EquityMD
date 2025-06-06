@@ -577,16 +577,51 @@ export function Profile() {
   };
 
   const handleFieldFocus = (field: string) => {
-    // Scroll to and highlight the field
-    const element = document.querySelector(`[data-field="${field}"]`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      element.classList.add('outline', 'outline-2', 'outline-blue-500');
-      setTimeout(() => {
-        element.classList.remove('outline', 'outline-2', 'outline-blue-500');
-      }, 3000);
+    // Map field names to section IDs and scroll targets
+    const fieldMappings: { [key: string]: string } = {
+      'Phone Number': 'profile-form-section',
+      'Full Name': 'profile-form-section', 
+      'Profile Picture': 'profile-form-section',
+      'Investment Range': 'profile-form-section',
+      'Property Types': 'profile-form-section',
+      'Preferred Locations': 'profile-form-section',
+      'Experience Level': 'profile-form-section',
+      'Years Investing': 'profile-form-section',
+      'Bio': 'profile-form-section',
+      'Company Name': 'profile-form-section',
+      'Company Description': 'profile-form-section',
+      'Company Logo': 'profile-form-section',
+      'Website URL': 'profile-form-section',
+      'LinkedIn URL': 'profile-form-section',
+      'Years in Business': 'profile-form-section',
+      'Total Deal Volume': 'profile-form-section',
+      'Location': 'profile-form-section'
+    };
+
+    const sectionId = fieldMappings[field];
+    if (sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        // Scroll to the section with some offset to account for sticky header
+        const yOffset = -120; // Account for sticky header
+        const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        
+        // Add a visual highlight to the section
+        section.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
+        setTimeout(() => {
+          section.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
+        }, 3000);
+        
+        toast.success(`Scrolled to ${field} section`, {
+          icon: '📍',
+          duration: 2000,
+        });
+      }
+    } else {
+      toast.error(`Field "${field}" not found`);
     }
-    toast.success(`Focus on completing: ${field}`);
   };
 
   const handleAccountTypeChange = async (newType: 'investor' | 'syndicator') => {
@@ -810,10 +845,23 @@ export function Profile() {
             </div>
           )}
 
+          {/* Section Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-gray-50 text-gray-500">Account Settings</span>
+            </div>
+          </div>
+
           {/* Account Settings Card */}
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div id="account-settings-section" className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">Account Settings</h2>
+              <div className="flex items-center">
+                <Settings className="h-6 w-6 text-blue-600 mr-3" />
+                <h2 className="text-2xl font-semibold text-gray-900">Account Settings</h2>
+              </div>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowAccountTypeForm(!showAccountTypeForm)}
@@ -882,8 +930,31 @@ export function Profile() {
             )}
           </div>
 
+          {/* Section Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-gray-50 text-gray-500">
+                {profile?.user_type === 'investor' ? 'Investor Profile' : 'Syndicator Profile'}
+              </span>
+            </div>
+          </div>
+
           {/* Profile Form */}
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div id="profile-form-section" className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 transition-all duration-300">
+            <div className="flex items-center mb-6">
+              {profile?.user_type === 'investor' ? (
+                <User className="h-6 w-6 text-green-600 mr-3" />
+              ) : (
+                <Building2 className="h-6 w-6 text-green-600 mr-3" />
+              )}
+              <h2 className="text-2xl font-semibold text-gray-900">
+                {profile?.user_type === 'investor' ? 'Your Investment Profile' : 'Your Company Profile'}
+              </h2>
+            </div>
+            
             {profile?.user_type === 'investor' ? (
               <InvestorProfileForm 
                 onComplete={() => {
@@ -907,12 +978,26 @@ export function Profile() {
 
           {/* Connect with Syndicators (Investor Only) */}
           {profile?.user_type === 'investor' && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-semibold text-gray-900">Connect with Syndicators</h2>
-                  <span className="text-sm text-gray-500">{syndicators.length} featured syndicators</span>
+            <>
+              {/* Section Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
                 </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-gray-50 text-gray-500">Connect & Network</span>
+                </div>
+              </div>
+
+              <div id="connect-syndicators-section" className="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center">
+                      <Users className="h-6 w-6 text-purple-600 mr-3" />
+                      <h2 className="text-2xl font-semibold text-gray-900">Connect with Syndicators</h2>
+                    </div>
+                    <span className="text-sm text-gray-500">{syndicators.length} featured syndicators</span>
+                  </div>
                 
                 {/* Testimonial Banner */}
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -964,8 +1049,9 @@ export function Profile() {
                   ))
                 )}
               </div>
-            </div>
-          )}
+                </div>
+              </>
+            )}
         </div>
       </div>
 
