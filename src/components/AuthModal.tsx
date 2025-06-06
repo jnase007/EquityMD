@@ -134,10 +134,10 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             trackUserLogin(existingProfile.user_type, user.id);
           }
 
-          // Close modal and navigate to dashboard
-          console.log('AuthModal: Closing modal and navigating to dashboard');
+          // Close modal and navigate to profile page
+          console.log('AuthModal: Closing modal and navigating to profile');
           onClose();
-          navigate('/dashboard');
+          navigate('/profile');
         } catch (error) {
           console.error('AuthModal: Error in auth state change handler:', error);
           setError(error instanceof Error ? error.message : 'An error occurred during sign in');
@@ -249,7 +249,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
       }}
       providers={['google', 'facebook', 'linkedin_oidc']}
       onlyThirdPartyProviders={false}
-      redirectTo={`${window.location.origin}/dashboard`}
+      redirectTo={`${window.location.origin}/profile`}
       view={defaultView}
       socialLayout="horizontal"
       localization={{

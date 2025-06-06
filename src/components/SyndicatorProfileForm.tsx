@@ -224,6 +224,11 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
           onImageUploaded={(url) => setFormData(prev => ({ ...prev, avatarUrl: url }))}
           bucket="avatars"
           folder="syndicators"
+          showEditor={true}
+          circularCrop={true}
+          cropAspectRatio={1}
+          maxWidth={400}
+          maxHeight={400}
         />
       </div>
 
@@ -260,6 +265,11 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
           onImageUploaded={(url) => setFormData(prev => ({ ...prev, companyLogoUrl: url }))}
           bucket="logos"
           folder="companies"
+          showEditor={true}
+          circularCrop={false}
+          cropAspectRatio={1}
+          maxWidth={600}
+          maxHeight={600}
         />
         <p className="mt-2 text-sm text-gray-500">
           Recommended: Square format (1:1 aspect ratio) for best display

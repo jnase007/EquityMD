@@ -28,8 +28,8 @@ export function SignupContinue() {
     sessionStorage.removeItem('signup_user_id');
     sessionStorage.removeItem('signup_type');
 
-    // Navigate to appropriate dashboard
-    navigate('/dashboard');
+    // Navigate to profile page to complete setup
+    navigate('/profile');
   };
 
   return (
@@ -65,7 +65,7 @@ export function SignupContinue() {
               onClick={handleContinue}
               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
             >
-              Continue to Dashboard
+              Continue to Profile
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </div>

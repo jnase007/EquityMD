@@ -184,6 +184,11 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
                 onImageUploaded={(url) => setFormData(prev => ({ ...prev, avatarUrl: url }))}
                 bucket="avatars"
                 folder="investors"
+                showEditor={true}
+                circularCrop={true}
+                cropAspectRatio={1}
+                maxWidth={400}
+                maxHeight={400}
               />
             </div>
 
