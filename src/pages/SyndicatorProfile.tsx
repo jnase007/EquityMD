@@ -173,6 +173,20 @@ export function SyndicatorProfile() {
             slug: 'starboard-realty',
             profiles: null
           };
+        } else if (slug === 'clarion-partners' || slug?.includes('clarion')) {
+          syndicatorData = {
+            id: 'clarion-partners-mock',
+            company_name: 'Clarion Partners',
+            company_description: 'Clarion Partners is a leading global real estate investment company with over 40 years of experience, managing $73.1 billion in assets under management. We combine our broad scale and execution capabilities with a focus on high-quality real estate investments across the Americas and Europe.',
+            company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//clarionpartners.png',
+            state: 'New York',
+            city: 'New York',
+            years_in_business: 40,
+            total_deal_volume: 73100000000,
+            website_url: 'https://www.clarionpartners.com/',
+            slug: 'clarion-partners',
+            profiles: null
+          };
         } else {
         console.error('Syndicator not found');
         return;
@@ -185,6 +199,7 @@ export function SyndicatorProfile() {
         // Override total deal volume for specific syndicators
         total_deal_volume: syndicatorData.company_name === 'Back Bay Capital' ? 30000000 : 
                           syndicatorData.company_name === 'Starboard Realty' ? 608000000 : 
+                          syndicatorData.company_name === 'Clarion Partners' ? 73100000000 : 
                           syndicatorData.total_deal_volume,
         // Override profile info for specific syndicators
         ...(syndicatorData.company_name === 'Back Bay Capital' && {
@@ -208,6 +223,14 @@ export function SyndicatorProfile() {
             email: 'info@starboard-realty.com'
           },
           website_url: 'https://starboard-realty.com/'
+        }),
+        ...(syndicatorData.company_name === 'Clarion Partners' && {
+          profile: {
+            full_name: 'David Gilbert',
+            avatar_url: null,
+            email: 'info@clarionpartners.com'
+          },
+          website_url: 'https://www.clarionpartners.com/'
         })
       });
 
