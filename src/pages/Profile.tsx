@@ -338,51 +338,70 @@ const EnhancedProfileCompletionCard = ({
 }) => {
   if (!completion) return null;
 
-  const percentage = Math.round((completion.completedFields / completion.totalFields) * 100);
+  const percentage = completion.percentage; // Use the already calculated percentage
   const isComplete = percentage === 100;
+  const isSyndicator = userType === 'syndicator';
 
   return (
-    <div className="sticky top-4 z-10 bg-white rounded-lg shadow-md p-4 border border-gray-200">
+    <div className="sticky top-0 z-10 bg-white p-6 shadow-md rounded-lg mb-6 animate-fade-in">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div 
-            data-tooltip-id="progress-tooltip"
-            data-tooltip-content={isComplete ? "🎉 Profile Complete! You're ready to get verified!" : "Complete your profile to get a Verified badge!"}
-          >
-            <CircularProgressBar percentage={percentage} size={80} strokeWidth={6} />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-base font-semibold text-gray-900">Profile Completion</h3>
-            <p className="text-sm text-gray-600">
-              {completion.completedFields} of {completion.totalFields} fields completed
-            </p>
-            
-            {isComplete ? (
-              <div className="flex items-center mt-1">
-                <CheckCircle className="h-4 w-4 text-green-600 mr-1" />
-                <span className="text-sm font-medium text-green-800">Complete! 🎉</span>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {completion.missingFields.slice(0, 2).map((field: string) => (
-                  <button
-                    key={field}
-                    onClick={() => onFieldFocus(field)}
-                    className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-medium hover:bg-blue-200 transition"
-                  >
-                    Add {field}
-                  </button>
-                ))}
-                {completion.missingFields.length > 2 && (
-                  <span className="text-xs text-gray-500 px-2 py-1">
-                    +{completion.missingFields.length - 2} more
-                  </span>
-                )}
-              </div>
-            )}
+        <div>
+          <h2 className="text-2xl font-semibold">Profile Completion</h2>
+          <p className="text-sm text-gray-600">
+            Complete your {isSyndicator ? 'syndicator' : 'investor'} profile to attract {isSyndicator ? 'investors' : 'syndicators'}!
+          </p>
+          <p className="text-sm text-gray-500 mt-1">
+            {completion.completedFields} of {completion.totalFields} fields completed
+          </p>
+        </div>
+        <div className="relative w-24 h-24" data-tip="Complete your profile to get a Verified badge!">
+          <svg className="w-full h-full animate-pulse" viewBox="0 0 36 36">
+            <path
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#e5e7eb"
+              strokeWidth="2"
+            />
+            <path
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke={isComplete ? '#22c55e' : '#3b82f6'}
+              strokeWidth="2"
+              strokeDasharray={`${percentage}, 100`}
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-lg font-bold">{percentage}%</span>
           </div>
         </div>
       </div>
+      
+      {/* Next Steps Buttons */}
+      {!isComplete && (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {completion.missingFields.slice(0, 3).map((field: string) => (
+            <button
+              key={field}
+              onClick={() => onFieldFocus(field)}
+              className="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 transition hover:scale-105 transform"
+            >
+              Add {field}
+            </button>
+          ))}
+          {completion.missingFields.length > 3 && (
+            <span className="text-sm text-gray-500 px-3 py-2">
+              +{completion.missingFields.length - 3} more fields
+            </span>
+          )}
+        </div>
+      )}
+
+      {isComplete && (
+        <div className="mt-4 flex items-center">
+          <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
+          <span className="text-base font-medium text-green-800">Profile Complete! You're ready to get verified! 🎉</span>
+        </div>
+      )}
 
       <Tooltip 
         id="progress-tooltip" 
@@ -733,59 +752,49 @@ export function Profile() {
             />
           )}
 
-          {/* Header Card with Profile Preview */}
-          <div className="bg-white rounded-lg shadow-md p-6 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden">
-                  {profile?.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt={profile.full_name || 'User'}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  ) : (
-                    <User className="h-8 w-8 text-white" />
-                  )}
-                </div>
-                <div>
-                  <h1 className="text-2xl font-semibold text-gray-900">
-                    {profile?.full_name || 'Your Profile'}
-                  </h1>
-                  <div className="mt-2 flex items-center space-x-3">
-                    <AccountTypeBadge
-                      userType={profile?.user_type || 'investor'}
-                      isAdmin={profile?.is_admin}
-                      isVerified={profile?.is_verified}
-                      size="md"
-                    />
-                    {profile?.is_verified && (
-                      <span className="text-sm text-green-600 flex items-center">
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Verified
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => setShowProfilePreview(true)}
-                  className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition hover:scale-105 transform"
+          {/* Profile Header */}
+          <div className="flex items-center space-x-2 mb-6">
+            <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center overflow-hidden">
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.full_name || 'User'}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              ) : (
+                <User className="h-6 w-6 text-white" />
+              )}
+            </div>
+            <h2 className="text-2xl font-semibold">{profile?.full_name || user?.email}</h2>
+            <AccountTypeBadge
+              userType={profile?.user_type || 'investor'}
+              isAdmin={profile?.is_admin}
+              isVerified={profile?.is_verified}
+              size="md"
+            />
+            {profile?.is_verified && (
+              <span className="text-sm text-green-600 flex items-center">
+                <CheckCircle className="h-4 w-4 mr-1" />
+                Verified
+              </span>
+            )}
+            <div className="ml-auto flex items-center space-x-3">
+              <button
+                onClick={() => setShowProfilePreview(true)}
+                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition hover:scale-105 transform"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Preview Profile
+              </button>
+              {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
+                <Link
+                  to="/admin/dashboard"
+                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition hover:scale-105 transform"
                 >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview Profile
-                </button>
-                {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
-                  <Link
-                    to="/admin/dashboard"
-                    className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition hover:scale-105 transform"
-                  >
-                    <Shield className="h-4 w-4 mr-2" />
-                    Admin Dashboard
-                  </Link>
-                )}
-              </div>
+                  <Shield className="h-4 w-4 mr-2" />
+                  Admin Dashboard
+                </Link>
+              )}
             </div>
           </div>
 
