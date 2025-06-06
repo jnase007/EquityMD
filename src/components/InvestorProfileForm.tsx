@@ -233,7 +233,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-base font-semibold text-gray-900 mb-2">
             Email
           </label>
           <input
@@ -246,7 +246,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-base font-semibold text-gray-900 mb-2">
               Full Name
             </label>
             <input
@@ -259,7 +259,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-base font-semibold text-gray-900 mb-2">
               Phone Number
             </label>
             <input
@@ -272,7 +272,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-base font-semibold text-gray-900 mb-3">
             Profile Picture
           </label>
           <ImageUpload
@@ -319,7 +319,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-base font-semibold text-gray-900 mb-2">
               Minimum Investment Amount
             </label>
             <div className="relative">
@@ -337,7 +337,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-base font-semibold text-gray-900 mb-3">
               Preferred Property Types
             </label>
             <div className="mt-2 space-y-2">
@@ -361,7 +361,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-base font-semibold text-gray-900 mb-3">
               Preferred Investment Locations
             </label>
             <LocationAutocomplete
@@ -373,7 +373,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-base font-semibold text-gray-900 mb-2">
               Risk Tolerance
             </label>
             <select
@@ -389,7 +389,7 @@ export function InvestorProfileForm({ onComplete }: InvestorProfileFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-base font-semibold text-gray-900 mb-2">
               Investment Goals
             </label>
             <textarea

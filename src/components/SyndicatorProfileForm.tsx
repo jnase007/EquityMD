@@ -192,7 +192,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Email
         </label>
         <input
@@ -204,7 +204,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Full Name
         </label>
         <input
@@ -216,7 +216,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-base font-semibold text-gray-900 mb-3">
           Profile Picture
         </label>
         <ImageUpload
@@ -233,7 +233,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Company Name
         </label>
         <input
@@ -245,7 +245,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Company Description
         </label>
         <textarea
@@ -257,7 +257,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-base font-semibold text-gray-900 mb-3">
           Company Logo
         </label>
         <ImageUpload
@@ -278,7 +278,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-base font-semibold text-gray-900 mb-2">
             City
           </label>
           <input
@@ -290,7 +290,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-base font-semibold text-gray-900 mb-2">
             State
           </label>
           <input
@@ -303,7 +303,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Website URL
         </label>
         <input
@@ -315,7 +315,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           LinkedIn URL
         </label>
         <input
@@ -327,7 +327,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Years in Business
         </label>
         <input
@@ -339,7 +339,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-base font-semibold text-gray-900 mb-2">
           Total Deal Volume ($)
         </label>
         <input
@@ -368,7 +368,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
           <div className="bg-gray-50 p-6 rounded-lg mb-6">
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Title</label>
+                <label className="block text-base font-semibold text-gray-900 mb-2">Title</label>
                 <input
                   type="text"
                   value={newDeal.title}
@@ -377,7 +377,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Location</label>
+                <label className="block text-base font-semibold text-gray-900 mb-2">Location</label>
                 <input
                   type="text"
                   value={newDeal.location}
@@ -386,7 +386,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Property Type</label>
+                <label className="block text-base font-semibold text-gray-900 mb-2">Property Type</label>
                 <input
                   type="text"
                   value={newDeal.type}
@@ -395,7 +395,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Exit Year</label>
+                <label className="block text-base font-semibold text-gray-900 mb-2">Exit Year</label>
                 <input
                   type="number"
                   value={newDeal.exitYear}
@@ -404,7 +404,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">IRR (%)</label>
+                <label className="block text-base font-semibold text-gray-900 mb-2">IRR (%)</label>
                 <input
                   type="number"
                   value={newDeal.irr}
@@ -413,7 +413,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Total Equity ($)</label>
+                <label className="block text-base font-semibold text-gray-900 mb-2">Total Equity ($)</label>
                 <input
                   type="number"
                   value={newDeal.equity}
@@ -423,7 +423,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
               </div>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Image URL</label>
+              <label className="block text-base font-semibold text-gray-900 mb-2">Image URL</label>
               <input
                 type="url"
                 value={newDeal.image}
