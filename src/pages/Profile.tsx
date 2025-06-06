@@ -125,6 +125,11 @@ const CircularProgressBar = ({ percentage, size = 120, strokeWidth = 8 }: {
   const offset = circumference - (percentage / 100) * circumference;
   const isComplete = percentage === 100;
 
+  // Scale text size based on circle size
+  const textSize = size < 100 ? 'text-sm' : 'text-lg';
+  const iconSize = size < 100 ? 'h-4 w-4' : 'h-6 w-6';
+  const iconOffset = size < 100 ? '16px' : '24px';
+
   return (
     <div 
       className={`relative inline-flex items-center justify-center ${isComplete ? 'animate-pulse' : ''}`}
@@ -133,7 +138,7 @@ const CircularProgressBar = ({ percentage, size = 120, strokeWidth = 8 }: {
       <svg
         width={size}
         height={size}
-        className={`transform -rotate-90 ${isComplete ? 'filter drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]' : ''}`}
+        className={`transform -rotate-90 ${isComplete ? 'filter drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]' : ''}`}
       >
         {/* Background circle */}
         <circle
@@ -162,13 +167,13 @@ const CircularProgressBar = ({ percentage, size = 120, strokeWidth = 8 }: {
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg font-bold text-gray-900">
+        <span className={`${textSize} font-bold text-gray-900`}>
           {percentage}%
         </span>
       </div>
       {isComplete && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <CheckCircle className="h-6 w-6 text-green-600 animate-bounce" style={{ marginTop: '24px' }} />
+          <CheckCircle className={`${iconSize} text-green-600 animate-bounce`} style={{ marginTop: iconOffset }} />
         </div>
       )}
     </div>
@@ -337,53 +342,51 @@ const EnhancedProfileCompletionCard = ({
   const isComplete = percentage === 100;
 
   return (
-    <div className="sticky top-4 z-10 bg-white rounded-lg shadow-md p-6 border border-gray-200">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Profile Completion</h3>
-          <p className="text-sm text-gray-600">
-            {completion.completedFields} of {completion.totalFields} fields completed
-          </p>
-        </div>
-        <div 
-          data-tooltip-id="progress-tooltip"
-          data-tooltip-content={isComplete ? "🎉 Profile Complete! You're ready to get verified!" : "Complete your profile to get a Verified badge!"}
-        >
-          <CircularProgressBar percentage={percentage} />
+    <div className="sticky top-4 z-10 bg-white rounded-lg shadow-md p-4 border border-gray-200">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <div 
+            data-tooltip-id="progress-tooltip"
+            data-tooltip-content={isComplete ? "🎉 Profile Complete! You're ready to get verified!" : "Complete your profile to get a Verified badge!"}
+          >
+            <CircularProgressBar percentage={percentage} size={80} strokeWidth={6} />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-base font-semibold text-gray-900">Profile Completion</h3>
+            <p className="text-sm text-gray-600">
+              {completion.completedFields} of {completion.totalFields} fields completed
+            </p>
+            
+            {isComplete ? (
+              <div className="flex items-center mt-1">
+                <CheckCircle className="h-4 w-4 text-green-600 mr-1" />
+                <span className="text-sm font-medium text-green-800">Complete! 🎉</span>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {completion.missingFields.slice(0, 2).map((field: string) => (
+                  <button
+                    key={field}
+                    onClick={() => onFieldFocus(field)}
+                    className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-medium hover:bg-blue-200 transition"
+                  >
+                    Add {field}
+                  </button>
+                ))}
+                {completion.missingFields.length > 2 && (
+                  <span className="text-xs text-gray-500 px-2 py-1">
+                    +{completion.missingFields.length - 2} more
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {!isComplete && completion.missingFields.length > 0 && (
-        <div>
-          <h4 className="text-sm font-medium text-gray-900 mb-3">Quick Actions</h4>
-          <div className="flex flex-wrap gap-2">
-            {completion.missingFields.slice(0, 3).map((field: string) => (
-              <button
-                key={field}
-                onClick={() => onFieldFocus(field)}
-                className="bg-blue-100 text-blue-600 px-3 py-1 rounded-md hover:bg-blue-200 transition text-xs font-medium"
-              >
-                Add {field}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {isComplete && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-          <div className="flex items-center">
-            <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-            <span className="text-sm font-medium text-green-800">
-              Profile Complete! 🎉
-            </span>
-          </div>
-        </div>
-      )}
-
       <Tooltip 
         id="progress-tooltip" 
-        place="left"
+        place="bottom"
         className="bg-gray-900 text-white text-xs rounded-lg px-2 py-1"
       />
     </div>
