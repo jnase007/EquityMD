@@ -1231,51 +1231,51 @@ export function Profile() {
           setShowDeactivateModal(false);
           setDeactivateConfirmation('');
         }}
-        className="max-w-md mx-auto bg-white rounded-xl shadow-2xl p-6 m-4"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        className="max-w-lg mx-auto bg-white rounded-xl shadow-2xl p-8 m-6"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       >
         <div className="text-center">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <X className="h-6 w-6 text-red-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Deactivate Account</h3>
-          <p className="text-sm text-gray-600 mb-4 text-left">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Deactivate Account</h3>
+          <p className="text-sm text-gray-600 mb-6 text-left px-2">
             This action will deactivate your account. Your profile will be hidden from other users and you will be signed out.
           </p>
           
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-            <p className="text-sm text-red-800">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 mx-2">
+            <p className="text-sm text-red-800 text-left">
               <strong>Warning:</strong> This action cannot be easily undone. You will need to contact support to reactivate your account.
             </p>
           </div>
 
-          <div className="mb-4 text-left">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-6 text-left px-2">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               Type "DEACTIVATE" to confirm:
             </label>
             <input
               type="text"
               value={deactivateConfirmation}
               onChange={(e) => setDeactivateConfirmation(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 text-center font-mono"
               placeholder="DEACTIVATE"
             />
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-4 px-2">
             <button
               onClick={() => {
                 setShowDeactivateModal(false);
                 setDeactivateConfirmation('');
               }}
-              className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+              className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
             >
               Cancel
             </button>
             <button
               onClick={handleAccountDeactivation}
               disabled={deactivateConfirmation !== 'DEACTIVATE'}
-              className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               Deactivate
             </button>
