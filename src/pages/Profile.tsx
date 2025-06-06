@@ -336,14 +336,97 @@ const EnhancedProfileCompletionCard = ({
   userType: 'investor' | 'syndicator';
   onFieldFocus: (field: string) => void;
 }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   if (!completion) return null;
 
-  const percentage = completion.percentage; // Use the already calculated percentage
+  const percentage = completion.percentage;
   const isComplete = percentage === 100;
   const isSyndicator = userType === 'syndicator';
 
+  // Minimized state when scrolled
+  if (isScrolled) {
+    return (
+      <div className="sticky top-0 z-10 bg-white shadow-md border-b border-gray-200 transition-all duration-300">
+        <div className={`flex items-center justify-between ${isMobile ? 'px-3 py-2' : 'px-6 py-3'}`}>
+          <div className="flex items-center space-x-3">
+            <div className={`relative ${isMobile ? 'w-8 h-8' : 'w-10 h-10'}`}>
+              <svg className="w-full h-full" viewBox="0 0 36 36">
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke="#e5e7eb"
+                  strokeWidth="3"
+                />
+                <path
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none"
+                  stroke={isComplete ? '#22c55e' : '#3b82f6'}
+                  strokeWidth="3"
+                  strokeDasharray={`${percentage}, 100`}
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className={`font-bold ${isMobile ? 'text-xs' : 'text-sm'}`}>{percentage}%</span>
+              </div>
+            </div>
+            <div>
+              <span className={`font-medium text-gray-900 ${isMobile ? 'text-sm' : 'text-base'}`}>
+                {completion.completedFields}/{completion.totalFields} completed
+              </span>
+              {!isMobile && (
+                <p className="text-xs text-gray-500">Profile completion</p>
+              )}
+            </div>
+          </div>
+          
+          {!isComplete && !isMobile && (
+            <div className="flex gap-1">
+              {completion.missingFields.slice(0, 2).map((field: string) => (
+                <button
+                  key={field}
+                  onClick={() => onFieldFocus(field)}
+                  className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs font-medium hover:bg-blue-200 transition"
+                >
+                  {field}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {isComplete && (
+            <div className="flex items-center">
+              <CheckCircle className={`text-green-600 mr-1 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
+              <span className={`font-medium text-green-800 ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                {isMobile ? 'Complete!' : 'Complete! 🎉'}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Full state when at top of page
   return (
-    <div className="sticky top-0 z-10 bg-white p-6 shadow-md rounded-lg mb-6 animate-fade-in">
+    <div className="sticky top-0 z-10 bg-white p-6 shadow-md rounded-lg mb-6 animate-fade-in transition-all duration-300">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-semibold">Profile Completion</h2>
@@ -603,7 +686,8 @@ export function Profile() {
       const section = document.getElementById(sectionId);
       if (section) {
         // Scroll to the section with some offset to account for sticky header
-        const yOffset = -120; // Account for sticky header
+        // Use smaller offset since header will minimize on scroll
+        const yOffset = -80; // Account for minimized sticky header
         const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
         
         window.scrollTo({ top: y, behavior: 'smooth' });
