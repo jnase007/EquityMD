@@ -175,7 +175,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             I am a:
           </label>
           <p className="text-xs text-gray-500 mb-3">
-            Investors can invest in deals. Syndicators can list their real estate deals.
+            Join EquityMD to connect with real estate investment opportunities. Investors can invest in deals. Syndicators can list their real estate deals.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <button
