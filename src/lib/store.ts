@@ -17,12 +17,14 @@ interface AuthState {
   profile: Profile | null;
   notifications: Notification[];
   unreadCount: number;
+  theme: 'light' | 'dark';
   setUser: (user: User | null) => void;
   setProfile: (profile: Profile | null) => void;
   setNotifications: (notifications: Notification[]) => void;
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
   isAdmin: () => boolean;
+  toggleTheme: () => void;
   clearAuth: () => void;
 }
 
@@ -31,6 +33,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   profile: null,
   notifications: [],
   unreadCount: 0,
+  theme: 'light',
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
   setNotifications: (notifications) => set({ 
@@ -51,5 +54,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     unreadCount: 0
   })),
   isAdmin: () => get().profile?.is_admin || false,
+  toggleTheme: () => set(state => ({ theme: state.theme === 'light' ? 'dark' : 'light' })),
   clearAuth: () => set({ user: null, profile: null, notifications: [], unreadCount: 0 })
 }));

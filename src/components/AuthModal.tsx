@@ -70,7 +70,8 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                   full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
                   avatar_url: user.user_metadata?.avatar_url,
                   user_type: finalUserType,
-                  is_verified: true // Auto-verify all users
+                  is_verified: true, // Auto-verify all users
+                  is_admin: false // Explicitly set new users as non-admin
                 },
               ]);
 

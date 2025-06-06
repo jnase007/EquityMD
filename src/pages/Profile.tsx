@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { MessageModal } from '../components/MessageModal';
 import { AccountTypeBadge } from '../components/AccountTypeBadge';
+import { ProfileCompletionCard } from '../components/ProfileCompletionCard';
 import { useAuthStore } from '../lib/store';
 import { InvestorProfileForm } from '../components/InvestorProfileForm';
 import { SyndicatorProfileForm } from '../components/SyndicatorProfileForm';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
 import { supabase } from '../lib/supabase';
+import { calculateProfileCompletion } from '../lib/profileCompletion';
 import { MessageCircle, Star, Building2, User, Eye } from 'lucide-react';
 
 interface Syndicator {
@@ -24,6 +26,7 @@ interface Syndicator {
 
 export function Profile() {
   const { user, profile } = useAuthStore();
+  const location = useLocation();
   const [syndicators, setSyndicators] = useState<Syndicator[]>([]);
   const [loadingSyndicators, setLoadingSyndicators] = useState(true);
   const [showMessageModal, setShowMessageModal] = useState(false);
@@ -33,12 +36,51 @@ export function Profile() {
   const [showAccountTypeForm, setShowAccountTypeForm] = useState(false);
   const [changingAccountType, setChangingAccountType] = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
+  const [additionalProfile, setAdditionalProfile] = useState<any>(null);
+  const [profileCompletion, setProfileCompletion] = useState<any>(null);
 
   useEffect(() => {
     if (user && profile?.user_type === 'investor') {
       fetchSyndicators();
     }
+    if (user && profile) {
+      fetchAdditionalProfile();
+    }
   }, [user, profile]);
+
+  async function fetchAdditionalProfile() {
+    if (!user || !profile) return;
+
+    try {
+      if (profile.user_type === 'investor') {
+        const { data, error } = await supabase
+          .from('investor_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          setAdditionalProfile(data);
+          const completion = calculateProfileCompletion(profile, data);
+          setProfileCompletion(completion);
+        }
+      } else if (profile.user_type === 'syndicator') {
+        const { data, error } = await supabase
+          .from('syndicator_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          setAdditionalProfile(data);
+          const completion = calculateProfileCompletion(profile, data);
+          setProfileCompletion(completion);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching additional profile:', error);
+    }
+  }
 
   // Handle profile loading state
   useEffect(() => {
@@ -273,6 +315,14 @@ export function Profile() {
             </div>
           )}
 
+          {/* Profile Completion Card */}
+          {profile && profileCompletion && (
+            <ProfileCompletionCard 
+              completion={profileCompletion}
+              userType={profile.user_type}
+            />
+          )}
+
           {/* Account Type Header */}
           <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="flex items-center justify-between">
@@ -415,9 +465,21 @@ export function Profile() {
             )}
 
             {profile?.user_type === 'investor' ? (
-              <InvestorProfileForm onComplete={() => setMessage('Profile updated successfully!')} />
+              <InvestorProfileForm 
+                onComplete={() => {
+                  setMessage('Profile updated successfully!');
+                  fetchAdditionalProfile();
+                }}
+              />
             ) : (
-              <SyndicatorProfileForm setMessage={setMessage} />
+              <SyndicatorProfileForm 
+                setMessage={(msg) => {
+                  setMessage(msg);
+                  if (msg.includes('successfully')) {
+                    fetchAdditionalProfile();
+                  }
+                }}
+              />
             )}
           </div>
 
