@@ -661,8 +661,9 @@ export function MarketReports() {
               Dive deep into specific markets with our AI-driven deal recommendations and local market insights.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[
+                // Tier 1 Markets
                 { name: 'Nashville', slug: 'nashville', state: 'TN', growth: '+12%' },
                 { name: 'Austin', slug: 'austin', state: 'TX', growth: '+8%' },
                 { name: 'Charlotte', slug: 'charlotte', state: 'NC', growth: '+6%' },
@@ -670,7 +671,19 @@ export function MarketReports() {
                 { name: 'Raleigh', slug: 'raleigh', state: 'NC', growth: '+7%' },
                 { name: 'Atlanta', slug: 'atlanta', state: 'GA', growth: '+5%' },
                 { name: 'Orlando', slug: 'orlando', state: 'FL', growth: '+8%' },
-                { name: 'Denver', slug: 'denver', state: 'CO', growth: '+4%' }
+                { name: 'Denver', slug: 'denver', state: 'CO', growth: '+4%' },
+                // Tier 2 Markets - High Growth
+                { name: 'Miami', slug: 'miami', state: 'FL', growth: '+9%' },
+                { name: 'Tampa', slug: 'tampa', state: 'FL', growth: '+10%' },
+                { name: 'Dallas', slug: 'dallas', state: 'TX', growth: '+7%' },
+                { name: 'Salt Lake City', slug: 'salt-lake-city', state: 'UT', growth: '+11%' },
+                { name: 'Charleston', slug: 'charleston', state: 'SC', growth: '+8%' },
+                { name: 'Jacksonville', slug: 'jacksonville', state: 'FL', growth: '+6%' },
+                // Value Markets
+                { name: 'Kansas City', slug: 'kansas-city', state: 'MO', growth: '+6%' },
+                { name: 'Indianapolis', slug: 'indianapolis', state: 'IN', growth: '+5%' },
+                { name: 'Richmond', slug: 'richmond', state: 'VA', growth: '+5%' },
+                { name: 'Portland', slug: 'portland', state: 'OR', growth: '+4%' }
               ].map((city) => (
                 <button
                   key={city.slug}
