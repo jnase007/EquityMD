@@ -23,7 +23,7 @@ const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ defau
 import { NotFound } from './pages/NotFound';
 import { HowItWorks } from './pages/HowItWorks';
 import { HowItWorksImproved } from './pages/HowItWorksImproved';
-import { ForSyndicators } from './pages/ForSyndicators';
+
 import { SuccessStories } from './pages/SuccessStories';
 import { DueDiligence } from './pages/resources/DueDiligence';
 import { InvestmentCalculator } from './pages/resources/InvestmentCalculator';
@@ -255,7 +255,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/for-syndicators', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
+  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -292,13 +292,7 @@ export default function App() {
             </Suspense>
           </ErrorBoundary>
         } />
-        <Route path="/for-syndicators" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <ForSyndicators />
-            </Suspense>
-          </ErrorBoundary>
-        } />
+
         <Route path="/contact" element={
           <ErrorBoundary>
             <Suspense fallback={<MinimalLoadingFallback />}>

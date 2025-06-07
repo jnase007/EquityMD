@@ -61,14 +61,7 @@ export function Footer() {
                 Find Deals
               </button>
             </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/for-syndicators')}
-                className="hover:text-white transition"
-              >
-                For Syndicators
-              </button>
-            </li>
+
             <li>
               <button
                 onClick={() => handleNavigation('/pricing')}

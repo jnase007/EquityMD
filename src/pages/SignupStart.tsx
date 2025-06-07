@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Building2, User, ArrowRight } from 'lucide-react';
-import { AuthModal } from '../../components/AuthModal';
+import { AuthModal } from '../components/AuthModal';
 
 export function SignupStart() {
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -25,7 +26,10 @@ export function SignupStart() {
 
           <div className="space-y-4">
             <button
-              onClick={() => navigate('/signup/investor/email')}
+              onClick={() => {
+                setAuthModalType('investor');
+                setShowAuthModal(true);
+              }}
               className="w-full bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition flex items-center gap-4 group"
             >
               <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-600 transition">
@@ -39,7 +43,10 @@ export function SignupStart() {
             </button>
 
             <button
-              onClick={() => navigate('/signup/syndicator/email')}
+              onClick={() => {
+                setAuthModalType('syndicator');
+                setShowAuthModal(true);
+              }}
               className="w-full bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition flex items-center gap-4 group"
             >
               <div className="p-3 bg-blue-100 rounded-lg group-hover:bg-blue-600 transition">
@@ -72,7 +79,11 @@ export function SignupStart() {
       </div>
 
       {showAuthModal && (
-        <AuthModal onClose={() => setShowAuthModal(false)} />
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          defaultView="sign_up"
+          defaultType={authModalType}
+        />
       )}
     </div>
   );
