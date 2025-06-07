@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { PageBanner } from '../../components/PageBanner';
+import { SEO } from '../../components/SEO';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import Skeleton from 'react-loading-skeleton';
-import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star } from 'lucide-react';
+import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star, ArrowLeft } from 'lucide-react';
 
 interface MarketReport {
   state: string;
@@ -196,6 +198,37 @@ US_STATES.forEach(state => {
 
 const defaultStateImage = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80';
 
+// Generate state-specific SEO metadata
+const getStateSEO = (state: string, report?: MarketReport) => {
+  const stateSlug = state.toLowerCase().replace(/\s+/g, '-');
+  
+  const title = `${state} Real Estate Market Report 2024 | Commercial Property Investment Analysis - EquityMD`;
+  const description = report 
+    ? `Comprehensive ${state} real estate market analysis. Population growth: ${report.keyMetrics.population_growth}, job growth: ${report.keyMetrics.job_growth}. ${report.topMarkets.length} top markets analyzed. Investment opportunities and trends for commercial real estate syndicators and accredited investors.`
+    : `Detailed ${state} commercial real estate market report and investment analysis. Market trends, cap rates, growth metrics, and investment opportunities for accredited investors and syndicators on EquityMD.com.`;
+  
+  const keywords = [
+    `${state} real estate market`,
+    `${state} commercial real estate`,
+    `${state} investment properties`,
+    `${state} cap rates`,
+    `${state} real estate trends`,
+    `${state} multifamily investments`,
+    `${state} commercial property investment`,
+    `${state} real estate syndication`,
+    `${state} accredited investor opportunities`,
+    `${state} CRE market analysis`,
+    'commercial real estate reports',
+    'real estate market data',
+    'investment property analysis',
+    'CRE investment opportunities'
+  ].join(', ');
+  
+  const canonical = `https://equitymd.com/resources/market-reports/${stateSlug}`;
+  
+  return { title, description, keywords, canonical };
+};
+
 const generateStateReport = (state: string): MarketReport => {
   const populationGrowth = (Math.random() * 3 + 0.5).toFixed(1);
   const jobGrowth = (Math.random() * 4 + 1).toFixed(1);
@@ -363,6 +396,8 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 };
 
 export function MarketReports() {
+  const { state: stateParam } = useParams<{ state: string }>();
+  const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -371,6 +406,20 @@ export function MarketReports() {
   const [loading, setLoading] = useState(true);
   const [imagesLoading, setImagesLoading] = useState<Set<string>>(new Set());
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Handle URL parameter for state
+  useEffect(() => {
+    if (stateParam) {
+      const stateFromUrl = stateParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const matchingReport = marketReports.find(report => 
+        report.state.toLowerCase() === stateFromUrl.toLowerCase()
+      );
+      if (matchingReport) {
+        setSelectedState(matchingReport.state);
+        setSearchTerm(matchingReport.state);
+      }
+    }
+  }, [stateParam]);
 
   // Initialize data with loading state
   useEffect(() => {
@@ -445,6 +494,9 @@ export function MarketReports() {
     setSearchTerm(state);
     setSelectedState(state);
     setShowSuggestions(false);
+    // Navigate to state-specific URL
+    const stateSlug = state.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/resources/market-reports/${stateSlug}`);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -455,6 +507,8 @@ export function MarketReports() {
     );
     if (matchingState) {
       setSelectedState(matchingState.state);
+      const stateSlug = matchingState.state.toLowerCase().replace(/\s+/g, '-');
+      navigate(`/resources/market-reports/${stateSlug}`);
     }
     setShowSuggestions(false);
   };
@@ -496,8 +550,22 @@ export function MarketReports() {
     );
   }
 
+  const currentReport = selectedState ? filteredReports.find(r => r.state === selectedState) : undefined;
+  const seoData = selectedState ? getStateSEO(selectedState, currentReport) : {
+    title: "Commercial Real Estate Market Reports & Analysis | EquityMD",
+    description: "Access comprehensive commercial real estate market reports and investment analysis for major US markets. Get insights on cap rates, growth trends, and investment opportunities for accredited investors.",
+    keywords: "commercial real estate market reports, CRE market analysis, real estate investment analysis, cap rates, commercial property trends, multifamily market data, real estate syndication opportunities",
+    canonical: "https://equitymd.com/resources/market-reports"
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 animate-fade-in">
+      <SEO
+        title={seoData.title}
+        description={seoData.description}
+        keywords={seoData.keywords}
+        canonical={seoData.canonical}
+      />
       <Navbar />
 
       <PageBanner 
@@ -549,6 +617,19 @@ export function MarketReports() {
       <div className="max-w-[1200px] mx-auto px-4 py-16">
         {selectedState ? (
           <div className="bg-white rounded-lg shadow-sm p-8">
+            <div className="mb-6">
+              <button
+                onClick={() => {
+                  setSelectedState(null);
+                  setSearchTerm('');
+                  navigate('/resources/market-reports');
+                }}
+                className="flex items-center text-blue-600 hover:text-blue-700 font-medium"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to All Reports
+              </button>
+            </div>
             {filteredReports.map(report => report.state === selectedState && (
               <div key={report.state}>
                 <div className="relative h-64 mb-8 rounded-lg overflow-hidden bg-gray-200">
@@ -679,7 +760,11 @@ export function MarketReports() {
               <div 
                 key={report.state}
                 className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition cursor-pointer"
-                onClick={() => setSelectedState(report.state)}
+                onClick={() => {
+                  setSelectedState(report.state);
+                  const stateSlug = report.state.toLowerCase().replace(/\s+/g, '-');
+                  navigate(`/resources/market-reports/${stateSlug}`);
+                }}
               >
                 <div className="relative h-48 bg-gray-200">
                   {imagesLoading.has(report.state) && (

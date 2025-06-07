@@ -412,6 +412,10 @@ export default function App() {
           element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><MarketReports /></Suspense>} 
         />
         <Route 
+          path="/resources/market-reports/:state" 
+          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><MarketReports /></Suspense>} 
+        />
+        <Route 
           path="/resources/education" 
           element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Education /></Suspense>} 
         />
