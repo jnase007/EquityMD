@@ -417,6 +417,8 @@ export function MarketReports() {
       if (matchingReport) {
         setSelectedState(matchingReport.state);
         setSearchTerm(matchingReport.state);
+        // Scroll to top when state is selected
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   }, [stateParam]);
@@ -497,6 +499,8 @@ export function MarketReports() {
     // Navigate to state-specific URL
     const stateSlug = state.toLowerCase().replace(/\s+/g, '-');
     navigate(`/resources/market-reports/${stateSlug}`);
+    // Scroll to top when state is selected
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -509,6 +513,8 @@ export function MarketReports() {
       setSelectedState(matchingState.state);
       const stateSlug = matchingState.state.toLowerCase().replace(/\s+/g, '-');
       navigate(`/resources/market-reports/${stateSlug}`);
+      // Scroll to top when state is selected
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     setShowSuggestions(false);
   };
@@ -764,6 +770,8 @@ export function MarketReports() {
                   setSelectedState(report.state);
                   const stateSlug = report.state.toLowerCase().replace(/\s+/g, '-');
                   navigate(`/resources/market-reports/${stateSlug}`);
+                  // Scroll to top when state is selected
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
               >
                 <div className="relative h-48 bg-gray-200">
