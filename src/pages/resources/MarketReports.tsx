@@ -527,7 +527,7 @@ export function MarketReports() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search by state or city..."
+                placeholder="Search by state..."
                 className="w-full pl-10 pr-20 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/70"
                 disabled
               />
@@ -578,7 +578,7 @@ export function MarketReports() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Search by state or city..."
+                placeholder="Search by state..."
                 className="w-full pl-10 pr-20 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/70"
                 value={searchTerm}
                 onChange={handleSearchChange}
