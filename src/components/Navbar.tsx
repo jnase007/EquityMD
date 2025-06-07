@@ -26,9 +26,9 @@ const mobileMenuItems: MobileMenuItem[] = [
   {
     label: "Find Deals",
     items: [
-      { label: "All Deals", path: "/browse" },
-      { label: "Featured Opportunities", path: "/browse?featured=true" },
-      { label: "New Listings", path: "/browse?sort=newest" }
+      { label: "All Deals", path: "/find" },
+      { label: "Featured Opportunities", path: "/find?featured=true" },
+      { label: "New Listings", path: "/find?sort=newest" }
     ]
   },
   {
@@ -212,7 +212,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
       <div className="hidden md:flex items-center space-x-8">
         {/* Primary CTA */}
         <Link 
-          to="/browse" 
+          to="/find" 
           className={`font-medium px-4 py-2 rounded-lg transition hover:scale-105 transform ${
             isTransparent 
               ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm' 

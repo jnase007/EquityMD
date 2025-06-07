@@ -89,7 +89,7 @@ export default function App() {
     if (currentPath === '/') {
       preloadRoute(() => import('./pages/Browse'));
       preloadRoute(() => import('./pages/Directory'));
-    } else if (currentPath === '/browse') {
+    } else if (currentPath === '/find') {
       preloadRoute(() => import('./pages/DealDetails'));
     } else if (currentPath === '/directory') {
       preloadRoute(() => import('./pages/SyndicatorProfile'));
@@ -255,7 +255,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/browse', '/directory', '/how-it-works', '/for-syndicators', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
+  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/for-syndicators', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -381,8 +381,13 @@ export default function App() {
 
         {/* Public Browse Routes - No Authentication Required */}
         <Route 
-          path="/browse" 
+          path="/find" 
           element={<Suspense fallback={<MinimalLoadingFallback />}><Browse /></Suspense>} 
+        />
+        {/* Redirect old /browse URL to /find */}
+        <Route 
+          path="/browse" 
+          element={<Navigate to="/find" replace />} 
         />
         <Route 
           path="/directory" 

@@ -392,7 +392,7 @@ export function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center px-2">
               <Link 
-                to="/browse"
+                to="/find"
                 className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors inline-flex items-center justify-center"
               >
                 Find Opportunities

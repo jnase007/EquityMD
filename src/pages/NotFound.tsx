@@ -104,7 +104,7 @@ export function NotFound() {
             Back to Homepage
           </Link>
           <Link
-            to="/browse"
+            to="/find"
             className="flex items-center px-6 py-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition"
           >
             <Search className="h-5 w-5 mr-2" />
