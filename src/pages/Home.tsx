@@ -395,7 +395,7 @@ export function Home() {
                 to="/browse"
                 className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors inline-flex items-center justify-center"
               >
-                Browse Opportunities
+                Find Opportunities
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
               <button 

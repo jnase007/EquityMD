@@ -219,7 +219,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
               : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md'
           }`}
         >
-          Browse Deals
+          Find Deals
         </Link>
         
         {/* Secondary Navigation */}
