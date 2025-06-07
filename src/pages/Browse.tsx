@@ -318,7 +318,7 @@ export function Browse() {
       <Navbar />
       
       <PageBanner 
-        title="Located Investment Opportunities"
+        title="Locate Investment Opportunities"
         subtitle="Discover and invest in institutional-quality real estate deals"
       >
         <div className="max-w-3xl mx-auto mt-8">
