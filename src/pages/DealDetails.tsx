@@ -10,6 +10,7 @@ import { AuthModal } from '../components/AuthModal';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
+import { getSyndicatorLogo } from '../lib/syndicator-logos';
 import type { Deal, DealFile } from '../types/database';
 
 interface DealMedia {
@@ -406,10 +407,10 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
               className="block bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition"
             >
               <div className="flex items-center mb-6">
-                {deal.syndicator?.company_logo_url ? (
+                {getSyndicatorLogo(deal.syndicator?.company_name || '', deal.syndicator?.company_logo_url) ? (
                   <img
-                    src={deal.syndicator.company_logo_url}
-                    alt={deal.syndicator.company_name}
+                    src={getSyndicatorLogo(deal.syndicator?.company_name || '', deal.syndicator?.company_logo_url)!}
+                    alt={deal.syndicator?.company_name}
                     className="h-16 w-16 rounded-lg object-cover mr-4"
                   />
                 ) : (
