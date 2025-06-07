@@ -151,11 +151,11 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-start md:items-center justify-center z-50 pt-4 md:pt-0 overflow-y-auto" 
       onClick={onClose}
     >
       <div 
-        className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4"
+        className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4 my-4 md:my-0"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
