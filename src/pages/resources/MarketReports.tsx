@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { PageBanner } from '../../components/PageBanner';
-import { LoadingSpinner, PageLoader } from '../../components/LoadingSpinner';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star } from 'lucide-react';
 
 interface MarketReport {
@@ -458,11 +459,44 @@ export function MarketReports() {
   };
 
   if (loading) {
-    return <PageLoader text="Loading market reports..." />;
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        
+        <PageBanner 
+          title="Market Research & Analysis"
+          subtitle="In-depth analysis of key real estate markets across the United States"
+        >
+          <div className="max-w-3xl mx-auto mt-8">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Search by state or city..."
+                className="w-full pl-10 pr-20 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/70"
+                disabled
+              />
+              <button
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-white/20 text-white rounded-md"
+                disabled
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </PageBanner>
+
+        <div className="max-w-[1200px] mx-auto px-4 py-16">
+          <LoadingSkeleton type="property" count={6} />
+        </div>
+
+        <Footer />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 animate-fade-in">
       <Navbar />
 
       <PageBanner 
