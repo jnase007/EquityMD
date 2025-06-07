@@ -55,10 +55,10 @@ export function Footer() {
             </li>
             <li>
               <button
-                onClick={() => handleNavigation('/browse')}
+                onClick={() => handleNavigation('/find')}
                 className="hover:text-white transition"
               >
-                Browse Real Estate Deals
+                Find Deals
               </button>
             </li>
             <li>
