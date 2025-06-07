@@ -4,6 +4,7 @@ import { Footer } from '../../components/Footer';
 import { PageBanner } from '../../components/PageBanner';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
+import Skeleton from 'react-loading-skeleton';
 import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star } from 'lucide-react';
 
 interface MarketReport {
@@ -552,8 +553,8 @@ export function MarketReports() {
               <div key={report.state}>
                 <div className="relative h-64 mb-8 rounded-lg overflow-hidden bg-gray-200">
                   {imagesLoading.has(report.state) && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-                      <LoadingSpinner size="md" />
+                    <div className="absolute inset-0 z-10">
+                      <Skeleton height="100%" className="!rounded-lg" />
                     </div>
                   )}
                   <OptimizedImage
@@ -682,8 +683,8 @@ export function MarketReports() {
               >
                 <div className="relative h-48 bg-gray-200">
                   {imagesLoading.has(report.state) && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                      <LoadingSpinner size="sm" />
+                    <div className="absolute inset-0">
+                      <Skeleton height="100%" />
                     </div>
                   )}
                   <img
