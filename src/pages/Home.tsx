@@ -333,9 +333,9 @@ export function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <SEO 
-        title="Equitymd.com | Top CRE Syndication for 10K Investors"
-        description="Skyrocket your CRE deals with 10K elite investors! List for $149/month, start free. Join Equitymd.com's top platform now—no fees to browse deals!"
-        keywords="CRE syndication platform, accredited investor deals, commercial real estate, real estate syndicators, multifamily investments, medical office buildings"
+        title="Find Top CRE Deals - Largest Syndication Directory | EquityMD"
+        description="EquityMD connects accredited investors with institutional-quality real estate investment opportunities through a curated platform of verified syndicators."
+        keywords="CRE deals, syndication directory, accredited investors, real estate syndication, commercial real estate, multifamily investments, verified syndicators"
         canonical="https://equitymd.com"
       />
       
