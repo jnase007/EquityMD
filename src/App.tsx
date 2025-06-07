@@ -28,6 +28,7 @@ import { SuccessStories } from './pages/SuccessStories';
 import { DueDiligence } from './pages/resources/DueDiligence';
 import { InvestmentCalculator } from './pages/resources/InvestmentCalculator';
 import { MarketReports } from './pages/resources/MarketReports';
+import { CityDeals } from './pages/CityDeals';
 import { Education } from './pages/resources/Education';
 import { Glossary } from './pages/resources/Glossary';
 import { Privacy } from './pages/legal/Privacy';
@@ -424,6 +425,10 @@ export default function App() {
         <Route 
           path="/legal/compliance" 
           element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Compliance /></Suspense>} 
+        />
+        <Route 
+          path="/cities/:city" 
+          element={<Suspense fallback={<MinimalLoadingFallback />}><CityDeals /></Suspense>} 
         />
         <Route 
           path="/deals/:slug" 

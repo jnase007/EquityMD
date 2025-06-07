@@ -7,7 +7,7 @@ import { SEO } from '../../components/SEO';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { LoadingSkeleton } from '../../components/LoadingSkeleton';
 import Skeleton from 'react-loading-skeleton';
-import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star, ArrowLeft } from 'lucide-react';
+import { Search, Building2, TrendingUp, DollarSign, ChevronRight, ArrowUpRight, MapPin, BarChart, Star, ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface MarketReport {
   state: string;
@@ -621,6 +621,79 @@ export function MarketReports() {
       </PageBanner>
 
       <div className="max-w-[1200px] mx-auto px-4 py-16">
+        {/* National Market Overview */}
+        <div className="mb-16">
+          <div className="bg-white rounded-lg shadow-sm p-8 mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">U.S. Multifamily Market Overview 2025</h2>
+            <div className="prose prose-lg max-w-none text-gray-700">
+              <p className="mb-4">
+                The U.S. multifamily market experienced remarkable resilience in 2025, with a nationwide growth rate of 7% 
+                despite economic headwinds and interest rate volatility. Major metropolitan areas continue to lead in both 
+                rental demand and investment returns, driven by sustained population migration patterns and employment growth 
+                in technology, healthcare, and financial services sectors.
+              </p>
+              <p className="mb-4">
+                Supply constraints remain a defining characteristic of the market, with new construction failing to meet 
+                demand in most major cities. This supply-demand imbalance has created exceptional opportunities for 
+                value-add investments, particularly in properties built between 1980-2005 that can benefit from strategic 
+                renovations and operational improvements.
+              </p>
+              <p className="mb-4">
+                Institutional capital continues flowing into the multifamily sector, with cap rates ranging from 4.5% 
+                for trophy assets in gateway markets to 8.5% for value-add opportunities in emerging secondary cities. 
+                The sector's defensive characteristics and inflation-hedging properties make it increasingly attractive 
+                to pension funds, REITs, and family offices seeking stable cash flows and long-term appreciation.
+              </p>
+              <p>
+                Regional performance varies significantly, with Sun Belt markets leading in both rent growth and 
+                population expansion. Cities like Nashville, Austin, and Charlotte are experiencing particularly 
+                strong fundamentals, while traditional coastal markets show more moderate but stable growth patterns. 
+                The key to successful multifamily investing in 2025 lies in identifying markets with strong job creation, 
+                reasonable affordability metrics, and limited new supply pipelines.
+              </p>
+            </div>
+          </div>
+
+          {/* Explore Deals by City Section */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Explore Investment Opportunities by City</h2>
+            <p className="text-gray-600 mb-8">
+              Dive deep into specific markets with our AI-driven deal recommendations and local market insights.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { name: 'Nashville', slug: 'nashville', state: 'TN', growth: '+12%' },
+                { name: 'Austin', slug: 'austin', state: 'TX', growth: '+8%' },
+                { name: 'Charlotte', slug: 'charlotte', state: 'NC', growth: '+6%' },
+                { name: 'Phoenix', slug: 'phoenix', state: 'AZ', growth: '+4%' },
+                { name: 'Raleigh', slug: 'raleigh', state: 'NC', growth: '+7%' },
+                { name: 'Atlanta', slug: 'atlanta', state: 'GA', growth: '+5%' },
+                { name: 'Orlando', slug: 'orlando', state: 'FL', growth: '+8%' },
+                { name: 'Denver', slug: 'denver', state: 'CO', growth: '+4%' }
+              ].map((city) => (
+                <button
+                  key={city.slug}
+                  onClick={() => navigate(`/cities/${city.slug}`)}
+                  className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition text-left group"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-bold text-lg group-hover:text-blue-600 transition">
+                      {city.name}
+                    </h3>
+                    <span className="text-sm text-green-600 font-semibold">{city.growth}</span>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4">{city.state}</p>
+                  <div className="flex items-center text-blue-600 text-sm font-medium">
+                    View Deals
+                    <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {selectedState ? (
           <div className="bg-white rounded-lg shadow-sm p-8">
             <div className="mb-6">
