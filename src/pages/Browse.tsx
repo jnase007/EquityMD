@@ -7,7 +7,7 @@ import { PageBanner } from '../components/PageBanner';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { VerificationBadge, VerificationStatus } from '../components/VerificationBadge';
 import type { Deal } from '../types/database';
 
@@ -258,18 +258,63 @@ export function Browse() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner 
-          variant="medical" 
-          size="xl" 
-          text="Loading investment opportunities..." 
-        />
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        
+        <PageBanner 
+          title="Browse Investment Opportunities"
+          subtitle="Discover and invest in institutional-quality real estate deals"
+        >
+          <div className="max-w-3xl mx-auto mt-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Search by property name or location..."
+                  className="w-full pl-10 pr-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/70"
+                  disabled
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <select
+                  className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-transparent"
+                  disabled
+                >
+                  <option>All Types</option>
+                </select>
+                
+                <select
+                  className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-transparent"
+                  disabled
+                >
+                  <option>All Status</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </PageBanner>
+
+        <div className="max-w-[1200px] mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <div className="h-8 bg-gray-200 rounded w-64 animate-pulse"></div>
+            <div className="flex items-center space-x-4">
+              <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
+            </div>
+          </div>
+
+          <LoadingSkeleton type="property" count={6} />
+        </div>
+
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 animate-fade-in">
       <Navbar />
       
       <PageBanner 

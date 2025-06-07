@@ -6,7 +6,7 @@ import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { PageBanner } from '../components/PageBanner';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { isProfileCompleteForDirectory } from '../lib/syndicator-completion';
 import { supabase } from '../lib/supabase';
 
@@ -301,18 +301,62 @@ export function Directory() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner 
-          variant="medical" 
-          size="xl" 
-          text="Loading syndicator directory..." 
+      <div className="min-h-screen bg-gray-50">
+        <SEO 
+          title="Top CRE Syndicator Directory | Deals on Equitymd.com"
+          description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 10K elite investors on Equitymd.com. Browse free—join today!"
+          keywords="CRE syndicator directory, real estate syndicators, multifamily syndicators, industrial real estate, commercial real estate directory"
+          canonical="https://equitymd.com/directory"
         />
+        <Navbar />
+
+        <PageBanner 
+          title="Syndicator Directory"
+          subtitle="Connect with experienced real estate investment firms"
+        />
+
+        <div className="max-w-[1200px] mx-auto px-4 py-16">
+          {/* Featured Syndicators Skeleton */}
+          <div className="mb-12">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-6 w-6 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-8 bg-gray-200 rounded w-64 animate-pulse"></div>
+            </div>
+            <LoadingSkeleton type="syndicator" count={3} />
+          </div>
+
+          {/* All Syndicators Header Skeleton */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
+            <div className="flex items-center space-x-4">
+              <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Filters Skeleton */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div className="grid md:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index}>
+                  <div className="h-4 bg-gray-200 rounded w-20 mb-2 animate-pulse"></div>
+                  <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Content Skeleton */}
+          <LoadingSkeleton type="syndicator" count={6} />
+        </div>
+
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 animate-fade-in">
       <SEO 
         title="Top CRE Syndicator Directory | Deals on Equitymd.com"
         description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 10K elite investors on Equitymd.com. Browse free—join today!"
