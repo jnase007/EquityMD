@@ -8,7 +8,6 @@ import { DealMediaGallery } from '../components/DealMediaGallery';
 import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
 import { FavoriteButton } from '../components/FavoriteButton';
-import { MigrationHelper } from '../components/MigrationHelper';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { supabase } from '../lib/supabase';
@@ -58,12 +57,21 @@ export function DealDetails() {
 
   async function fetchInvestmentRequestCount(dealId: string) {
     try {
+      // Check if investment_requests table exists first
       const { count, error } = await supabase
         .from('investment_requests')
         .select('*', { count: 'exact', head: true })
         .eq('deal_id', dealId);
 
-      if (error) throw error;
+      if (error) {
+        // If table doesn't exist, just set count to 0
+        console.log('Investment requests table not found yet:', error);
+        setInvestmentRequests({
+          count: 0,
+          loading: false
+        });
+        return;
+      }
 
       setInvestmentRequests({
         count: count || 0,
@@ -659,7 +667,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
       )}
 
       <Footer />
-      <MigrationHelper />
     </div>
   );
 }

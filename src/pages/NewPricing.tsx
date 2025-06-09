@@ -387,7 +387,7 @@ export function NewPricing() {
                   <TrendingUp className="h-8 w-8 text-orange-600" />
                 </div>
                 <div className="text-3xl font-bold text-gray-900">$2.4M</div>
-                <div className="text-gray-600">Capital Raised</div>
+                <div className="text-gray-600">Investment Interest</div>
               </div>
             </div>
             <p className="text-gray-600">

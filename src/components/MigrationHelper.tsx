@@ -114,15 +114,8 @@ export function MigrationHelper() {
     setResult('');
     
     try {
-      const { data, error } = await supabase.rpc('exec_sql', {
-        sql: INVESTMENT_REQUESTS_MIGRATION
-      });
-
-      if (error) {
-        setResult(`Error: ${error.message}`);
-      } else {
-        setResult('Migration completed successfully! The investment_requests table has been created.');
-      }
+      // For now, just show instructions since exec_sql RPC might not be available
+      setResult('Manual Migration Required: Please go to your Supabase Dashboard → SQL Editor and run the migration file: supabase/migrations/20250609_create_investment_requests_table.sql');
     } catch (error: any) {
       setResult(`Error: ${error.message}`);
     } finally {

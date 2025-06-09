@@ -457,7 +457,7 @@ export function DashboardReview() {
                 <span className="text-sm font-semibold text-green-600">+12</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Capital Raised</span>
+                <span className="text-sm text-gray-600">Investment Interest</span>
                 <span className="text-sm font-semibold text-green-600">$485K</span>
               </div>
               <div className="flex justify-between items-center">
