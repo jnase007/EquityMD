@@ -21,7 +21,7 @@ const pricingTiers = [
       '14-day free trial',
       '1 deal post per year',
       'Basic text-only profile',
-      'Access to 10K+ investors',
+      'Exposure to 10K+ investors',
       'Basic analytics dashboard',
       'Standard support',
       '$25 refund if no views in 30 days'
@@ -194,17 +194,17 @@ export function NewPricing() {
       {/* Pricing Cards Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Three-Tier Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 pt-4">
           {pricingTiers.map((tier, index) => (
             <div 
               key={tier.name}
-              className={`bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105 ${
-                tier.popular ? 'ring-2 ring-blue-600 relative' : ''
+              className={`bg-white rounded-lg shadow-lg overflow-visible transition-transform hover:scale-105 ${
+                tier.popular ? 'ring-2 ring-blue-600 relative mt-6' : ''
               }`}
             >
               {tier.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap shadow-lg">
                     Most Popular
                   </div>
                 </div>
