@@ -103,10 +103,7 @@ const addOns = [
   }
 ];
 
-const trustSignals = [
-  { icon: Users, value: '10K+', label: 'Accredited Investors' },
-  { icon: TrendingUp, value: '500+', label: 'Proven Results for Syndicators' }
-];
+
 
 export function NewPricing() {
   const { user } = useAuthStore();
@@ -347,29 +344,7 @@ export function NewPricing() {
           </div>
         </div>
 
-        {/* Dashboard Preview Link & Trust Signals */}
-        <div className="text-center mb-16">
-          <a 
-            href="/dashboard-demo"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium mr-4 mb-4"
-          >
-            <Eye className="h-5 w-5 mr-2" />
-            See Live Demo
-          </a>
-          
-          {/* Trust Signals */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-md mx-auto mt-8">
-            {trustSignals.map((signal, index) => (
-              <div key={index} className="text-center">
-                <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-3 flex items-center justify-center">
-                  <signal.icon className="h-8 w-8 text-blue-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">{signal.value}</div>
-                <div className="text-gray-600 text-sm">{signal.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+
 
         {/* Add-ons Section */}
         <div className="mt-20">
