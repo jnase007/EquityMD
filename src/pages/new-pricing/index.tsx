@@ -420,6 +420,7 @@ export function NewPricing() {
         <AuthModal 
           onClose={() => setShowAuthModal(false)} 
           defaultType="syndicator"
+          defaultView="sign_up"
         />
       )}
 
