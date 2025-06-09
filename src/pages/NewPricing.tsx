@@ -190,7 +190,7 @@ export function NewPricing() {
       {/* Pricing Comparison Table - Desktop */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="hidden md:block">
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="bg-white shadow-md rounded-lg overflow-visible">
             <div className="grid grid-cols-4 border-b border-gray-200">
               <div className="p-6 bg-gray-50">
                 <h3 className="text-lg font-semibold text-gray-900">Compare Plans</h3>
@@ -200,12 +200,12 @@ export function NewPricing() {
                 <div 
                   key={tier.name}
                   className={`p-6 text-center relative ${
-                    tier.popular ? 'bg-blue-50 border-b-4 border-blue-600' : 'bg-white'
+                    tier.popular ? 'bg-blue-50 border-b-4 border-blue-600 pt-10' : 'bg-white'
                   }`}
                 >
                   {tier.popular && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                      <div className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap">
                         Most Popular
                       </div>
                     </div>
@@ -298,7 +298,7 @@ export function NewPricing() {
               }`}
             >
               {tier.popular && (
-                <div className="bg-blue-600 text-white text-center py-2 text-sm font-medium">
+                <div className="bg-blue-600 text-white text-center py-3 text-sm font-medium">
                   Most Popular Plan
                 </div>
               )}
