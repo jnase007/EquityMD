@@ -44,6 +44,7 @@ import { About } from './pages/About';
 import { Blog } from './pages/Blog';
 import { AdminLogin } from './pages/admin/Login';
 import { Pricing } from './pages/Pricing';
+import { NewPricing } from './pages/NewPricing';
 import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
 import { LoaderDemo } from './pages/LoaderDemo';
@@ -322,6 +323,13 @@ export default function App() {
           <ErrorBoundary>
             <Suspense fallback={<MinimalLoadingFallback />}>
               <Pricing />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/new-pricing" element={
+          <ErrorBoundary>
+            <Suspense fallback={<MinimalLoadingFallback />}>
+              <NewPricing />
             </Suspense>
           </ErrorBoundary>
         } />
