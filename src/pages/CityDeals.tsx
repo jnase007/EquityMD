@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { AuthModal } from '../components/AuthModal';
 import { supabase } from '../lib/supabase';
 import { MapPin, TrendingUp, Star, DollarSign, Target, ArrowRight, Building, Percent } from 'lucide-react';
 
@@ -34,6 +35,7 @@ export function CityDeals() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     if (city) {
@@ -386,16 +388,24 @@ export function CityDeals() {
               <ArrowRight className="h-5 w-5 ml-2" />
             </button>
             <button 
-              onClick={() => navigate('/signup/start')}
+              onClick={() => setShowAuthModal(true)}
               className="bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition"
             >
-              Start Investing Today
+              Get Started
             </button>
           </div>
         </div>
       </div>
 
       <Footer />
+      
+      {showAuthModal && (
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          defaultType="investor"
+          defaultView="sign_up"
+        />
+      )}
     </div>
   );
 } 
