@@ -303,6 +303,50 @@ export function NewPricing() {
           ))}
         </div>
 
+        {/* Results/Metrics Section */}
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
+            Real Results from Our Syndicators
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Join thousands of successful syndicators who have achieved outstanding results on our platform
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="bg-blue-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <TrendingUp className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">$2.4B+</div>
+              <div className="text-gray-600">Investment Requests</div>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-green-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Eye className="h-8 w-8 text-green-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">2.1M+</div>
+              <div className="text-gray-600">Deal Views</div>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-purple-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">15,000+</div>
+              <div className="text-gray-600">Active Investors</div>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-orange-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <CheckCircle className="h-8 w-8 text-orange-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">850+</div>
+              <div className="text-gray-600">Deals Funded</div>
+            </div>
+          </div>
+        </div>
+
         {/* Dashboard Preview Link & Trust Signals */}
         <div className="text-center mb-16">
           <a 
