@@ -282,8 +282,8 @@ export function NewPricing() {
 
               {/* CTA Button */}
               <div className="p-6 bg-gray-50 border-t border-gray-200">
-                <a
-                  href={tier.ctaLink}
+                <button
+                  onClick={() => setShowAuthModal(true)}
                   className={`block w-full py-3 px-6 rounded-lg font-medium text-center transition-all transform hover:scale-105 ${
                     tier.popular
                       ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg'
@@ -291,7 +291,7 @@ export function NewPricing() {
                   }`}
                 >
                   {tier.ctaText}
-                </a>
+                </button>
                 <p className="text-xs text-gray-500 text-center mt-2">
                   No credit card required, cancel anytime
                 </p>
@@ -408,12 +408,12 @@ export function NewPricing() {
 
       {/* Sticky Mobile CTA */}
       <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
-        <a 
-          href="/auth/signup"
+        <button 
+          onClick={() => setShowAuthModal(true)}
           className="block w-full bg-blue-600 text-white text-center py-4 rounded-lg shadow-lg font-medium text-lg hover:bg-blue-700 transition-colors"
         >
           Start Free Trial
-        </a>
+        </button>
       </div>
 
       {showAuthModal && (
