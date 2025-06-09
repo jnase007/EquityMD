@@ -33,7 +33,7 @@ export function SignupStart() {
               </div>
               <div className="flex-grow text-left">
                 <div className="font-semibold mb-1">Investor</div>
-                <div className="text-sm text-gray-600">Connect with syndicators and explore opportunities</div>
+                <div className="text-sm text-gray-600">Browse and invest in opportunities</div>
               </div>
               <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition" />
             </button>
@@ -47,7 +47,7 @@ export function SignupStart() {
               </div>
               <div className="flex-grow text-left">
                 <div className="font-semibold mb-1">Syndicator</div>
-                <div className="text-sm text-gray-600">Showcase deals and connect with investors</div>
+                <div className="text-sm text-gray-600">List investment opportunities</div>
               </div>
               <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition" />
             </button>
