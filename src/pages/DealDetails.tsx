@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { MapPin, Building, Calendar, TrendingUp, DollarSign, Users, FileText, ChevronRight, AlertCircle, Globe, Briefcase, MessageCircle, Wallet, Play } from 'lucide-react';
+import { MapPin, Building, Calendar, TrendingUp, DollarSign, Users, FileText, ChevronRight, AlertCircle, Globe, Briefcase, MessageCircle, Wallet, Play, Info } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { MessageModal } from '../components/MessageModal';
@@ -8,9 +8,13 @@ import { DealMediaGallery } from '../components/DealMediaGallery';
 import { VideoEmbed } from '../components/VideoEmbed';
 import { AuthModal } from '../components/AuthModal';
 import { FavoriteButton } from '../components/FavoriteButton';
+import { MigrationHelper } from '../components/MigrationHelper';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { getSyndicatorLogo } from '../lib/syndicator-logos';
+import { Tooltip } from 'react-tooltip';
 import type { Deal, DealFile } from '../types/database';
 
 interface DealMedia {
@@ -43,15 +47,36 @@ export function DealDetails() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [showInvestModal, setShowInvestModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [fundingProgress, setFundingProgress] = useState({
-    raised: 0,
-    target: 0,
-    investors: 0
+  const [investmentRequests, setInvestmentRequests] = useState({
+    count: 0,
+    loading: true
   });
 
   useEffect(() => {
     fetchDealDetails();
   }, [slug]);
+
+  async function fetchInvestmentRequestCount(dealId: string) {
+    try {
+      const { count, error } = await supabase
+        .from('investment_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('deal_id', dealId);
+
+      if (error) throw error;
+
+      setInvestmentRequests({
+        count: count || 0,
+        loading: false
+      });
+    } catch (error) {
+      console.error('Error fetching investment request count:', error);
+      setInvestmentRequests({
+        count: 0,
+        loading: false
+      });
+    }
+  }
 
   async function fetchDealDetails() {
     try {
@@ -300,14 +325,8 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
       if (mediaError) throw mediaError;
       setMedia(mediaData || []);
 
-      // Calculate funding progress - show $57K raised for all deals to look legitimate
-      const totalEquity = dealData.total_equity;
-      const raisedAmount = 57000; // Fixed amount of $57K raised
-      setFundingProgress({
-        raised: raisedAmount,
-        target: totalEquity,
-        investors: Math.floor(Math.random() * 15) + 5 // 5-20 investors
-      });
+      // Fetch investment request count for this deal
+      await fetchInvestmentRequestCount(dealData.id);
 
     } catch (error) {
       console.error('Error fetching deal details:', error);
@@ -341,11 +360,16 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
     return <Navigate to="/404" />;
   }
 
-  const progressPercentage = (fundingProgress.raised / fundingProgress.target) * 100;
+  // Remove progress percentage calculation as we're now tracking requests, not funding
   const syndicatorSlug = deal.syndicator?.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <head>
+        <title>Invest in Top CRE Deals | EquityMD</title>
+        <meta name="description" content="Explore CRE deals with active investment requests on EquityMD. Connect with verified syndicators and join accredited investors in commercial real estate opportunities." />
+        <meta name="keywords" content="CRE investment, commercial real estate deals, accredited investors, investment requests, real estate syndication" />
+      </head>
       <Navbar />
 
       {/* Hero Section */}
@@ -525,41 +549,47 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Funding Progress */}
+            {/* Investment Interest */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-xl font-bold mb-4">Funding Progress</h3>
+              <div className="flex items-center mb-4">
+                <h3 className="text-xl font-bold">Investment Interest</h3>
+                <Info 
+                  className="h-4 w-4 text-gray-400 ml-2 cursor-help" 
+                  data-tooltip-id="interest-tooltip"
+                />
+                <Tooltip 
+                  id="interest-tooltip"
+                  content="Number of investors requesting to invest in this deal"
+                  place="top"
+                />
+              </div>
               <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-500">Raised</span>
-                    <span className="font-medium">${fundingProgress.raised.toLocaleString()}</span>
-                  </div>
-                  <div className="h-2 bg-gray-200 rounded-full">
-                    <div
-                      className="h-full bg-blue-600 rounded-full"
-                      style={{ width: `${progressPercentage}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-sm mt-2">
-                    <span className="text-gray-500">Target</span>
-                    <span className="font-medium">${fundingProgress.target.toLocaleString()}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between py-4 border-t">
+                <div className="flex items-center justify-between py-4 border-b">
                   <div className="flex items-center">
-                    <Users className="h-5 w-5 text-gray-400 mr-2" />
-                    <span className="text-gray-500">Investors</span>
+                    <Users className="h-5 w-5 text-blue-600 mr-2" />
+                    <span className="text-gray-600">Investment Requests</span>
                   </div>
-                  <span className="font-medium">{fundingProgress.investors}</span>
+                  {investmentRequests.loading ? (
+                    <Skeleton height={24} width={32} />
+                  ) : (
+                    <span className="font-bold text-2xl text-blue-600">
+                      {investmentRequests.count}+
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex items-center justify-between py-4 border-t">
+                <div className="flex items-center justify-between py-4 border-b">
                   <div className="flex items-center">
                     <DollarSign className="h-5 w-5 text-gray-400 mr-2" />
                     <span className="text-gray-500">Minimum Investment</span>
                   </div>
                   <span className="font-medium">${deal.minimum_investment.toLocaleString()}</span>
+                </div>
+
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="text-sm text-blue-800">
+                    <strong>Active Interest:</strong> This deal has received {investmentRequests.loading ? '...' : investmentRequests.count} investment requests from accredited investors.
+                  </div>
                 </div>
               </div>
 
@@ -629,6 +659,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
       )}
 
       <Footer />
+      <MigrationHelper />
     </div>
   );
 }

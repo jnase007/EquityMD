@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { trackSyndicatorContact, trackInvestmentInterest } from '../lib/analytics';
+import toast from 'react-hot-toast';
 
 interface MessageModalProps {
   dealId?: string;
@@ -82,6 +83,25 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
 
       if (messageError) throw messageError;
 
+      // If this is an investment request, save to investment_requests table
+      if (isInvestment && investmentAmount && dealId) {
+        const { error: investmentError } = await supabase
+          .from('investment_requests')
+          .insert({
+            deal_id: dealId,
+            user_id: user.id,
+            amount: parseInt(investmentAmount),
+            status: 'pending'
+          });
+
+        if (investmentError) {
+          console.error('Error saving investment request:', investmentError);
+          // Don't fail the message if investment request fails
+        } else {
+          toast.success('Investment request saved successfully!');
+        }
+      }
+
       // Track analytics events
       if (isInvestment && investmentAmount) {
         // Track investment interest
@@ -143,17 +163,23 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
               {isInvestment && (
                 <div className="mb-4">
                   <label htmlFor="investmentAmount" className="block text-sm font-medium text-gray-700 mb-2">
-                    Investment Amount ($)
+                    Request Your Investment Amount
                   </label>
                   <input
                     type="number"
                     id="investmentAmount"
                     value={investmentAmount}
                     onChange={(e) => setInvestmentAmount(e.target.value)}
-                    placeholder="Enter your investment amount"
+                    placeholder="$1,000 – $100,000"
+                    min="1000"
+                    max="100000"
+                    step="1000"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                   />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Enter your desired investment amount between $1,000 and $100,000
+                  </p>
                 </div>
               )}
 
