@@ -44,7 +44,7 @@ import { About } from './pages/About';
 import { Blog } from './pages/Blog';
 import { AdminLogin } from './pages/admin/Login';
 import { Pricing } from './pages/Pricing';
-import { NewPricing } from './pages/NewPricing';
+import { NewPricing } from './pages/new-pricing';
 import { EmailPreview } from './pages/EmailPreview';
 import { EmailTest } from './pages/EmailTest';
 import { LoaderDemo } from './pages/LoaderDemo';
