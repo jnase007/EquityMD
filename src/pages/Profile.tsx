@@ -613,8 +613,6 @@ export function Profile() {
           id,
           company_name,
           company_description,
-          location,
-          profile_id,
           state,
           city
         `)
