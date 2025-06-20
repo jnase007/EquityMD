@@ -95,6 +95,9 @@ export function DealDetails() {
       }
       
       const title = slug.split('-').join(' ');
+
+      console.log('Fetching deal with title:', title);
+
       const { data: dealData, error: dealError } = await supabase
         .from('deals')
         .select(`
@@ -110,6 +113,8 @@ export function DealDetails() {
         `)
         .ilike('title', title)
         .single();
+
+        console.log('Fetched deal data:', dealData);
 
       if (dealError || !dealData) {
         console.error('Error fetching deal:', dealError);

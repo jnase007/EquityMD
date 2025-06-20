@@ -132,50 +132,83 @@ export function Home() {
     fetchTotalDealVolume();
   }, []);
 
-  async function fetchFeaturedDeals() {
-    try {
-      const { data, error } = await supabase
-        .from('deals')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
+  // async function fetchFeaturedDeals() {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from('deals')
+  //       .select('*')
+  //       .eq('status', 'active')
+  //       .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching featured deals:', error);
-        setFeaturedDeals(fallbackMockDeals);
-        return;
-      }
+  //     console.log('Fetched deals:', data);
+  //     console.log('Error fetching deals:', error);
 
-      // Only include deals from the three real syndicators
-      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
-      const filteredData = data ? data.filter(deal => 
-        allowedSyndicators.includes(deal.syndicator_id)
-      ) : [];
+  //     if (error) {
+  //       console.error('Error fetching featured deals:', error);
+  //       setFeaturedDeals(fallbackMockDeals);
+  //       return;
+  //     }
+
+  //     // Only include deals from the three real syndicators
+  //     const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
+  //     const filteredData = data ? data.filter(deal => 
+  //       allowedSyndicators.includes(deal.syndicator_id)
+  //     ) : [];
       
-      // Always include priority mock deals (BackBay, Starboard, and Sutera)
-      const today = new Date().toISOString();
-      const priorityDeals = fallbackMockDeals.filter(deal => 
-        allowedSyndicators.includes(deal.syndicator_id)
-      ).map(deal => ({
-        ...deal,
-        created_at: today,
-        updated_at: today
-      }));
+  //     // Always include priority mock deals (BackBay, Starboard, and Sutera)
+  //     const today = new Date().toISOString();
+  //     const priorityDeals = fallbackMockDeals.filter(deal => 
+  //       allowedSyndicators.includes(deal.syndicator_id)
+  //     ).map(deal => ({
+  //       ...deal,
+  //       created_at: today,
+  //       updated_at: today
+  //     }));
 
-      // Combine database deals with priority mock deals
-      const allDeals = [...priorityDeals, ...filteredData];
+  //     // Combine database deals with priority mock deals
+  //     const allDeals = [...priorityDeals, ...filteredData];
 
-      // Remove any duplicates (in case priority deals exist in both mock and database)
-      const uniqueDeals = allDeals.filter((deal, index, self) => 
-        index === self.findIndex(d => d.title === deal.title)
-      );
+  //     // Remove any duplicates (in case priority deals exist in both mock and database)
+  //     const uniqueDeals = allDeals.filter((deal, index, self) => 
+  //       index === self.findIndex(d => d.title === deal.title)
+  //     );
 
-      setFeaturedDeals(uniqueDeals.slice(0, 6)); // Limit to 6 featured deals
-    } catch (error) {
+  //     setFeaturedDeals(uniqueDeals.slice(0, 6)); // Limit to 6 featured deals
+
+  //     console.log('Featured deals:', uniqueDeals.slice(0, 6));
+
+  //   } catch (error) {
+  //     console.error('Error fetching featured deals:', error);
+  //     setFeaturedDeals(fallbackMockDeals);
+  //   }
+  // }
+
+  async function fetchFeaturedDeals() {
+  try {
+    const { data, error } = await supabase
+      .from('deals')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
+
+    console.log('Fetched deals:', data);
+    console.log('Error fetching deals:', error);
+
+    if (error || !data) {
       console.error('Error fetching featured deals:', error);
-      setFeaturedDeals(fallbackMockDeals);
+      setFeaturedDeals([]);
+      return;
     }
+
+
+    setFeaturedDeals(data.slice(0, 6));
+
+  } catch (error) {
+    console.error('Unexpected error fetching featured deals:', error);
+    setFeaturedDeals([]);
   }
+}
+
 
   async function fetchTotalDealVolume() {
     try {
@@ -207,6 +240,10 @@ export function Home() {
       // Keep the default fallback value
     }
   }
+
+  useEffect(() => {
+
+  })
 
   // Fallback mock deals for demo purposes
   const fallbackMockDeals: Deal[] = [
