@@ -233,9 +233,10 @@ interface InvestorCardProps {
     avgReturn: string;
   };
   specialties: string[];
+  location?: string;
 }
 
-export function InvestorCard({ name, title, company, image, portfolio, specialties }: InvestorCardProps) {
+export function InvestorCard({ name, title, company, image, portfolio, specialties, location }: InvestorCardProps) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
       <div className="text-center mb-4">
@@ -251,15 +252,20 @@ export function InvestorCard({ name, title, company, image, portfolio, specialti
         {company && <p className="text-sm text-blue-600 font-medium">{company}</p>}
       </div>
       
-      <div className="grid grid-cols-3 gap-4 border-t pt-4 mb-4">
-        <div className="text-center">
-          <p className="text-sm text-gray-500">Total Invested</p>
-          <p className="font-semibold text-blue-600">{portfolio.totalInvested}</p>
-        </div>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-500">Avg Return</p>
-          <p className="font-semibold text-blue-600">{portfolio.avgReturn}</p>
+      <div className="border-t pt-4 mb-4">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center">
+            <p className="text-sm text-gray-500">Total Invested</p>
+            <p className="font-semibold text-blue-600 text-lg">{portfolio.totalInvested}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-500">Avg Return</p>
+            <p className="font-semibold text-blue-600 text-lg">{portfolio.avgReturn}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-500">Location</p>
+            <p className="font-semibold text-blue-600 text-lg">{location || 'N/A'}</p>
+          </div>
         </div>
       </div>
 
