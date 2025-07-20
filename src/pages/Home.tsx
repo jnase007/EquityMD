@@ -58,8 +58,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$2.5M",
-        activeDeals: 8,
+        totalInvested: "$1.2M",
+        timeOnPlatform: "2.5 years",
         avgReturn: "22%"
       },
       specialties: ["Multi-Family", "Mixed-Use", "Value-Add"]
@@ -70,8 +70,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$1.8M",
-        activeDeals: 12,
+        totalInvested: "$850K",
+        timeOnPlatform: "1.8 years",
         avgReturn: "19%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Passive Income"]
@@ -82,8 +82,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$3.2M",
-        activeDeals: 6,
+        totalInvested: "$1.4M",
+        timeOnPlatform: "3.2 years",
         avgReturn: "24%"
       },
       specialties: ["Multi-Family", "Student Housing", "Long-term Growth"]
@@ -94,8 +94,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$1.4M",
-        activeDeals: 9,
+        totalInvested: "$650K",
+        timeOnPlatform: "1.1 years",
         avgReturn: "21%"
       },
       specialties: ["Multi-Family", "Tax Benefits", "Passive Income"]
@@ -106,8 +106,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$2.9M",
-        activeDeals: 7,
+        totalInvested: "$1.1M",
+        timeOnPlatform: "2.8 years",
         avgReturn: "26%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Diversification"]
@@ -118,8 +118,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$1.6M",
-        activeDeals: 5,
+        totalInvested: "$250K",
+        timeOnPlatform: "0.9 years",
         avgReturn: "18%"
       },
       specialties: ["Multi-Family", "Value-Add", "Portfolio Growth"]

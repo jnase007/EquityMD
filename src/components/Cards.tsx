@@ -230,7 +230,7 @@ interface InvestorCardProps {
   image: string;
   portfolio: {
     totalInvested: string;
-    activeDeals: number;
+    timeOnPlatform: string;
     avgReturn: string;
   };
   specialties: string[];
@@ -258,8 +258,8 @@ export function InvestorCard({ name, title, company, image, portfolio, specialti
           <p className="font-semibold text-blue-600">{portfolio.totalInvested}</p>
         </div>
         <div className="text-center">
-          <p className="text-sm text-gray-500">Active Deals</p>
-          <p className="font-semibold text-blue-600">{portfolio.activeDeals}</p>
+          <p className="text-sm text-gray-500">Time on Platform</p>
+          <p className="font-semibold text-blue-600">{portfolio.timeOnPlatform}</p>
         </div>
         <div className="text-center">
           <p className="text-sm text-gray-500">Avg Return</p>
