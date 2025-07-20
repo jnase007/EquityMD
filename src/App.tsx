@@ -76,7 +76,7 @@ const MinimalLoadingFallback = () => (
 );
 
 export default function App() {
-  const { user, setUser, setProfile, clearAuth } = useAuthStore();
+  const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
   const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [requireAuth, setRequireAuth] = useState(false);
@@ -272,6 +272,18 @@ export default function App() {
     }
   }, [location.pathname, requireAuth, user, requiresAuth]);
 
+  // Debug authentication state
+  useEffect(() => {
+    console.log('🔍 Auth Debug:', {
+      user: user?.id,
+      profile: profile?.id,
+      requireAuth,
+      requiresAuth,
+      currentPath: location.pathname,
+      showAuthModal
+    });
+  }, [user, profile, requireAuth, requiresAuth, location.pathname, showAuthModal]);
+
   return (
     <div className="transition-opacity duration-300 ease-in-out">
       <Routes>
@@ -455,7 +467,7 @@ export default function App() {
         />
         <Route 
           path="/dashboard" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Dashboard /></Suspense>} 
+          element={!user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Dashboard /></Suspense>} 
         />
         <Route 
           path="/deals/new" 
