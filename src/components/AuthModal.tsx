@@ -28,7 +28,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
   }, []);
 
   useEffect(() => {
+    console.log('🔍 AuthModal: Setting up auth state change listener...');
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔍 AuthModal: Auth state changed:', event, session?.user?.email);
       if (event === 'SIGNED_IN' && session?.user) {
         try {
           const user = session.user;
