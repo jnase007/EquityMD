@@ -40,6 +40,17 @@ const PROPERTY_TYPES = [
   'Mixed-Use'
 ];
 
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+  'Wisconsin', 'Wyoming'
+];
+
 export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   const { user, profile } = useAuthStore();
   const [loading, setLoading] = useState(false);
@@ -52,6 +63,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
     bio: '',
     investmentRange: '',
     location: '',
+    state: '',
     preferredLocations: [] as string[],
     yearsInvesting: '',
     experienceLevel: '',
@@ -98,6 +110,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           yearsInvesting: data.investment_preferences?.years_investing || '',
           bio: data.investment_preferences?.bio || '',
           phoneNumber: data.investment_preferences?.phone_number || '',
+          state: data.investment_preferences?.state || '',
         }));
       }
     } catch (error) {
@@ -148,7 +161,8 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             experience_level: formData.experienceLevel,
             years_investing: formData.yearsInvesting,
             bio: formData.bio,
-            phone_number: formData.phoneNumber
+            phone_number: formData.phoneNumber,
+            state: formData.state
           },
           updated_at: new Date().toISOString(),
         })
@@ -348,6 +362,24 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 placeholder="City, State"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                State of Residence
+              </label>
+              <select
+                value={formData.state}
+                onChange={(e) => setFormData(prev => ({ ...prev, state: e.target.value }))}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">Select Your State</option>
+                {US_STATES.map(state => (
+                  <option key={state} value={state}>
+                    {state}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>

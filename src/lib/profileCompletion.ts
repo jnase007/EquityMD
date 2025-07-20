@@ -18,6 +18,7 @@ interface InvestorProfile {
     years_investing?: string;
     bio?: string;
     phone_number?: string;
+    state?: string;
   } | null;
 }
 
@@ -40,7 +41,7 @@ export function calculateProfileCompletion(
   const missingFields: string[] = [];
   const nextSteps: string[] = [];
   let completedFields = 1; // Start at 1 for account creation (10%)
-  let totalFields = 10; // Base total fields
+  let totalFields = 10; // Base total fields for investors
 
   // Check basic profile fields (shared)
   if (profile.full_name) {
@@ -113,6 +114,13 @@ export function calculateProfileCompletion(
     } else {
       missingFields.push('Bio');
       nextSteps.push('Write a brief bio');
+    }
+
+    if (investorProfile.investment_preferences?.state) {
+      completedFields++;
+    } else {
+      missingFields.push('State of Residence');
+      nextSteps.push('Select your state of residence');
     }
 
   } else if (profile.user_type === 'syndicator' && additionalProfile) {
