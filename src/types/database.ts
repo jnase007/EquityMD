@@ -69,6 +69,7 @@ export interface Deal {
   status: 'draft' | 'active' | 'closed' | 'archived';
   featured: boolean;
   cover_image_url: string | null;
+  media_urls?: string[];
   created_at: string;
   updated_at: string;
   slug: string;

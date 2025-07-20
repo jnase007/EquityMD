@@ -400,6 +400,19 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         if (mockDeal) {
           setDeal(mockDeal);
           
+          // Convert media_urls to DealMedia format for mock deals
+          if (mockDeal.media_urls && mockDeal.media_urls.length > 0) {
+            const mockMedia: DealMedia[] = mockDeal.media_urls.map((url, index) => ({
+              id: `mock-media-${index}`,
+              type: 'image' as const,
+              url: url,
+              title: `Image ${index + 1}`,
+              description: `Property image ${index + 1}`,
+              order: index
+            }));
+            setMedia(mockMedia);
+          }
+          
           // Add mock files for specific deals
           if (mockDeal.slug === 'multifamily-adu-opportunity') {
             setFiles([
