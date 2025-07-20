@@ -1,10 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Create the appropriate client based on environment variables
-export const supabase = (!supabaseUrl || !supabaseKey) 
+export const supabase: SupabaseClient = (!supabaseUrl || !supabaseKey) 
   ? (() => {
       console.warn('⚠️ Missing Supabase environment variables. Using mock client for development.');
       // Return a minimal mock that matches the expected interface
