@@ -51,7 +51,7 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
 
   return (
     <Link to={`/deals/${slug}`} className={`block h-full ${className}`} onClick={handleClick}>
-      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col overflow-hidden hover-card-scroll-fix">
+      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col overflow-hidden scrollable-card">
         <div className="relative">
           <OptimizedImage 
             src={image} 
@@ -136,7 +136,7 @@ export function DealListItem({ slug, image, title, location, description, metric
 
   return (
     <Link to={`/deals/${slug}`} className="block" onClick={handleClick}>
-      <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition hover-card-scroll-fix">
+      <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition scrollable-card">
         <div className="flex gap-6">
           <div className="relative flex-shrink-0">
             <OptimizedImage 
@@ -238,7 +238,7 @@ interface InvestorCardProps {
 
 export function InvestorCard({ name, title, company, image, portfolio, specialties, location }: InvestorCardProps) {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition hover-card-scroll-fix">
+    <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition scrollable-card">
       <div className="text-center mb-4">
         <OptimizedImage 
           src={image} 

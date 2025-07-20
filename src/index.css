@@ -72,7 +72,7 @@
   justify-content: center;
 }
 
-/* Fix for hover cards interfering with scroll */
+/* Comprehensive fix for hover cards interfering with scroll */
 .hover-card-scroll-fix {
   pointer-events: auto;
   touch-action: pan-y;
@@ -81,6 +81,82 @@
 
 .hover-card-scroll-fix:hover {
   pointer-events: auto;
+}
+
+/* Fix for horizontal scroll containers */
+.horizontal-scroll-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  touch-action: pan-x;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure cards don't block scroll events */
+.scrollable-card {
+  pointer-events: auto;
+  touch-action: manipulation;
+  will-change: transform;
+}
+
+.scrollable-card:hover {
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+/* Fix for the specific homepage sections */
+.homepage-scroll-section {
+  overflow: visible;
+  pointer-events: auto;
+}
+
+.homepage-scroll-section .overflow-x-auto {
+  overflow-x: auto;
+  overflow-y: visible;
+  pointer-events: auto;
+}
+
+/* Ensure the body and html can always scroll */
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+/* Force scroll to always work on the main content */
+main, .main-content {
+  overflow-y: auto !important;
+  pointer-events: auto !important;
+}
+
+/* Prevent any element from blocking scroll */
+* {
+  pointer-events: auto;
+}
+
+/* Specific fix for card containers */
+.card-container {
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+
+.card-container * {
+  pointer-events: auto;
+}
+
+/* Ensure hover effects don't interfere with scroll */
+.hover-effect {
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+
+.hover-effect:hover {
+  pointer-events: auto;
+  touch-action: pan-y;
 }
 
 /* Improved mobile tap highlighting */

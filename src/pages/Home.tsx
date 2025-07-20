@@ -11,6 +11,7 @@ import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
+import { useScrollFix } from '../hooks/useScrollFix';
 import type { Deal } from '../types/database';
 
 // Property type to image mapping
@@ -49,6 +50,9 @@ export function Home() {
   const [useVideo, setUseVideo] = useState(true);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
   const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
+  
+  // Apply scroll fix hook
+  useScrollFix();
   
   // Featured investor data with realistic portfolio information
   const featuredInvestors = [
@@ -520,13 +524,13 @@ export function Home() {
             )}
           </div>
           
-          <div className="relative">
-            <div className="overflow-x-auto pb-4 scrollbar-hide horizontal-scroll mobile-scroll touch-pan-x">
+          <div className="relative homepage-scroll-section">
+            <div className="horizontal-scroll-container pb-4">
               <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
                 {featuredDeals.length > 0 ? (
                   featuredDeals.map((deal, index) => {
                     return (
-                      <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0">
+                      <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0 card-container">
                         <DealCard
                           slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
                           image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
@@ -576,11 +580,11 @@ export function Home() {
             </p>
           </div>
           
-          <div className="relative">
-            <div className="overflow-x-auto pb-4 scrollbar-hide horizontal-scroll mobile-scroll touch-pan-x">
+          <div className="relative homepage-scroll-section">
+            <div className="horizontal-scroll-container pb-4">
               <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
                 {featuredInvestors.map((investor, index) => (
-                  <div key={index} className="w-[300px] md:w-[350px] relative flex-shrink-0">
+                  <div key={index} className="w-[300px] md:w-[350px] relative flex-shrink-0 card-container">
                     <InvestorCard
                       name={investor.name}
                       title={investor.title}
