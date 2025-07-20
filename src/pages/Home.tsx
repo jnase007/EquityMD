@@ -200,8 +200,24 @@ export function Home() {
       return;
     }
 
+    // Filter to only show deals from Starboard Realty, Souterra Properties, and Back Bay Capital
+    const allowedSyndicators = ['starboard-realty', 'sutera-properties', 'back-bay-capital'];
+    const filteredDeals = data.filter(deal => 
+      allowedSyndicators.includes(deal.syndicator_id)
+    );
 
-    setFeaturedDeals(data.slice(0, 6));
+    console.log('Filtered deals for featured section:', filteredDeals);
+    
+    // If no database deals found, use fallback mock deals
+    if (filteredDeals.length === 0) {
+      console.log('No database deals found, using fallback mock deals');
+      const fallbackDeals = fallbackMockDeals.filter(deal => 
+        allowedSyndicators.includes(deal.syndicator_id)
+      );
+      setFeaturedDeals(fallbackDeals.slice(0, 6));
+    } else {
+      setFeaturedDeals(filteredDeals.slice(0, 6));
+    }
 
   } catch (error) {
     console.error('Unexpected error fetching featured deals:', error);
@@ -380,7 +396,7 @@ export function Home() {
       <div className="bg-blue-600 text-white py-2 px-4 text-center">
         <div className="max-w-[1200px] mx-auto">
           <p className="text-sm sm:text-base">
-            🔥 <strong>25+ investors</strong> joined today • <strong>3 new deals</strong> added this week • <strong>Active marketplace</strong> for accredited investors
+            🔥 <strong>24+ investors</strong> joined today • <strong>3 new deals</strong> added this week • <strong>Active marketplace</strong> for accredited investors
           </p>
         </div>
       </div>
