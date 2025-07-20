@@ -62,7 +62,7 @@ export function Home() {
         avgReturn: "18.5%"
       },
       specialties: ["Multi-Family", "Mixed-Use", "Value-Add"],
-      location: "California"
+      location: "CA"
     },
     {
       name: "Michael",
@@ -74,7 +74,7 @@ export function Home() {
         avgReturn: "16.2%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Passive Income"],
-      location: "Texas"
+      location: "TN"
     },
     {
       name: "Jennifer",
@@ -86,7 +86,7 @@ export function Home() {
         avgReturn: "21.3%"
       },
       specialties: ["Multi-Family", "Student Housing", "Long-term Growth"],
-      location: "Florida"
+      location: "FL"
     },
     {
       name: "David",
@@ -98,7 +98,7 @@ export function Home() {
         avgReturn: "14.8%"
       },
       specialties: ["Multi-Family", "Tax Benefits", "Passive Income"],
-      location: "New York"
+      location: "AZ"
     },
     {
       name: "Lisa",
@@ -110,7 +110,7 @@ export function Home() {
         avgReturn: "19.1%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Diversification"],
-      location: "Colorado"
+      location: "CA"
     },
     {
       name: "James",
@@ -122,7 +122,7 @@ export function Home() {
         avgReturn: "17.6%"
       },
       specialties: ["Multi-Family", "Value-Add", "Portfolio Growth"],
-      location: "Washington"
+      location: "TN"
     }
   ];
 
