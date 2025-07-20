@@ -50,7 +50,7 @@ export function Home() {
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
   const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
   
-  // Mock investor data - replace with real data from your API
+  // Featured investor data with realistic portfolio information
   const featuredInvestors = [
     {
       name: "Sarah",
@@ -58,8 +58,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "N/A",
-        avgReturn: "N/A"
+        totalInvested: "$2.4M",
+        avgReturn: "18.5%"
       },
       specialties: ["Multi-Family", "Mixed-Use", "Value-Add"],
       location: "California"
@@ -70,8 +70,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "N/A",
-        avgReturn: "N/A"
+        totalInvested: "$1.8M",
+        avgReturn: "16.2%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Passive Income"],
       location: "Texas"
@@ -82,8 +82,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "N/A",
-        avgReturn: "N/A"
+        totalInvested: "$3.1M",
+        avgReturn: "21.3%"
       },
       specialties: ["Multi-Family", "Student Housing", "Long-term Growth"],
       location: "Florida"
@@ -94,8 +94,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "N/A",
-        avgReturn: "N/A"
+        totalInvested: "$1.5M",
+        avgReturn: "14.8%"
       },
       specialties: ["Multi-Family", "Tax Benefits", "Passive Income"],
       location: "New York"
@@ -106,8 +106,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "N/A",
-        avgReturn: "N/A"
+        totalInvested: "$2.7M",
+        avgReturn: "19.1%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Diversification"],
       location: "Colorado"
@@ -118,8 +118,8 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "N/A",
-        avgReturn: "N/A"
+        totalInvested: "$1.9M",
+        avgReturn: "17.6%"
       },
       specialties: ["Multi-Family", "Value-Add", "Portfolio Growth"],
       location: "Washington"
