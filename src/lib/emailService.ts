@@ -17,29 +17,52 @@ export async function sendSignupNotificationEmail(data: SignupEmailData) {
   try {
     const emailType = data.userType === 'investor' ? 'new_investor_signup' : 'new_syndicator_signup';
     
-    const response = await fetch(`${EMAIL_SERVICE_URL}/api/send-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    // Try Render email service first, fallback to Supabase
+    if (EMAIL_SERVICE_URL && EMAIL_SERVICE_URL !== 'https://your-email-service.onrender.com') {
+      try {
+        const response = await fetch(`${EMAIL_SERVICE_URL}/api/send-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: emailType,
+            data: {
+              userName: data.userName,
+              userEmail: data.userEmail,
+              signupDate: data.signupDate || new Date().toLocaleDateString()
+            }
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Signup notification email sent via Render service:', result);
+          return result;
+        }
+      } catch (renderError) {
+        console.warn('Render email service failed, falling back to Supabase:', renderError);
+      }
+    }
+
+    // Fallback to Supabase Edge Function
+    const { data: result, error } = await supabase.functions.invoke('send-email', {
+      body: {
         type: emailType,
         data: {
           userName: data.userName,
           userEmail: data.userEmail,
           signupDate: data.signupDate || new Date().toLocaleDateString()
         }
-      })
+      }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error sending signup notification email:', errorData);
-      throw new Error(`Email service error: ${JSON.stringify(errorData)}`);
+    if (error) {
+      console.error('Error sending signup notification email:', error);
+      throw error;
     }
 
-    const result = await response.json();
-    console.log('Signup notification email sent successfully:', result);
+    console.log('Signup notification email sent via Supabase:', result);
     return result;
   } catch (error) {
     console.error('Failed to send signup notification email:', error);
@@ -52,29 +75,52 @@ export async function sendSignupNotificationEmail(data: SignupEmailData) {
  */
 export async function sendWelcomeEmail(data: SignupEmailData) {
   try {
-    const response = await fetch(`${EMAIL_SERVICE_URL}/api/send-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    // Try Render email service first, fallback to Supabase
+    if (EMAIL_SERVICE_URL && EMAIL_SERVICE_URL !== 'https://your-email-service.onrender.com') {
+      try {
+        const response = await fetch(`${EMAIL_SERVICE_URL}/api/send-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: data.userEmail,
+            type: 'welcome_email',
+            data: {
+              userName: data.userName,
+              userType: data.userType
+            }
+          })
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Welcome email sent via Render service:', result);
+          return result;
+        }
+      } catch (renderError) {
+        console.warn('Render email service failed, falling back to Supabase:', renderError);
+      }
+    }
+
+    // Fallback to Supabase Edge Function
+    const { data: result, error } = await supabase.functions.invoke('send-email', {
+      body: {
         to: data.userEmail,
         type: 'welcome_email',
         data: {
           userName: data.userName,
           userType: data.userType
         }
-      })
+      }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error sending welcome email:', errorData);
-      throw new Error(`Email service error: ${JSON.stringify(errorData)}`);
+    if (error) {
+      console.error('Error sending welcome email:', error);
+      throw error;
     }
 
-    const result = await response.json();
-    console.log('Welcome email sent successfully:', result);
+    console.log('Welcome email sent via Supabase:', result);
     return result;
   } catch (error) {
     console.error('Failed to send welcome email:', error);
