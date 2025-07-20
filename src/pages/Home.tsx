@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Star, Calendar, TrendingUp, Users, MapPin, ExternalLink,
-  Globe, Briefcase, Mail, Phone, Award, CheckCircle, DollarSign,
+import { Users, Briefcase, Mail, Phone, Award, CheckCircle, DollarSign,
   BarChart, Target, Clock, Percent, Shield, Building, ChevronRight,
   MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck, Bell
 } from 'lucide-react';
@@ -202,7 +201,7 @@ export function Home() {
 
     // Filter to only show deals from Starboard Realty, Souterra Properties, and Back Bay Capital
     const allowedSyndicators = ['starboard-realty', 'sutera-properties', 'back-bay-capital'];
-    const filteredDeals = data.filter(deal => 
+    const filteredDeals = data.filter((deal: any) => 
       allowedSyndicators.includes(deal.syndicator_id)
     );
 
@@ -239,7 +238,7 @@ export function Home() {
       }
 
       // Calculate total deal volume from all syndicators
-      const total = data.reduce((sum, syndicator) => {
+      const total = data.reduce((sum: number, syndicator: any) => {
         return sum + (syndicator.total_deal_volume || 0);
       }, 0);
 
@@ -257,9 +256,9 @@ export function Home() {
     }
   }
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  })
+  // })
 
   // Fallback mock deals for demo purposes
   const fallbackMockDeals: Deal[] = [
@@ -377,11 +376,11 @@ export function Home() {
     }
   ];
 
-  const handleGetStarted = () => {
-    setAuthModalType('investor');
-    setAuthModalView('sign_up');
-    setShowAuthModal(true);
-  };
+  // const handleGetStarted = () => {
+  //   setAuthModalType('investor');
+  //   setAuthModalView('sign_up');
+  //   setShowAuthModal(true);
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">

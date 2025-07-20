@@ -27,11 +27,11 @@ import { HowItWorksImproved } from './pages/HowItWorksImproved';
 import { SuccessStories } from './pages/SuccessStories';
 import { DueDiligence } from './pages/resources/DueDiligence';
 import { InvestmentCalculator } from './pages/resources/InvestmentCalculator';
-import { MarketReports } from './pages/resources/MarketReports';
+// import { MarketReports } from './pages/resources/MarketReports';
 import { MarketReportsHub } from './pages/resources/market-reports/index';
 import { StateMarketReport } from './pages/resources/market-reports/[state]';
 import { CityMarketReport } from './pages/cities/[city]';
-import { CityDeals } from './pages/CityDeals';
+// import { CityDeals } from './pages/CityDeals';
 import { Education } from './pages/resources/Education';
 import { Glossary } from './pages/resources/Glossary';
 import { Privacy } from './pages/legal/Privacy';
@@ -221,7 +221,7 @@ export default function App() {
         
         const {
           data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
+        } = supabase.auth.onAuthStateChange(async (event: string, session: any) => {
           console.log('Auth state changed:', event, session?.user?.id);
           if (event === 'SIGNED_OUT') {
             clearAuth();
