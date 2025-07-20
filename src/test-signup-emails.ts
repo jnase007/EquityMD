@@ -7,8 +7,8 @@ async function testSignupEmails() {
     // Test investor signup email
     console.log('\n1. Testing investor signup email...');
     const investorResult = await sendSignupEmails({
-      userName: 'Dr. John Smith',
-      userEmail: 'test.investor@example.com',
+      userName: 'Dr. Justin Nassie',
+      userEmail: 'justin@brandastic.com',
       userType: 'investor'
     });
     console.log('Investor email result:', investorResult);
