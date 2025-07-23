@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Search, Filter, User, Building2, Shield, CheckCircle, XCircle, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown, Plus, Mail } from 'lucide-react';
+import Drawer from 'react-modern-drawer';
+import 'react-modern-drawer/dist/index.css';
 
 interface UserData {
   id: string;
@@ -35,6 +37,19 @@ export function UserManagement() {
   const [creatingUser, setCreatingUser] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [createSuccess, setCreateSuccess] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+  const [profileDetails, setProfileDetails] = useState<any>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteUserType, setInviteUserType] = useState<'investor' | 'syndicator'>('investor');
+  const [inviteMessage, setInviteMessage] = useState('');
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [inviteSuccess, setInviteSuccess] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -249,6 +264,77 @@ The EquityMD Team
     }
   };
 
+  async function handleSendInvite(e: React.FormEvent) {
+    e.preventDefault();
+    setInviteLoading(true);
+    setInviteError(null);
+    setInviteSuccess(false);
+    try {
+      // Call your email service or Supabase function to send invite
+      const { error } = await supabase.functions.invoke('send-email', {
+        body: {
+          to: inviteEmail,
+          subject: 'You are invited to join EquityMD',
+          content: `
+Hello,
+
+You have been invited to join EquityMD as a ${inviteUserType === 'investor' ? 'Investor' : 'Syndicator'}.
+
+${inviteMessage ? `Personal message: ${inviteMessage}\n\n` : ''}
+Click the link below to sign up and get started:
+
+https://equitymd.com/signup/start?email=${encodeURIComponent(inviteEmail)}&type=${inviteUserType}
+
+If you have any questions, contact us at hello@equitymd.com.
+
+Best regards,\nThe EquityMD Team
+          `,
+          type: 'invitation'
+        }
+      });
+      if (error) throw error;
+      setInviteSuccess(true);
+      setInviteEmail('');
+      setInviteUserType('investor');
+      setInviteMessage('');
+    } catch (err) {
+      setInviteError('Failed to send invitation. Please try again.');
+    } finally {
+      setInviteLoading(false);
+    }
+  }
+
+  // Fetch full profile details for drawer
+  const openUserDrawer = async (user: UserData) => {
+    setSelectedUser(user);
+    setDrawerOpen(true);
+    setProfileLoading(true);
+    try {
+      // Fetch investor or syndicator profile
+      let details = null;
+      if (user.user_type === 'investor') {
+        const { data } = await supabase
+          .from('investor_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        details = data;
+      } else {
+        const { data } = await supabase
+          .from('syndicator_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        details = data;
+      }
+      setProfileDetails(details);
+    } catch (err) {
+      setProfileDetails(null);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -257,13 +343,22 @@ The EquityMD Team
           <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
           <p className="text-gray-600">Manage user accounts and permissions</p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Create User
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowInviteModal(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+          >
+            <Mail className="h-4 w-4" />
+            Invite User
+          </button>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Create User
+          </button>
+        </div>
       </div>
 
       {/* Filters and Search */}
@@ -335,7 +430,7 @@ The EquityMD Team
                   Admin
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
+                  Details
                 </th>
               </tr>
             </thead>
@@ -409,13 +504,13 @@ The EquityMD Team
                       {user.is_admin ? 'Admin' : 'User'}
                     </button>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div>
-                      <div>{new Date(user.created_at).toLocaleDateString()}</div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(user.created_at).toLocaleTimeString()}
-                      </div>
-                    </div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => openUserDrawer(user)}
+                      className="text-blue-600 hover:underline font-medium"
+                    >
+                      View Details
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -423,6 +518,113 @@ The EquityMD Team
           </table>
         </div>
       )}
+
+      {/* User Detail Drawer */}
+      <Drawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        direction="right"
+        size={400}
+        className="p-0"
+      >
+        <div className="p-6 h-full flex flex-col">
+          {selectedUser && (
+            <>
+              <div className="flex items-center mb-4">
+                <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center">
+                  {selectedUser.avatar_url ? (
+                    <img src={selectedUser.avatar_url} alt="" className="h-12 w-12 rounded-full" />
+                  ) : (
+                    <User className="h-6 w-6 text-gray-600" />
+                  )}
+                </div>
+                <div className="ml-4">
+                  <div className="text-lg font-bold">{selectedUser.full_name}</div>
+                  <div className="text-sm text-gray-500">{selectedUser.email}</div>
+                  <div className="text-xs text-gray-400 mt-1">{selectedUser.user_type === 'investor' ? 'Investor' : 'Syndicator'}</div>
+                </div>
+              </div>
+              <div className="mb-4">
+                <div className="text-xs text-gray-500">Joined: {new Date(selectedUser.created_at).toLocaleDateString()}</div>
+                <div className="text-xs text-gray-500">Status: {selectedUser.is_verified ? 'Verified' : 'Unverified'}</div>
+                <div className="text-xs text-gray-500">Admin: {selectedUser.is_admin ? 'Yes' : 'No'}</div>
+              </div>
+              {profileLoading ? (
+                <div className="text-center py-8">Loading profile...</div>
+              ) : profileDetails ? (
+                <div className="space-y-4 overflow-y-auto flex-1">
+                  {selectedUser.user_type === 'investor' ? (
+                    <>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Investment Range</div>
+                        <div className="text-gray-900">${profileDetails.minimum_investment?.toLocaleString() || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Property Types</div>
+                        <div className="text-gray-900">{profileDetails.preferred_property_types?.join(', ') || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Preferred Locations</div>
+                        <div className="text-gray-900">{profileDetails.preferred_locations?.join(', ') || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Experience Level</div>
+                        <div className="text-gray-900">{profileDetails.investment_preferences?.experience_level || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Years Investing</div>
+                        <div className="text-gray-900">{profileDetails.investment_preferences?.years_investing || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Bio</div>
+                        <div className="text-gray-900">{profileDetails.investment_preferences?.bio || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Accredited</div>
+                        <div className="text-gray-900">{profileDetails.accredited_status ? 'Yes' : 'No'}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Company Name</div>
+                        <div className="text-gray-900">{profileDetails.company_name}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Description</div>
+                        <div className="text-gray-900">{profileDetails.company_description}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Website</div>
+                        <div className="text-gray-900">{profileDetails.website_url || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">LinkedIn</div>
+                        <div className="text-gray-900">{profileDetails.linkedin_url || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Years in Business</div>
+                        <div className="text-gray-900">{profileDetails.years_in_business || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Total Deal Volume</div>
+                        <div className="text-gray-900">${profileDetails.total_deal_volume?.toLocaleString() || 'N/A'}</div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-700 mb-1">Location</div>
+                        <div className="text-gray-900">{profileDetails.city}, {profileDetails.state}</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">No profile details found.</div>
+              )}
+              {/* Admin Actions (future: verify, deactivate, etc.) */}
+            </>
+          )}
+        </div>
+      </Drawer>
 
       {/* Create User Modal */}
       {showCreateModal && (
@@ -515,6 +717,98 @@ The EquityMD Team
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Invite User Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-semibold">Invite New User</h2>
+              <button 
+                onClick={() => setShowInviteModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <XCircle className="h-6 w-6" />
+              </button>
+            </div>
+            <form onSubmit={handleSendInvite} className="p-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={e => setInviteEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    User Type *
+                  </label>
+                  <select
+                    value={inviteUserType}
+                    onChange={e => setInviteUserType(e.target.value as 'investor' | 'syndicator')}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="investor">Investor</option>
+                    <option value="syndicator">Syndicator</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Personal Message (optional)
+                  </label>
+                  <textarea
+                    value={inviteMessage}
+                    onChange={e => setInviteMessage(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    rows={3}
+                  />
+                </div>
+              </div>
+              {inviteError && (
+                <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg">{inviteError}</div>
+              )}
+              {inviteSuccess && (
+                <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-lg flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Invitation sent successfully!
+                </div>
+              )}
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="submit"
+                  disabled={inviteLoading}
+                  className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {inviteLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="h-4 w-4" />
+                      Send Invitation
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowInviteModal(false)}
                   className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   Cancel
