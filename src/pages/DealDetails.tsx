@@ -439,6 +439,10 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Returns Calculator at the top of main content */}
+            <div className="max-w-2xl mx-auto px-4">
+              <ReturnsCalculator />
+            </div>
             {/* Overview */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-4">Investment Overview</h2>
@@ -508,7 +512,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-28 h-fit">
             {/* Investment Interest */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center mb-4">
@@ -588,11 +592,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Returns Calculator at the bottom */}
-      <div className="max-w-2xl mx-auto px-4">
-        <ReturnsCalculator />
       </div>
 
       {showMessageModal && deal && (
