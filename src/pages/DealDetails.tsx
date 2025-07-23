@@ -536,7 +536,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6 lg:sticky lg:top-28 h-fit">
+          <div className="space-y-6 lg:sticky lg:top-8 h-fit">
             {/* Investment Interest */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center mb-4">
