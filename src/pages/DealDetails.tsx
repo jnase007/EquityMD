@@ -15,6 +15,7 @@ import { useAuthStore } from '../lib/store';
 import { getSyndicatorLogo } from '../lib/syndicator-logos';
 import { Tooltip } from 'react-tooltip';
 import type { Deal, DealFile } from '../types/database';
+import { ReturnsCalculator } from '../components/ReturnsCalculator';
 
 interface DealMedia {
   id: string;
@@ -438,6 +439,8 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Returns Calculator */}
+            <ReturnsCalculator />
             {/* Media Gallery */}
             {media.length > 0 && (
               <div className="bg-white rounded-lg shadow-sm p-6">
