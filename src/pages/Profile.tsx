@@ -54,6 +54,9 @@ interface Syndicator {
   company_name: string;
   company_description: string;
   location: string;
+  company_logo_url?: string | null;
+  verification_status?: 'unverified' | 'verified' | 'featured' | 'premium';
+  slug?: string;
   profile?: {
     full_name: string;
     avatar_url: string;
@@ -614,38 +617,27 @@ export function Profile() {
           company_name,
           company_description,
           state,
-          city
+          city,
+          company_logo_url,
+          verification_status,
+          slug
         `)
-        .not('company_name', 'ilike', '%equitymd admin%')
-        .not('company_name', 'ilike', '%admin%')
-        .not('company_name', 'ilike', '%test%')
-        .neq('company_name', 'Metropolitan Real Estate')
-        .limit(6);
+        .in('verification_status', ['featured', 'premium'])
+        .order('verification_status', { ascending: false })
+        .limit(12);
 
       if (error) throw error;
       
       const transformedData: Syndicator[] = (data || [])
-        .filter(item => {
-          const hasRequiredFields = item.company_name && 
-            item.company_name.length >= 3 &&
-            item.state && 
-            item.city &&
-            item.company_description && 
-            item.company_description.length >= 50;
-          
-          return hasRequiredFields || 
-            item.company_name === 'Back Bay Capital' || 
-            item.company_name === 'Sutera Properties' || 
-            item.company_name === 'Starboard Realty';
-        })
         .map(item => ({
           id: item.id,
           company_name: item.company_name,
           company_description: item.company_description,
           location: `${item.city}, ${item.state}`,
-          profile: null
+          company_logo_url: item.company_logo_url,
+          verification_status: item.verification_status,
+          slug: item.slug,
         }));
-      
       setSyndicators(transformedData);
     } catch (error) {
       console.error('Error fetching syndicators:', error);
@@ -1157,32 +1149,50 @@ export function Profile() {
                       <Skeleton height={32} />
                     </div>
                   ))
+                ) : syndicators.length === 0 ? (
+                  <div className="col-span-full text-center text-gray-500 py-8">
+                    No featured or sponsored syndicators available at this time. Check back soon!
+                  </div>
                 ) : (
                   syndicators.map((syndicator) => (
-                    <div 
+                    <Link
                       key={syndicator.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition hover:scale-105 transform"
+                      to={`/syndicators/${syndicator.slug}`}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition hover:scale-105 transform flex flex-col h-full group relative"
                     >
                       <div className="flex items-center mb-3">
-                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
-                          <Building2 className="h-5 w-5 text-white" />
-                        </div>
+                        {syndicator.company_logo_url ? (
+                          <img
+                            src={syndicator.company_logo_url}
+                            alt={syndicator.company_name}
+                            className="w-10 h-10 rounded-full object-cover mr-3 border border-gray-200 bg-white"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                            <Building2 className="h-5 w-5 text-white" />
+                          </div>
+                        )}
                         <div>
-                          <h3 className="font-semibold text-gray-900">{syndicator.company_name}</h3>
+                          <h3 className="font-semibold text-gray-900 flex items-center">
+                            {syndicator.company_name}
+                            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-medium ${syndicator.verification_status === 'premium' ? 'bg-yellow-400 text-yellow-900' : 'bg-blue-100 text-blue-800'}`}>
+                              {syndicator.verification_status === 'premium' ? 'Premier' : 'Featured'}
+                            </span>
+                          </h3>
                           <p className="text-sm text-gray-600">{syndicator.location}</p>
                         </div>
                       </div>
-                      <p className="text-sm text-gray-700 mb-3 line-clamp-3">
+                      <p className="text-sm text-gray-700 mb-3 line-clamp-3 flex-1">
                         {syndicator.company_description}
                       </p>
-                      <button
-                        onClick={() => handleMessageSyndicator(syndicator)}
-                        className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center hover:scale-105 transform"
-                      >
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Connect
-                      </button>
-                    </div>
+                      <div className="mt-auto">
+                        <div className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center group-hover:scale-105 transform font-semibold cursor-pointer">
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Connect
+                        </div>
+                      </div>
+                      <span className="absolute inset-0" aria-hidden="true"></span>
+                    </Link>
                   ))
                 )}
               </div>
