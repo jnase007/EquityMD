@@ -11,6 +11,7 @@ interface UserData {
   user_type: 'investor' | 'syndicator';
   is_admin: boolean;
   is_verified: boolean;
+  is_active?: boolean;
   created_at: string;
   avatar_url?: string;
 }
@@ -93,6 +94,25 @@ export function UserManagement() {
     return sortDirection === 'asc' ? 
       <ArrowUp className="h-4 w-4 text-blue-600" /> : 
       <ArrowDown className="h-4 w-4 text-blue-600" />;
+  };
+
+  // Add deactivate/reactivate logic
+  const toggleActiveStatus = async (userId: string, currentStatus: boolean) => {
+    if (!window.confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'reactivate'} this user?`)) return;
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ is_active: !currentStatus })
+        .eq('id', userId)
+        .select();
+      if (error) throw error;
+      setUsers(users.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u));
+      if (selectedUser && selectedUser.id === userId) {
+        setSelectedUser({ ...selectedUser, is_active: !currentStatus });
+      }
+    } catch (err) {
+      alert('Failed to update user status.');
+    }
   };
 
   const filteredUsers = users.filter(user => {
@@ -430,13 +450,16 @@ Best regards,\nThe EquityMD Team
                   Admin
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Active
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Details
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user.id} className={`hover:bg-gray-50 ${user.is_active === false ? 'bg-gray-100 opacity-60' : ''}`}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
@@ -506,6 +529,14 @@ Best regards,\nThe EquityMD Team
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
+                      onClick={() => toggleActiveStatus(user.id, user.is_active !== false)}
+                      className={`flex items-center px-3 py-1 rounded-full text-sm transition-colors hover:opacity-80 ${user.is_active === false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                    >
+                      {user.is_active === false ? 'Reactivate' : 'Deactivate'}
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
                       onClick={() => openUserDrawer(user)}
                       className="text-blue-600 hover:underline font-medium"
                     >
@@ -548,7 +579,15 @@ Best regards,\nThe EquityMD Team
                 <div className="text-xs text-gray-500">Joined: {new Date(selectedUser.created_at).toLocaleDateString()}</div>
                 <div className="text-xs text-gray-500">Status: {selectedUser.is_verified ? 'Verified' : 'Unverified'}</div>
                 <div className="text-xs text-gray-500">Admin: {selectedUser.is_admin ? 'Yes' : 'No'}</div>
+                <div className="text-xs text-gray-500">Active: {selectedUser.is_active === false ? 'No' : 'Yes'}</div>
               </div>
+              {/* Deactivate/Reactivate button in drawer */}
+              <button
+                onClick={() => toggleActiveStatus(selectedUser.id, selectedUser.is_active !== false)}
+                className={`mb-4 w-full px-4 py-2 rounded-lg ${selectedUser.is_active === false ? 'bg-green-600 text-white' : 'bg-red-600 text-white'} font-semibold`}
+              >
+                {selectedUser.is_active === false ? 'Reactivate User' : 'Deactivate User'}
+              </button>
               {profileLoading ? (
                 <div className="text-center py-8">Loading profile...</div>
               ) : profileDetails ? (
