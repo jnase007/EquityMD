@@ -439,10 +439,29 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Returns Calculator at the top of main content */}
-            <div className="max-w-2xl mx-auto px-4">
-              <ReturnsCalculator />
-            </div>
+            {/* Gallery Section (keep at top) */}
+            {media.length > 0 && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-2xl font-bold mb-6">Property Gallery</h2>
+                <DealMediaGallery media={media} />
+              </div>
+            )}
+
+            {/* Video Section (keep at top, if present) */}
+            {deal.syndicator?.company_name === 'Sutera Properties' && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-2xl font-bold mb-6">Property Overview</h2>
+                <VideoEmbed 
+                  url="https://www.youtube.com/watch?v=GM7zriIRpbg"
+                  title="Property Overview"
+                  className="mb-4"
+                />
+                <p className="text-sm text-gray-500">
+                  Take a virtual tour of this investment opportunity.
+                </p>
+              </div>
+            )}
+
             {/* Overview */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-4">Investment Overview</h2>
