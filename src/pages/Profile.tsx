@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer';
 import { MessageModal } from '../components/MessageModal';
 import { AccountTypeBadge } from '../components/AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
-import { InvestorProfileForm } from '../components/InvestorProfileForm';
+import { InvestorProfileForm } from '../components/InvestorProfileForm'; // This will now resolve to index.tsx
 import { SyndicatorProfileForm } from '../components/SyndicatorProfileForm';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
 import { supabase } from '../lib/supabase';
@@ -1090,14 +1090,18 @@ export function Profile() {
             
             {profile?.user_type === 'investor' ? (
               <InvestorProfileForm 
-                onComplete={() => {
-                  toast.success('Profile updated successfully!');
-                  fetchAdditionalProfile();
+                setMessage={(msg: string) => {
+                  if (msg.includes('successfully')) {
+                    toast.success(msg);
+                    fetchAdditionalProfile();
+                  } else {
+                    toast.error(msg);
+                  }
                 }}
               />
             ) : (
               <SyndicatorProfileForm 
-                setMessage={(msg) => {
+                setMessage={(msg: string) => {
                   if (msg.includes('successfully')) {
                     toast.success(msg);
                     fetchAdditionalProfile();
