@@ -528,6 +528,11 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                 ))}
               </div>
             </div>
+
+            {/* Returns Calculator directly after Documents */}
+            <div className="max-w-2xl mx-auto px-4">
+              <ReturnsCalculator />
+            </div>
           </div>
 
           {/* Sidebar */}
@@ -611,11 +616,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Returns Calculator at the very bottom of the page */}
-      <div className="max-w-2xl mx-auto px-4 pb-12">
-        <ReturnsCalculator />
       </div>
 
       {showMessageModal && deal && (
