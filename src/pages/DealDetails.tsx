@@ -439,85 +439,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Returns Calculator */}
-            <ReturnsCalculator />
-            {/* Media Gallery */}
-            {media.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-2xl font-bold mb-6">Property Gallery</h2>
-                <DealMediaGallery media={media} />
-              </div>
-            )}
-
-            {/* Add video section for Sutera Properties deals */}
-            {deal.syndicator?.company_name === 'Sutera Properties' && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-2xl font-bold mb-6">Property Overview</h2>
-                <VideoEmbed 
-                  url="https://www.youtube.com/watch?v=GM7zriIRpbg"
-                  title="Property Overview"
-                  className="mb-4"
-                />
-                <p className="text-sm text-gray-500">
-                  Take a virtual tour of this investment opportunity.
-                </p>
-              </div>
-            )}
-
-            {/* Syndicator Information */}
-            <Link 
-              to={`/syndicators/${syndicatorSlug}`}
-              className="block bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition"
-            >
-              <div className="flex items-center mb-6">
-                {getSyndicatorLogo(deal.syndicator?.company_name || '', deal.syndicator?.company_logo_url) ? (
-                  <img
-                    src={getSyndicatorLogo(deal.syndicator?.company_name || '', deal.syndicator?.company_logo_url)!}
-                    alt={deal.syndicator?.company_name}
-                    className="h-16 w-16 rounded-lg object-cover mr-4"
-                  />
-                ) : (
-                  <div className="h-16 w-16 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                    <Building className="h-8 w-8 text-blue-600" />
-                  </div>
-                )}
-                <div>
-                  <h2 className="text-2xl font-bold">{deal.syndicator?.company_name}</h2>
-                  <div className="flex items-center mt-2 space-x-4">
-                    {deal.syndicator?.website_url && (
-                      <div className="flex items-center text-blue-600">
-                        <Globe className="h-4 w-4 mr-1" />
-                        <span>Website</span>
-                      </div>
-                    )}
-                    <div className="flex items-center text-gray-600">
-                      <Briefcase className="h-4 w-4 mr-1" />
-                      <span>{deal.syndicator?.years_in_business} years in business</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p className="text-gray-600 mb-4">{deal.syndicator?.company_description}</p>
-              <div className="border-t pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-sm text-gray-500">Total Deal Volume</div>
-                    <div className="text-lg font-semibold">
-                      ${deal.syndicator?.total_deal_volume?.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Active Deals</div>
-                    <div className="text-lg font-semibold">
-                      {deal.syndicator?.company_name === 'Back Bay Capital' ? 3 :
-                       deal.syndicator?.company_name === 'Sutera Properties' ? 1 :
-                       deal.syndicator?.company_name === 'Starboard Realty' ? 1 : 1}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
             {/* Overview */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-4">Investment Overview</h2>
@@ -668,6 +589,9 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
           </div>
         </div>
       </div>
+
+      {/* Returns Calculator at the bottom */}
+      <ReturnsCalculator />
 
       {showMessageModal && deal && (
         <MessageModal
