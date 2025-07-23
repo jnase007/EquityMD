@@ -613,6 +613,11 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         </div>
       </div>
 
+      {/* Returns Calculator at the very bottom of the page */}
+      <div className="max-w-2xl mx-auto px-4 pb-12">
+        <ReturnsCalculator />
+      </div>
+
       {showMessageModal && deal && (
         <MessageModal
           dealId={deal.id}
