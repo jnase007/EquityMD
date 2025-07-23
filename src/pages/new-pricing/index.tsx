@@ -314,7 +314,7 @@ export function NewPricing() {
               <div className="bg-blue-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <TrendingUp className="h-8 w-8 text-blue-600" />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">$2.4B+</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">$43M</div>
               <div className="text-gray-600">Investment Requests</div>
             </div>
             
@@ -322,7 +322,7 @@ export function NewPricing() {
               <div className="bg-green-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Eye className="h-8 w-8 text-green-600" />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">2.1M+</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">50,430</div>
               <div className="text-gray-600">Deal Views</div>
             </div>
             
@@ -330,7 +330,7 @@ export function NewPricing() {
               <div className="bg-purple-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Users className="h-8 w-8 text-purple-600" />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">15,000+</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">10,000+</div>
               <div className="text-gray-600">Active Investors</div>
             </div>
             
@@ -338,7 +338,7 @@ export function NewPricing() {
               <div className="bg-orange-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <CheckCircle className="h-8 w-8 text-orange-600" />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">850+</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">24+</div>
               <div className="text-gray-600">Deals Funded</div>
             </div>
           </div>
