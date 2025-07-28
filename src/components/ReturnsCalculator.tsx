@@ -36,7 +36,7 @@ export function ReturnsCalculator() {
       <h2 className="text-2xl font-bold mb-6">Returns calculator</h2>
       <div className="mb-8">
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 20, right: 30, left: 60, bottom: 0 }}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
@@ -45,7 +45,18 @@ export function ReturnsCalculator() {
             </defs>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" />
-            <YAxis tickFormatter={v => `$${(v/1000).toFixed(0)}K`} />
+            <YAxis 
+              tickFormatter={v => {
+                if (v >= 1000000) {
+                  return `$${(v/1000000).toFixed(1)}M`;
+                } else if (v >= 1000) {
+                  return `$${(v/1000).toFixed(0)}K`;
+                } else {
+                  return `$${v.toLocaleString()}`;
+                }
+              }}
+              width={50}
+            />
             <Tooltip formatter={v => formatCurrency(Number(v))} />
             <Area type="monotone" dataKey="value" stroke="#2563eb" fillOpacity={1} fill="url(#colorValue)" dot />
           </AreaChart>
