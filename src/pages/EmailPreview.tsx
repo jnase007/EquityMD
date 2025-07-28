@@ -4,7 +4,7 @@ import { Footer } from '../components/Footer';
 import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
 
 export function EmailPreview() {
-  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message'>('investor');
+  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch'>('investor');
   const [copied, setCopied] = useState(false);
 
   // Sample data for previews
@@ -774,6 +774,310 @@ export function EmailPreview() {
           </html>
         `;
 
+      case 'investor_launch':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>🚀 You've Been Selected - Welcome to EquityMD</title>
+              ${baseStyles}
+              <style>
+                .hero-section {
+                  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+                  color: white;
+                  padding: 40px 32px;
+                  border-radius: 8px 8px 0 0;
+                  text-align: center;
+                  margin: -32px -32px 32px -32px;
+                }
+                .hero-title {
+                  font-size: 28px;
+                  font-weight: 700;
+                  margin-bottom: 16px;
+                }
+                .hero-subtitle {
+                  font-size: 18px;
+                  opacity: 0.9;
+                  margin-bottom: 24px;
+                }
+                .deal-grid {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                  gap: 24px;
+                  margin: 32px 0;
+                }
+                .deal-card {
+                  border: 1px solid #e5e7eb;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  background: white;
+                  transition: transform 0.2s, box-shadow 0.2s;
+                }
+                .deal-card:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                }
+                .deal-image {
+                  width: 100%;
+                  height: 200px;
+                  background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #6b7280;
+                  font-weight: 600;
+                }
+                .deal-content {
+                  padding: 20px;
+                }
+                .deal-title {
+                  font-size: 18px;
+                  font-weight: 600;
+                  color: #1f2937;
+                  margin-bottom: 8px;
+                }
+                .deal-location {
+                  color: #6b7280;
+                  font-size: 14px;
+                  margin-bottom: 12px;
+                }
+                .deal-highlights {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-bottom: 16px;
+                }
+                .deal-highlight {
+                  background: #f3f4f6;
+                  color: #374151;
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  font-weight: 500;
+                }
+                .deal-cta {
+                  background: #2563eb;
+                  color: white;
+                  text-decoration: none;
+                  padding: 8px 16px;
+                  border-radius: 6px;
+                  font-size: 14px;
+                  font-weight: 500;
+                  display: inline-block;
+                }
+                .stats-section {
+                  background: #f8fafc;
+                  border-radius: 12px;
+                  padding: 24px;
+                  margin: 32px 0;
+                  text-align: center;
+                }
+                .stats-grid {
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                  gap: 24px;
+                  margin-top: 20px;
+                }
+                .stat-item {
+                  text-align: center;
+                }
+                .stat-number {
+                  font-size: 24px;
+                  font-weight: 700;
+                  color: #2563eb;
+                  display: block;
+                }
+                .stat-label {
+                  font-size: 14px;
+                  color: #6b7280;
+                  margin-top: 4px;
+                }
+                .feature-list {
+                  background: #f0f9ff;
+                  border: 1px solid #bae6fd;
+                  border-radius: 8px;
+                  padding: 20px;
+                  margin: 24px 0;
+                }
+                .feature-list h3 {
+                  color: #0369a1;
+                  margin-bottom: 12px;
+                  font-size: 16px;
+                  font-weight: 600;
+                }
+                .feature-list ul {
+                  margin: 0;
+                  padding-left: 20px;
+                }
+                .feature-list li {
+                  margin-bottom: 6px;
+                  color: #0c4a6e;
+                }
+                .urgent-cta {
+                  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                  color: white;
+                  padding: 24px;
+                  border-radius: 12px;
+                  text-align: center;
+                  margin: 32px 0;
+                }
+                .urgent-cta h3 {
+                  font-size: 20px;
+                  font-weight: 600;
+                  margin-bottom: 8px;
+                }
+                .urgent-cta p {
+                  opacity: 0.9;
+                  margin-bottom: 16px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="hero-section">
+                    <div class="logo" style="color: white; margin-bottom: 16px;">
+                      Equity<span style="color: #fbbf24;">MD</span>
+                    </div>
+                    <div class="hero-title">🚀 You've Been Selected!</div>
+                    <div class="hero-subtitle">
+                      Welcome to EquityMD - The Premier Platform for Accredited Real Estate Investors
+                    </div>
+                  </div>
+                  
+                  <div class="content">
+                    <p><strong>Congratulations!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
+                    
+                    <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
+                    
+                    <div class="stats-section">
+                      <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
+                      <div class="stats-grid">
+                        <div class="stat-item">
+                          <span class="stat-number">$43M+</span>
+                          <span class="stat-label">Investment Requests</span>
+                        </div>
+                        <div class="stat-item">
+                          <span class="stat-number">50,430+</span>
+                          <span class="stat-label">Deal Views</span>
+                        </div>
+                        <div class="stat-item">
+                          <span class="stat-number">10,000+</span>
+                          <span class="stat-label">Active Investors</span>
+                        </div>
+                        <div class="stat-item">
+                          <span class="stat-number">24+</span>
+                          <span class="stat-label">Deals Funded</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <h3 style="color: #1f2937; margin: 32px 0 16px 0;">Featured Investment Opportunities</h3>
+                    <p>Take a look at some of the premium deals currently available on our platform:</p>
+                    
+                    <div class="deal-grid">
+                      <div class="deal-card">
+                        <div class="deal-image">
+                          <div style="text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 8px;">🏢</div>
+                            <div>Sutera Properties</div>
+                          </div>
+                        </div>
+                        <div class="deal-content">
+                          <div class="deal-title">Luxury Multi-Family Complex</div>
+                          <div class="deal-location">📍 Austin, TX</div>
+                          <div class="deal-highlights">
+                            <span class="deal-highlight">$50K Min</span>
+                            <span class="deal-highlight">18-22% IRR</span>
+                            <span class="deal-highlight">3-5 Years</span>
+                          </div>
+                          <a href="https://equitymd.com/deals/sutera-austin" class="deal-cta">View Deal</a>
+                        </div>
+                      </div>
+                      
+                      <div class="deal-card">
+                        <div class="deal-image">
+                          <div style="text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 8px;">🏗️</div>
+                            <div>Back Bay Capital</div>
+                          </div>
+                        </div>
+                        <div class="deal-content">
+                          <div class="deal-title">Premium Office Development</div>
+                          <div class="deal-location">📍 San Diego, CA</div>
+                          <div class="deal-highlights">
+                            <span class="deal-highlight">$100K Min</span>
+                            <span class="deal-highlight">15-20% IRR</span>
+                            <span class="deal-highlight">4-6 Years</span>
+                          </div>
+                          <a href="https://equitymd.com/deals/backbay-san-diego" class="deal-cta">View Deal</a>
+                        </div>
+                      </div>
+                      
+                      <div class="deal-card">
+                        <div class="deal-image">
+                          <div style="text-align: center;">
+                            <div style="font-size: 48px; margin-bottom: 8px;">🏘️</div>
+                            <div>Starboard Realty</div>
+                          </div>
+                        </div>
+                        <div class="deal-content">
+                          <div class="deal-title">Student Housing Portfolio</div>
+                          <div class="deal-location">📍 College Towns, TX</div>
+                          <div class="deal-highlights">
+                            <span class="deal-highlight">$75K Min</span>
+                            <span class="deal-highlight">12-16% IRR</span>
+                            <span class="deal-highlight">5-7 Years</span>
+                          </div>
+                          <a href="https://equitymd.com/deals/starboard-student" class="deal-cta">View Deal</a>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="feature-list">
+                      <h3>🎯 Why Complete Your Profile?</h3>
+                      <ul>
+                        <li><strong>Exclusive Access:</strong> View detailed deal documentation and financial projections</li>
+                        <li><strong>Direct Communication:</strong> Connect directly with syndicators and ask questions</li>
+                        <li><strong>Portfolio Tracking:</strong> Monitor your investments and track performance</li>
+                        <li><strong>New Deals Monthly:</strong> Get early access to fresh opportunities hitting the market</li>
+                        <li><strong>Professional Network:</strong> Build relationships with top-tier real estate professionals</li>
+                      </ul>
+                    </div>
+                    
+                    <div class="urgent-cta">
+                      <h3>⏰ Limited Time Opportunity</h3>
+                      <p>New deals are hitting the market every month. Complete your profile now to ensure you don't miss out on these exclusive investment opportunities.</p>
+                      <a href="https://equitymd.com/signup/start" class="button" style="background: white; color: #dc2626; font-weight: 600;">
+                        Complete Your Profile Now
+                      </a>
+                    </div>
+                    
+                    <p style="margin-top: 32px;"><strong>About EquityMD:</strong></p>
+                    <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. We partner with top-tier syndicators to bring you carefully vetted deals with strong return potential.</p>
+                    
+                    <p>Our platform provides transparency, professional due diligence, and direct access to syndicators - everything you need to make informed investment decisions.</p>
+                  </div>
+
+                  <div style="text-align: center; margin-top: 32px;">
+                    <a href="https://equitymd.com/signup/start" class="button">
+                      🚀 Get Started Now
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this email because you've been selected as a qualified investor candidate.</p>
+                  <p>Questions? Contact us at hello@equitymd.com</p>
+                  <p>© 2025 EquityMD. All rights reserved.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
       default:
         return '<p>Email type not found</p>';
     }
@@ -827,6 +1131,7 @@ Msg & data rates may apply.`;
     { id: 'welcome_investor', label: 'Welcome Investor', icon: '👋' },
     { id: 'welcome_syndicator', label: 'Welcome Syndicator', icon: '🤝' },
     { id: 'investment_opportunity', label: 'New Investment Alert', icon: '🏢' },
+    { id: 'investor_launch', label: '10,000 Investor Launch', icon: '🚀' },
     { id: 'sms_deal_alert', label: 'SMS Deal Alert', icon: '📱' },
     { id: 'sms_welcome', label: 'SMS Welcome', icon: '📲' }
   ];
