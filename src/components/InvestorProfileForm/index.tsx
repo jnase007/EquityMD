@@ -101,8 +101,8 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         ? parseInt(data.investmentRange.replace(/,/g, '')) || 0
         : null;
 
-      // Update basic profile
-      await supabase
+      // Update basic profile first
+      const { error: profileError } = await supabase
         .from('profiles')
         .update({
           full_name: data.fullName,
@@ -112,10 +112,16 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         })
         .eq('id', user.id);
 
-      // Update investor profile
-      await supabase
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
+
+      // Update investor profile with better error handling
+      const { error: investorError } = await supabase
         .from('investor_profiles')
-        .update({
+        .upsert({
+          id: user.id,
           accredited_status: data.accreditedStatus,
           minimum_investment: investmentRangeValue,
           preferred_property_types: data.preferredPropertyTypes,
@@ -130,12 +136,17 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             state: data.state
           },
           updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
+        });
+
+      if (investorError) {
+        console.error('Investor profile update error:', investorError);
+        throw investorError;
+      }
 
       setLastSaved(new Date());
     } catch (error) {
       console.error('Auto-save error:', error);
+      // Don't show error to user for auto-save, just log it
     } finally {
       setAutoSaving(false);
     }
@@ -198,7 +209,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
     setMessage('');
 
     try {
-      // Update basic profile
+      // Update basic profile first
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -209,17 +220,21 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         })
         .eq('id', user.id);
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
 
       // Parse investment range correctly (handle comma-formatted numbers)
       const investmentRangeValue = formData.investmentRange 
         ? parseFormattedNumber(formData.investmentRange) 
         : null;
 
-      // Update investor profile
+      // Update investor profile with upsert to handle missing records
       const { error: investorError } = await supabase
         .from('investor_profiles')
-        .update({
+        .upsert({
+          id: user.id,
           accredited_status: formData.accreditedStatus,
           minimum_investment: investmentRangeValue,
           preferred_property_types: formData.preferredPropertyTypes,
@@ -234,10 +249,12 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             state: formData.state
           },
           updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
+        });
 
-      if (investorError) throw investorError;
+      if (investorError) {
+        console.error('Investor profile update error:', investorError);
+        throw investorError;
+      }
 
       setMessage('Profile updated successfully!');
       
