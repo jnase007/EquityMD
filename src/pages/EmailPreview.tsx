@@ -997,59 +997,56 @@ export function EmailPreview() {
                     
                                          <div class="deal-grid">
                        <div class="deal-card">
-                         <div class="deal-image">
-                           <div style="text-align: center;">
-                             <div style="font-size: 48px; margin-bottom: 8px;">🏢</div>
-                             <div>Greenville Apartment Complex</div>
+                         <div class="deal-image" style="background: url('https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg') center/cover; display: flex; align-items: center; justify-content: center;">
+                           <div style="text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
+                             <div style="font-size: 16px; font-weight: 600;">Back Bay Newport</div>
                            </div>
                          </div>
                          <div class="deal-content">
-                           <div class="deal-title">Greenville Apartment Complex</div>
-                           <div class="deal-location">📍 Greenville, SC</div>
-                           <div class="deal-highlights">
-                             <span class="deal-highlight">Multi-Family</span>
-                             <span class="deal-highlight">Prime Location</span>
-                             <span class="deal-highlight">Strong Returns</span>
-                           </div>
-                           <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta">View Deal</a>
-                         </div>
-                       </div>
-                       
-                       <div class="deal-card">
-                         <div class="deal-image">
-                           <div style="text-align: center;">
-                             <div style="font-size: 48px; margin-bottom: 8px;">🏗️</div>
-                             <div>Multifamily ADU Opportunity</div>
-                           </div>
-                         </div>
-                         <div class="deal-content">
-                           <div class="deal-title">Multifamily ADU Opportunity</div>
-                           <div class="deal-location">📍 California</div>
-                           <div class="deal-highlights">
-                             <span class="deal-highlight">ADU Development</span>
-                             <span class="deal-highlight">High Growth</span>
-                             <span class="deal-highlight">Innovative</span>
-                           </div>
-                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta">View Deal</a>
-                         </div>
-                       </div>
-                       
-                       <div class="deal-card">
-                         <div class="deal-image">
-                           <div style="text-align: center;">
-                             <div style="font-size: 48px; margin-bottom: 8px;">🏘️</div>
-                             <div>Newport Beach Residential</div>
-                           </div>
-                         </div>
-                         <div class="deal-content">
-                           <div class="deal-title">Newport Beach Residential Offering</div>
+                           <div class="deal-title">Back Bay Newport</div>
                            <div class="deal-location">📍 Newport Beach, CA</div>
                            <div class="deal-highlights">
                              <span class="deal-highlight">Luxury Residential</span>
                              <span class="deal-highlight">Premium Location</span>
                              <span class="deal-highlight">High-End Market</span>
                            </div>
-                           <a href="https://equitymd.com/deals/newport-beach-residential-offering" class="deal-cta">View Deal</a>
+                           <a href="https://equitymd.com/deals/back-bay-newport" class="deal-cta">View Deal</a>
+                         </div>
+                       </div>
+                       
+                       <div class="deal-card">
+                         <div class="deal-image" style="background: url('https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png') center/cover; display: flex; align-items: center; justify-content: center;">
+                           <div style="text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
+                             <div style="font-size: 16px; font-weight: 600;">Starboard Realty ADU</div>
+                           </div>
+                         </div>
+                         <div class="deal-content">
+                           <div class="deal-title">Starboard Realty ADU Development</div>
+                           <div class="deal-location">📍 California</div>
+                           <div class="deal-highlights">
+                             <span class="deal-highlight">ADU Development</span>
+                             <span class="deal-highlight">High Growth</span>
+                             <span class="deal-highlight">Innovative</span>
+                           </div>
+                           <a href="https://equitymd.com/deals/starboard-realty-adu" class="deal-cta">View Deal</a>
+                         </div>
+                       </div>
+                       
+                       <div class="deal-card">
+                         <div class="deal-image" style="background: url('https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg') center/cover; display: flex; align-items: center; justify-content: center;">
+                           <div style="text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
+                             <div style="font-size: 16px; font-weight: 600;">Satiric Development</div>
+                           </div>
+                         </div>
+                         <div class="deal-content">
+                           <div class="deal-title">Satiric Development Project</div>
+                           <div class="deal-location">📍 Premium Location</div>
+                           <div class="deal-highlights">
+                             <span class="deal-highlight">Premium Development</span>
+                             <span class="deal-highlight">Exclusive Opportunity</span>
+                             <span class="deal-highlight">High Returns</span>
+                           </div>
+                           <a href="https://equitymd.com/deals/satiric-development" class="deal-cta">View Deal</a>
                          </div>
                        </div>
                      </div>
