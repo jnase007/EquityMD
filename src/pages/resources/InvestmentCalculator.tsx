@@ -86,12 +86,24 @@ export function InvestmentCalculator() {
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <input
-                      type="number"
-                      value={values.purchasePrice}
-                      onChange={(e) =>
-                        setValues({ ...values, purchasePrice: Number(e.target.value) })
-                      }
+                      type="text"
+                      value={values.purchasePrice.toLocaleString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        const numValue = Number(value);
+                        if (!isNaN(numValue) && numValue > 0) {
+                          setValues({ ...values, purchasePrice: numValue });
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        const numValue = Number(value);
+                        if (isNaN(numValue) || numValue <= 0) {
+                          setValues({ ...values, purchasePrice: 1000000 }); // Reset to default
+                        }
+                      }}
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="1,000,000"
                     />
                   </div>
                 </div>
@@ -160,12 +172,24 @@ export function InvestmentCalculator() {
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <input
-                      type="number"
-                      value={values.rentalIncome}
-                      onChange={(e) =>
-                        setValues({ ...values, rentalIncome: Number(e.target.value) })
-                      }
+                      type="text"
+                      value={values.rentalIncome.toLocaleString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        const numValue = Number(value);
+                        if (!isNaN(numValue) && numValue >= 0) {
+                          setValues({ ...values, rentalIncome: numValue });
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        const numValue = Number(value);
+                        if (isNaN(numValue) || numValue < 0) {
+                          setValues({ ...values, rentalIncome: 8000 }); // Reset to default
+                        }
+                      }}
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="8,000"
                     />
                   </div>
                 </div>
@@ -177,12 +201,24 @@ export function InvestmentCalculator() {
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <input
-                      type="number"
-                      value={values.expenses}
-                      onChange={(e) =>
-                        setValues({ ...values, expenses: Number(e.target.value) })
-                      }
+                      type="text"
+                      value={values.expenses.toLocaleString()}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        const numValue = Number(value);
+                        if (!isNaN(numValue) && numValue >= 0) {
+                          setValues({ ...values, expenses: numValue });
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const value = e.target.value.replace(/,/g, '');
+                        const numValue = Number(value);
+                        if (isNaN(numValue) || numValue < 0) {
+                          setValues({ ...values, expenses: 2000 }); // Reset to default
+                        }
+                      }}
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="2,000"
                     />
                   </div>
                 </div>

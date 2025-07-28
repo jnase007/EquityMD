@@ -54,12 +54,24 @@ export function ReturnsCalculator() {
       <div className="mb-6">
         <label className="block font-semibold mb-1">Investment</label>
         <input
-          type="number"
-          value={investment}
-          min={1000}
-          step={1000}
-          onChange={e => setInvestment(Number(e.target.value))}
+          type="text"
+          value={investment.toLocaleString()}
+          onChange={e => {
+            const value = e.target.value.replace(/,/g, '');
+            const numValue = Number(value);
+            if (!isNaN(numValue) && numValue >= 1000) {
+              setInvestment(numValue);
+            }
+          }}
+          onBlur={e => {
+            const value = e.target.value.replace(/,/g, '');
+            const numValue = Number(value);
+            if (isNaN(numValue) || numValue < 1000) {
+              setInvestment(100000); // Reset to default if invalid
+            }
+          }}
           className="w-full border rounded p-3 text-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 transition"
+          placeholder="100,000"
         />
       </div>
       <div className="mb-6">
