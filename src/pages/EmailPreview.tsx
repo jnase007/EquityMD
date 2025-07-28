@@ -997,8 +997,9 @@ export function EmailPreview() {
                     
                                          <div class="deal-grid">
                        <div class="deal-card">
-                         <div class="deal-image" style="background: url('https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg') center/cover; display: flex; align-items: center; justify-content: center;">
-                           <div style="text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
+                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg" alt="Back Bay Newport" style="width: 100%; height: 100%; object-fit: cover;">
+                           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
                              <div style="font-size: 16px; font-weight: 600;">Back Bay Newport</div>
                            </div>
                          </div>
@@ -1015,8 +1016,9 @@ export function EmailPreview() {
                        </div>
                        
                        <div class="deal-card">
-                         <div class="deal-image" style="background: url('https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png') center/cover; display: flex; align-items: center; justify-content: center;">
-                           <div style="text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
+                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Starboard Realty ADU" style="width: 100%; height: 100%; object-fit: cover;">
+                           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
                              <div style="font-size: 16px; font-weight: 600;">Starboard Realty ADU</div>
                            </div>
                          </div>
@@ -1033,8 +1035,9 @@ export function EmailPreview() {
                        </div>
                        
                        <div class="deal-card">
-                         <div class="deal-image" style="background: url('https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg') center/cover; display: flex; align-items: center; justify-content: center;">
-                           <div style="text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
+                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Satiric Development" style="width: 100%; height: 100%; object-fit: cover;">
+                           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
                              <div style="font-size: 16px; font-weight: 600;">Satiric Development</div>
                            </div>
                          </div>
