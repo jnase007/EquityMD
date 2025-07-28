@@ -970,7 +970,7 @@ export function EmailPreview() {
                   </div>
                   
                   <div class="content">
-                    <p><strong>Congratulations!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
+                    <p><strong>Congratulations {{firstName}}!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
                     
                     <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
                     
@@ -996,60 +996,99 @@ export function EmailPreview() {
                     <p>Take a look at some of the premium deals currently available on our platform:</p>
                     
                                          <div class="deal-grid">
-                       <div class="deal-card">
+                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                          <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg" alt="Back Bay Newport" style="width: 100%; height: 100%; object-fit: cover;">
-                           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
-                             <div style="font-size: 16px; font-weight: 600;">Back Bay Newport</div>
-                           </div>
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg" alt="Newport Beach Residential Offering" style="width: 100%; height: 100%; object-fit: cover;">
                          </div>
-                         <div class="deal-content">
-                           <div class="deal-title">Back Bay Newport</div>
-                           <div class="deal-location">📍 Newport Beach, CA</div>
-                           <div class="deal-highlights">
-                             <span class="deal-highlight">Luxury Residential</span>
-                             <span class="deal-highlight">Premium Location</span>
-                             <span class="deal-highlight">High-End Market</span>
+                         <div class="deal-content" style="padding: 20px;">
+                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Newport Beach Residential Offering</div>
+                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
+                               <span style="margin-right: 4px;">👑</span> Premier Partner
+                             </div>
                            </div>
-                           <a href="https://equitymd.com/deals/back-bay-newport" class="deal-cta">View Deal</a>
+                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Newport Beach, CA</div>
+                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">20% IRR</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$250,000</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">2 years</div>
+                               </div>
+                             </div>
+                           </div>
+                           <a href="https://equitymd.com/deals/back-bay-newport" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
                          </div>
                        </div>
                        
-                       <div class="deal-card">
+                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                          <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Starboard Realty ADU" style="width: 100%; height: 100%; object-fit: cover;">
-                           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
-                             <div style="font-size: 16px; font-weight: 600;">Starboard Realty ADU</div>
-                           </div>
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
                          </div>
-                         <div class="deal-content">
-                           <div class="deal-title">Starboard Realty ADU Development</div>
-                           <div class="deal-location">📍 California</div>
-                           <div class="deal-highlights">
-                             <span class="deal-highlight">ADU Development</span>
-                             <span class="deal-highlight">High Growth</span>
-                             <span class="deal-highlight">Innovative</span>
+                         <div class="deal-content" style="padding: 20px;">
+                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Multifamily ADU Opportunity</div>
+                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
+                               <span style="margin-right: 4px;">👑</span> Premier Partner
+                             </div>
                            </div>
-                           <a href="https://equitymd.com/deals/starboard-realty-adu" class="deal-cta">View Deal</a>
+                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Southern California</div>
+                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">30% IRR</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">3 years</div>
+                               </div>
+                             </div>
+                           </div>
+                           <a href="https://equitymd.com/deals/starboard-realty-adu" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
                          </div>
                        </div>
                        
-                       <div class="deal-card">
+                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                          <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Satiric Development" style="width: 100%; height: 100%; object-fit: cover;">
-                           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 6px;">
-                             <div style="font-size: 16px; font-weight: 600;">Satiric Development</div>
-                           </div>
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover;">
                          </div>
-                         <div class="deal-content">
-                           <div class="deal-title">Satiric Development Project</div>
-                           <div class="deal-location">📍 Premium Location</div>
-                           <div class="deal-highlights">
-                             <span class="deal-highlight">Premium Development</span>
-                             <span class="deal-highlight">Exclusive Opportunity</span>
-                             <span class="deal-highlight">High Returns</span>
+                         <div class="deal-content" style="padding: 20px;">
+                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Greenville Apartment Complex</div>
+                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
+                               <span style="margin-right: 4px;">👑</span> Premier Partner
+                             </div>
                            </div>
-                           <a href="https://equitymd.com/deals/satiric-development" class="deal-cta">View Deal</a>
+                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Travelers Rest, SC</div>
+                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">17.19% IRR</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">5 years</div>
+                               </div>
+                             </div>
+                           </div>
+                           <a href="https://equitymd.com/deals/satiric-development" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
                          </div>
                        </div>
                      </div>
