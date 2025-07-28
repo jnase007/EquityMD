@@ -146,6 +146,11 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       setLastSaved(new Date());
     } catch (error) {
       console.error('Auto-save error:', error);
+      // Log detailed error information for debugging
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
       // Don't show error to user for auto-save, just log it
     } finally {
       setAutoSaving(false);
@@ -262,6 +267,11 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
       await fetchInvestorProfile();
     } catch (error) {
       console.error('Error updating profile:', error);
+      // Log detailed error information for debugging
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
       setMessage('Error updating profile. Please try again.');
     } finally {
       setLoading(false);
