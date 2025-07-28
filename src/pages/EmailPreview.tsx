@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
@@ -6,6 +6,28 @@ import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
 export function EmailPreview() {
   const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch'>('investor');
   const [copied, setCopied] = useState(false);
+
+  // Handle URL parameters for direct email access
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailType = urlParams.get('type');
+    
+    if (emailType && isValidEmailType(emailType)) {
+      setSelectedEmail(emailType as any);
+    }
+  }, []);
+
+  const isValidEmailType = (type: string): type is 'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch' => {
+    return ['investor', 'syndicator', 'welcome_investor', 'welcome_syndicator', 'investment_opportunity', 'sms_deal_alert', 'sms_welcome', 'admin_new_investor', 'admin_new_syndicator', 'admin_user_message', 'investor_launch'].includes(type);
+  };
+
+  const handleEmailTypeChange = (type: string) => {
+    setSelectedEmail(type as any);
+    // Update URL without page reload
+    const url = new URL(window.location.href);
+    url.searchParams.set('type', type);
+    window.history.pushState({}, '', url.toString());
+  };
 
   // Sample data for previews
   const sampleData = {
@@ -1154,7 +1176,7 @@ Msg & data rates may apply.`;
                 {emailTypes.map((type) => (
                   <button
                     key={type.id}
-                    onClick={() => setSelectedEmail(type.id as any)}
+                    onClick={() => handleEmailTypeChange(type.id)}
                     className={`w-full text-left p-3 rounded-lg transition ${
                       selectedEmail === type.id
                         ? 'bg-blue-50 border-2 border-blue-200 text-blue-900'
