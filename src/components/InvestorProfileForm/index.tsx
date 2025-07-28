@@ -113,6 +113,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           phoneNumber: data.investment_preferences?.phone_number || '',
           state: data.investment_preferences?.state || '',
           linkedinUrl: data.linkedin_url || '',
+          location: data.location || '',
         }));
       }
     } catch (error) {
@@ -160,6 +161,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           preferred_property_types: formData.preferredPropertyTypes,
           preferred_locations: formData.preferredLocations,
           linkedin_url: formData.linkedinUrl,
+          location: formData.location,
           investment_preferences: {
             experience_level: formData.experienceLevel,
             years_investing: formData.yearsInvesting,
