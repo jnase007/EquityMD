@@ -16,6 +16,7 @@ import { getSyndicatorLogo } from '../lib/syndicator-logos';
 import { Tooltip } from 'react-tooltip';
 import type { Deal, DealFile } from '../types/database';
 import { ReturnsCalculator } from '../components/ReturnsCalculator';
+import { CountdownTimer } from '../components/CountdownTimer';
 
 interface DealMedia {
   id: string;
@@ -537,6 +538,27 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
 
           {/* Sidebar */}
           <div className="space-y-6 lg:sticky lg:top-8 h-fit">
+            {/* Countdown Timer */}
+            <CountdownTimer 
+              endDate={(() => {
+                // Different deadlines for different deals
+                const now = new Date();
+                switch (deal.slug) {
+                  case 'san-diego-multi-family-offering':
+                    return new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000); // 45 days
+                  case 'newport-beach-residential-offering':
+                    return new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000); // 21 days
+                  case 'greenville-apartment-complex':
+                    return new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000); // 60 days
+                  case 'multifamily-adu-opportunity':
+                    return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
+                  default:
+                    return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // Default 30 days
+                }
+              })()}
+              className="mb-6"
+            />
+            
             {/* Investment Interest */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex items-center mb-4">
