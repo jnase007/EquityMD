@@ -952,89 +952,85 @@ export function EmailPreview() {
                     
                     <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
                     
-                    <div class="stats-section">
-                      <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
-                      <div class="stats-grid">
-                        <div class="stat-item">
-                          <span class="stat-number">$43M+</span>
-                          <span class="stat-label">Investment Requests</span>
-                        </div>
-                        <div class="stat-item">
-                          <span class="stat-number">50,430+</span>
-                          <span class="stat-label">Deal Views</span>
-                        </div>
-                        <div class="stat-item">
-                          <span class="stat-number">10,000+</span>
-                          <span class="stat-label">Active Investors</span>
-                        </div>
-                        <div class="stat-item">
-                          <span class="stat-number">24+</span>
-                          <span class="stat-label">Deals Funded</span>
-                        </div>
-                      </div>
-                    </div>
+                                         <div class="stats-section">
+                       <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
+                       <div class="stats-grid">
+                         <div class="stat-item">
+                           <span class="stat-number">20+</span>
+                           <span class="stat-label">Syndicators</span>
+                         </div>
+                         <div class="stat-item">
+                           <span class="stat-number">10,000+</span>
+                           <span class="stat-label">Investors</span>
+                         </div>
+                         <div class="stat-item">
+                           <span class="stat-number">18.5%</span>
+                           <span class="stat-label">Average IRR</span>
+                         </div>
+                       </div>
+                     </div>
                     
                     <h3 style="color: #1f2937; margin: 32px 0 16px 0;">Featured Investment Opportunities</h3>
                     <p>Take a look at some of the premium deals currently available on our platform:</p>
                     
-                    <div class="deal-grid">
-                      <div class="deal-card">
-                        <div class="deal-image">
-                          <div style="text-align: center;">
-                            <div style="font-size: 48px; margin-bottom: 8px;">🏢</div>
-                            <div>Sutera Properties</div>
-                          </div>
-                        </div>
-                        <div class="deal-content">
-                          <div class="deal-title">Luxury Multi-Family Complex</div>
-                          <div class="deal-location">📍 Austin, TX</div>
-                          <div class="deal-highlights">
-                            <span class="deal-highlight">$50K Min</span>
-                            <span class="deal-highlight">18-22% IRR</span>
-                            <span class="deal-highlight">3-5 Years</span>
-                          </div>
-                          <a href="https://equitymd.com/deals/sutera-austin" class="deal-cta">View Deal</a>
-                        </div>
-                      </div>
-                      
-                      <div class="deal-card">
-                        <div class="deal-image">
-                          <div style="text-align: center;">
-                            <div style="font-size: 48px; margin-bottom: 8px;">🏗️</div>
-                            <div>Back Bay Capital</div>
-                          </div>
-                        </div>
-                        <div class="deal-content">
-                          <div class="deal-title">Premium Office Development</div>
-                          <div class="deal-location">📍 San Diego, CA</div>
-                          <div class="deal-highlights">
-                            <span class="deal-highlight">$100K Min</span>
-                            <span class="deal-highlight">15-20% IRR</span>
-                            <span class="deal-highlight">4-6 Years</span>
-                          </div>
-                          <a href="https://equitymd.com/deals/backbay-san-diego" class="deal-cta">View Deal</a>
-                        </div>
-                      </div>
-                      
-                      <div class="deal-card">
-                        <div class="deal-image">
-                          <div style="text-align: center;">
-                            <div style="font-size: 48px; margin-bottom: 8px;">🏘️</div>
-                            <div>Starboard Realty</div>
-                          </div>
-                        </div>
-                        <div class="deal-content">
-                          <div class="deal-title">Student Housing Portfolio</div>
-                          <div class="deal-location">📍 College Towns, TX</div>
-                          <div class="deal-highlights">
-                            <span class="deal-highlight">$75K Min</span>
-                            <span class="deal-highlight">12-16% IRR</span>
-                            <span class="deal-highlight">5-7 Years</span>
-                          </div>
-                          <a href="https://equitymd.com/deals/starboard-student" class="deal-cta">View Deal</a>
-                        </div>
-                      </div>
-                    </div>
+                                         <div class="deal-grid">
+                       <div class="deal-card">
+                         <div class="deal-image">
+                           <div style="text-align: center;">
+                             <div style="font-size: 48px; margin-bottom: 8px;">🏢</div>
+                             <div>Greenville Apartment Complex</div>
+                           </div>
+                         </div>
+                         <div class="deal-content">
+                           <div class="deal-title">Greenville Apartment Complex</div>
+                           <div class="deal-location">📍 Greenville, SC</div>
+                           <div class="deal-highlights">
+                             <span class="deal-highlight">Multi-Family</span>
+                             <span class="deal-highlight">Prime Location</span>
+                             <span class="deal-highlight">Strong Returns</span>
+                           </div>
+                           <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta">View Deal</a>
+                         </div>
+                       </div>
+                       
+                       <div class="deal-card">
+                         <div class="deal-image">
+                           <div style="text-align: center;">
+                             <div style="font-size: 48px; margin-bottom: 8px;">🏗️</div>
+                             <div>Multifamily ADU Opportunity</div>
+                           </div>
+                         </div>
+                         <div class="deal-content">
+                           <div class="deal-title">Multifamily ADU Opportunity</div>
+                           <div class="deal-location">📍 California</div>
+                           <div class="deal-highlights">
+                             <span class="deal-highlight">ADU Development</span>
+                             <span class="deal-highlight">High Growth</span>
+                             <span class="deal-highlight">Innovative</span>
+                           </div>
+                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta">View Deal</a>
+                         </div>
+                       </div>
+                       
+                       <div class="deal-card">
+                         <div class="deal-image">
+                           <div style="text-align: center;">
+                             <div style="font-size: 48px; margin-bottom: 8px;">🏘️</div>
+                             <div>Newport Beach Residential</div>
+                           </div>
+                         </div>
+                         <div class="deal-content">
+                           <div class="deal-title">Newport Beach Residential Offering</div>
+                           <div class="deal-location">📍 Newport Beach, CA</div>
+                           <div class="deal-highlights">
+                             <span class="deal-highlight">Luxury Residential</span>
+                             <span class="deal-highlight">Premium Location</span>
+                             <span class="deal-highlight">High-End Market</span>
+                           </div>
+                           <a href="https://equitymd.com/deals/newport-beach-residential-offering" class="deal-cta">View Deal</a>
+                         </div>
+                       </div>
+                     </div>
                     
                     <div class="feature-list">
                       <h3>🎯 Why Complete Your Profile?</h3>
