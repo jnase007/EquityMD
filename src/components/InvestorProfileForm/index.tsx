@@ -69,6 +69,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
     experienceLevel: '',
     accreditedStatus: false,
     preferredPropertyTypes: [] as string[],
+    linkedinUrl: '',
   });
 
   const [emailPreferences, setEmailPreferences] = useState({
@@ -111,6 +112,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           bio: data.investment_preferences?.bio || '',
           phoneNumber: data.investment_preferences?.phone_number || '',
           state: data.investment_preferences?.state || '',
+          linkedinUrl: data.linkedin_url || '',
         }));
       }
     } catch (error) {
@@ -157,6 +159,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           minimum_investment: investmentRangeValue,
           preferred_property_types: formData.preferredPropertyTypes,
           preferred_locations: formData.preferredLocations,
+          linkedin_url: formData.linkedinUrl,
           investment_preferences: {
             experience_level: formData.experienceLevel,
             years_investing: formData.yearsInvesting,
@@ -241,6 +244,19 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
                 rows={4}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Tell us a bit about yourself and your investment goals..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                LinkedIn Profile URL
+              </label>
+              <input
+                type="url"
+                value={formData.linkedinUrl}
+                onChange={(e) => setFormData(prev => ({ ...prev, linkedinUrl: e.target.value }))}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="https://linkedin.com/in/your-profile"
               />
             </div>
           </div>

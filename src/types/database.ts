@@ -28,6 +28,7 @@ export interface InvestorProfile {
   preferred_locations: string[];
   risk_tolerance: string | null;
   investment_goals: string | null;
+  linkedin_url: string | null;
   created_at: string;
   updated_at: string;
 }
