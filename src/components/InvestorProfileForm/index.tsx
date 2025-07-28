@@ -54,6 +54,8 @@ const US_STATES = [
 export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   const { user, profile } = useAuthStore();
   const [loading, setLoading] = useState(false);
+  const [autoSaving, setAutoSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [showAccreditedInfo, setShowAccreditedInfo] = useState(false);
   const [formData, setFormData] = useState({
@@ -87,6 +89,68 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   useEffect(() => {
     fetchInvestorProfile();
   }, []);
+
+  // Auto-save functionality
+  const autoSave = async (data: typeof formData) => {
+    if (!user) return;
+    
+    setAutoSaving(true);
+    try {
+      // Parse investment range correctly (handle comma-formatted numbers)
+      const investmentRangeValue = data.investmentRange 
+        ? parseInt(data.investmentRange.replace(/,/g, '')) || 0
+        : null;
+
+      // Update basic profile
+      await supabase
+        .from('profiles')
+        .update({
+          full_name: data.fullName,
+          avatar_url: data.avatarUrl,
+          email_notifications: emailPreferences,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      // Update investor profile
+      await supabase
+        .from('investor_profiles')
+        .update({
+          accredited_status: data.accreditedStatus,
+          minimum_investment: investmentRangeValue,
+          preferred_property_types: data.preferredPropertyTypes,
+          preferred_locations: data.preferredLocations,
+          linkedin_url: data.linkedinUrl,
+          location: data.location,
+          investment_preferences: {
+            experience_level: data.experienceLevel,
+            years_investing: data.yearsInvesting,
+            bio: data.bio,
+            phone_number: data.phoneNumber,
+            state: data.state
+          },
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      setLastSaved(new Date());
+    } catch (error) {
+      console.error('Auto-save error:', error);
+    } finally {
+      setAutoSaving(false);
+    }
+  };
+
+  // Debounced auto-save effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (user && Object.values(formData).some(value => value !== '')) {
+        autoSave(formData);
+      }
+    }, 2000); // 2 second delay
+
+    return () => clearTimeout(timeoutId);
+  }, [formData, emailPreferences]);
 
   async function fetchInvestorProfile() {
     if (!user) return;
@@ -498,6 +562,26 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Auto-save indicator */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          {autoSaving && (
+            <div className="flex items-center text-blue-600 text-sm">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+              Auto-saving...
+            </div>
+          )}
+          {lastSaved && !autoSaving && (
+            <div className="flex items-center text-green-600 text-sm">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Last saved: {lastSaved.toLocaleTimeString()}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-2">

@@ -10,6 +10,8 @@ interface SyndicatorProfileFormProps {
 export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps) {
   const { user, profile } = useAuthStore();
   const [loading, setLoading] = useState(false);
+  const [autoSaving, setAutoSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [syndicatorProfile, setSyndicatorProfile] = useState<SyndicatorProfile | null>(null);
   const [formData, setFormData] = useState({
     fullName: profile?.full_name || '',
@@ -26,6 +28,56 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
   useEffect(() => {
     fetchSyndicatorProfile();
   }, []);
+
+  // Auto-save functionality
+  const autoSave = async (data: typeof formData) => {
+    if (!user) return;
+    
+    setAutoSaving(true);
+    try {
+      // Update basic profile
+      await supabase
+        .from('profiles')
+        .update({
+          full_name: data.fullName,
+          avatar_url: data.avatarUrl,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      // Update syndicator profile
+      await supabase
+        .from('syndicator_profiles')
+        .update({
+          company_name: data.companyName,
+          company_description: data.companyDescription,
+          company_logo_url: data.companyLogoUrl,
+          website_url: data.websiteUrl,
+          linkedin_url: data.linkedinUrl,
+          years_in_business: data.yearsInBusiness ? parseInt(data.yearsInBusiness) : null,
+          total_deal_volume: data.totalDealVolume ? parseFloat(data.totalDealVolume) : null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      setLastSaved(new Date());
+    } catch (error) {
+      console.error('Auto-save error:', error);
+    } finally {
+      setAutoSaving(false);
+    }
+  };
+
+  // Debounced auto-save effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (user && Object.values(formData).some(value => value !== '')) {
+        autoSave(formData);
+      }
+    }, 2000); // 2 second delay
+
+    return () => clearTimeout(timeoutId);
+  }, [formData]);
 
   async function fetchSyndicatorProfile() {
     if (!user) return;
@@ -102,6 +154,26 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Auto-save indicator */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          {autoSaving && (
+            <div className="flex items-center text-blue-600 text-sm">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+              Auto-saving...
+            </div>
+          )}
+          {lastSaved && !autoSaving && (
+            <div className="flex items-center text-green-600 text-sm">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Last saved: {lastSaved.toLocaleTimeString()}
+            </div>
+          )}
+        </div>
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Email
