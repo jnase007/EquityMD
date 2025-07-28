@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate } from './templates.ts';
+import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate, getInvestorLaunchTemplate } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = 'hello@equitymd.com';
@@ -103,6 +103,18 @@ serve(async (req) => {
         html = getWelcomeEmailTemplate(data.userType, data.userName);
         emailTo = to;
         emailSubject = `Welcome to EquityMD, ${data.userName}!`;
+        break;
+
+      case 'investor_launch':
+        if (!data?.firstName || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for investor launch email' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getInvestorLaunchTemplate(data.firstName);
+        emailTo = to;
+        emailSubject = '🚀 You\'ve Been Selected - Welcome to EquityMD';
         break;
 
       default:
