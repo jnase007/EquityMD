@@ -49,10 +49,7 @@ const mobileMenuItems: MobileMenuItem[] = [
     label: "Success Stories",
     path: "/success-stories"
   },
-  {
-    label: "Pricing",
-    path: "/pricing"
-  },
+
   {
     label: "Resources",
     items: [

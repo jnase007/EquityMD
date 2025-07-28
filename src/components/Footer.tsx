@@ -62,14 +62,7 @@ export function Footer() {
               </button>
             </li>
 
-            <li>
-              <button
-                onClick={() => handleNavigation('/new-pricing')}
-                className="hover:text-white transition"
-              >
-                Syndicator Pricing
-              </button>
-            </li>
+
             <li>
               <button
                 onClick={() => handleNavigation('/success-stories')}

@@ -331,20 +331,8 @@ export default function App() {
             </Suspense>
           </ErrorBoundary>
         } />
-        <Route path="/pricing" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Pricing />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/new-pricing" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <NewPricing />
-            </Suspense>
-          </ErrorBoundary>
-        } />
+        <Route path="/pricing" element={<Navigate to="/" replace />} />
+        <Route path="/new-pricing" element={<Navigate to="/" replace />} />
         <Route path="/email-preview" element={
           <ErrorBoundary>
             <Suspense fallback={<MinimalLoadingFallback />}>
