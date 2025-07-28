@@ -453,7 +453,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-2xl font-bold mb-6">Property Overview</h2>
                 <VideoEmbed 
-                  url="https://www.youtube.com/watch?v=GM7zriIRpbg"
+                  url="https://www.youtube.com/watch?v=AZ7efSrtm44"
                   title="Property Overview"
                   className="mb-4"
                 />
