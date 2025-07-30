@@ -109,6 +109,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           avatar_url: data.avatarUrl,
           email_notifications: emailPreferences,
           updated_at: new Date().toISOString(),
+          phone_number: data.phoneNumber,
         })
         .eq('id', user.id);
 
@@ -132,7 +133,6 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             experience_level: data.experienceLevel,
             years_investing: data.yearsInvesting,
             bio: data.bio,
-            phone_number: data.phoneNumber,
             state: data.state
           },
           updated_at: new Date().toISOString(),
@@ -190,7 +190,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           experienceLevel: data.investment_preferences?.experience_level || '',
           yearsInvesting: data.investment_preferences?.years_investing || '',
           bio: data.investment_preferences?.bio || '',
-          phoneNumber: data.investment_preferences?.phone_number || '',
+          phoneNumber: profile?.phone_number || '',
           state: data.investment_preferences?.state || '',
           linkedinUrl: data.linkedin_url || '',
           location: data.location || '',
@@ -222,6 +222,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           avatar_url: formData.avatarUrl,
           email_notifications: emailPreferences,
           updated_at: new Date().toISOString(),
+          phone_number: formData.phoneNumber,
         })
         .eq('id', user.id);
 
@@ -250,7 +251,6 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
             experience_level: formData.experienceLevel,
             years_investing: formData.yearsInvesting,
             bio: formData.bio,
-            phone_number: formData.phoneNumber,
             state: formData.state
           },
           updated_at: new Date().toISOString(),
