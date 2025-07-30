@@ -90,15 +90,13 @@ export function DealDetails() {
 
   async function fetchDealDetails() {
     try {
-      // Find deal by slug (title converted to slug)
+      // Find deal by slug directly
       if (!slug) {
         setLoading(false);
         return;
       }
-      
-      const title = slug.split('-').join(' ');
 
-      console.log('Fetching deal with title:', title);
+      console.log('Fetching deal with slug:', slug);
 
       const { data: dealData, error: dealError } = await supabase
         .from('deals')
@@ -113,7 +111,7 @@ export function DealDetails() {
             total_deal_volume
           )
         `)
-        .ilike('title', title)
+        .eq('slug', slug)
         .single();
 
         console.log('Fetched deal data:', dealData);
@@ -121,227 +119,12 @@ export function DealDetails() {
       if (dealError || !dealData) {
         console.error('Error fetching deal:', dealError);
         
-        // Check if this is a mock deal (BackBay, Starboard, or Sutera) and provide mock data
-        const mockPriorityDeals = [
-          {
-            id: 'backbay-1',
-            syndicator_id: 'back-bay-capital',
-            title: 'San Diego Multi-Family Offering',
-            location: 'San Diego, CA',
-            property_type: 'Multi-Family',
-            status: 'active' as const,
-            target_irr: 15,
-            minimum_investment: 500000,
-            investment_term: 5,
-            description: 'Back Bay Investment Group presents an opportunity to invest in a fund focused on multifamily development and value-add projects in Southern California. Leveraging the region\'s robust economy, diverse job market, and housing demand, the fund aims to capitalize on the region\'s housing shortage while delivering superior risk-adjusted returns.',
-            address: { street: '', city: 'San Diego', state: 'CA', zip: '' },
-            investment_highlights: ['Access to Institutional Grade Assets', 'Prime Residential Markets', 'Tax Deductions & Bonus Depreciation Benefits', 'Target 75% Cash on Cash', '15% Target Investor IRR', '1.75x Target Equity Multiple'],
-            total_equity: 10000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_SanDeigo.jpg',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            slug: 'san-diego-multi-family-offering',
-            syndicator: {
-              company_name: 'Back Bay Capital',
-              company_logo_url: null,
-              years_in_business: 10,
-              company_description: 'Back Bay Investment Group specializes in real estate development and value-add projects across Southern California.',
-              website_url: null,
-              total_deal_volume: 30000000
-            }
-          },
-          {
-            id: 'backbay-2',
-            syndicator_id: 'back-bay-capital',
-            title: 'Newport Beach Residential Offering',
-            location: 'Newport Beach, CA',
-            property_type: 'Residential',
-            status: 'active' as const,
-            target_irr: 20,
-            minimum_investment: 250000,
-            investment_term: 2,
-            description: 'Back Bay Investment Group is offering an exclusive opportunity to invest in residential real estate in Newport Beach and surrounding coastal communities, targeting high-demand neighborhoods with limited inventory and strong growth potential.',
-            address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
-            investment_highlights: ['Short Term Investment', 'Value-Add Strategy', 'Multiple Exit Options', 'Target 60% Cash on Cash', '20% Target Investor IRR', '1.6x Target Equity Multiple'],
-            total_equity: 10000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            slug: 'newport-beach-residential-offering',
-            syndicator: {
-              company_name: 'Back Bay Capital',
-              company_logo_url: null,
-              years_in_business: 10,
-              company_description: 'Back Bay Investment Group specializes in real estate development and value-add projects across Southern California.',
-              website_url: null,
-              total_deal_volume: 30000000
-            }
-          },
-          {
-            id: 'backbay-3',
-            syndicator_id: 'back-bay-capital',
-            title: 'Orange County Pref Equity Offering',
-            location: 'Newport Beach, CA',
-            property_type: 'Preferred Equity',
-            status: 'active' as const,
-            target_irr: 15,
-            minimum_investment: 100000,
-            investment_term: 2,
-            description: 'Back Bay Investment Group is offering a preferred equity investment with a fixed 15% annual return, paid quarterly, and a targeted holding period of 1–3 years. Designed for investors seeking secure, predictable income, this offering provides priority in the capital stack above common equity.',
-            address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
-            investment_highlights: ['Quarterly Payments', 'Fixed 15% Return', 'Priority in the Equity Stack', 'Target 45% Cash on Cash', '15% Target Investor IRR', '1.45x Target Equity Multiple'],
-            total_equity: 10000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_OrangeCounty.jpg',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            slug: 'orange-county-pref-equity-offering',
-            syndicator: {
-              company_name: 'Back Bay Capital',
-              company_logo_url: null,
-              years_in_business: 10,
-              company_description: 'Back Bay Investment Group specializes in real estate development and value-add projects across Southern California.',
-              website_url: null,
-              total_deal_volume: 30000000
-            }
-          },
-          {
-            id: 'sutera-1',
-            syndicator_id: 'sutera-properties',
-            title: 'Greenville Apartment Complex',
-            location: 'Travelers Rest, SC',
-            property_type: 'Multi-Family',
-            status: 'active' as const,
-            target_irr: 17.19,
-            minimum_investment: 50000,
-            investment_term: 5,
-            description: `Project Overview:
-Sutera Properties presents Liva, a ground-up multifamily development in Travelers Rest, South Carolina, a rapidly growing suburb of Greenville. The project spans 10.5 acres and includes 120 multifamily units and 32 individually platted townhomes, totaling 152 units. The site is 100% shovel-ready with Land Disturbance Permits secured as of March 2025.
+        // No deal found in database
+        return;
 
-Investment Highlights:
-• Updated Business Plan: The multifamily portion will be held as a rental property with a projected un-trended Yield on Cost of 7.19% (up from 6.8%), while townhomes will be sold to individual buyers, responding to strong local demand.
-• Cost Efficiency: Reduced per-unit basis for the multifamily to $205k (from $250k), compared to recent market comps like The Standard at Pinestone, which received bids at $230k/unit in 2024.
-• Prime Location: Located near the Swamp Rabbit Trail and half a mile from Travelers Rest's Main Street, with planned streetscape improvements enhancing connectivity.
-• Market Dynamics: Travelers Rest is experiencing 3.43% annual population growth, with zero projected multifamily deliveries in the North Greenville submarket, positioning Liva to capitalize on strong demand.
-
-Financial Snapshot:
-• Total Project Cost: $38,226,500
-• Equity Raise: $12,340,000
-• Construction LTV: 65%
-• Estimated Hold Period: 5 years
-
-Amenities & Design:
-Liva promotes an active lifestyle with resort-style amenities including a pool, clubhouse, fitness center, fire pit, dog park, bike barn, and a multi-use path connecting to the Main Street corridor. Units feature spacious, open floor plans tailored to the unique fabric of Travelers Rest.
-
-Why Invest?
-Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, strong risk-adjusted returns, and a prime position in a high-growth market. With construction set to begin upon capitalization, this is a timely opportunity to invest in the thriving Upstate South Carolina region.`,
-            address: { street: '', city: 'Travelers Rest', state: 'SC', zip: '' },
-            investment_highlights: [
-              'Ground-up development',
-              '152 total units (120 multifamily + 32 townhomes)',
-              'Resort-style amenities',
-              'Pool and clubhouse',
-              'Fitness center',
-              'Dog park and bike barn',
-              'Prime location near Swamp Rabbit Trail',
-              'Shovel-ready with permits secured'
-            ],
-            total_equity: 12340000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0980.jpeg',
-        media_urls: [
-          // Actual images that exist in liva_2025 folder (IMG_0980 to IMG_0986)
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0980.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0981.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0983.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0984.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0985.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0986.jpeg'
-        ],
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            slug: 'greenville-apartment-complex',
-            syndicator: {
-              company_name: 'Sutera Properties',
-              company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos/suteraproperties.png',
-              years_in_business: 8,
-              company_description: 'Sutera is an emerging Multifamily Investment & Property Management firm based in Nashville, Tennessee focused on Value-Add Acquisitions and Management, primarily in the Southeast.',
-              website_url: null,
-              total_deal_volume: 15000000
-            }
-          },
-          {
-            id: 'starboard-2',
-            syndicator_id: 'starboard-realty',
-            title: 'Multifamily ADU Opportunity',
-            location: 'Southern California',
-            property_type: 'Multi-Family',
-            status: 'active' as const,
-            target_irr: 30,
-            minimum_investment: 50000,
-            investment_term: 3,
-            description: 'Starboard Realty Advisors is offering investors the opportunity to invest in the high-demand multifamily markets of Southern California. With a growing pipeline of opportunities, the Fund will be opportunistically deploying capital to acquire small multifamily buildings with the intent of maximizing revenue growth through renovations and the addition of units by leveraging California\'s recent Accessory Dwelling Unit (ADU) legislation. The Fund intends to strategically acquire multifamily opportunities with targeted property level IRRs of 30%+ and equity multiples of 1.60X – 1.90X+ over a 2-3 year investment horizon. The Fund plans to leverage economies of scale through unique relationships with highly skilled vendors to minimize acquisition, materials, labor, and operational costs. The Fund further hopes to potentially enhance returns to investors through cost segregation and accelerated depreciation strategies.',
-            address: { street: '', city: 'Southern California', state: 'CA', zip: '' },
-            investment_highlights: ['30%+ Target Property IRR', '1.60X - 1.90X+ Equity Multiple', '2-3 Year Investment Horizon', 'ADU Legislation Leverage', 'Economies of Scale', 'Cost Segregation & Tax Benefits'],
-            total_equity: 5000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            slug: 'multifamily-adu-opportunity',
-            syndicator: {
-              company_name: 'Starboard Realty',
-              company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
-              years_in_business: 10,
-              company_description: 'Starboard Realty Advisors is a privately held, fully-integrated real estate firm specializing in multifamily and commercial properties.',
-              website_url: 'https://starboard-realty.com/',
-              total_deal_volume: 608000000
-            }
-          }
-        ];
-
-        // Find matching mock deal
-        const mockDeal = mockPriorityDeals.find(deal => deal.slug === slug);
-        if (mockDeal) {
-          setDeal(mockDeal);
-          
-          // Convert media_urls to DealMedia format for mock deals
-          if (mockDeal.media_urls && mockDeal.media_urls.length > 0) {
-            const mockMedia: DealMedia[] = mockDeal.media_urls.map((url, index) => ({
-              id: `mock-media-${index}`,
-              type: 'image' as const,
-              url: url,
-              title: `Image ${index + 1}`,
-              description: `Property image ${index + 1}`,
-              order: index
-            }));
-            setMedia(mockMedia);
-          }
-          
-          // Add mock files for specific deals
-          if (mockDeal.slug === 'multifamily-adu-opportunity') {
-            setFiles([
-              {
-                id: 'adu-brochure-1',
-                deal_id: mockDeal.id,
-                file_name: 'Starboard Southern California Multifamily ADU Opportunity Fund I LLC - Brochure',
-                file_type: 'PDF',
-                file_size: 2458000, // ~2.5MB
-                file_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/propertydocs//Starboard%20Southern%20California%20Multifamily%20ADU%20Opportunity%20Fund%20I%20LLC%20-%20Brochure%20(Final)%20(1).pdf',
-                is_private: false,
-                created_at: new Date().toISOString()
-              }
-            ]);
-          }
-        } else {
-          return;
-        }
-      } else {
-        setDeal(dealData);
       }
+
+      setDeal(dealData);
 
       // Fetch deal files
       const { data: fileData, error: fileError } = await supabase

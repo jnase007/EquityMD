@@ -69,175 +69,25 @@ export function Browse() {
         .from('deals')
         .select('*')
         .eq('status', 'active')
+        .order('highlighted', { ascending: false })
         .order('created_at', { ascending: false });
 
-      if (error) {
+      if (error || !data) {
         console.error('Error fetching deals:', error);
-        // Use fallback mock data if database fetch fails
-        setDeals(fallbackMockDeals);
+        setDeals([]);
         setLoading(false);
         return;
       }
 
-      // Only include deals from the three real syndicators
-      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
-      let filteredData = data ? data.filter(deal => 
-        allowedSyndicators.includes(deal.syndicator_id)
-      ) : [];
-
-      // Always include priority mock deals (BackBay, Starboard, and Sutera)
-      const today = new Date().toISOString();
-      const priorityDeals = fallbackMockDeals.filter(deal => 
-        allowedSyndicators.includes(deal.syndicator_id)
-      ).map(deal => ({
-        ...deal,
-        created_at: today,
-        updated_at: today
-      }));
-
-      // Combine database deals with priority mock deals
-      const allDeals = [...priorityDeals, ...filteredData];
-
-      // Remove any duplicates (in case priority deals exist in both mock and database)
-      const uniqueDeals = allDeals.filter((deal, index, self) => 
-        index === self.findIndex(d => d.title === deal.title)
-      );
-
-      setDeals(uniqueDeals);
+      console.log('Fetched deals for browse page:', data);
+      setDeals(data);
     } catch (error) {
       console.error('Error fetching deals:', error);
-      // Use fallback mock data on error
-      setDeals(fallbackMockDeals);
+      setDeals([]);
     } finally {
       setLoading(false);
     }
   }
-
-  // Fallback mock deals for demo purposes (simplified)
-  const fallbackMockDeals: Deal[] = [
-    // BackBay Capital Deals
-    {
-      id: 'backbay-1',
-      syndicator_id: 'back-bay-capital',
-      title: 'San Diego Multi-Family Offering',
-      location: 'San Diego, CA',
-      property_type: 'Multi-Family',
-      status: 'active' as const,
-      target_irr: 15,
-      minimum_investment: 500000,
-      investment_term: 5,
-      description: 'Back Bay Investment Group presents an opportunity to invest in a fund focused on multifamily development and value-add projects in Southern California. Leveraging the region\'s robust economy, diverse job market, and housing demand, the fund aims to capitalize on the region\'s housing shortage while delivering superior risk-adjusted returns.',
-      address: { street: '', city: 'San Diego', state: 'CA', zip: '' },
-      investment_highlights: ['Access to Institutional Grade Assets', 'Prime Residential Markets', 'Tax Deductions & Bonus Depreciation Benefits', 'Target 75% Cash on Cash', '15% Target Investor IRR', '1.75x Target Equity Multiple'],
-      total_equity: 10000000,
-      featured: true,
-      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_SanDeigo.jpg',
-      created_at: '2025-01-30T00:00:00Z',
-      updated_at: '2025-01-30T00:00:00Z',
-      slug: 'san-diego-multi-family-offering'
-    },
-    {
-      id: 'backbay-2',
-      syndicator_id: 'back-bay-capital',
-      title: 'Newport Beach Residential Offering',
-      location: 'Newport Beach, CA',
-      property_type: 'Residential',
-      status: 'active' as const,
-      target_irr: 20,
-      minimum_investment: 250000,
-      investment_term: 2,
-      description: 'Back Bay Investment Group is offering an exclusive opportunity to invest in residential real estate in Newport Beach and surrounding coastal communities, targeting high-demand neighborhoods with limited inventory and strong growth potential.',
-      address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
-      investment_highlights: ['Short Term Investment', 'Value-Add Strategy', 'Multiple Exit Options', 'Target 60% Cash on Cash', '20% Target Investor IRR', '1.6x Target Equity Multiple'],
-      total_equity: 10000000,
-      featured: true,
-      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg',
-      created_at: '2025-01-29T00:00:00Z',
-      updated_at: '2025-01-29T00:00:00Z',
-      slug: 'newport-beach-residential-offering'
-    },
-    {
-      id: 'backbay-3',
-      syndicator_id: 'back-bay-capital',
-      title: 'Orange County Pref Equity Offering',
-      location: 'Newport Beach, CA',
-      property_type: 'Preferred Equity',
-      status: 'active' as const,
-      target_irr: 15,
-      minimum_investment: 100000,
-      investment_term: 2,
-      description: 'Back Bay Investment Group is offering a preferred equity investment with a fixed 15% annual return, paid quarterly, and a targeted holding period of 1–3 years. Designed for investors seeking secure, predictable income, this offering provides priority in the capital stack above common equity.',
-      address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
-      investment_highlights: ['Quarterly Payments', 'Fixed 15% Return', 'Priority in the Equity Stack', 'Target 45% Cash on Cash', '15% Target Investor IRR', '1.45x Target Equity Multiple'],
-      total_equity: 10000000,
-      featured: true,
-      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_OrangeCounty.jpg',
-      created_at: '2025-01-28T00:00:00Z',
-      updated_at: '2025-01-28T00:00:00Z',
-      slug: 'orange-county-pref-equity-offering'
-    },
-    // Sutera Properties Deals
-    {
-      id: 'sutera-1',
-      syndicator_id: 'sutera-properties',
-      title: 'Greenville Apartment Complex',
-      location: 'Travelers Rest, SC',
-      property_type: 'Multi-Family',
-      status: 'active' as const,
-      target_irr: 17.19,
-      minimum_investment: 50000,
-      investment_term: 5,
-      description: 'Sutera Properties presents Liva, a ground-up multifamily development in Travelers Rest, South Carolina, a rapidly growing suburb of Greenville. The project spans 10.5 acres and includes 120 multifamily units and 32 individually platted townhomes, totaling 152 units.',
-      address: { street: '', city: 'Travelers Rest', state: 'SC', zip: '' },
-      investment_highlights: [
-        'Ground-up development',
-        '152 total units (120 multifamily + 32 townhomes)',
-        'Resort-style amenities',
-        'Pool and clubhouse',
-        'Fitness center',
-        'Dog park and bike barn',
-        'Prime location near Swamp Rabbit Trail',
-        'Shovel-ready with permits secured'
-      ],
-      total_equity: 12340000,
-      featured: true,
-              cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0980.jpeg',
-        media_urls: [
-          // Actual images that exist in liva_2025 folder (IMG_0980 to IMG_0986)
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0980.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0981.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0983.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0984.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0985.jpeg',
-          'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0986.jpeg'
-        ],
-      created_at: '2025-02-01T00:00:00Z',
-      updated_at: '2025-02-01T00:00:00Z',
-      slug: 'greenville-apartment-complex'
-    },
-    // Starboard Realty Deals
-    {
-      id: 'starboard-2',
-      syndicator_id: 'starboard-realty',
-      title: 'Multifamily ADU Opportunity',
-      location: 'Southern California',
-      property_type: 'Multi-Family',
-      status: 'active' as const,
-      target_irr: 30,
-      minimum_investment: 50000,
-      investment_term: 3,
-      description: 'Starboard Realty Advisors is offering investors the opportunity to invest in the high-demand multifamily markets of Southern California. With a growing pipeline of opportunities, the Fund will be opportunistically deploying capital to acquire small multifamily buildings with the intent of maximizing revenue growth through renovations and the addition of units by leveraging California\'s recent Accessory Dwelling Unit (ADU) legislation.',
-      address: { street: '', city: 'Southern California', state: 'CA', zip: '' },
-      investment_highlights: ['30%+ Target Property IRR', '1.60X - 1.90X+ Equity Multiple', '2-3 Year Investment Horizon', 'ADU Legislation Leverage', 'Economies of Scale', 'Cost Segregation & Tax Benefits'],
-      total_equity: 5000000,
-      featured: true,
-      cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png',
-      created_at: '2025-01-31T00:00:00Z',
-      updated_at: '2025-01-31T00:00:00Z',
-      slug: 'multifamily-adu-opportunity'
-    }
-  ];
 
   const sortOptions = [
     { value: 'recent', label: 'Recently Added' },
@@ -262,6 +112,10 @@ export function Browse() {
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     }
   });
+
+  // Separate highlighted deals from regular deals
+  const highlightedDeals = filteredDeals.filter(deal => deal.highlighted);
+  const regularDeals = filteredDeals.filter(deal => !deal.highlighted);
 
   const types = ['All', 'Office', 'Multi-Family', 'Medical', 'Student Housing', 'Industrial', 'Preferred Equity', 'Residential'];
   const statuses = ['All', 'Active', 'Coming Soon'];
@@ -459,50 +313,119 @@ export function Browse() {
           </div>
         </div>
 
-        {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-            {filteredDeals.map((deal, index) => (
-              <div key={deal.id} className="h-full">
-                <DealCard
-                  id={deal.id}
-                  slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                  image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
-                  title={deal.title}
-                  location={deal.location}
-                  metrics={{
-                    target: `${deal.target_irr}% IRR`,
-                    minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                    term: `${deal.investment_term} years`
-                  }}
-                  detailed
-                  isAuthenticated={!!user}
-                  onAuthRequired={() => setShowAuthModal(true)}
-                  verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
-                />
+        {/* Highlighted Deals Section */}
+        {highlightedDeals.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <TrendingUp className="h-6 w-6 text-yellow-500" />
+              <h3 className="text-xl font-semibold text-gray-800">Featured Opportunities</h3>
+              <div className="flex-1 h-px bg-gradient-to-r from-yellow-200 to-transparent"></div>
+            </div>
+            
+            {viewMode === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                {highlightedDeals.map((deal, index) => (
+                  <div key={deal.id} className="h-full">
+                    <DealCard
+                      id={deal.id}
+                      slug={deal.slug}
+                      image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                      title={deal.title}
+                      location={deal.location}
+                      metrics={{
+                        target: `${deal.target_irr}% IRR`,
+                        minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                        term: `${deal.investment_term} years`
+                      }}
+                      detailed
+                      isAuthenticated={!!user}
+                      onAuthRequired={() => setShowAuthModal(true)}
+                      verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="space-y-4">
+                {highlightedDeals.map((deal, index) => (
+                  <DealListItem
+                    key={deal.id}
+                    id={deal.id}
+                    slug={deal.slug}
+                    image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                    title={deal.title}
+                    location={deal.location}
+                    description={deal.description || ''}
+                    metrics={{
+                      target: `${deal.target_irr}% IRR`,
+                      minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                      term: `${deal.investment_term} years`
+                    }}
+                    isAuthenticated={!!user}
+                    onAuthRequired={() => setShowAuthModal(true)}
+                    verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredDeals.map((deal, index) => (
-              <DealListItem
-                key={deal.id}
-                id={deal.id}
-                slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
-                image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
-                title={deal.title}
-                location={deal.location}
-                description={deal.description || ''}
-                metrics={{
-                  target: `${deal.target_irr}% IRR`,
-                  minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                  term: `${deal.investment_term} years`
-                }}
-                isAuthenticated={!!user}
-                onAuthRequired={() => setShowAuthModal(true)}
-                verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
-              />
-            ))}
+        )}
+
+        {/* Regular Deals Section */}
+        {regularDeals.length > 0 && (
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <DollarSign className="h-6 w-6 text-blue-500" />
+              <h3 className="text-xl font-semibold text-gray-800">All Opportunities</h3>
+              <div className="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent"></div>
+            </div>
+            
+            {viewMode === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                {regularDeals.map((deal, index) => (
+                  <div key={deal.id} className="h-full">
+                    <DealCard
+                      id={deal.id}
+                      slug={deal.slug}
+                      image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                      title={deal.title}
+                      location={deal.location}
+                      metrics={{
+                        target: `${deal.target_irr}% IRR`,
+                        minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                        term: `${deal.investment_term} years`
+                      }}
+                      detailed
+                      isAuthenticated={!!user}
+                      onAuthRequired={() => setShowAuthModal(true)}
+                      verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {regularDeals.map((deal, index) => (
+                  <DealListItem
+                    key={deal.id}
+                    id={deal.id}
+                    slug={deal.slug}
+                    image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                    title={deal.title}
+                    location={deal.location}
+                    description={deal.description || ''}
+                    metrics={{
+                      target: `${deal.target_irr}% IRR`,
+                      minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                      term: `${deal.investment_term} years`
+                    }}
+                    isAuthenticated={!!user}
+                    onAuthRequired={() => setShowAuthModal(true)}
+                    verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
