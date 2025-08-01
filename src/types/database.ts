@@ -70,6 +70,7 @@ export interface Deal {
   total_equity: number;
   status: 'draft' | 'active' | 'closed' | 'archived';
   featured: boolean;
+  highlighted: boolean;
   cover_image_url: string | null;
   media_urls?: string[];
   created_at: string;
