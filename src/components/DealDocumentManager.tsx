@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { FileText, Upload, X, AlertCircle } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+import React, { useState, useEffect } from 'react';
+import { FileText, Upload, X, AlertCircle, Eye, EyeOff, Globe, Lock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface DealFile {
@@ -25,6 +24,11 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
   const [files, setFiles] = useState<DealFile[]>(existingFiles);
   const [error, setError] = useState<string | null>(null);
 
+  // Update local state when props change
+  useEffect(() => {
+    setFiles(existingFiles);
+  }, [existingFiles]);
+
   const uploadFile = async (file: File) => {
     try {
       setUploading(true);
@@ -35,8 +39,9 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
         throw new Error('File size must be less than 50MB');
       }
 
+      const timestamp = Date.now();
       const fileExt = file.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
+      const fileName = `${timestamp}.${fileExt}`;
       const filePath = `deals/${dealId}/documents/${fileName}`;
 
       // Upload to Supabase Storage
@@ -51,20 +56,8 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
         .from('deal-media')
         .getPublicUrl(filePath);
 
-      // Create file record
-      const newFile: DealFile = {
-        id: uuidv4(),
-        deal_id: dealId,
-        file_name: file.name,
-        file_type: file.type,
-        file_size: file.size,
-        file_url: publicUrl,
-        is_private: true,
-        created_at: new Date().toISOString()
-      };
-
-      // Save to database
-      const { error: dbError } = await supabase
+      // Save to database and let it generate the ID
+      const { data: insertedFile, error: dbError } = await supabase
         .from('deal_files')
         .insert([{
           deal_id: dealId,
@@ -73,11 +66,14 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
           file_size: file.size,
           file_url: publicUrl,
           is_private: true
-        }]);
+        }])
+        .select()
+        .single();
 
       if (dbError) throw dbError;
 
-      const updatedFiles = [...files, newFile];
+      // Use the database-generated file record
+      const updatedFiles = [...files, insertedFile];
       setFiles(updatedFiles);
       onFilesChange(updatedFiles);
 
@@ -93,23 +89,38 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
     try {
       setError(null);
       
-      // Delete from Supabase Storage
+      // Find the file to delete
       const file = files.find(f => f.id === fileId);
-      if (!file) return;
+      if (!file) {
+        setError('File not found');
+        return;
+      }
 
+      // Extract file path from URL for storage deletion
       const urlParts = file.file_url.split('/');
       const fileName = urlParts[urlParts.length - 1];
       const filePath = `deals/${dealId}/documents/${fileName}`;
       
-      await supabase.storage
+      // Delete from database first
+      const { error: dbError } = await supabase
+        .from('deal_files')
+        .delete()
+        .eq('id', fileId);
+
+      if (dbError) {
+        console.error('Database deletion error:', dbError);
+        throw new Error(`Failed to delete file from database: ${dbError.message}`);
+      }
+
+      // Then delete from storage (don't fail if storage deletion fails)
+      const { error: storageError } = await supabase.storage
         .from('deal-media')
         .remove([filePath]);
 
-      // Delete from database
-      await supabase
-        .from('deal_files')
-        .delete()
-        .match({ id: fileId });
+      if (storageError) {
+        console.warn('Storage deletion warning:', storageError);
+        // Don't throw here - the database record is already deleted
+      }
 
       // Update state
       const updatedFiles = files.filter(f => f.id !== fileId);
@@ -118,12 +129,60 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
 
     } catch (error) {
       console.error('Error removing file:', error);
-      setError('Error removing file');
+      setError(error instanceof Error ? error.message : 'Error removing file');
+    }
+  };
+
+  const toggleVisibility = async (fileId: string) => {
+    try {
+      setError(null);
+      
+      const file = files.find(f => f.id === fileId);
+      if (!file) return;
+
+      const newPrivacyStatus = !file.is_private;
+
+      // Update in database
+      const { error: updateError } = await supabase
+        .from('deal_files')
+        .update({ is_private: newPrivacyStatus })
+        .match({ id: fileId });
+
+      if (updateError) throw updateError;
+
+      // Update local state
+      const updatedFiles = files.map(f => 
+        f.id === fileId 
+          ? { ...f, is_private: newPrivacyStatus }
+          : f
+      );
+      
+      setFiles(updatedFiles);
+      onFilesChange(updatedFiles);
+
+    } catch (error) {
+      console.error('Error updating file visibility:', error);
+      setError('Error updating file visibility');
     }
   };
 
   return (
     <div className="space-y-4">
+      {/* Document Visibility Info */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="text-sm font-semibold text-blue-800 mb-2">Document Visibility Options</h3>
+        <div className="space-y-1 text-sm text-blue-700">
+          <div className="flex items-center gap-2">
+            <Globe className="h-4 w-4 text-green-500" />
+            <span><strong>Public:</strong> Visible to all website visitors</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Lock className="h-4 w-4 text-orange-500" />
+            <span><strong>Private:</strong> Only visible to signed-in accredited investors</span>
+          </div>
+        </div>
+      </div>
+
       {/* Upload Area */}
       <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
         <input
@@ -158,31 +217,75 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
       {files.length > 0 && (
         <div className="bg-white rounded-lg border divide-y">
           {files.map((file) => (
-            <div key={file.id} className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <FileText className="h-6 w-6 text-blue-600" />
-                <div>
-                  <div className="font-medium">{file.file_name}</div>
-                  <div className="text-sm text-gray-500">
-                    {(file.file_size / 1024 / 1024).toFixed(2)} MB
+            <div key={file.id} className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-blue-600" />
+                  <div>
+                    <div className="font-medium">{file.file_name}</div>
+                    <div className="text-sm text-gray-500">
+                      {(file.file_size / 1024 / 1024).toFixed(2)} MB
+                    </div>
                   </div>
                 </div>
+                <div className="flex items-center gap-4">
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700"
+                  >
+                    Download
+                  </a>
+                  <button
+                    onClick={() => removeFile(file.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <a
-                  href={file.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700"
-                >
-                  Download
-                </a>
-                <button
-                  onClick={() => removeFile(file.id)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <X className="h-5 w-5" />
-                </button>
+              
+              {/* Visibility Controls */}
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {file.is_private ? (
+                      <>
+                        <Lock className="h-4 w-4 text-orange-500" />
+                        <span className="text-sm text-orange-600 font-medium">Private</span>
+                        <span className="text-xs text-gray-500">Only visible to signed-in investors</span>
+                      </>
+                    ) : (
+                      <>
+                        <Globe className="h-4 w-4 text-green-500" />
+                        <span className="text-sm text-green-600 font-medium">Public</span>
+                        <span className="text-xs text-gray-500">Visible to all visitors</span>
+                      </>
+                    )}
+                  </div>
+                  
+                  <button
+                    onClick={() => toggleVisibility(file.id)}
+                    className={`flex items-center gap-2 px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                      file.is_private 
+                        ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                        : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                    }`}
+                  >
+                    {file.is_private ? (
+                      <>
+                        <Eye className="h-4 w-4" />
+                        Make Public
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="h-4 w-4" />
+                        Make Private
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
