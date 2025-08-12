@@ -12,6 +12,8 @@ interface Notification {
   created_at: string;
 }
 
+
+
 interface AuthState {
   user: User | null;
   profile: Profile | null;

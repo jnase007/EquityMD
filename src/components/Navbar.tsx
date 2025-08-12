@@ -146,6 +146,8 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
     }
   }
 
+
+
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();

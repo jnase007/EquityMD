@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, MailOpen, Building2, ChevronRight } from 'lucide-react';
+import { Bell, MailOpen, Building2, ChevronRight, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
@@ -55,6 +55,8 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
     }
   };
 
+
+
   const handleMarkAllRead = async () => {
     try {
       const { error } = await supabase
@@ -71,17 +73,21 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
 
   if (!isOpen) return null;
 
+  const hasItems = notifications.length > 0;
+
   return (
-    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50">
+    <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg z-50">
       <div className="p-4 border-b">
         <div className="flex justify-between items-center">
           <h3 className="font-bold">Notifications</h3>
-          <button
-            onClick={handleMarkAllRead}
-            className="text-sm text-blue-600 hover:text-blue-700"
-          >
-            Mark all as read
-          </button>
+          {hasItems && (
+            <button
+              onClick={handleMarkAllRead}
+              className="text-sm text-blue-600 hover:text-blue-700"
+            >
+              Mark all as read
+            </button>
+          )}
         </div>
       </div>
 
