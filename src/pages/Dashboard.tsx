@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { 
-  Building, Users, TrendingUp, Plus, Archive, FileText, CreditCard,
-  Share2, Eye
+  Building, Users, TrendingUp, Plus, FileText, CreditCard,
+  Share2, Eye, DollarSign
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
@@ -35,6 +35,8 @@ export function Dashboard() {
     price: 2.50
   });
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [selectedInvestmentRequests, setSelectedInvestmentRequests] = useState<string | null>(null);
+  const [investmentRequests, setInvestmentRequests] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -67,6 +69,12 @@ export function Dashboard() {
     }
   }, [selectedDeal]);
 
+  useEffect(() => {
+    if (selectedInvestmentRequests) {
+      fetchInvestmentRequests(selectedInvestmentRequests);
+    }
+  }, [selectedInvestmentRequests]);
+
   async function fetchDeals() {
     try {
       if (profile?.user_type === 'syndicator') {
@@ -76,6 +84,10 @@ export function Dashboard() {
           .select(`
             *,
             deal_interests (
+              id,
+              status
+            ),
+            investment_requests (
               id,
               status
             )
@@ -141,7 +153,7 @@ export function Dashboard() {
 
         if (activeDealsError) throw activeDealsError;
 
-        // Query 2: Count unique investors who have shown interest in this syndicator's deals
+        // Query 2a: Count unique investors who have shown interest in this syndicator's deals
         const { data: totalInvestorsData, error: totalInvestorsError } = await supabase
           .from('deal_interests')
           .select(`
@@ -152,10 +164,25 @@ export function Dashboard() {
 
         if (totalInvestorsError) throw totalInvestorsError;
 
-        // Get unique investor count
-        const uniqueInvestors = new Set(totalInvestorsData?.map(interest => interest.investor_id) || []);
+        // Query 2b: Count unique investors who have made investment requests for this syndicator's deals (approved/rejected only)
+        const { data: investmentInvestorsData, error: investmentInvestorsError } = await supabase
+          .from('investment_requests')
+          .select(`
+            user_id,
+            deals!inner(syndicator_id)
+          `)
+          .eq('deals.syndicator_id', user!.id)
+          .eq('status', 'approved');
 
-        // Query 3: Sum total investment requests for this syndicator's deals
+        if (investmentInvestorsError) throw investmentInvestorsError;
+
+        // Combine and get unique investor count from both sources
+        const uniqueInvestors = new Set([
+          ...(totalInvestorsData?.map(interest => interest.investor_id) || []),
+          ...(investmentInvestorsData?.map(request => request.user_id) || [])
+        ]);
+
+        // Query 3: Sum total investment requests for this syndicator's deals (approved only)
         const { data: totalRaisedData, error: totalRaisedError } = await supabase
           .from('investment_requests')
           .select(`
@@ -163,7 +190,7 @@ export function Dashboard() {
             deals!inner(syndicator_id)
           `)
           .eq('deals.syndicator_id', user!.id)
-          .in('status', ['approved', 'pending']); // Include approved and pending investments
+          .eq('status', 'approved'); // Only include approved investments
 
         if (totalRaisedError) throw totalRaisedError;
 
@@ -197,12 +224,12 @@ export function Dashboard() {
         // Get unique syndicator count
         const uniqueSyndicators = new Set(syndicatorData?.map(interest => (interest.deals as any)?.syndicator_id).filter(Boolean) || []);
 
-        // Query 3: Sum total investment requests this investor has made
+        // Query 3: Sum total investment requests this investor has made (approved only)
         const { data: investmentData, error: investmentError } = await supabase
           .from('investment_requests')
           .select('amount')
           .eq('user_id', user!.id)
-          .in('status', ['approved', 'pending']);
+          .eq('status', 'approved'); // Only include approved investments
 
         if (investmentError) throw investmentError;
 
@@ -248,10 +275,63 @@ export function Dashboard() {
 
       setCreditInfo({
         balance: credits?.balance || 0,
-        price: subscription?.tier?.extra_credit_price || 2.50
+        price: (subscription?.tier as any)?.extra_credit_price || 2.50
       });
     } catch (error) {
       console.error('Error fetching credit info:', error);
+    }
+  }
+
+  async function fetchInvestmentRequests(dealId: string) {
+    try {
+      // Fetch investment requests for this deal
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('investment_requests')
+        .select('*')
+        .eq('deal_id', dealId)
+        .order('created_at', { ascending: false });
+
+      if (requestsError) throw requestsError;
+
+      if (!requestsData || requestsData.length === 0) {
+        console.log('No investment requests found for deal:', dealId);
+        setInvestmentRequests([]);
+        return;
+      }
+
+      console.log('Found investment requests:', requestsData);
+
+      // Fetch user profiles for each request
+      const requestsWithUsers = await Promise.all(
+        requestsData.map(async (request) => {
+          const { data: userData, error: userError } = await supabase
+            .from('profiles')
+            .select()
+            .eq('id', request.user_id)
+            .single();
+          
+          if (userError) {
+            console.error('Error fetching user profile for user_id:', request.user_id, userError);
+            return { 
+              ...request, 
+              user: { 
+                first_name: 'Unknown', 
+                last_name: 'User', 
+                email: 'unknown@email.com' 
+              } 
+            };
+          }
+          
+          console.log('Found user data for request:', request.id, userData);
+          return { ...request, user: userData };
+        })
+      );
+
+      console.log('Final requests with users:', requestsWithUsers);
+      setInvestmentRequests(requestsWithUsers);
+    } catch (error) {
+      console.error('Error fetching investment requests:', error);
+      setInvestmentRequests([]);
     }
   }
 
@@ -283,6 +363,31 @@ export function Dashboard() {
       alert('Failed to update deal status. Please try again.');
     } finally {
       setUpdatingStatus(null);
+    }
+  }
+
+  async function updateInvestmentRequestStatus(requestId: string, newStatus: 'approved' | 'rejected') {
+    try {
+      const { error } = await supabase
+        .from('investment_requests')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      // Update local state
+      setInvestmentRequests(investmentRequests.map(request => 
+        request.id === requestId ? { ...request, status: newStatus } : request
+      ));
+
+      // Refresh stats to reflect approved/rejected changes
+      await fetchStats();
+    } catch (error) {
+      console.error('Error updating investment request status:', error);
+      alert('Failed to update investment request status. Please try again.');
     }
   }
 
@@ -461,7 +566,7 @@ export function Dashboard() {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Interested Investors
+                    {profile?.user_type === 'syndicator' ? 'Pending Requests' : 'Interest Level'}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Target Raise
@@ -524,7 +629,10 @@ export function Dashboard() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {(deal as any).deal_interests?.length || 0}
+                        {profile?.user_type === 'syndicator' 
+                          ? `${(deal as any).investment_requests?.filter((req: any) => req.status === 'pending').length || 0} pending`
+                          : `${(deal as any).deal_interests?.length || 0} interested`
+                        }
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${deal.total_equity.toLocaleString()}
@@ -550,15 +658,12 @@ export function Dashboard() {
                           </Tooltip>
                           
                           {profile?.user_type === 'syndicator' && (
-                            <Tooltip content="Archive deal">
-                              <button 
-                                onClick={() => updateDealStatus(deal.id, 'archived')}
-                                disabled={updatingStatus === deal.id}
-                                className={`text-gray-600 hover:text-red-600 ${
-                                  updatingStatus === deal.id ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
+                            <Tooltip content={selectedInvestmentRequests === deal.id ? "Hide investment requests" : "Manage investment requests"}>
+                              <button
+                                onClick={() => setSelectedInvestmentRequests(selectedInvestmentRequests === deal.id ? null : deal.id)}
+                                className={`${selectedInvestmentRequests === deal.id ? 'text-green-600' : 'text-gray-600'} hover:text-green-900`}
                               >
-                                <Archive className="h-5 w-5" />
+                                <DollarSign className="h-5 w-5" />
                               </button>
                             </Tooltip>
                           )}
@@ -583,6 +688,128 @@ export function Dashboard() {
               existingFiles={dealFiles}
               onFilesChange={setDealFiles}
             />
+          </div>
+        )}
+
+        {/* Investment Requests Manager */}
+        {selectedInvestmentRequests && profile?.user_type === 'syndicator' && (
+          <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-6">
+              Investment Requests
+            </h2>
+            
+            {investmentRequests.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>No investment requests yet for this deal.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Investor
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {investmentRequests.map((request) => (
+                      <tr key={request.id}>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {request.user?.full_name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {request.user?.email}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                          ${request.amount.toLocaleString()}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            request.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            request.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            request.status === 'withdrawn' ? 'bg-gray-100 text-gray-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(request.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                          {request.status === 'pending' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => updateInvestmentRequestStatus(request.id, 'approved')}
+                                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => updateInvestmentRequestStatus(request.id, 'rejected')}
+                                className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                          {request.status === 'approved' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to revoke this approved investment? This action will remove it from your total raised amount.')) {
+                                    updateInvestmentRequestStatus(request.id, 'rejected');
+                                  }
+                                }}
+                                className="bg-orange-600 text-white px-3 py-1 rounded text-xs hover:bg-orange-700 transition"
+                              >
+                                Revoke
+                              </button>
+                            </div>
+                          )}
+                          {request.status === 'rejected' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to approve this previously rejected investment? This will add it to your total raised amount.')) {
+                                    updateInvestmentRequestStatus(request.id, 'approved');
+                                  }
+                                }}
+                                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition"
+                              >
+                                Approve
+                              </button>
+                            </div>
+                          )}
+                          {request.status === 'withdrawn' && (
+                            <span className="text-gray-400 text-xs">Withdrawn by investor</span>
+                          )}
+                          {!['pending', 'approved', 'rejected', 'withdrawn'].includes(request.status) && (
+                            <span className="text-gray-400 text-xs">No actions available</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
