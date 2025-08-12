@@ -40,8 +40,8 @@ export function calculateProfileCompletion(
 ): ProfileCompletionResult {
   const missingFields: string[] = [];
   const nextSteps: string[] = [];
-  let completedFields = 1; // Start at 1 for account creation (10%)
-  let totalFields = 10; // Base total fields for investors
+  let completedFields = 1; // Start at 1 for account creation
+  let totalFields = 12; // Base total fields for investors (matches actual field count)
 
   // Check basic profile fields (shared)
   if (profile.full_name) {

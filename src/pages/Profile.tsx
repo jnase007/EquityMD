@@ -1083,6 +1083,10 @@ export function Profile() {
             {profile?.user_type === 'investor' ? (
               <InvestorProfileForm 
                 setMessage={(msg: string) => {
+                  if (!msg || msg.trim() === '') {
+                    // Ignore empty messages (used for clearing)
+                    return;
+                  }
                   if (msg.includes('successfully')) {
                     toast.success(msg);
                     fetchAdditionalProfile();
@@ -1094,6 +1098,10 @@ export function Profile() {
             ) : (
               <SyndicatorProfileForm 
                 setMessage={(msg: string) => {
+                  if (!msg || msg.trim() === '') {
+                    // Ignore empty messages (used for clearing)
+                    return;
+                  }
                   if (msg.includes('successfully')) {
                     toast.success(msg);
                     fetchAdditionalProfile();

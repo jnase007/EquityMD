@@ -160,13 +160,13 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
   // Debounced auto-save effect
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (user && Object.values(formData).some(value => value !== '')) {
+      if (user && Object.values(formData).some(value => value !== '') && !loading) {
         autoSave(formData);
       }
     }, 2000); // 2 second delay
 
     return () => clearTimeout(timeoutId);
-  }, [formData, emailPreferences]);
+  }, [formData, emailPreferences, loading]);
 
   async function fetchInvestorProfile() {
     if (!user) return;
@@ -261,6 +261,7 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
         throw investorError;
       }
 
+      setLastSaved(new Date()); // Update last saved time for auto-save indicator
       setMessage('Profile updated successfully!');
       
       // Refresh the investor profile to show the updated values
