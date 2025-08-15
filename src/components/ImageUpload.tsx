@@ -15,6 +15,7 @@ interface ImageUploadProps {
   maxWidth?: number;
   maxHeight?: number;
   circularCrop?: boolean;
+  label?: string; // Label for the image type (e.g., "Profile Picture", "Company Logo")
 }
 
 export function ImageUpload({ 
@@ -26,7 +27,8 @@ export function ImageUpload({
   cropAspectRatio = 1,
   maxWidth = 800,
   maxHeight = 800,
-  circularCrop = true
+  circularCrop = true,
+  label = "Profile Picture"
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -252,7 +254,7 @@ export function ImageUpload({
           <div className="relative">
             <img
               src={currentImageUrl}
-              alt="Profile"
+              alt={label}
               className={`w-32 h-32 object-cover border-2 border-gray-200 ${
                 circularCrop ? 'rounded-full' : 'rounded-lg'
               }`}
@@ -262,7 +264,7 @@ export function ImageUpload({
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="p-1.5 bg-blue-500 text-white rounded-full hover:bg-blue-600 shadow-lg transition-colors"
-                  title="Edit image"
+                  title={`Edit ${label.toLowerCase()}`}
                 >
                   <Edit3 className="h-3 w-3" />
                 </button>
@@ -270,14 +272,14 @@ export function ImageUpload({
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="p-1.5 bg-green-500 text-white rounded-full hover:bg-green-600 shadow-lg transition-colors"
-                title="Upload new image"
+                title={`Upload new ${label.toLowerCase()}`}
               >
                 <Upload className="h-3 w-3" />
               </button>
               <button
                 onClick={handleRemoveImage}
                 className="p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 shadow-lg transition-colors"
-                title="Remove image"
+                title={`Remove ${label.toLowerCase()}`}
               >
                 <X className="h-3 w-3" />
               </button>
@@ -328,7 +330,7 @@ export function ImageUpload({
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center space-x-2">
                   <CropIcon className="h-5 w-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold">Edit Profile Picture</h3>
+                  <h3 className="text-lg font-semibold">Edit {label}</h3>
                 </div>
                 <button
                   onClick={handleCancelCrop}
@@ -482,7 +484,7 @@ export function ImageUpload({
                       ) : (
                         <>
                           <Check className="h-4 w-4 mr-2" />
-                          Save Profile Picture
+                          Save {label}
                         </>
                       )}
                     </button>

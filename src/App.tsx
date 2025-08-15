@@ -80,6 +80,7 @@ export default function App() {
   const location = useLocation();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [requireAuth, setRequireAuth] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // Preload critical resources on app start
   useEffect(() => {
@@ -219,6 +220,9 @@ export default function App() {
           await fetchProfile(session.user.id);
         }
         
+        // Set loading to false after initial auth check
+        setAuthLoading(false);
+        
         const {
           data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event: string, session: any) => {
@@ -238,6 +242,8 @@ export default function App() {
         return () => subscription.unsubscribe();
       } catch (error) {
         console.error('Auth initialization error:', error);
+        // Set loading to false even on error to prevent infinite loading
+        setAuthLoading(false);
       }
     };
   
@@ -279,238 +285,152 @@ export default function App() {
       profile: profile?.id,
       requireAuth,
       requiresAuth,
+      authLoading,
       currentPath: location.pathname,
       showAuthModal
     });
-  }, [user, profile, requireAuth, requiresAuth, location.pathname, showAuthModal]);
+  }, [user, profile, requireAuth, requiresAuth, authLoading, location.pathname, showAuthModal]);
 
   return (
     <div className="transition-opacity duration-300 ease-in-out">
-      <Routes>
+      <ErrorBoundary>
+        <Suspense fallback={<MinimalLoadingFallback />}>
+          <Routes>
         {/* Public Routes */}
-        <Route path="/" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Home />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/how-it-works" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <HowItWorks />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/how-it-works-improved" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <HowItWorksImproved />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-
-        <Route path="/contact" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Contact />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/about" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <About />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/blog" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Blog />
-            </Suspense>
-          </ErrorBoundary>
-        } />
+        <Route path="/" element={<Home />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/how-it-works-improved" element={<HowItWorksImproved />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/blog" element={<Blog />} />
         <Route path="/pricing" element={<Navigate to="/" replace />} />
         <Route path="/new-pricing" element={<Navigate to="/" replace />} />
-        <Route path="/email-preview" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <EmailPreview />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/email-test" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <EmailTest />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/loader-demo" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <LoaderDemo />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/legal/privacy" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Privacy />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/legal/terms" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Terms />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/legal/disclaimer" element={
-          <ErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <Disclaimer />
-            </Suspense>
-          </ErrorBoundary>
-        } />
-        <Route path="/resources/glossary" element={<Suspense fallback={<MinimalLoadingFallback />}><Glossary /></Suspense>} />
+        <Route path="/email-preview" element={<EmailPreview />} />
+        <Route path="/email-test" element={<EmailTest />} />
+        <Route path="/loader-demo" element={<LoaderDemo />} />
+        <Route path="/legal/privacy" element={<Privacy />} />
+        <Route path="/legal/terms" element={<Terms />} />
+        <Route path="/legal/disclaimer" element={<Disclaimer />} />
+        <Route path="/resources/glossary" element={<Glossary />} />
 
         {/* Signup Routes */}
-        <Route path="/signup/start" element={<Suspense fallback={<MinimalLoadingFallback />}><SignupStart /></Suspense>} />
-        <Route path="/signup/:type/email" element={<Suspense fallback={<MinimalLoadingFallback />}><SignupEmail /></Suspense>} />
-        <Route path="/signup/:type/password" element={<Suspense fallback={<MinimalLoadingFallback />}><SignupPassword /></Suspense>} />
-        <Route path="/signup/:type/name" element={<Suspense fallback={<MinimalLoadingFallback />}><SignupName /></Suspense>} />
-        <Route path="/signup/:type/accreditation" element={<Suspense fallback={<MinimalLoadingFallback />}><SignupAccreditation /></Suspense>} />
-        <Route path="/signup/:type/continue" element={<Suspense fallback={<MinimalLoadingFallback />}><SignupContinue /></Suspense>} />
+        <Route path="/signup/start" element={<SignupStart />} />
+        <Route path="/signup/:type/email" element={<SignupEmail />} />
+        <Route path="/signup/:type/password" element={<SignupPassword />} />
+        <Route path="/signup/:type/name" element={<SignupName />} />
+        <Route path="/signup/:type/accreditation" element={<SignupAccreditation />} />
+        <Route path="/signup/:type/continue" element={<SignupContinue />} />
 
         {/* Public Browse Routes - No Authentication Required */}
-        <Route 
-          path="/find" 
-          element={<Suspense fallback={<MinimalLoadingFallback />}><Browse /></Suspense>} 
-        />
+        <Route path="/find" element={<Browse />} />
         {/* Redirect old /browse URL to /find */}
-        <Route 
-          path="/browse" 
-          element={<Navigate to="/find" replace />} 
-        />
-        <Route 
-          path="/directory" 
-          element={<Suspense fallback={<MinimalLoadingFallback />}><Directory /></Suspense>} 
-        />
+        <Route path="/browse" element={<Navigate to="/find" replace />} />
+        <Route path="/directory" element={<Directory />} />
         
         {/* Protected Routes */}
         <Route 
           path="/success-stories" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><SuccessStories /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <SuccessStories />)} 
         />
         <Route 
           path="/resources/due-diligence" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><DueDiligence /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <DueDiligence />)} 
         />
         <Route 
           path="/resources/calculator" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><InvestmentCalculator /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <InvestmentCalculator />)} 
         />
         <Route 
           path="/resources/market-reports" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><MarketReportsHub /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <MarketReportsHub />)} 
         />
         <Route 
           path="/resources/market-reports/:state" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><StateMarketReport /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <StateMarketReport />)} 
         />
         <Route 
           path="/resources/education" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Education /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Education />)} 
         />
         <Route 
           path="/market-map" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><MarketMap /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <MarketMap />)} 
         />
         <Route 
           path="/legal/accreditation" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Accreditation /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Accreditation />)} 
         />
         <Route 
           path="/legal/compliance" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Compliance /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Compliance />)} 
         />
-        <Route 
-          path="/cities/:city" 
-          element={<Suspense fallback={<MinimalLoadingFallback />}><CityMarketReport /></Suspense>} 
-        />
+        <Route path="/cities/:city" element={<CityMarketReport />} />
         <Route 
           path="/deals/:slug" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><DealDetails /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <DealDetails />)} 
         />
         <Route 
           path="/syndicators/:slug" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><SyndicatorProfile /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <SyndicatorProfile />)} 
         />
         <Route 
           path="/profile" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Profile /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Profile />)} 
         />
         <Route 
           path="/dashboard" 
-          element={!user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Dashboard /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Dashboard />)} 
         />
         <Route 
           path="/deals/new" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><NewDeal /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <NewDeal />)} 
         />
         <Route 
           path="/inbox" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Inbox /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Inbox />)} 
         />
         <Route 
           path="/favorites" 
-          element={requireAuth && !user ? <Navigate to="/" /> : <Suspense fallback={<MinimalLoadingFallback />}><Favorites /></Suspense>} 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Favorites />)} 
         />
 
         {/* Admin Routes */}
         <Route path="/admin" element={
           <AdminErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <AdminLogin />
-            </Suspense>
+            <AdminLogin />
           </AdminErrorBoundary>
         } />
         <Route path="/admin/dashboard" element={
           <AdminErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <AdminDashboard />
-            </Suspense>
+            <AdminDashboard />
           </AdminErrorBoundary>
         } />
         <Route path="/dev-admin/*" element={
           <AdminErrorBoundary>
-            <Suspense fallback={<MinimalLoadingFallback />}>
-              <AdminDashboard />
-            </Suspense>
+            <AdminDashboard />
           </AdminErrorBoundary>
         } />
 
         {/* Dashboard Review Route - No Authentication Required */}
-        <Route path="/dashboard-review" element={<Suspense fallback={<MinimalLoadingFallback />}><DashboardReview /></Suspense>} />
+        <Route path="/dashboard-review" element={<DashboardReview />} />
 
         {/* Test Messaging Route */}
-        <Route path="/test-messaging" element={<Suspense fallback={<MinimalLoadingFallback />}><TestMessaging /></Suspense>} />
+        <Route path="/test-messaging" element={<TestMessaging />} />
 
         {/* Test Auth Route */}
-        <Route path="/test-auth" element={<Suspense fallback={<MinimalLoadingFallback />}><TestAuth /></Suspense>} />
+        <Route path="/test-auth" element={<TestAuth />} />
 
         {/* Tooltip Demo Route */}
-        <Route path="/tooltip-demo" element={<Suspense fallback={<MinimalLoadingFallback />}><TooltipDemo /></Suspense>} />
+        <Route path="/tooltip-demo" element={<TooltipDemo />} />
 
         {/* Onboarding Demo Route */}
-        <Route path="/onboarding-demo" element={<Suspense fallback={<MinimalLoadingFallback />}><OnboardingDemo /></Suspense>} />
+        <Route path="/onboarding-demo" element={<OnboardingDemo />} />
 
         {/* 404 Route */}
-        <Route path="*" element={<Suspense fallback={<MinimalLoadingFallback />}><NotFound /></Suspense>} />
-      </Routes>
+        <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
 
       {showAuthModal && (
         <AuthModal 

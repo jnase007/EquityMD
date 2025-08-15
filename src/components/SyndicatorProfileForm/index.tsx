@@ -71,13 +71,13 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
   // Debounced auto-save effect
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (user && Object.values(formData).some(value => value !== '')) {
+      if (user && Object.values(formData).some(value => value !== '') && !loading) {
         autoSave(formData);
       }
     }, 2000); // 2 second delay
 
     return () => clearTimeout(timeoutId);
-  }, [formData]);
+  }, [formData, loading]);
 
   async function fetchSyndicatorProfile() {
     if (!user) return;
@@ -143,6 +143,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
 
       if (syndicatorError) throw syndicatorError;
 
+      setLastSaved(new Date()); // Update last saved time for auto-save indicator
       setMessage('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);

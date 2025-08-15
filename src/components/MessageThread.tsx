@@ -12,7 +12,11 @@ interface Message {
   created_at: string;
   read: boolean;
   deal_id?: string;
-  deal_title?: string;
+  deal?: {
+    id: string;
+    title: string;
+    slug: string;
+  };
 }
 
 interface MessageThreadProps {
@@ -31,17 +35,22 @@ export function MessageThread({ recipientId, recipientName, recipientType, dealC
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
       fetchMessages();
-      subscribeToMessages();
+      const unsubscribe = subscribeToMessages();
       markMessagesAsRead();
+      
+      return unsubscribe;
     }
   }, [user, recipientId]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -52,7 +61,14 @@ export function MessageThread({ recipientId, recipientName, recipientType, dealC
     try {
       const { data, error } = await supabase
         .from('messages')
-        .select('*')
+        .select(`
+          *,
+          deal:deals(
+            id,
+            title,
+            slug
+          )
+        `)
         .or(`and(sender_id.eq.${user!.id},receiver_id.eq.${recipientId}),and(sender_id.eq.${recipientId},receiver_id.eq.${user!.id})`)
         .order('created_at', { ascending: true });
 
@@ -65,14 +81,71 @@ export function MessageThread({ recipientId, recipientName, recipientType, dealC
 
   function subscribeToMessages() {
     const subscription = supabase
-      .channel('messages')
+      .channel(`messages-${recipientId}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
-        table: 'messages',
-        filter: `receiver_id=eq.${user!.id}`
-      }, () => {
-        fetchMessages();
+        table: 'messages'
+      }, async (payload) => {
+        const newMessage = payload.new as Message;
+        
+        // Check if this message is relevant to this conversation
+        const isRelevant = (newMessage.sender_id === user!.id && newMessage.receiver_id === recipientId) ||
+                          (newMessage.sender_id === recipientId && newMessage.receiver_id === user!.id);
+        
+        if (!isRelevant) {
+          return;
+        }
+        
+        // Skip if this is an optimistic message we already added
+        if (newMessage.id.toString().startsWith('temp-')) {
+          return;
+        }
+        
+        // Check if message already exists in our state (to prevent duplicates)
+        setMessages(prevMessages => {
+          const messageExists = prevMessages.some(msg => msg.id === newMessage.id);
+          if (messageExists) {
+            return prevMessages;
+          }
+          
+          // Fetch complete message with deal information in the background
+          (async () => {
+            try {
+              const { data, error } = await supabase
+                .from('messages')
+                .select(`
+                  *,
+                  deal:deals(
+                    id,
+                    title,
+                    slug
+                  )
+                `)
+                .eq('id', newMessage.id)
+                .single();
+
+              if (error) throw error;
+              
+              // Update the message with complete data
+              setMessages(currentMessages => 
+                currentMessages.map(msg => 
+                  msg.id === newMessage.id ? data : msg
+                )
+              );
+              
+              // Mark as read if user is the receiver
+              if (newMessage.receiver_id === user!.id) {
+                markMessageAsRead(newMessage.id);
+              }
+            } catch (error) {
+              console.error('Error fetching new message details:', error);
+            }
+          })();
+          
+          // Add the basic message immediately
+          return [...prevMessages, newMessage];
+        });
       })
       .subscribe();
 
@@ -95,45 +168,101 @@ export function MessageThread({ recipientId, recipientName, recipientType, dealC
     }
   }
 
+  async function markMessageAsRead(messageId: string) {
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ read: true })
+        .eq('id', messageId)
+        .eq('receiver_id', user!.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+    }
+  }
+
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
     if (!newMessage.trim() || !user) return;
 
+    const messageContent = newMessage.trim();
+    setNewMessage('');
     setLoading(true);
+
+    // Create optimistic message for immediate UI update
+    const optimisticMessage: Message = {
+      id: `temp-${Date.now()}`, // Temporary ID
+      sender_id: user.id,
+      receiver_id: recipientId,
+      content: messageContent,
+      created_at: new Date().toISOString(),
+      read: false,
+      deal_id: dealContext?.deal_id,
+      deal: dealContext ? {
+        id: dealContext.deal_id,
+        title: dealContext.deal_title,
+        slug: ''
+      } : undefined
+    };
+
+    // Add optimistic message to UI immediately
+    setMessages(prevMessages => [...prevMessages, optimisticMessage]);
+
     try {
-      const messageData = {
+      const messageData: any = {
         sender_id: user.id,
         receiver_id: recipientId,
-        content: newMessage.trim(),
+        content: messageContent,
         read: false
       };
 
       // Only add deal context if provided
       if (dealContext) {
         messageData.deal_id = dealContext.deal_id;
-        messageData.deal_title = dealContext.deal_title;
       }
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('messages')
-        .insert([messageData]);
+        .insert([messageData])
+        .select(`
+          *,
+          deal:deals(
+            id,
+            title,
+            slug
+          )
+        `)
+        .single();
 
       if (error) throw error;
 
-      setNewMessage('');
-      fetchMessages();
+      // Replace optimistic message with real message from server
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg.id === optimisticMessage.id ? data : msg
+        )
+      );
     } catch (error) {
       console.error('Error sending message:', error);
       alert('Error sending message. Please try again.');
+      
+      // Remove optimistic message on error
+      setMessages(prevMessages => 
+        prevMessages.filter(msg => msg.id !== optimisticMessage.id)
+      );
+      
+      // Restore message content
+      setNewMessage(messageContent);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="h-full flex flex-col">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -146,11 +275,11 @@ export function MessageThread({ recipientId, recipientName, recipientType, dealC
                   : 'bg-gray-100 text-gray-900'
               }`}
             >
-              {message.deal_title && (
+              {message.deal && (
                 <div className={`text-sm mb-2 ${
                   message.sender_id === user!.id ? 'text-blue-100' : 'text-blue-600'
                 }`}>
-                  Re: {message.deal_title}
+                  Re: {message.deal.title}
                 </div>
               )}
               <p className="break-words">{message.content}</p>
@@ -168,7 +297,7 @@ export function MessageThread({ recipientId, recipientName, recipientType, dealC
       </div>
 
       {/* Message Input */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t flex-shrink-0">
         <form onSubmit={sendMessage} className="flex gap-2">
           <input
             type="text"

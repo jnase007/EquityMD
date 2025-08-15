@@ -126,15 +126,25 @@ export function DealDetails() {
 
       setDeal(dealData);
 
-      // Fetch deal files
-      const { data: fileData, error: fileError } = await supabase
+      // Fetch deal files - show both public and private files to authenticated users
+      let fileQuery = supabase
         .from('deal_files')
         .select('*')
-        .eq('deal_id', dealData.id)
-        .eq('is_private', false);
+        .eq('deal_id', dealData.id);
 
-      if (fileError) throw fileError;
-      setFiles(fileData || []);
+      // If user is not authenticated, only show public files
+      if (!user) {
+        fileQuery = fileQuery.eq('is_private', false);
+      }
+
+      const { data: fileData, error: fileError } = await fileQuery;
+
+      if (fileError) {
+        console.error('Error fetching deal files:', fileError);
+        setFiles([]); // Set empty array on error so UI shows fallback message
+      } else {
+        setFiles(fileData || []);
+      }
 
       // Fetch deal media
       const { data: mediaData, error: mediaError } = await supabase
@@ -295,21 +305,49 @@ export function DealDetails() {
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-4">Documents</h2>
               <div className="space-y-4">
-                {files.map((file) => (
-                  <a
-                    key={file.id}
-                    href={file.file_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center p-4 border rounded-lg hover:bg-gray-50"
-                  >
-                    <FileText className="h-6 w-6 text-blue-600 mr-3" />
-                    <div>
-                      <div className="font-medium">{file.file_name}</div>
-                      <div className="text-sm text-gray-500">{file.file_type}</div>
-                    </div>
-                  </a>
-                ))}
+                {files.length > 0 ? (
+                  files.map((file) => (
+                    <a
+                      key={file.id}
+                      href={file.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center">
+                        <FileText className="h-6 w-6 text-blue-600 mr-3" />
+                        <div>
+                          <div className="font-medium">{file.file_name}</div>
+                          <div className="text-sm text-gray-500">{file.file_type}</div>
+                        </div>
+                      </div>
+                      {file.is_private && user && (
+                        <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
+                          Private
+                        </span>
+                      )}
+                    </a>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 mb-2">No documents available</p>
+                    {!user ? (
+                      <p className="text-sm text-gray-400">
+                        <span 
+                          onClick={() => setShowAuthModal(true)}
+                          className="text-blue-600 hover:text-blue-700 cursor-pointer"
+                        >
+                          Sign in
+                        </span> to view private documents
+                      </p>
+                    ) : (
+                      <p className="text-sm text-gray-400">
+                        Documents will appear here when uploaded by the syndicator
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

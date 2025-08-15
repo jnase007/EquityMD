@@ -60,37 +60,66 @@ export function NewDeal() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user) {
+      alert('You must be logged in to create a deal.');
+      return;
+    }
 
+    console.log('Creating deal with user:', user.id);
+    console.log('Form data:', formData);
+    
     setLoading(true);
     try {
+      // Prepare deal data
+      const dealData = {
+        syndicator_id: user.id,
+        title: formData.title,
+        description: formData.description,
+        property_type: formData.propertyType,
+        location: formData.location,
+        address: formData.address,
+        investment_highlights: formData.investmentHighlights.filter(Boolean),
+        minimum_investment: parseFloat(formData.minimumInvestment),
+        target_irr: parseFloat(formData.targetIrr),
+        investment_term: parseInt(formData.investmentTerm),
+        total_equity: parseFloat(formData.totalEquity),
+        cover_image_url: formData.coverImageUrl,
+        status: 'draft'
+      };
+
+      console.log('Inserting deal data:', dealData);
+
       // Create the deal
       const { data: deal, error: dealError } = await supabase
         .from('deals')
-        .insert([{
-          syndicator_id: user.id,
-          title: formData.title,
-          description: formData.description,
-          property_type: formData.propertyType,
-          location: formData.location,
-          address: formData.address,
-          investment_highlights: formData.investmentHighlights.filter(Boolean),
-          minimum_investment: parseFloat(formData.minimumInvestment),
-          target_irr: parseFloat(formData.targetIrr),
-          investment_term: parseInt(formData.investmentTerm),
-          total_equity: parseFloat(formData.totalEquity),
-          cover_image_url: formData.coverImageUrl,
-          status: 'draft'
-        }])
-        .select()
+        .insert([dealData])
+        .select('*')
         .single();
+
+      console.log('Insert result - data:', deal, 'error:', dealError);
 
       if (dealError) throw dealError;
 
-      navigate(`/deal/${deal.id}`);
-    } catch (error) {
+      navigate(`/deals/${deal.slug}`);
+    } catch (error: any) {
       console.error('Error creating deal:', error);
-      alert('Error creating deal. Please try again.');
+      
+      // Provide more specific error messages
+      let errorMessage = 'Error creating deal. Please try again.';
+      
+      if (error?.message) {
+        if (error.message.includes('permission') || error.message.includes('policy')) {
+          errorMessage = 'Permission denied. Please ensure you have syndicator privileges.';
+        } else if (error.message.includes('duplicate') || error.message.includes('unique')) {
+          errorMessage = 'A deal with this title already exists. Please use a different title.';
+        } else if (error.message.includes('invalid') || error.message.includes('constraint')) {
+          errorMessage = 'Please check all required fields and try again.';
+        } else {
+          errorMessage = `Error: ${error.message}`;
+        }
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

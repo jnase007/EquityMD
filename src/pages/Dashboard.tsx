@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { 
-  Building, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard,
-  Share2, Star
+  Building, Users, TrendingUp, Plus, FileText, CreditCard,
+  Share2, Eye, DollarSign
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
@@ -11,6 +11,7 @@ import { CreditStatus } from '../components/syndicator/CreditStatus';
 import { ReferralModal } from '../components/ReferralModal';
 import { ReferralStatus } from '../components/ReferralStatus';
 import { PurchaseCreditsModal } from '../components/PurchaseCreditsModal';
+import { Tooltip } from '../components/Tooltip';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import type { Deal } from '../types/database';
@@ -33,6 +34,9 @@ export function Dashboard() {
     balance: 0,
     price: 2.50
   });
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [selectedInvestmentRequests, setSelectedInvestmentRequests] = useState<string | null>(null);
+  const [investmentRequests, setInvestmentRequests] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -65,29 +69,56 @@ export function Dashboard() {
     }
   }, [selectedDeal]);
 
+  useEffect(() => {
+    if (selectedInvestmentRequests) {
+      fetchInvestmentRequests(selectedInvestmentRequests);
+    }
+  }, [selectedInvestmentRequests]);
+
   async function fetchDeals() {
     try {
-      const { data, error } = await supabase
-        .from('deals')
-        .select(`
-          *,
-          deal_interests (
-            id,
-            status
-          )
-        `)
-        .eq('syndicator_id', user!.id)
-        .order('created_at', { ascending: false });
+      if (profile?.user_type === 'syndicator') {
+        // Fetch deals owned by this syndicator
+        const { data, error } = await supabase
+          .from('deals')
+          .select(`
+            *,
+            deal_interests (
+              id,
+              status
+            ),
+            investment_requests (
+              id,
+              status
+            )
+          `)
+          .eq('syndicator_id', user!.id)
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      // Only include deals from the three real syndicators
-      const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
-      const filteredDeals = data ? data.filter(deal => 
-        allowedSyndicators.includes(deal.syndicator_id)
-      ) : [];
-      
-      setDeals(filteredDeals);
+        if (error) throw error;
+        setDeals(data || []);
+      } else {
+        // Fetch deals this investor has shown interest in or favorited
+        const { data, error } = await supabase
+          .from('deal_interests')
+          .select(`
+            deals (
+              *,
+              deal_interests (
+                id,
+                status
+              )
+            )
+          `)
+          .eq('investor_id', user!.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        
+        // Extract deals from the join result
+        const interestedDeals = (data?.map(interest => interest.deals).filter(Boolean) as unknown) as Deal[] || [];
+        setDeals(interestedDeals);
+      }
     } catch (error) {
       console.error('Error fetching deals:', error);
     } finally {
@@ -111,14 +142,113 @@ export function Dashboard() {
 
   async function fetchStats() {
     try {
-      // This would be replaced with actual aggregation queries
-      setStats({
-        activeDeals: Math.floor(Math.random() * 5) + 1,
-        totalInvestors: Math.floor(Math.random() * 50) + 10,
-        totalRaised: Math.floor(Math.random() * 10000000) + 1000000
-      });
+      if (profile?.user_type === 'syndicator') {
+        // Syndicator stats
+        // Query 1: Count active deals for this syndicator
+        const { count: activeDealsCount, error: activeDealsError } = await supabase
+          .from('deals')
+          .select('*', { count: 'exact', head: true })
+          .eq('syndicator_id', user!.id)
+          .eq('status', 'active');
+
+        if (activeDealsError) throw activeDealsError;
+
+        // Query 2a: Count unique investors who have shown interest in this syndicator's deals
+        const { data: totalInvestorsData, error: totalInvestorsError } = await supabase
+          .from('deal_interests')
+          .select(`
+            investor_id,
+            deals!inner(syndicator_id)
+          `)
+          .eq('deals.syndicator_id', user!.id);
+
+        if (totalInvestorsError) throw totalInvestorsError;
+
+        // Query 2b: Count unique investors who have made investment requests for this syndicator's deals (approved/rejected only)
+        const { data: investmentInvestorsData, error: investmentInvestorsError } = await supabase
+          .from('investment_requests')
+          .select(`
+            user_id,
+            deals!inner(syndicator_id)
+          `)
+          .eq('deals.syndicator_id', user!.id)
+          .eq('status', 'approved');
+
+        if (investmentInvestorsError) throw investmentInvestorsError;
+
+        // Combine and get unique investor count from both sources
+        const uniqueInvestors = new Set([
+          ...(totalInvestorsData?.map(interest => interest.investor_id) || []),
+          ...(investmentInvestorsData?.map(request => request.user_id) || [])
+        ]);
+
+        // Query 3: Sum total investment requests for this syndicator's deals (approved only)
+        const { data: totalRaisedData, error: totalRaisedError } = await supabase
+          .from('investment_requests')
+          .select(`
+            amount,
+            deals!inner(syndicator_id)
+          `)
+          .eq('deals.syndicator_id', user!.id)
+          .eq('status', 'approved'); // Only include approved investments
+
+        if (totalRaisedError) throw totalRaisedError;
+
+        const totalRaised = totalRaisedData?.reduce((sum, request) => sum + request.amount, 0) || 0;
+
+        setStats({
+          activeDeals: activeDealsCount || 0,
+          totalInvestors: uniqueInvestors.size,
+          totalRaised: totalRaised
+        });
+      } else {
+        // Investor stats
+        // Query 1: Count deals this investor has shown interest in
+        const { count: interestedDealsCount, error: interestedDealsError } = await supabase
+          .from('deal_interests')
+          .select('*', { count: 'exact', head: true })
+          .eq('investor_id', user!.id);
+
+        if (interestedDealsError) throw interestedDealsError;
+
+        // Query 2: Count unique syndicators this investor has interacted with
+        const { data: syndicatorData, error: syndicatorError } = await supabase
+          .from('deal_interests')
+          .select(`
+            deals!inner(syndicator_id)
+          `)
+          .eq('investor_id', user!.id);
+
+        if (syndicatorError) throw syndicatorError;
+
+        // Get unique syndicator count
+        const uniqueSyndicators = new Set(syndicatorData?.map(interest => (interest.deals as any)?.syndicator_id).filter(Boolean) || []);
+
+        // Query 3: Sum total investment requests this investor has made (approved only)
+        const { data: investmentData, error: investmentError } = await supabase
+          .from('investment_requests')
+          .select('amount')
+          .eq('user_id', user!.id)
+          .eq('status', 'approved'); // Only include approved investments
+
+        if (investmentError) throw investmentError;
+
+        const totalInvested = investmentData?.reduce((sum, request) => sum + request.amount, 0) || 0;
+
+        setStats({
+          activeDeals: interestedDealsCount || 0,
+          totalInvestors: uniqueSyndicators.size,
+          totalRaised: totalInvested
+        });
+      }
     } catch (error) {
       console.error('Error fetching stats:', error);
+      // Fallback to zero values on error
+      setStats({
+        activeDeals: 0,
+        totalInvestors: 0,
+        totalRaised: 0
+      });
     }
   }
 
@@ -145,10 +275,119 @@ export function Dashboard() {
 
       setCreditInfo({
         balance: credits?.balance || 0,
-        price: subscription?.tier?.extra_credit_price || 2.50
+        price: (subscription?.tier as any)?.extra_credit_price || 2.50
       });
     } catch (error) {
       console.error('Error fetching credit info:', error);
+    }
+  }
+
+  async function fetchInvestmentRequests(dealId: string) {
+    try {
+      // Fetch investment requests for this deal
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('investment_requests')
+        .select('*')
+        .eq('deal_id', dealId)
+        .order('created_at', { ascending: false });
+
+      if (requestsError) throw requestsError;
+
+      if (!requestsData || requestsData.length === 0) {
+        console.log('No investment requests found for deal:', dealId);
+        setInvestmentRequests([]);
+        return;
+      }
+
+      console.log('Found investment requests:', requestsData);
+
+      // Fetch user profiles for each request
+      const requestsWithUsers = await Promise.all(
+        requestsData.map(async (request) => {
+          const { data: userData, error: userError } = await supabase
+            .from('profiles')
+            .select()
+            .eq('id', request.user_id)
+            .single();
+          
+          if (userError) {
+            console.error('Error fetching user profile for user_id:', request.user_id, userError);
+            return { 
+              ...request, 
+              user: { 
+                first_name: 'Unknown', 
+                last_name: 'User', 
+                email: 'unknown@email.com' 
+              } 
+            };
+          }
+          
+          console.log('Found user data for request:', request.id, userData);
+          return { ...request, user: userData };
+        })
+      );
+
+      console.log('Final requests with users:', requestsWithUsers);
+      setInvestmentRequests(requestsWithUsers);
+    } catch (error) {
+      console.error('Error fetching investment requests:', error);
+      setInvestmentRequests([]);
+    }
+  }
+
+  async function updateDealStatus(dealId: string, newStatus: 'draft' | 'active' | 'archived') {
+    setUpdatingStatus(dealId);
+    try {
+      const { error } = await supabase
+        .from('deals')
+        .update({ status: newStatus })
+        .eq('id', dealId)
+        .eq('syndicator_id', user!.id); // Ensure user owns this deal
+
+      if (error) throw error;
+
+      // Get the old status before updating
+      const oldStatus = deals.find(d => d.id === dealId)?.status;
+      
+      // Update local state
+      setDeals(deals.map(deal => 
+        deal.id === dealId ? { ...deal, status: newStatus } : deal
+      ));
+
+      // Refresh stats if status changed to/from active
+      if (newStatus === 'active' || oldStatus === 'active') {
+        await fetchStats();
+      }
+    } catch (error) {
+      console.error('Error updating deal status:', error);
+      alert('Failed to update deal status. Please try again.');
+    } finally {
+      setUpdatingStatus(null);
+    }
+  }
+
+  async function updateInvestmentRequestStatus(requestId: string, newStatus: 'approved' | 'rejected') {
+    try {
+      const { error } = await supabase
+        .from('investment_requests')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      // Update local state
+      setInvestmentRequests(investmentRequests.map(request => 
+        request.id === requestId ? { ...request, status: newStatus } : request
+      ));
+
+      // Refresh stats to reflect approved/rejected changes
+      await fetchStats();
+    } catch (error) {
+      console.error('Error updating investment request status:', error);
+      alert('Failed to update investment request status. Please try again.');
     }
   }
 
@@ -270,7 +509,9 @@ export function Dashboard() {
                 <Building className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm text-gray-500">Active Deals</p>
+                <p className="text-sm text-gray-500">
+                  {profile?.user_type === 'syndicator' ? 'Active Deals' : 'Interested Deals'}
+                </p>
                 <p className="text-2xl font-bold text-gray-800">{stats.activeDeals}</p>
               </div>
             </div>
@@ -282,7 +523,9 @@ export function Dashboard() {
                 <Users className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm text-gray-500">Total Investors</p>
+                <p className="text-sm text-gray-500">
+                  {profile?.user_type === 'syndicator' ? 'Total Investors' : 'Syndicators'}
+                </p>
                 <p className="text-2xl font-bold text-gray-800">{stats.totalInvestors}</p>
               </div>
             </div>
@@ -294,7 +537,9 @@ export function Dashboard() {
                 <TrendingUp className="h-6 w-6 text-purple-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm text-gray-500">Total Raised</p>
+                <p className="text-sm text-gray-500">
+                  {profile?.user_type === 'syndicator' ? 'Total Raised' : 'Total Invested'}
+                </p>
                 <p className="text-2xl font-bold text-gray-800">
                   ${stats.totalRaised.toLocaleString()}
                 </p>
@@ -306,7 +551,9 @@ export function Dashboard() {
         {/* Deals Table */}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">Your Deals</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              {profile?.user_type === 'syndicator' ? 'Your Deals' : 'Interested Deals'}
+            </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -319,7 +566,7 @@ export function Dashboard() {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Interested Investors
+                    {profile?.user_type === 'syndicator' ? 'Pending Requests' : 'Interest Level'}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Target Raise
@@ -354,37 +601,72 @@ export function Dashboard() {
                         </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          deal.status === 'active' ? 'bg-green-100 text-green-800' :
-                          deal.status === 'draft' ? 'bg-gray-100 text-gray-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
-                        </span>
+                        {profile?.user_type === 'syndicator' ? (
+                          <select
+                            value={deal.status}
+                            onChange={(e) => updateDealStatus(deal.id, e.target.value as 'draft' | 'active' | 'archived')}
+                            disabled={updatingStatus === deal.id}
+                            className={`px-3 py-1 rounded-full text-sm border-0 focus:ring-2 focus:ring-blue-500 ${
+                              deal.status === 'active'
+                                ? 'bg-green-100 text-green-800'
+                                : deal.status === 'draft'
+                                ? 'bg-gray-100 text-gray-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                            } ${updatingStatus === deal.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                          >
+                            <option value="draft">Draft</option>
+                            <option value="active">Active</option>
+                            <option value="archived">Archived</option>
+                          </select>
+                        ) : (
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            deal.status === 'active' ? 'bg-green-100 text-green-800' :
+                            deal.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {deal.deal_interests?.length || 0}
+                        {profile?.user_type === 'syndicator' 
+                          ? `${(deal as any).investment_requests?.filter((req: any) => req.status === 'pending').length || 0} pending`
+                          : `${(deal as any).deal_interests?.length || 0} interested`
+                        }
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         ${deal.total_equity.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-3">
-                          <Link 
-                            to={`/deals/${dealSlug}`} 
-                            className="text-blue-600 hover:text-blue-900"
-                          >
-                            <Edit className="h-5 w-5" />
-                          </Link>
-                          <button
-                            onClick={() => setSelectedDeal(selectedDeal === deal.id ? null : deal.id)}
-                            className="text-gray-600 hover:text-gray-900"
-                          >
-                            <FileText className="h-5 w-5" />
-                          </button>
-                          <button className="text-gray-600 hover:text-gray-900">
-                            <Archive className="h-5 w-5" />
-                          </button>
+                          <Tooltip content="View deal details">
+                            <Link 
+                              to={`/deals/${dealSlug}`} 
+                              className="text-blue-600 hover:text-blue-900"
+                            >
+                              <Eye className="h-5 w-5" />
+                            </Link>
+                          </Tooltip>
+                          
+                          <Tooltip content={selectedDeal === deal.id ? "Hide documents" : "Manage documents"}>
+                            <button
+                              onClick={() => setSelectedDeal(selectedDeal === deal.id ? null : deal.id)}
+                              className={`${selectedDeal === deal.id ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900`}
+                            >
+                              <FileText className="h-5 w-5" />
+                            </button>
+                          </Tooltip>
+                          
+                          {profile?.user_type === 'syndicator' && (
+                            <Tooltip content={selectedInvestmentRequests === deal.id ? "Hide investment requests" : "Manage investment requests"}>
+                              <button
+                                onClick={() => setSelectedInvestmentRequests(selectedInvestmentRequests === deal.id ? null : deal.id)}
+                                className={`${selectedInvestmentRequests === deal.id ? 'text-green-600' : 'text-gray-600'} hover:text-green-900`}
+                              >
+                                <DollarSign className="h-5 w-5" />
+                              </button>
+                            </Tooltip>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -406,6 +688,128 @@ export function Dashboard() {
               existingFiles={dealFiles}
               onFilesChange={setDealFiles}
             />
+          </div>
+        )}
+
+        {/* Investment Requests Manager */}
+        {selectedInvestmentRequests && profile?.user_type === 'syndicator' && (
+          <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-6">
+              Investment Requests
+            </h2>
+            
+            {investmentRequests.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>No investment requests yet for this deal.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Investor
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {investmentRequests.map((request) => (
+                      <tr key={request.id}>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {request.user?.full_name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {request.user?.email}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                          ${request.amount.toLocaleString()}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            request.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            request.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            request.status === 'withdrawn' ? 'bg-gray-100 text-gray-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(request.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                          {request.status === 'pending' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => updateInvestmentRequestStatus(request.id, 'approved')}
+                                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => updateInvestmentRequestStatus(request.id, 'rejected')}
+                                className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                          {request.status === 'approved' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to revoke this approved investment? This action will remove it from your total raised amount.')) {
+                                    updateInvestmentRequestStatus(request.id, 'rejected');
+                                  }
+                                }}
+                                className="bg-orange-600 text-white px-3 py-1 rounded text-xs hover:bg-orange-700 transition"
+                              >
+                                Revoke
+                              </button>
+                            </div>
+                          )}
+                          {request.status === 'rejected' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to approve this previously rejected investment? This will add it to your total raised amount.')) {
+                                    updateInvestmentRequestStatus(request.id, 'approved');
+                                  }
+                                }}
+                                className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700 transition"
+                              >
+                                Approve
+                              </button>
+                            </div>
+                          )}
+                          {request.status === 'withdrawn' && (
+                            <span className="text-gray-400 text-xs">Withdrawn by investor</span>
+                          )}
+                          {!['pending', 'approved', 'rejected', 'withdrawn'].includes(request.status) && (
+                            <span className="text-gray-400 text-xs">No actions available</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 

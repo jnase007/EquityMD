@@ -433,7 +433,7 @@ export default `<!DOCTYPE html>
                   </div>
                 </div>
                 <a
-                  href="https://equitymd.com/deals/back-bay-newport"
+                  href="https://equitymd.com/deals/newport-beach-residential-offering"
                   class="deal-cta"
                   style="
                     background: #2563eb;
@@ -585,7 +585,7 @@ export default `<!DOCTYPE html>
                   </div>
                 </div>
                 <a
-                  href="https://equitymd.com/deals/starboard-realty-adu"
+                  href="https://equitymd.com/deals/multifamily-adu-opportunity"
                   class="deal-cta"
                   style="
                     background: #2563eb;
@@ -737,7 +737,7 @@ export default `<!DOCTYPE html>
                   </div>
                 </div>
                 <a
-                  href="https://equitymd.com/deals/satiric-development"
+                  href="https://equitymd.com/deals/greenville-apartment-complex"
                   class="deal-cta"
                   style="
                     background: #2563eb;

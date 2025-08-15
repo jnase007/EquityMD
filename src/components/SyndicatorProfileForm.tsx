@@ -250,6 +250,7 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
           cropAspectRatio={1}
           maxWidth={600}
           maxHeight={600}
+          label="Company Logo"
         />
         <p className="mt-2 text-sm text-gray-500">
           Recommended: Square format (1:1 aspect ratio) for best display

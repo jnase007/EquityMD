@@ -10,6 +10,11 @@ interface Conversation {
   lastMessageDate: string;
   unreadCount: number;
   avatarUrl?: string;
+  dealContext?: {
+    deal_id: string;
+    deal_title: string;
+    deal_slug?: string;
+  };
 }
 
 interface ConversationListProps {
@@ -20,7 +25,7 @@ interface ConversationListProps {
 
 export function ConversationList({ conversations, selectedUserId, onSelectConversation }: ConversationListProps) {
   return (
-    <div className="overflow-y-auto h-full">
+    <div className="h-full overflow-y-auto">
       {conversations.map((conv) => (
         <div
           key={conv.userId}
@@ -52,6 +57,14 @@ export function ConversationList({ conversations, selectedUserId, onSelectConver
                   {formatDistanceToNow(new Date(conv.lastMessageDate), { addSuffix: true })}
                 </div>
               </div>
+              {conv.dealContext && (
+                <div className="flex items-center gap-1 mb-1">
+                  <Building2 className="h-3 w-3 text-blue-600" />
+                  <span className="text-xs text-blue-600 font-medium truncate">
+                    {conv.dealContext.deal_title}
+                  </span>
+                </div>
+              )}
               <div className="text-sm text-gray-600 line-clamp-1">
                 {conv.lastMessage}
               </div>
