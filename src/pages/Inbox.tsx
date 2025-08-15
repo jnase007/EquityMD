@@ -38,16 +38,19 @@ export function Inbox() {
     if (user) {
       fetchConversations();
       
-      // Subscribe to new messages
+      // Subscribe to new messages for real-time conversation updates
       const messagesSubscription = supabase
-        .channel('messages')
+        .channel('inbox-updates')
         .on('postgres_changes', {
           event: 'INSERT',
           schema: 'public',
           table: 'messages',
-          filter: `receiver_id=eq.${user.id}`
-        }, () => {
-          fetchConversations();
+          filter: `or(sender_id.eq.${user.id},receiver_id.eq.${user.id})`
+        }, async (payload) => {
+          const newMessage = payload.new as any;
+          
+          // Update conversations list efficiently
+          await updateConversationWithNewMessage(newMessage);
         })
         .subscribe();
 
@@ -145,6 +148,86 @@ export function Inbox() {
       console.error('Error fetching conversations:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function updateConversationWithNewMessage(newMessage: any) {
+    if (!user) return;
+
+    try {
+      const isUserSender = newMessage.sender_id === user.id;
+      const partnerId = isUserSender ? newMessage.receiver_id : newMessage.sender_id;
+
+      // Fetch partner profile info if we don't have this conversation yet
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('full_name, avatar_url, user_type')
+        .eq('id', partnerId)
+        .single();
+
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        return;
+      }
+
+      // Fetch deal info if message has deal_id
+      let dealContext = undefined;
+      if (newMessage.deal_id) {
+        const { data: dealData, error: dealError } = await supabase
+          .from('deals')
+          .select('id, title, slug')
+          .eq('id', newMessage.deal_id)
+          .single();
+
+        if (!dealError && dealData) {
+          dealContext = {
+            deal_id: dealData.id,
+            deal_title: dealData.title,
+            deal_slug: dealData.slug
+          };
+        }
+      }
+
+      setConversations(prevConversations => {
+        const existingConvIndex = prevConversations.findIndex(conv => conv.userId === partnerId);
+        
+        if (existingConvIndex >= 0) {
+          // Update existing conversation
+          const updatedConversations = [...prevConversations];
+          const existingConv = updatedConversations[existingConvIndex];
+          
+          updatedConversations[existingConvIndex] = {
+            ...existingConv,
+            lastMessage: newMessage.content,
+            lastMessageDate: newMessage.created_at,
+            unreadCount: !isUserSender && !newMessage.read ? 
+              existingConv.unreadCount + 1 : existingConv.unreadCount,
+            dealContext: dealContext || existingConv.dealContext
+          };
+
+          // Move to top
+          const [updatedConv] = updatedConversations.splice(existingConvIndex, 1);
+          return [updatedConv, ...updatedConversations];
+        } else {
+          // Add new conversation
+          const newConversation: Conversation = {
+            userId: partnerId,
+            userName: profileData.full_name,
+            userType: profileData.user_type,
+            lastMessage: newMessage.content,
+            lastMessageDate: newMessage.created_at,
+            unreadCount: !isUserSender && !newMessage.read ? 1 : 0,
+            avatarUrl: profileData.avatar_url,
+            dealContext
+          };
+
+          return [newConversation, ...prevConversations];
+        }
+      });
+    } catch (error) {
+      console.error('Error updating conversation:', error);
+      // Fallback to refetching all conversations
+      fetchConversations();
     }
   }
 
