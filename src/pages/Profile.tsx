@@ -1117,15 +1117,6 @@ export function Profile() {
         </div>
       </div>
 
-      {/* Mobile Sticky Save Button */}
-      {isMobile && (
-        <div className="fixed bottom-4 left-4 right-4 z-20">
-          <button className="w-full bg-blue-600 text-white py-3 rounded-lg shadow-lg hover:bg-blue-700 transition font-medium">
-            Save Changes
-          </button>
-        </div>
-      )}
-
       {/* Message Modal */}
       {showMessageModal && selectedSyndicator && (
         <MessageModal
