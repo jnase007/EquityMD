@@ -121,10 +121,10 @@ export function HowItWorks() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
-              Watch Our Commercial
+              Unlock Wealth
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              See how EquityMD connects accredited investors with institutional-quality real estate opportunities.
+              How EquityMD Empowers Investors with Premium Real Estate Opportunities
             </p>
           </div>
           
