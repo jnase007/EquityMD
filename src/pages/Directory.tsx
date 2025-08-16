@@ -199,7 +199,7 @@ export function Directory() {
     {
       id: 'starboard-realty',
       company_name: 'Starboard Realty',
-      company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
+      company_logo_url: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/Starboard_reality.jpg`,
       company_description: 'Headquartered in Irvine, California, Starboard Realty Advisors, LLC, is a privately held, fully-integrated real estate firm, whose principals have more than 30 years of hands-on, cycle-tested experience in acquiring, developing, leasing, repositioning, managing, financing and disposing of retail, multifamily, office and industrial real estate. Starboard acquires multifamily, multi-tenant retail shopping centers, and NNN lease properties. Starboard\'s mission is to acquire well-located properties across the U.S., in which current rents have growth potential and which can be acquired at below replacement cost. Starboard acquires primarily stabilized properties with a 7- to 10-year hold period for its 1031 exchange clients and value added properties with a 1- to 5-year hold.',
       state: 'California',
       city: 'Newport Beach',
@@ -221,7 +221,7 @@ export function Directory() {
     {
       id: 'sutera-properties',
       company_name: 'Sutera Properties',
-      company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Sutera_Properties.jpg',
+      company_logo_url: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/Sutera_Properties.jpg`,
       company_description: 'Sutera Properties is a real estate investment and development company focused on creating value through strategic acquisitions and developments in high-growth markets.',
       state: 'Florida',
       city: 'Miami',
@@ -243,7 +243,7 @@ export function Directory() {
     {
       id: 'clarion-partners',
       company_name: 'Clarion Partners',
-      company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//clarionpartners.png',
+      company_logo_url: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/clarionpartners.png`,
       company_description: 'Clarion Partners is a leading global real estate investment company with over 40 years of experience, managing $73.1 billion in assets under management. We combine our broad scale and execution capabilities with our deep market and property expertise to identify and leverage the true drivers of long-term value in real estate.',
       state: 'New York',
       city: 'New York',
@@ -661,17 +661,22 @@ export function Directory() {
                 className="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
               >
                 <div className="flex gap-6">
-                  {syndicator.company_logo_url ? (
+                  {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
                     <img
-                      src={syndicator.company_logo_url}
+                      src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                       alt={syndicator.company_name}
                       className="w-32 h-32 object-contain rounded-lg"
+                      onError={(e) => {
+                        // Fallback to placeholder if image fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      }}
                     />
-                  ) : (
-                    <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-16 h-16 text-blue-600" />
-                    </div>
-                  )}
+                  ) : null}
+                  <div className={`w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 ${getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? 'hidden' : ''}`}>
+                    <Building2 className="w-16 h-16 text-blue-600" />
+                  </div>
                   <div className="flex-grow">
                     <div className="flex justify-between items-start">
                       <div>

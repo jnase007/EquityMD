@@ -279,6 +279,86 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
     }
   };
 
+  // New function to handle saving current step
+  const handleSaveCurrentStep = async () => {
+    if (!user) return;
+
+    setLoading(true);
+    setMessage('');
+
+    try {
+      // Update basic profile first
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: formData.fullName,
+          avatar_url: formData.avatarUrl,
+          email_notifications: emailPreferences,
+          updated_at: new Date().toISOString(),
+          phone_number: formData.phoneNumber,
+        })
+        .eq('id', user.id);
+
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
+
+      // Parse investment range correctly (handle comma-formatted numbers)
+      const investmentRangeValue = formData.investmentRange 
+        ? parseFormattedNumber(formData.investmentRange) 
+        : null;
+
+      // Update investor profile with upsert to handle missing records
+      const { error: investorError } = await supabase
+        .from('investor_profiles')
+        .upsert({
+          id: user.id,
+          accredited_status: formData.accreditedStatus,
+          minimum_investment: investmentRangeValue,
+          preferred_property_types: formData.preferredPropertyTypes,
+          preferred_locations: formData.preferredLocations,
+          linkedin_url: formData.linkedinUrl,
+          location: formData.location,
+          investment_preferences: {
+            experience_level: formData.experienceLevel,
+            years_investing: formData.yearsInvesting,
+            bio: formData.bio,
+            state: formData.state
+          },
+          updated_at: new Date().toISOString(),
+        });
+
+      if (investorError) {
+        console.error('Investor profile update error:', investorError);
+        throw investorError;
+      }
+
+      setLastSaved(new Date());
+      setMessage('Step saved successfully!');
+      
+      // Refresh the investor profile to show the updated values
+      await fetchInvestorProfile();
+    } catch (error) {
+      console.error('Error saving step:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      setMessage('Error saving step. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // New function to handle save and next
+  const handleSaveAndNext = async () => {
+    await handleSaveCurrentStep();
+    if (currentStep < 3) {
+      setCurrentStep(prev => prev + 1);
+    }
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -647,23 +727,36 @@ export function InvestorProfileForm({ setMessage }: InvestorProfileFormProps) {
           </button>
         )}
         
-        {currentStep < 3 ? (
-          <button
-            type="button"
-            onClick={() => setCurrentStep(prev => prev + 1)}
-            className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Next
-          </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={loading}
-            className="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? 'Saving...' : 'Save Profile'}
-          </button>
-        )}
+        <div className="flex gap-3 ml-auto">
+          {currentStep < 3 ? (
+            <>
+              <button
+                type="button"
+                onClick={handleSaveCurrentStep}
+                disabled={loading}
+                className="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 disabled:opacity-50"
+              >
+                {loading ? 'Saving...' : 'Save'}
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveAndNext}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              >
+                {loading ? 'Saving...' : 'Save & Next'}
+              </button>
+            </>
+          ) : (
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loading ? 'Saving...' : 'Save Profile'}
+            </button>
+          )}
+        </div>
       </div>
     </form>
   );

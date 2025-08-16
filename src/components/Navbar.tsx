@@ -196,12 +196,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
       <div className="max-w-[1200px] mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
         <Link to="/" className="flex items-center hover:scale-105 transition-transform">
         <img 
-          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
+          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-black.png`}
           alt="EquityMD"
           className={`h-10 ${isTransparent ? 'hidden' : 'block'}`}
         />
         <img 
-          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-white.png`}
+          src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-white.png`}
           alt="EquityMD"
           className={`h-10 ${isTransparent ? 'block' : 'hidden'}`}
         />
@@ -397,7 +397,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             <div className="flex justify-between items-center mb-6">
               <Link to="/" className="flex items-center touch-manipulation" onClick={() => setIsMenuOpen(false)}>
                 <img 
-                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
+                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-black.png`}
                   alt="EquityMD"
                   className="h-10"
                 />

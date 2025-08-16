@@ -116,6 +116,34 @@ export function HowItWorks() {
         </div>
       </div>
 
+      {/* EquityMD Commercial Video Section */}
+      <div className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+              Watch Our Commercial
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              See how EquityMD connects accredited investors with institutional-quality real estate opportunities.
+            </p>
+          </div>
+          
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <div style={{padding:'56.25% 0 0 0',position:'relative'}}>
+              <iframe 
+                src="https://player.vimeo.com/video/1109385630?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;dnt=1" 
+                frameBorder="0" 
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+                referrerPolicy="strict-origin-when-cross-origin" 
+                style={{position:'absolute',top:0,left:0,width:'100%',height:'100%'}} 
+                title="EquityMD Commercial"
+              />
+            </div>
+            <script src="https://player.vimeo.com/api/player.js"></script>
+          </div>
+        </div>
+      </div>
+
       {/* How It Works Steps */}
       <div className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
