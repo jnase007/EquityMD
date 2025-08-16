@@ -32,20 +32,45 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
           navigate('/inbox');
           break;
         case 'deal_update':
+        case 'new_deal':
           // Navigate to the deal page for deal updates
           if (notification.data?.deal_slug) {
             navigate(`/deals/${notification.data.deal_slug}`);
+          } else {
+            // Try to extract deal slug from notification content
+            const dealSlug = extractDealSlugFromContent(notification.content);
+            if (dealSlug) {
+              navigate(`/deals/${dealSlug}`);
+            } else {
+              // Fallback to deals page
+              navigate('/find');
+            }
           }
           break;
         case 'investment_status':
           // Navigate to the deal page for investment status updates
           if (notification.data?.deal_slug) {
             navigate(`/deals/${notification.data.deal_slug}`);
+          } else {
+            // Try to extract deal slug from notification content
+            const dealSlug = extractDealSlugFromContent(notification.content);
+            if (dealSlug) {
+              navigate(`/deals/${dealSlug}`);
+            } else {
+              // Fallback to deals page
+              navigate('/find');
+            }
           }
           break;
         default:
-          // Default to inbox for unknown types
-          navigate('/inbox');
+          // For unknown types, try to extract deal slug from content
+          const dealSlug = extractDealSlugFromContent(notification.content);
+          if (dealSlug) {
+            navigate(`/deals/${dealSlug}`);
+          } else {
+            // Default to inbox for unknown types
+            navigate('/inbox');
+          }
       }
 
       // Close the dropdown
@@ -55,6 +80,30 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
     }
   };
 
+  // Helper function to extract deal slug from notification content
+  const extractDealSlugFromContent = (content: string): string | null => {
+    if (!content) return null;
+    
+    // Map of deal names to their slugs
+    const dealSlugMap: Record<string, string> = {
+      'Greenville Apartment Complex': 'greenville-apartment-complex',
+      'San Diego Multi-Family Offering': 'san-diego-multifamily-offering',
+      'Newport Beach Residential Offering': 'newport-beach-residential-offering',
+      'Multifamily ADU Opportunity': 'multifamily-adu-opportunity',
+      'Back Bay Newport': 'back-bay-newport',
+      'Starboard Realty ADU': 'starboard-realty-adu',
+      'Satiric Development': 'satiric-development'
+    };
+
+    // Check if any deal name is mentioned in the content
+    for (const [dealName, slug] of Object.entries(dealSlugMap)) {
+      if (content.includes(dealName)) {
+        return slug;
+      }
+    }
+
+    return null;
+  };
 
 
   const handleMarkAllRead = async () => {
