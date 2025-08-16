@@ -235,16 +235,16 @@ export function SuccessStories() {
         <div className="max-w-[1200px] mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">$500M+</div>
-              <div className="text-gray-600">Deals Connected</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">20+</div>
+              <div className="text-gray-600">Syndicators</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
-              <div className="text-gray-600">Connections Made</div>
+              <div className="text-gray-600">Investors</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">150+</div>
-              <div className="text-gray-600">Syndicators Listed</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">18.5%</div>
+              <div className="text-gray-600">Average IRR</div>
             </div>
           </div>
         </div>
