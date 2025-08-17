@@ -1056,7 +1056,7 @@ export function EmailPreview() {
                                </div>
                              </div>
                            </div>
-                           <a href="https://equitymd.com/deals/starboard-realty-adu" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
+                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
                          </div>
                        </div>
                        
@@ -1088,7 +1088,7 @@ export function EmailPreview() {
                                </div>
                              </div>
                            </div>
-                           <a href="https://equitymd.com/deals/satiric-development" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
+                           <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
                          </div>
                        </div>
                      </div>
