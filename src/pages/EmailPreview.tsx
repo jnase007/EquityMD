@@ -1126,7 +1126,7 @@ export function EmailPreview() {
                     <div class="urgent-cta">
                       <h3>⏰ Limited Time Opportunity</h3>
                       <p>New deals are hitting the market every month. Complete your profile now to ensure you don't miss out on these exclusive investment opportunities.</p>
-                      <a href="https://equitymd.com" class="button" style="background: white; color: #dc2626; font-weight: 600;">
+                      <a href="https://equitymd.com" class="button" style="background: white; color: #059669; font-weight: 600;">
                         Complete Your Profile Now
                       </a>
                     </div>
