@@ -970,6 +970,18 @@ export function EmailPreview() {
                   </div>
                   
                   <div class="content">
+                    <!-- Video Commercial Image at Top -->
+                    <div style="text-align: center; margin: 32px 0;">
+                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+                        <img 
+                          src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" 
+                          alt="EquityMD Commercial Video" 
+                          style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+                        />
+                      </a>
+                      <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
+                    </div>
+                    
                     <p><strong>Congratulations {{firstName}}!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
                     
                     <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
