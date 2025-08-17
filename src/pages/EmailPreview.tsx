@@ -938,7 +938,7 @@ export function EmailPreview() {
                   color: #0c4a6e;
                 }
                 .urgent-cta {
-                  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                  background: linear-gradient(135deg, #059669 0%, #047857 100%);
                   color: white;
                   padding: 24px;
                   border-radius: 12px;
@@ -1138,7 +1138,7 @@ export function EmailPreview() {
                     <div class="urgent-cta">
                       <h3>⏰ Limited Time Opportunity</h3>
                       <p>New deals are hitting the market every month. Complete your profile now to ensure you don't miss out on these exclusive investment opportunities.</p>
-                      <a href="https://equitymd.com" class="button" style="background: white; color: #059669; font-weight: 600;">
+                      <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;">
                         Complete Your Profile Now
                       </a>
                     </div>
