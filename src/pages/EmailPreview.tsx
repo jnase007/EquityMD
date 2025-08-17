@@ -992,6 +992,25 @@ export function EmailPreview() {
                        </div>
                      </div>
                     
+                    <h3 style="color: #1f2937; margin: 32px 0 16px 0;">See How EquityMD Works</h3>
+                    <p style="margin-bottom: 24px; color: #6b7280;">Watch our commercial to learn how we connect accredited investors with institutional-quality real estate opportunities:</p>
+                    
+                    <div style="text-align: center; margin: 32px 0;">
+                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+                        <div style="position: relative; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                          <div style="position: relative; padding-bottom: 56.25%; background: linear-gradient(45deg, #2563eb, #1d4ed8);">
+                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white;">
+                              <div style="text-align: center;">
+                                <div style="font-size: 48px; margin-bottom: 16px;">▶️</div>
+                                <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">EquityMD Commercial</div>
+                                <div style="font-size: 14px; opacity: 0.9;">Click to watch and learn more</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    
                     <h3 style="color: #1f2937; margin: 32px 0 16px 0;">Featured Investment Opportunities</h3>
                     <p>Take a look at some of the premium deals currently available on our platform:</p>
                     
