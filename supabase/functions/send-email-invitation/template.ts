@@ -226,7 +226,7 @@ export default `<!DOCTYPE html>
         color: #0c4a6e;
       }
       .urgent-cta {
-        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
         color: white;
         padding: 24px;
         border-radius: 12px;
@@ -259,6 +259,17 @@ export default `<!DOCTYPE html>
         </div>
 
         <div class="content">
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+              <img 
+                src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" 
+                alt="EquityMD Commercial Video" 
+                style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+              />
+            </a>
+            <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
+          </div>
+          
           <p>
             <strong>Congratulations {{first_name}}!</strong> You've been selected
             as a candidate for our exclusive real estate investment platform,
@@ -289,6 +300,25 @@ export default `<!DOCTYPE html>
                 <span class="stat-label">Average IRR</span>
               </div>
             </div>
+          </div>
+
+          <h3 style="color: #1f2937; margin: 32px 0 16px 0;">See How EquityMD Works</h3>
+          <p style="margin-bottom: 24px; color: #6b7280;">Watch our commercial to learn how we connect accredited investors with institutional-quality real estate opportunities:</p>
+          
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+              <div style="position: relative; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <div style="position: relative; padding-bottom: 56.25%; background: linear-gradient(45deg, #2563eb, #1d4ed8);">
+                  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white;">
+                    <div style="text-align: center;">
+                      <div style="font-size: 48px; margin-bottom: 16px;">▶️</div>
+                      <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">EquityMD Commercial</div>
+                      <div style="font-size: 14px; opacity: 0.9;">Click to watch and learn more</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
           </div>
 
           <h3 style="color: #1f2937; margin: 32px 0 16px 0">
@@ -791,9 +821,9 @@ export default `<!DOCTYPE html>
               investment opportunities.
             </p>
             <a
-              href="https://equitymd.com/signup/start"
+              href="https://equitymd.com"
               class="button"
-              style="background: white; color: #dc2626; font-weight: 600"
+              style="background: white; color: #2563eb; font-weight: 600"
             >
               Complete Your Profile Now
             </a>
@@ -815,7 +845,7 @@ export default `<!DOCTYPE html>
         </div>
 
         <div style="text-align: center; margin-top: 32px">
-          <a href="https://equitymd.com/signup/start" class="button">
+          <a href="https://equitymd.com" class="button">
             🚀 Get Started Now
           </a>
         </div>
