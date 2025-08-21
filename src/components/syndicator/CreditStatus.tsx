@@ -106,7 +106,7 @@ export function CreditStatus() {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      <div className="flex justify-between items-start mb-6">
+      {/* <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="text-xl font-bold mb-2">Credit Balance</h2>
           <div className="text-sm text-gray-500">{creditInfo.tier.name} Plan</div>
@@ -125,7 +125,7 @@ export function CreditStatus() {
             <ExternalLink className="h-5 w-5" />
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-gray-50 rounded-lg p-4">

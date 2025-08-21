@@ -77,192 +77,62 @@ export function Directory() {
 
   async function fetchSyndicators() {
     try {
+      console.log('🔍 Fetching syndicators from database...');
       const { data: syndicatorData, error: syndicatorError } = await supabase
         .from('syndicator_profiles')
-        .select(`
-          id,
-          company_name,
-          company_description,
-          company_logo_url,
-          state,
-          city,
-          years_in_business,
-          total_deal_volume,
-          website_url,
-          slug
-        `);
+        .select()
+        .in('verification_status', ['verified', 'premier']);
 
       if (syndicatorError) {
-        console.error('Error fetching syndicators:', syndicatorError);
-        // Use mock data if database fetch fails
-        setSyndicators(mockSyndicators);
+        console.error('❌ Error fetching syndicators:', syndicatorError);
+        setSyndicators([]);
         setLoading(false);
         return;
       }
 
-      // Always include Starboard Realty and Clarion Partners from mock data
-      const starboardRealty = mockSyndicators.find(s => s.company_name === 'Starboard Realty');
-      const clarionPartners = mockSyndicators.find(s => s.company_name === 'Clarion Partners');
+      console.log('📊 Raw syndicator data from database:', syndicatorData);
+      console.log('📊 Number of syndicators found:', syndicatorData?.length || 0);
 
-      // If no syndicators in database, use mock data for demo purposes
-      if (!syndicatorData || syndicatorData.length === 0) {
-        setSyndicators(mockSyndicators);
-      } else {
-        // Combine real data with enhanced properties
-        const combinedData = syndicatorData
-          .filter(s => s.company_name !== 'Starboard Realty') // Remove any existing Starboard from DB
-          .filter(s => !s.company_name.toLowerCase().includes('equitymd admin')) // Remove admin accounts
-          .filter(s => !s.company_name.toLowerCase().includes('admin')) // Remove any admin accounts
-          .filter(s => !s.company_name.toLowerCase().includes('test')) // Remove test accounts
-          .filter(s => s.company_name !== 'Metropolitan Real Estate') // Remove Metropolitan Real Estate
-          .filter(s => s.company_name !== 'Evergreen Residential') // Remove Evergreen Residential
-          .filter(s => {
-            // Only show syndicators with complete profiles (80%+ completion)
-            const hasRequiredFields = s.company_name && 
-              s.company_name.length >= 3 &&
-              s.state && 
-              s.city &&
-              s.company_description && 
-              s.company_description.length >= 50;
-            
-            return hasRequiredFields || 
-              // Always include verified premier syndicators
-              s.company_name === 'Back Bay Capital' || 
-              s.company_name === 'Sutera Properties' || 
-              s.company_name === 'Starboard Realty' ||
-              s.company_name === 'Clarion Partners';
-          })
-          .map(s => {
-            // Only show real data for verified syndicators
-            const isVerified = s.company_name === 'Back Bay Capital' || 
-                              s.company_name === 'Sutera Properties' || 
-                              s.company_name === 'Starboard Realty' ||
-                              s.company_name === 'Clarion Partners';
-            
-            return {
-              ...s,
-              average_rating: isVerified ? (s.company_name === 'Back Bay Capital' ? 4.9 : 
-                                          s.company_name === 'Sutera Properties' ? 4.8 : 
-                                          s.company_name === 'Clarion Partners' ? 4.9 : 5.0) : 0,
-              total_reviews: isVerified ? (s.company_name === 'Back Bay Capital' ? 25 : 
-                                         s.company_name === 'Sutera Properties' ? 18 : 
-                                         s.company_name === 'Clarion Partners' ? 42 : 15) : 0,
-              active_deals: isVerified ? (s.company_name === 'Back Bay Capital' ? 3 : 
-                                        s.company_name === 'Sutera Properties' ? 1 :
-                                        s.company_name === 'Clarion Partners' ? 3 : 1) : 0,
-              total_deal_volume: isVerified ? (s.company_name === 'Back Bay Capital' ? 30000000 : 
-                                              s.company_name === 'Sutera Properties' ? 38000000 :
-                                              s.company_name === 'Starboard Realty' ? 608000000 :
-                                              s.company_name === 'Clarion Partners' ? 73100000000 : 0) : 0,
-              specialties: isVerified ? (s.company_name === 'Back Bay Capital' ? ['Multi-Family', 'Preferred Equity', 'Value-Add'] :
-                                       s.company_name === 'Sutera Properties' ? ['Multi-Family', 'Ground-Up Development'] :
-                                       s.company_name === 'Clarion Partners' ? ['Industrial', 'Multifamily', 'Office', 'Retail'] :
-                                       ['Multi-Family', 'Retail', 'NNN Lease']) : [],
-              team_size: isVerified ? (s.company_name === 'Back Bay Capital' ? 15 : 
-                                     s.company_name === 'Sutera Properties' ? 12 : 
-                                     s.company_name === 'Clarion Partners' ? 150 : 25) : 0,
-              notable_projects: isVerified ? ['Verified Projects'] : [],
-              investment_focus: isVerified ? ['Value-Add', 'Core-Plus'] : [],
-              min_investment: isVerified ? 50000 : 0,
-              target_markets: isVerified ? ['California', 'Texas'] : [],
-              certifications: isVerified ? ['CCIM', 'CRE'] : []
-            };
-          });
-        
-        // Always add Starboard Realty and Clarion Partners with the correct type structure
-        if (starboardRealty) {
-          combinedData.push({
-            ...starboardRealty,
-            total_deal_volume: starboardRealty.total_deal_volume || 0
-          });
-        }
-        if (clarionPartners) {
-          combinedData.push({
-            ...clarionPartners,
-            total_deal_volume: clarionPartners.total_deal_volume || 0
-          });
-        }
-
-      setSyndicators(combinedData);
+      if (!syndicatorData) {
+        console.log('⚠️ No syndicator data returned from database');
+        setSyndicators([]);
+        setLoading(false);
+        return;
       }
+
+      const filteredData = syndicatorData
+        .filter(s => s.company_name && s.company_name.length >= 3)
+        .filter(s => !s.company_name.toLowerCase().includes('admin'))
+        .filter(s => !s.company_name.toLowerCase().includes('test'))
+        // .filter(s => s.company_name !== 'Metropolitan Real Estate')
+        // .filter(s => s.company_name !== 'Evergreen Residential')
+        .map(s => ({
+          ...s,
+          average_rating: s.average_rating || 0,
+          total_reviews: s.total_reviews || 0,
+          active_deals: s.active_deals || 0,
+          total_deal_volume: s.total_deal_volume || 0,
+          specialties: s.specialties || [],
+          team_size: s.team_size || 0,
+          notable_projects: s.notable_projects || [],
+          investment_focus: s.investment_focus || [],
+          min_investment: s.min_investment || 0,
+          target_markets: s.target_markets || [],
+          certifications: s.certifications || []
+        }));
+
+      console.log('✅ Final filtered data:', filteredData);
+      console.log('✅ Final count:', filteredData.length);
+      console.log('✅ Company names:', filteredData.map(s => s.company_name));
+
+      setSyndicators(filteredData);
     } catch (error) {
-      console.error('Error fetching syndicators:', error);
-      // Use mock data if there's an error
-      setSyndicators(mockSyndicators);
+      console.error('❌ Error fetching syndicators:', error);
+      setSyndicators([]);
     } finally {
       setLoading(false);
     }
   }
-
-  // Mock syndicators for demo purposes - only verified real syndicators
-  const mockSyndicators: Syndicator[] = [
-    {
-      id: 'starboard-realty',
-      company_name: 'Starboard Realty',
-      company_logo_url: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/Starboard_reality.jpg`,
-      company_description: 'Headquartered in Irvine, California, Starboard Realty Advisors, LLC, is a privately held, fully-integrated real estate firm, whose principals have more than 30 years of hands-on, cycle-tested experience in acquiring, developing, leasing, repositioning, managing, financing and disposing of retail, multifamily, office and industrial real estate. Starboard acquires multifamily, multi-tenant retail shopping centers, and NNN lease properties. Starboard\'s mission is to acquire well-located properties across the U.S., in which current rents have growth potential and which can be acquired at below replacement cost. Starboard acquires primarily stabilized properties with a 7- to 10-year hold period for its 1031 exchange clients and value added properties with a 1- to 5-year hold.',
-      state: 'California',
-      city: 'Newport Beach',
-      years_in_business: 10,
-      total_deal_volume: 608000000,
-      website_url: 'https://starboard-realty.com/',
-      average_rating: 5.0,
-      total_reviews: 15,
-      active_deals: 1,
-      slug: 'starboard-realty',
-      specialties: ['Multi-Family', 'Retail', 'NNN Lease'],
-      team_size: 25,
-      notable_projects: ['Orange County Portfolio', 'Multi-Tenant Retail Centers'],
-      investment_focus: ['Value-Add', 'Stabilized Properties'],
-      min_investment: 100000,
-      target_markets: ['California', 'Arizona', 'Texas'],
-      certifications: ['CCIM', 'CRE']
-    },
-    {
-      id: 'sutera-properties',
-      company_name: 'Sutera Properties',
-      company_logo_url: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/Sutera_Properties.jpg`,
-      company_description: 'Sutera Properties is a real estate investment and development company focused on creating value through strategic acquisitions and developments in high-growth markets.',
-      state: 'Florida',
-      city: 'Miami',
-      years_in_business: 15,
-      total_deal_volume: 38000000,
-      website_url: 'https://suteraproperties.com/',
-      average_rating: 4.8,
-      total_reviews: 18,
-      active_deals: 1,
-      slug: 'sutera-properties',
-      specialties: ['Multi-Family', 'Mixed-Use', 'Development'],
-      team_size: 20,
-      notable_projects: ['Bayfront Towers', 'Ocean View Resort'],
-      investment_focus: ['Opportunistic', 'Value-Add'],
-      min_investment: 100000,
-      target_markets: ['Miami', 'Tampa', 'Orlando'],
-      certifications: ['CCIM', 'CRE', 'CPM']
-    },
-    {
-      id: 'clarion-partners',
-      company_name: 'Clarion Partners',
-      company_logo_url: `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/clarionpartners.png`,
-      company_description: 'Clarion Partners is a leading global real estate investment company with over 40 years of experience, managing $73.1 billion in assets under management. We combine our broad scale and execution capabilities with our deep market and property expertise to identify and leverage the true drivers of long-term value in real estate.',
-      state: 'New York',
-      city: 'New York',
-      years_in_business: 40,
-      total_deal_volume: 73100000000,
-      website_url: 'https://www.clarionpartners.com/',
-      average_rating: 4.9,
-      total_reviews: 42,
-      active_deals: 3,
-      slug: 'clarion-partners',
-      specialties: ['Industrial', 'Multifamily', 'Office', 'Retail', 'Life Science'],
-      team_size: 150,
-      notable_projects: ['Industrial Portfolio Nationwide', 'Multifamily Communities', 'Life Science Facilities'],
-      investment_focus: ['Core', 'Core-Plus', 'Value-Add', 'Opportunistic'],
-      min_investment: 1000000,
-      target_markets: ['Nationwide', 'Global'],
-      certifications: ['CRE', 'CCIM', 'CAIA', 'CFA']
-    }
-  ];
 
   const filteredSyndicators = syndicators
     .filter(syndicator => {
@@ -379,7 +249,8 @@ export function Directory() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {syndicators
-              .filter(s => s.company_name === 'Sutera Properties' || s.company_name === 'Back Bay Capital' || s.company_name === 'Starboard Realty')
+              .filter(s => s.average_rating >= 4.5 && s.total_reviews >= 10)
+              .slice(0, 3)
               .map((syndicator) => (
                 <Link
                   key={syndicator.id}
@@ -412,8 +283,8 @@ export function Directory() {
                        </div>
                       <div className="flex items-center mt-1">
                         <Star className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" />
-                        <span className="font-medium text-sm">5.0</span>
-                        <span className="text-sm text-gray-500 ml-1">(Premium Partner)</span>
+                        <span className="font-medium text-sm">{syndicator.average_rating}</span>
+                        <span className="text-sm text-gray-500 ml-1">({syndicator.total_reviews} reviews)</span>
                       </div>
                     </div>
                   </div>
@@ -438,7 +309,7 @@ export function Directory() {
                       <TrendingUp className="w-4 h-4 mr-1" />
                       {syndicator.total_deal_volume && syndicator.total_deal_volume > 0 ? 
                         `$${syndicator.total_deal_volume.toLocaleString()} volume` : 
-                        'Premier Partner'
+                        'Volume not disclosed'
                       }
                     </div>
                     <div className="flex items-center text-blue-600 text-sm font-medium">

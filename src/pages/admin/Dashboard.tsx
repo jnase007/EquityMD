@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { LogoManager } from '../../components/admin/LogoManager';
@@ -18,12 +18,18 @@ import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, Che
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
-  const location = useLocation();
   const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'deactivated' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('analytics');
 
-  // Allow access if path starts with /dev-admin or user is admin
-  const isDevAdmin = location.pathname.startsWith('/dev-admin');
-  if (!isDevAdmin && !profile?.is_admin) {
+  if (!profile) return (
+    <div style={{ padding: '24px', textAlign: 'center' }}>
+      <i>Loading... </i>
+      <br />
+      <br />
+      <a href="/">Return to home</a>
+    </div>
+  )
+
+  if (!profile?.is_admin) {
     return <Navigate to="/" replace />;
   }
 
@@ -85,11 +91,7 @@ export function AdminDashboard() {
               <Database className="h-4 w-4 mr-2" />
               Quick Clear Cache
             </button>
-            {isDevAdmin && (
-              <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg text-sm">
-                Development Mode
-              </div>
-            )}
+
           </div>
         </div>
 
@@ -120,7 +122,7 @@ export function AdminDashboard() {
               Users
             </button>
 
-            <button
+            {/* <button
               onClick={() => setActiveTab('deactivated')}
               className={`pb-4 flex items-center ${
                 activeTab === 'deactivated'
@@ -130,7 +132,7 @@ export function AdminDashboard() {
             >
               <UserX className="h-5 w-5 mr-2" />
               Deactivated Users
-            </button>
+            </button> */}
             
             <button
               onClick={() => setActiveTab('properties')}
@@ -144,7 +146,7 @@ export function AdminDashboard() {
               Properties
             </button>
 
-            <button
+            {/* <button
               onClick={() => setActiveTab('credits')}
               className={`pb-4 flex items-center ${
                 activeTab === 'credits'
@@ -154,7 +156,7 @@ export function AdminDashboard() {
             >
               <CreditCard className="h-5 w-5 mr-2" />
               Credits
-            </button>
+            </button> */}
 
             <button
               onClick={() => setActiveTab('claims')}
@@ -168,7 +170,7 @@ export function AdminDashboard() {
               Claim Requests
             </button>
 
-            <button
+            {/* <button
               onClick={() => setActiveTab('import-investors')}
               className={`pb-4 flex items-center ${
                 activeTab === 'import-investors'
@@ -178,9 +180,9 @@ export function AdminDashboard() {
             >
               <Upload className="h-5 w-5 mr-2" />
               Import Investors
-            </button>
+            </button> */}
 
-            <button
+            {/* <button
               onClick={() => setActiveTab('import-syndicators')}
               className={`pb-4 flex items-center ${
                 activeTab === 'import-syndicators'
@@ -190,7 +192,7 @@ export function AdminDashboard() {
             >
               <Upload className="h-5 w-5 mr-2" />
               Import Syndicators
-            </button>
+            </button> */}
 
             <button
               onClick={() => setActiveTab('verification')}

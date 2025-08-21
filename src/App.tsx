@@ -42,7 +42,6 @@ import { Compliance } from './pages/legal/Compliance';
 import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Blog } from './pages/Blog';
-import { AdminLogin } from './pages/admin/Login';
 import { Pricing } from './pages/Pricing';
 import { NewPricing } from './pages/new-pricing';
 import { EmailPreview } from './pages/EmailPreview';
@@ -396,16 +395,6 @@ export default function App() {
 
         {/* Admin Routes */}
         <Route path="/admin" element={
-          <AdminErrorBoundary>
-            <AdminLogin />
-          </AdminErrorBoundary>
-        } />
-        <Route path="/admin/dashboard" element={
-          <AdminErrorBoundary>
-            <AdminDashboard />
-          </AdminErrorBoundary>
-        } />
-        <Route path="/dev-admin/*" element={
           <AdminErrorBoundary>
             <AdminDashboard />
           </AdminErrorBoundary>

@@ -9,7 +9,7 @@ interface SyndicatorAdmin {
   email: string;
   verification_status: VerificationStatus;
   created_at: string;
-  last_updated: string;
+  updated_at: string;
   deal_count: number;
 }
 
@@ -34,7 +34,7 @@ export function SyndicatorVerificationAdmin() {
           company_name,
           verification_status,
           created_at,
-          last_updated,
+          updated_at,
           profiles!syndicator_profiles_id_fkey (
             email
           )
@@ -55,10 +55,10 @@ export function SyndicatorVerificationAdmin() {
           return {
             id: syndicator.id,
             company_name: syndicator.company_name,
-            email: Array.isArray(syndicator.profiles) ? syndicator.profiles[0]?.email || 'No email' : syndicator.profiles?.email || 'No email',
+            email: Array.isArray(syndicator.profiles) ? syndicator.profiles[0]?.email || 'No email' : 'No email',
             verification_status: (syndicator.verification_status || 'unverified') as VerificationStatus,
             created_at: syndicator.created_at,
-            last_updated: syndicator.last_updated,
+            updated_at: syndicator.updated_at,
             deal_count: count || 0
           };
         })
@@ -74,19 +74,21 @@ export function SyndicatorVerificationAdmin() {
   };
 
   const updateVerificationStatus = async (syndicatorId: string, newStatus: VerificationStatus) => {
+    console.log('Updating verification status for syndicator:', syndicatorId, 'to:', newStatus);
     setUpdating(syndicatorId);
     setMessage(null);
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('syndicator_profiles')
         .update({
           verification_status: newStatus,
-          last_updated: new Date().toISOString()
+          updated_at: new Date().toISOString()
         })
         .eq('id', syndicatorId);
 
       if (error) throw error;
+      console.log('Updated data:', data);
 
       // Update local state
       setSyndicators(prev => prev.map(syndicator =>
