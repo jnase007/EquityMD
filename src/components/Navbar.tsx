@@ -336,9 +336,9 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                       </Link>
                     </>
                   )}
-                  {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
+                  {profile?.is_admin && (
                     <Link
-                      to="/admin/dashboard"
+                      to="/admin"
                       className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
                       onClick={() => setIsDropdownOpen(false)}
                     >
@@ -475,9 +475,9 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                       </Link>
                     </>
                   )}
-                  {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
+                  {profile?.is_admin && (
                     <Link
-                      to="/admin/dashboard"
+                      to="/admin"
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
                       onClick={() => setIsMenuOpen(false)}
                     >

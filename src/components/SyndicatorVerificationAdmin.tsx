@@ -34,7 +34,7 @@ export function SyndicatorVerificationAdmin() {
           company_name,
           verification_status,
           created_at,
-          last_updated,
+          updated_at,
           profiles!syndicator_profiles_id_fkey (
             email
           )
@@ -58,7 +58,7 @@ export function SyndicatorVerificationAdmin() {
             email: Array.isArray(syndicator.profiles) ? syndicator.profiles[0]?.email || 'No email' : syndicator.profiles?.email || 'No email',
             verification_status: (syndicator.verification_status || 'unverified') as VerificationStatus,
             created_at: syndicator.created_at,
-            last_updated: syndicator.last_updated,
+            updated_at: syndicator.updated_at,
             deal_count: count || 0
           };
         })
@@ -82,7 +82,7 @@ export function SyndicatorVerificationAdmin() {
         .from('syndicator_profiles')
         .update({
           verification_status: newStatus,
-          last_updated: new Date().toISOString()
+          updated_at: new Date().toISOString()
         })
         .eq('id', syndicatorId);
 

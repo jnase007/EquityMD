@@ -108,6 +108,8 @@ export function Directory() {
       if (!syndicatorData || syndicatorData.length === 0) {
         setSyndicators(mockSyndicators);
       } else {
+        console.log('syndicatorData', syndicatorData);
+
         // Combine real data with enhanced properties
         const combinedData = syndicatorData
           .filter(s => s.company_name !== 'Starboard Realty') // Remove any existing Starboard from DB

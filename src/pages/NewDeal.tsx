@@ -92,13 +92,16 @@ export function NewDeal() {
       // Create the deal
       const { data: deal, error: dealError } = await supabase
         .from('deals')
-        .insert([dealData])
+        .insert(dealData)
         .select('*')
         .single();
 
       console.log('Insert result - data:', deal, 'error:', dealError);
 
-      if (dealError) throw dealError;
+      if (dealError) {
+        console.error('Error creating deal:', dealError);
+        return
+      }
 
       navigate(`/deals/${deal.slug}`);
     } catch (error: any) {

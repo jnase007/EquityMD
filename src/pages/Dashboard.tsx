@@ -461,22 +461,22 @@ export function Dashboard() {
             {profile?.user_type === 'syndicator' ? 'Syndicator Dashboard' : 'Investor Dashboard'}
           </h1>
           <div className="flex gap-4">
-            <button
+            {/* <button
               onClick={() => setShowReferralModal(true)}
               className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition flex items-center"
             >
               <Share2 className="h-5 w-5 mr-2" />
               Refer Friends
-            </button>
+            </button> */}
             {profile?.user_type === 'syndicator' && (
               <>
-                <button
+                {/* <button
                   onClick={() => setShowPurchaseModal(true)}
                   className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center"
                 >
                   <CreditCard className="h-5 w-5 mr-2" />
                   Buy Credits
-                </button>
+                </button> */}
                 <Link
                   to="/deals/new"
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center"
@@ -490,16 +490,16 @@ export function Dashboard() {
         </div>
 
         {/* Referral Status */}
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <ReferralStatus />
-        </div>
+        </div> */}
 
         {/* Credit Status for Syndicators */}
-        {profile?.user_type === 'syndicator' && (
+        {/* {profile?.user_type === 'syndicator' && (
           <div className="mb-8">
             <CreditStatus />
           </div>
-        )}
+        )} */}
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
