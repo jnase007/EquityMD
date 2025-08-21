@@ -146,7 +146,7 @@ export function AdminDashboard() {
               Properties
             </button>
 
-            <button
+            {/* <button
               onClick={() => setActiveTab('credits')}
               className={`pb-4 flex items-center ${
                 activeTab === 'credits'
@@ -156,7 +156,7 @@ export function AdminDashboard() {
             >
               <CreditCard className="h-5 w-5 mr-2" />
               Credits
-            </button>
+            </button> */}
 
             <button
               onClick={() => setActiveTab('claims')}
