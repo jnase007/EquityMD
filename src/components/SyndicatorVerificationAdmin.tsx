@@ -74,11 +74,12 @@ export function SyndicatorVerificationAdmin() {
   };
 
   const updateVerificationStatus = async (syndicatorId: string, newStatus: VerificationStatus) => {
+    console.log('Updating verification status for syndicator:', syndicatorId, 'to:', newStatus);
     setUpdating(syndicatorId);
     setMessage(null);
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('syndicator_profiles')
         .update({
           verification_status: newStatus,
@@ -87,6 +88,7 @@ export function SyndicatorVerificationAdmin() {
         .eq('id', syndicatorId);
 
       if (error) throw error;
+      console.log('Updated data:', data);
 
       // Update local state
       setSyndicators(prev => prev.map(syndicator =>
