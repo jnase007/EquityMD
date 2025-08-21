@@ -9,7 +9,7 @@ interface SyndicatorAdmin {
   email: string;
   verification_status: VerificationStatus;
   created_at: string;
-  last_updated: string;
+  updated_at: string;
   deal_count: number;
 }
 
@@ -55,7 +55,7 @@ export function SyndicatorVerificationAdmin() {
           return {
             id: syndicator.id,
             company_name: syndicator.company_name,
-            email: Array.isArray(syndicator.profiles) ? syndicator.profiles[0]?.email || 'No email' : syndicator.profiles?.email || 'No email',
+            email: Array.isArray(syndicator.profiles) ? syndicator.profiles[0]?.email || 'No email' : 'No email',
             verification_status: (syndicator.verification_status || 'unverified') as VerificationStatus,
             created_at: syndicator.created_at,
             updated_at: syndicator.updated_at,
