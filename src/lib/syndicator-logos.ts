@@ -1,6 +1,6 @@
 // Temporary syndicator logo mapping until database can be updated via admin access
 const SYNDICATOR_LOGO_MAP: Record<string, string> = {
-  'Sutera Properties': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/suteraproperties.png`,
+  'Sutera Properties': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/sutera.png`,
   'Back Bay Capital': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/backbay.png`,
   'Starboard Realty': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/Starboard_reality.jpg`,
   'Clarion Partners': `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/syndicatorlogos/clarionpartners.png`,
