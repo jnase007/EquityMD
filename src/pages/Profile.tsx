@@ -7,6 +7,8 @@ import { AccountTypeBadge } from '../components/AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
 import { InvestorProfileForm } from '../components/InvestorProfileForm'; // This will now resolve to index.tsx
 import { SyndicatorProfileForm } from '../components/SyndicatorProfileForm';
+import { SyndicatorManager } from '../components/SyndicatorManager';
+import { SyndicatorProfileEditor } from '../components/SyndicatorProfileEditor';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
 import { supabase } from '../lib/supabase';
 import { calculateProfileCompletion } from '../lib/profileCompletion';
@@ -516,7 +518,6 @@ export function Profile() {
   const [syndicators, setSyndicators] = useState<Syndicator[]>([]);
   const [loadingSyndicators, setLoadingSyndicators] = useState(true);
   const [showMessageModal, setShowMessageModal] = useState(false);
-  const [selectedSyndicator, setSelectedSyndicator] = useState<Syndicator | null>(null);
   const [message, setMessage] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [showAccountTypeForm, setShowAccountTypeForm] = useState(false);
@@ -530,6 +531,8 @@ export function Profile() {
   const [isMobile, setIsMobile] = useState(false);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [deactivateConfirmation, setDeactivateConfirmation] = useState('');
+  const [selectedSyndicator, setSelectedSyndicator] = useState<any>(null);
+  const [editingSyndicator, setEditingSyndicator] = useState(false);
 
   // Check if mobile
   useEffect(() => {
@@ -1062,56 +1065,72 @@ export function Profile() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-gray-50 text-gray-500">
-                {profile?.user_type === 'investor' ? 'Investor Profile' : 'Syndicator Profile'}
+                Profile Management
               </span>
             </div>
           </div>
 
-          {/* Profile Form */}
+          {/* Investor Profile Form - Always show for all users */}
           <div id="profile-form-section" className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 transition-all duration-300">
             <div className="flex items-center mb-6">
-              {profile?.user_type === 'investor' ? (
-                <User className="h-6 w-6 text-green-600 mr-3" />
-              ) : (
-                <Building2 className="h-6 w-6 text-green-600 mr-3" />
-              )}
+              <User className="h-6 w-6 text-green-600 mr-3" />
               <h2 className="text-2xl font-semibold text-gray-900">
-                {profile?.user_type === 'investor' ? 'Your Investment Profile' : 'Your Company Profile'}
+                Your Investment Profile
               </h2>
             </div>
             
-            {profile?.user_type === 'investor' ? (
-              <InvestorProfileForm 
-                setMessage={(msg: string) => {
-                  if (!msg || msg.trim() === '') {
-                    // Ignore empty messages (used for clearing)
-                    return;
-                  }
-                  if (msg.includes('successfully')) {
-                    toast.success(msg);
-                    fetchAdditionalProfile();
-                  } else {
-                    toast.error(msg);
-                  }
-                }}
-              />
-            ) : (
-              <SyndicatorProfileForm 
-                setMessage={(msg: string) => {
-                  if (!msg || msg.trim() === '') {
-                    // Ignore empty messages (used for clearing)
-                    return;
-                  }
-                  if (msg.includes('successfully')) {
-                    toast.success(msg);
-                    fetchAdditionalProfile();
-                  } else {
-                    toast.error(msg);
-                  }
-                }}
-              />
-            )}
+            <InvestorProfileForm 
+              setMessage={(msg: string) => {
+                if (!msg || msg.trim() === '') {
+                  return;
+                }
+                if (msg.includes('successfully')) {
+                  toast.success(msg);
+                  fetchAdditionalProfile();
+                } else {
+                  toast.error(msg);
+                }
+              }}
+            />
           </div>
+
+          {/* Syndicator Management Section */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-gray-50 text-gray-500">
+                Syndicator Management
+              </span>
+            </div>
+          </div>
+
+          {/* Syndicator Management */}
+          {!editingSyndicator ? (
+            <SyndicatorManager
+              onCreateNew={() => {
+                // This will be handled in the SyndicatorManager component
+              }}
+              onEditSyndicator={(syndicator) => {
+                setSelectedSyndicator(syndicator);
+                setEditingSyndicator(true);
+              }}
+            />
+          ) : (
+            <SyndicatorProfileEditor
+              syndicator={selectedSyndicator}
+              onSave={(updatedSyndicator) => {
+                setSelectedSyndicator(updatedSyndicator);
+                setEditingSyndicator(false);
+                toast.success('Syndicator updated successfully!');
+              }}
+              onCancel={() => {
+                setEditingSyndicator(false);
+                setSelectedSyndicator(null);
+              }}
+            />
+          )}
 
           {/* (Connect with Syndicators section removed) */}
         </div>

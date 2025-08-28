@@ -3,7 +3,7 @@ create table public.profiles (
   email text not null,
   full_name text null,
   avatar_url text null,
-  user_type public.user_type not null,
+  user_type public.user_type null,
   is_verified boolean null default false,
   created_at timestamp with time zone null default now(),
   updated_at timestamp with time zone null default now(),
@@ -28,7 +28,6 @@ create trigger update_profiles_updated_at BEFORE
 update on profiles for EACH row
 execute FUNCTION update_updated_at_column ();
 
-
 create table public.investor_profiles (
   id uuid not null,
   accredited_status boolean null default false,
@@ -48,9 +47,8 @@ create table public.investor_profiles (
   constraint investor_profiles_id_fkey foreign KEY (id) references profiles (id) on delete CASCADE
 ) TABLESPACE pg_default;
 
-
-create table public.syndicator_profiles (
-  id uuid not null,
+create table public.syndicators (
+  id uuid not null default gen_random_uuid (),
   company_name text not null,
   company_description text null,
   company_logo_url text null,
@@ -75,10 +73,24 @@ create table public.syndicator_profiles (
   claimed_at timestamp with time zone null,
   claimed_by uuid null,
   verification_status text null default 'unverified'::text,
-  constraint syndicator_profiles_pkey primary key (id),
-  constraint syndicator_profiles_claimed_by_fkey foreign KEY (claimed_by) references profiles (id),
-  constraint syndicator_profiles_id_fkey foreign KEY (id) references profiles (id),
-  constraint syndicator_profiles_verification_status_check check (
+  average_rating numeric(3, 2) null default 0.0,
+  total_reviews integer null default 0,
+  active_deals integer null default 0,
+  specialties text[] null default '{}'::text[],
+  team_size integer null default 0,
+  notable_projects text[] null default '{}'::text[],
+  investment_focus text[] null default '{}'::text[],
+  min_investment bigint null default 0,
+  target_markets text[] null default '{}'::text[],
+  certifications text[] null default '{}'::text[],
+  feat boolean null,
+  constraint syndicators_pkey primary key (id),
+  constraint syndicators_claimed_by_fkey foreign KEY (claimed_by) references profiles (id) on delete set null,
+  constraint syndicators_min_investment_check check ((min_investment >= 0)),
+  constraint syndicators_team_size_check check ((team_size >= 0)),
+  constraint syndicators_total_reviews_check check ((total_reviews >= 0)),
+  constraint syndicators_active_deals_check check ((active_deals >= 0)),
+  constraint syndicators_verification_status_check check (
     (
       verification_status = any (
         array[
@@ -88,16 +100,41 @@ create table public.syndicator_profiles (
         ]
       )
     )
+  ),
+  constraint syndicators_average_rating_check check (
+    (
+      (average_rating >= (0)::numeric)
+      and (average_rating <= 5.0)
+    )
   )
 ) TABLESPACE pg_default;
 
-create index IF not exists idx_syndicator_profiles_state on public.syndicator_profiles using btree (state) TABLESPACE pg_default;
+create index IF not exists idx_syndicators_claimed_by_deals on public.syndicators using btree (claimed_by) TABLESPACE pg_default;
 
-create index IF not exists idx_syndicator_profiles_city on public.syndicator_profiles using btree (city) TABLESPACE pg_default;
+create index IF not exists idx_syndicators_state on public.syndicators using btree (state) TABLESPACE pg_default;
 
-create index IF not exists idx_syndicator_profiles_slug on public.syndicator_profiles using btree (slug) TABLESPACE pg_default;
+create index IF not exists idx_syndicators_city on public.syndicators using btree (city) TABLESPACE pg_default;
 
-create trigger update_syndicator_profiles_updated_at BEFORE
-update on syndicator_profiles for EACH row
+create index IF not exists idx_syndicators_average_rating on public.syndicators using btree (average_rating) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_total_reviews on public.syndicators using btree (total_reviews) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_active_deals on public.syndicators using btree (active_deals) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_specialties on public.syndicators using gin (specialties) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_target_markets on public.syndicators using gin (target_markets) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_slug on public.syndicators using btree (slug) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_claimed_by on public.syndicators using btree (claimed_by) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_claimed_by_lookup on public.syndicators using btree (claimed_by, id) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_claimed_by_verification on public.syndicators using btree (claimed_by, verification_status) TABLESPACE pg_default;
+
+create index IF not exists idx_syndicators_claimable_status on public.syndicators using btree (claimable, verification_status) TABLESPACE pg_default;
+
+create trigger update_syndicators_updated_at BEFORE
+update on syndicators for EACH row
 execute FUNCTION update_updated_at_column ();
-

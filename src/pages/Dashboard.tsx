@@ -14,7 +14,7 @@ import { PurchaseCreditsModal } from '../components/PurchaseCreditsModal';
 import { Tooltip } from '../components/Tooltip';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
-import type { Deal } from '../types/database';
+import type { Deal, Syndicator } from '../types/database';
 
 export function Dashboard() {
   const { user, profile } = useAuthStore();
@@ -37,14 +37,35 @@ export function Dashboard() {
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [selectedInvestmentRequests, setSelectedInvestmentRequests] = useState<string | null>(null);
   const [investmentRequests, setInvestmentRequests] = useState<any[]>([]);
+  const [userSyndicators, setUserSyndicators] = useState<Syndicator[]>([]);
+  const [selectedSyndicator, setSelectedSyndicator] = useState<string | null>(null);
+  const [syndicatorsLoading, setSyndicatorsLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
-      fetchDeals();
-      fetchStats();
+      fetchUserSyndicators();
       fetchCreditInfo();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      if (selectedSyndicator) {
+        fetchDeals();
+        fetchStats();
+      } else if (!syndicatorsLoading) {
+        // Either no syndicators or syndicators loaded but none selected yet
+        // Set loading to false and clear deals/stats
+        setLoading(false);
+        setDeals([]);
+        setStats({
+          activeDeals: 0,
+          totalInvestors: 0,
+          totalRaised: 0
+        });
+      }
+    }
+  }, [user, selectedSyndicator, syndicatorsLoading]);
 
   // Handle profile loading state
   useEffect(() => {
@@ -75,10 +96,35 @@ export function Dashboard() {
     }
   }, [selectedInvestmentRequests]);
 
+  async function fetchUserSyndicators() {
+    try {
+      const { data, error } = await supabase
+        .from('syndicators')
+        .select('*')
+        .eq('claimed_by', user!.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      setUserSyndicators(data || []);
+      
+      // Auto-select the first syndicator if available
+      if (data && data.length > 0 && !selectedSyndicator) {
+        setSelectedSyndicator(data[0].id);
+      }
+    } catch (error) {
+      console.error('Error fetching user syndicators:', error);
+      setUserSyndicators([]);
+    } finally {
+      setSyndicatorsLoading(false);
+    }
+  }
+
   async function fetchDeals() {
     try {
-      if (profile?.user_type === 'syndicator') {
-        // Fetch deals owned by this syndicator
+      // Only fetch deals if user has syndicators and one is selected
+      if (selectedSyndicator && userSyndicators.length > 0) {
+        // Fetch deals owned by the selected syndicator
         const { data, error } = await supabase
           .from('deals')
           .select(`
@@ -92,7 +138,7 @@ export function Dashboard() {
               status
             )
           `)
-          .eq('syndicator_id', user!.id)
+          .eq('syndicator_id', selectedSyndicator)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -142,13 +188,14 @@ export function Dashboard() {
 
   async function fetchStats() {
     try {
-      if (profile?.user_type === 'syndicator') {
+      // Only fetch stats if user has syndicators and one is selected
+      if (selectedSyndicator && userSyndicators.length > 0) {
         // Syndicator stats
         // Query 1: Count active deals for this syndicator
         const { count: activeDealsCount, error: activeDealsError } = await supabase
           .from('deals')
           .select('*', { count: 'exact', head: true })
-          .eq('syndicator_id', user!.id)
+          .eq('syndicator_id', selectedSyndicator)
           .eq('status', 'active');
 
         if (activeDealsError) throw activeDealsError;
@@ -160,7 +207,7 @@ export function Dashboard() {
             investor_id,
             deals!inner(syndicator_id)
           `)
-          .eq('deals.syndicator_id', user!.id);
+          .eq('deals.syndicator_id', selectedSyndicator);
 
         if (totalInvestorsError) throw totalInvestorsError;
 
@@ -171,7 +218,7 @@ export function Dashboard() {
             user_id,
             deals!inner(syndicator_id)
           `)
-          .eq('deals.syndicator_id', user!.id)
+          .eq('deals.syndicator_id', selectedSyndicator)
           .eq('status', 'approved');
 
         if (investmentInvestorsError) throw investmentInvestorsError;
@@ -189,7 +236,7 @@ export function Dashboard() {
             amount,
             deals!inner(syndicator_id)
           `)
-          .eq('deals.syndicator_id', user!.id)
+          .eq('deals.syndicator_id', selectedSyndicator)
           .eq('status', 'approved'); // Only include approved investments
 
         if (totalRaisedError) throw totalRaisedError;
@@ -342,7 +389,7 @@ export function Dashboard() {
         .from('deals')
         .update({ status: newStatus })
         .eq('id', dealId)
-        .eq('syndicator_id', user!.id); // Ensure user owns this deal
+        .eq('syndicator_id', selectedSyndicator); // Ensure user owns this deal
 
       if (error) throw error;
 
@@ -443,10 +490,50 @@ export function Dashboard() {
     );
   }
 
-  if (loading) {
+  if (loading || syndicatorsLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-xl text-gray-600">Loading dashboard...</div>
+      </div>
+    );
+  }
+
+  // Show message if user has no syndicators created yet
+  if (!syndicatorsLoading && userSyndicators.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-lg shadow-sm p-8">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
+                <Building className="h-8 w-8 text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to EquityMD!</h2>
+              <p className="text-lg text-gray-600 mb-6">
+                To get started with your syndicator dashboard, you'll need to create your first syndicator profile.
+              </p>
+              <p className="text-gray-500 mb-8">
+                A syndicator profile represents your company or investment entity and allows you to create and manage deals.
+              </p>
+              <div className="flex justify-center gap-4">
+                <Link
+                  to="/profile"
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center font-medium"
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Syndicator Profile
+                </Link>
+                <Link
+                  to="/directory"
+                  className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition"
+                >
+                  Browse Directory
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -457,9 +544,32 @@ export function Dashboard() {
       
       <div className="max-w-[1200px] mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">
-            {profile?.user_type === 'syndicator' ? 'Syndicator Dashboard' : 'Investor Dashboard'}
-          </h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold text-gray-800">
+              {userSyndicators.length > 0 ? 'Syndicator Dashboard' : 'Investor Dashboard'}
+            </h1>
+            {userSyndicators.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Viewing:</span>
+                <select
+                  value={selectedSyndicator || ''}
+                  onChange={(e) => setSelectedSyndicator(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  disabled={syndicatorsLoading}
+                >
+                  {syndicatorsLoading ? (
+                    <option value="">Loading...</option>
+                  ) : (
+                    userSyndicators.map((syndicator) => (
+                      <option key={syndicator.id} value={syndicator.id}>
+                        {syndicator.company_name}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+            )}
+          </div>
           <div className="flex gap-4">
             {/* <button
               onClick={() => setShowReferralModal(true)}
@@ -468,7 +578,7 @@ export function Dashboard() {
               <Share2 className="h-5 w-5 mr-2" />
               Refer Friends
             </button> */}
-            {profile?.user_type === 'syndicator' && (
+            {userSyndicators.length > 0 && (
               <>
                 {/* <button
                   onClick={() => setShowPurchaseModal(true)}
@@ -510,7 +620,7 @@ export function Dashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-sm text-gray-500">
-                  {profile?.user_type === 'syndicator' ? 'Active Deals' : 'Interested Deals'}
+                  {userSyndicators.length > 0 ? 'Active Deals' : 'Interested Deals'}
                 </p>
                 <p className="text-2xl font-bold text-gray-800">{stats.activeDeals}</p>
               </div>
@@ -524,7 +634,7 @@ export function Dashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-sm text-gray-500">
-                  {profile?.user_type === 'syndicator' ? 'Total Investors' : 'Syndicators'}
+                  {userSyndicators.length > 0 ? 'Total Investors' : 'Syndicators'}
                 </p>
                 <p className="text-2xl font-bold text-gray-800">{stats.totalInvestors}</p>
               </div>
@@ -538,7 +648,7 @@ export function Dashboard() {
               </div>
               <div className="ml-4">
                 <p className="text-sm text-gray-500">
-                  {profile?.user_type === 'syndicator' ? 'Total Raised' : 'Total Invested'}
+                  {userSyndicators.length > 0 ? 'Total Raised' : 'Total Invested'}
                 </p>
                 <p className="text-2xl font-bold text-gray-800">
                   ${stats.totalRaised.toLocaleString()}
@@ -552,7 +662,7 @@ export function Dashboard() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b">
             <h2 className="text-lg font-semibold text-gray-800">
-              {profile?.user_type === 'syndicator' ? 'Your Deals' : 'Interested Deals'}
+              {userSyndicators.length > 0 ? 'Your Deals' : 'Interested Deals'}
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -566,7 +676,7 @@ export function Dashboard() {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {profile?.user_type === 'syndicator' ? 'Pending Requests' : 'Interest Level'}
+                    {userSyndicators.length > 0 ? 'Pending Requests' : 'Interest Level'}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Target Raise
@@ -601,7 +711,7 @@ export function Dashboard() {
                         </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {profile?.user_type === 'syndicator' ? (
+                        {userSyndicators.length > 0 ? (
                           <select
                             value={deal.status}
                             onChange={(e) => updateDealStatus(deal.id, e.target.value as 'draft' | 'active' | 'archived')}
@@ -629,7 +739,7 @@ export function Dashboard() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {profile?.user_type === 'syndicator' 
+                        {userSyndicators.length > 0
                           ? `${(deal as any).investment_requests?.filter((req: any) => req.status === 'pending').length || 0} pending`
                           : `${(deal as any).deal_interests?.length || 0} interested`
                         }
@@ -657,7 +767,7 @@ export function Dashboard() {
                             </button>
                           </Tooltip>
                           
-                          {profile?.user_type === 'syndicator' && (
+                          {userSyndicators.length > 0 && (
                             <Tooltip content={selectedInvestmentRequests === deal.id ? "Hide investment requests" : "Manage investment requests"}>
                               <button
                                 onClick={() => setSelectedInvestmentRequests(selectedInvestmentRequests === deal.id ? null : deal.id)}
@@ -692,7 +802,7 @@ export function Dashboard() {
         )}
 
         {/* Investment Requests Manager */}
-        {selectedInvestmentRequests && profile?.user_type === 'syndicator' && (
+        {selectedInvestmentRequests && userSyndicators.length > 0 && (
           <div className="mt-8 bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-6">
               Investment Requests

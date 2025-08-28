@@ -1,7 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
-import { Search, Filter, Building2, MapPin, DollarSign, TrendingUp, Clock, Plus, Edit, Archive, CheckCircle, XCircle, Eye } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
+import {
+  Search,
+  Filter,
+  Building2,
+  MapPin,
+  DollarSign,
+  TrendingUp,
+  Clock,
+  Plus,
+  Edit,
+  Archive,
+  CheckCircle,
+  XCircle,
+  Eye,
+} from "lucide-react";
 
 interface Deal {
   id: string;
@@ -22,8 +36,10 @@ interface Deal {
 export function PropertyManagement() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState<'all' | 'active' | 'draft' | 'archived'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState<"all" | "active" | "draft" | "archived">(
+    "all"
+  );
   const [editingDeal, setEditingDeal] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,42 +47,29 @@ export function PropertyManagement() {
   }, []);
 
   async function fetchDeals() {
-    try {
-      const { data, error } = await supabase
-        .from('deals')
-        .select(`
-          *,
-          syndicator:syndicator_id (
-            company_name
-          )
-        `)
-        .order('created_at', { ascending: false });
+    setLoading(true);
+    const { data, error } = await supabase.from("deals").select(`
+      *,
+      syndicator:syndicator_id (
+        company_name
+      )
+    `);
 
-      if (error) throw error;
-      
-      // Only include deals from the three real syndicators
-      // const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
-      // const filteredDeals = data ? data.filter(deal => 
-        // allowedSyndicators.includes(deal.syndicator_id)
-      // ) : [];
-      
-      setDeals(data);
-    } catch (error) {
-      console.error('Error fetching deals:', error);
-    } finally {
-      setLoading(false);
-    }
+    if (error) throw error;
+
+    setDeals(data);
+    setLoading(false);
   }
 
-  const filteredDeals = deals.filter(deal => {
-    const matchesSearch = 
+  const filteredDeals = deals.filter((deal) => {
+    const matchesSearch =
       deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       deal.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      deal.syndicator?.company_name.toLowerCase().includes(searchTerm.toLowerCase());
+      deal.syndicator?.company_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
-    const matchesFilter = 
-      filter === 'all' ||
-      deal.status === filter;
+    const matchesFilter = filter === "all" || deal.status === filter;
 
     return matchesSearch && matchesFilter;
   });
@@ -74,17 +77,17 @@ export function PropertyManagement() {
   const updateDealStatus = async (dealId: string, status: string) => {
     try {
       const { error } = await supabase
-        .from('deals')
+        .from("deals")
         .update({ status })
-        .eq('id', dealId);
+        .eq("id", dealId);
 
       if (error) throw error;
 
-      setDeals(deals.map(deal => 
-        deal.id === dealId ? { ...deal, status } : deal
-      ));
+      setDeals(
+        deals.map((deal) => (deal.id === dealId ? { ...deal, status } : deal))
+      );
     } catch (error) {
-      console.error('Error updating deal:', error);
+      console.error("Error updating deal:", error);
     }
   };
 
@@ -135,11 +138,21 @@ export function PropertyManagement() {
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Syndicator</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Investment</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Property
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Syndicator
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Investment
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -149,13 +162,18 @@ export function PropertyManagement() {
                   <div className="flex items-center">
                     <div className="h-10 w-10 flex-shrink-0">
                       <img
-                        src={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
+                        src={
+                          deal.cover_image_url ||
+                          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80"
+                        }
                         alt={deal.title}
                         className="h-10 w-10 rounded-lg object-cover"
                       />
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{deal.title}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {deal.title}
+                      </div>
                       <div className="text-sm text-gray-500 flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
                         {deal.location}
@@ -164,8 +182,12 @@ export function PropertyManagement() {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{deal.syndicator?.company_name}</div>
-                  <div className="text-sm text-gray-500">{deal.property_type}</div>
+                  <div className="text-sm text-gray-900">
+                    {deal.syndicator?.company_name}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {deal.property_type}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="space-y-1">
@@ -188,11 +210,11 @@ export function PropertyManagement() {
                     value={deal.status}
                     onChange={(e) => updateDealStatus(deal.id, e.target.value)}
                     className={`px-3 py-1 rounded-full text-sm ${
-                      deal.status === 'active'
-                        ? 'bg-green-100 text-green-800'
-                        : deal.status === 'draft'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-gray-100 text-gray-800'
+                      deal.status === "active"
+                        ? "bg-green-100 text-green-800"
+                        : deal.status === "draft"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-gray-100 text-gray-800"
                     }`}
                   >
                     <option value="draft">Draft</option>
@@ -202,24 +224,48 @@ export function PropertyManagement() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-3">
-                    <Link 
-                      to={`/deals/${deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
+                    <Link
+                      to={`/deals/${deal.title
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/(^-|-$)/g, "")}`}
                       className="text-blue-600 hover:text-blue-900"
                       title="View deal"
                     >
                       <Eye className="h-5 w-5" />
                     </Link>
                     <button
-                      onClick={() => setEditingDeal(editingDeal === deal.id ? null : deal.id)}
-                      className={`${editingDeal === deal.id ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-900`}
-                      title={editingDeal === deal.id ? "Cancel edit" : "Edit deal"}
+                      onClick={() =>
+                        setEditingDeal(editingDeal === deal.id ? null : deal.id)
+                      }
+                      className={`${
+                        editingDeal === deal.id
+                          ? "text-blue-600"
+                          : "text-gray-600"
+                      } hover:text-blue-900`}
+                      title={
+                        editingDeal === deal.id ? "Cancel edit" : "Edit deal"
+                      }
                     >
                       <Edit className="h-5 w-5" />
                     </button>
                     <button
-                      onClick={() => updateDealStatus(deal.id, deal.status === 'archived' ? 'draft' : 'archived')}
-                      className={`${deal.status === 'archived' ? 'text-green-600 hover:text-green-900' : 'text-gray-600 hover:text-gray-900'}`}
-                      title={deal.status === 'archived' ? "Restore deal" : "Archive deal"}
+                      onClick={() =>
+                        updateDealStatus(
+                          deal.id,
+                          deal.status === "archived" ? "draft" : "archived"
+                        )
+                      }
+                      className={`${
+                        deal.status === "archived"
+                          ? "text-green-600 hover:text-green-900"
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      title={
+                        deal.status === "archived"
+                          ? "Restore deal"
+                          : "Archive deal"
+                      }
                     >
                       <Archive className="h-5 w-5" />
                     </button>

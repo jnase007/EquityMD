@@ -26,6 +26,7 @@ interface Syndicator {
   slug: string;
   specialties: string[];
   team_size: number;
+  feat?: boolean;
   notable_projects: string[];
   investment_focus: string[];
   min_investment: number;
@@ -79,7 +80,7 @@ export function Directory() {
     try {
       console.log('🔍 Fetching syndicators from database...');
       const { data: syndicatorData, error: syndicatorError } = await supabase
-        .from('syndicator_profiles')
+        .from('syndicators')
         .select()
         .in('verification_status', ['verified', 'premier']);
 
@@ -125,6 +126,7 @@ export function Directory() {
       console.log('✅ Final count:', filteredData.length);
       console.log('✅ Company names:', filteredData.map(s => s.company_name));
 
+      console.log('syndicators filteredData', filteredData);
       setSyndicators(filteredData);
     } catch (error) {
       console.error('❌ Error fetching syndicators:', error);
@@ -249,7 +251,7 @@ export function Directory() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {syndicators
-              .filter(s => s.average_rating >= 4.5 && s.total_reviews >= 10)
+              .filter(s => s.feat)
               .slice(0, 3)
               .map((syndicator) => (
                 <Link
