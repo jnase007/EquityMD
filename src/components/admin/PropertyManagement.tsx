@@ -15,6 +15,8 @@ import {
   CheckCircle,
   XCircle,
   Eye,
+  Save,
+  X,
 } from "lucide-react";
 
 interface Deal {
@@ -41,6 +43,7 @@ export function PropertyManagement() {
     "all"
   );
   const [editingDeal, setEditingDeal] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Partial<Deal>>({});
 
   useEffect(() => {
     fetchDeals();
@@ -86,6 +89,46 @@ export function PropertyManagement() {
       setDeals(
         deals.map((deal) => (deal.id === dealId ? { ...deal, status } : deal))
       );
+    } catch (error) {
+      console.error("Error updating deal:", error);
+    }
+  };
+
+  const startEdit = (deal: Deal) => {
+    setEditingDeal(deal.id);
+    setEditForm({
+      title: deal.title,
+      location: deal.location,
+      property_type: deal.property_type,
+      minimum_investment: deal.minimum_investment,
+      target_irr: deal.target_irr,
+      investment_term: deal.investment_term,
+      cover_image_url: deal.cover_image_url
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingDeal(null);
+    setEditForm({});
+  };
+
+  const saveDeal = async (dealId: string) => {
+    try {
+      const { error } = await supabase
+        .from("deals")
+        .update(editForm)
+        .eq("id", dealId);
+
+      if (error) throw error;
+
+      setDeals(
+        deals.map((deal) => 
+          deal.id === dealId ? { ...deal, ...editForm } : deal
+        )
+      );
+      
+      setEditingDeal(null);
+      setEditForm({});
     } catch (error) {
       console.error("Error updating deal:", error);
     }
@@ -172,12 +215,41 @@ export function PropertyManagement() {
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">
-                        {deal.title}
+                        {editingDeal === deal.id ? (
+                          <input
+                            type="text"
+                            value={editForm.title || ""}
+                            onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                          />
+                        ) : (
+                          deal.title
+                        )}
                       </div>
                       <div className="text-sm text-gray-500 flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
-                        {deal.location}
+                        {editingDeal === deal.id ? (
+                          <input
+                            type="text"
+                            value={editForm.location || ""}
+                            onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                          />
+                        ) : (
+                          deal.location
+                        )}
                       </div>
+                      {editingDeal === deal.id && (
+                        <div className="text-xs text-gray-400 mt-1">
+                          <input
+                            type="url"
+                            placeholder="Cover image URL"
+                            value={editForm.cover_image_url || ""}
+                            onChange={(e) => setEditForm({ ...editForm, cover_image_url: e.target.value })}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-xs"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </td>
@@ -186,22 +258,65 @@ export function PropertyManagement() {
                     {deal.syndicator?.company_name}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {deal.property_type}
+                    {editingDeal === deal.id ? (
+                      <select
+                        value={editForm.property_type || ""}
+                        onChange={(e) => setEditForm({ ...editForm, property_type: e.target.value })}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      >
+                        <option value="multifamily">Multifamily</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="industrial">Industrial</option>
+                        <option value="retail">Retail</option>
+                        <option value="office">Office</option>
+                        <option value="mixed-use">Mixed Use</option>
+                      </select>
+                    ) : (
+                      deal.property_type
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="space-y-1">
                     <div className="flex items-center text-sm text-gray-500">
                       <DollarSign className="h-4 w-4 mr-1" />
-                      Min: ${deal.minimum_investment.toLocaleString()}
+                      Min: {editingDeal === deal.id ? (
+                        <input
+                          type="number"
+                          value={editForm.minimum_investment || ""}
+                          onChange={(e) => setEditForm({ ...editForm, minimum_investment: Number(e.target.value) })}
+                          className="w-20 px-1 py-1 border border-gray-300 rounded text-sm ml-1"
+                        />
+                      ) : (
+                        `$${deal.minimum_investment.toLocaleString()}`
+                      )}
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
                       <TrendingUp className="h-4 w-4 mr-1" />
-                      Target: {deal.target_irr}% IRR
+                      Target: {editingDeal === deal.id ? (
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={editForm.target_irr || ""}
+                          onChange={(e) => setEditForm({ ...editForm, target_irr: Number(e.target.value) })}
+                          className="w-16 px-1 py-1 border border-gray-300 rounded text-sm ml-1"
+                        />
+                      ) : (
+                        `${deal.target_irr}%`
+                      )} IRR
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
                       <Clock className="h-4 w-4 mr-1" />
-                      Term: {deal.investment_term} years
+                      Term: {editingDeal === deal.id ? (
+                        <input
+                          type="number"
+                          value={editForm.investment_term || ""}
+                          onChange={(e) => setEditForm({ ...editForm, investment_term: Number(e.target.value) })}
+                          className="w-16 px-1 py-1 border border-gray-300 rounded text-sm ml-1"
+                        />
+                      ) : (
+                        `${deal.investment_term}`
+                      )} years
                     </div>
                   </div>
                 </td>
@@ -224,51 +339,64 @@ export function PropertyManagement() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-3">
-                    <Link
-                      to={`/deals/${deal.title
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]+/g, "-")
-                        .replace(/(^-|-$)/g, "")}`}
-                      className="text-blue-600 hover:text-blue-900"
-                      title="View deal"
-                    >
-                      <Eye className="h-5 w-5" />
-                    </Link>
-                    <button
-                      onClick={() =>
-                        setEditingDeal(editingDeal === deal.id ? null : deal.id)
-                      }
-                      className={`${
-                        editingDeal === deal.id
-                          ? "text-blue-600"
-                          : "text-gray-600"
-                      } hover:text-blue-900`}
-                      title={
-                        editingDeal === deal.id ? "Cancel edit" : "Edit deal"
-                      }
-                    >
-                      <Edit className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() =>
-                        updateDealStatus(
-                          deal.id,
-                          deal.status === "archived" ? "draft" : "archived"
-                        )
-                      }
-                      className={`${
-                        deal.status === "archived"
-                          ? "text-green-600 hover:text-green-900"
-                          : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      title={
-                        deal.status === "archived"
-                          ? "Restore deal"
-                          : "Archive deal"
-                      }
-                    >
-                      <Archive className="h-5 w-5" />
-                    </button>
+                    {editingDeal === deal.id ? (
+                      <>
+                        <button
+                          onClick={() => saveDeal(deal.id)}
+                          className="text-green-600 hover:text-green-900"
+                          title="Save changes"
+                        >
+                          <Save className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={cancelEdit}
+                          className="text-red-600 hover:text-red-900"
+                          title="Cancel edit"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          to={`/deals/${deal.title
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g, "-")
+                            .replace(/(^-|-$)/g, "")}`}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="View deal"
+                        >
+                          <Eye className="h-5 w-5" />
+                        </Link>
+                        <button
+                          onClick={() => startEdit(deal)}
+                          className="text-gray-600 hover:text-blue-900"
+                          title="Edit deal"
+                        >
+                          <Edit className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateDealStatus(
+                              deal.id,
+                              deal.status === "archived" ? "draft" : "archived"
+                            )
+                          }
+                          className={`${
+                            deal.status === "archived"
+                              ? "text-green-600 hover:text-green-900"
+                              : "text-gray-600 hover:text-gray-900"
+                          }`}
+                          title={
+                            deal.status === "archived"
+                              ? "Restore deal"
+                              : "Archive deal"
+                          }
+                        >
+                          <Archive className="h-5 w-5" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </td>
               </tr>
