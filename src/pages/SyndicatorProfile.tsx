@@ -121,301 +121,27 @@ export function SyndicatorProfile() {
     try {
       let { data: syndicatorData, error: slugError } = await supabase
         .from('syndicator_profiles')
-        .select(`
-          *,
-          profiles!syndicator_profiles_id_fkey (
-            full_name,
-            avatar_url,
-            email
-          )
-        `)
+        .select()
         .eq('slug', slug)
-        .maybeSingle();
+        .single();
 
-      if (!syndicatorData) {
-        const companyName = slug?.split('-').join(' ');
-        if (!companyName) return;
-        
-        const { data: nameData, error: nameError } = await supabase
-          .from('syndicator_profiles')
-          .select(`
-            *,
-            profiles!syndicator_profiles_id_fkey (
-              full_name,
-              avatar_url,
-              email
-            )
-          `)
-          .ilike('company_name', companyName)
-          .maybeSingle();
-
-        if (nameError) {
-          console.error('Error fetching syndicator by name:', nameError);
-          return;
-        }
-
-        syndicatorData = nameData;
-      }
-
-      if (!syndicatorData) {
-        // Check if this is Starboard Realty - create mock data if so
-        if (slug === 'starboard-realty' || slug?.includes('starboard')) {
-          syndicatorData = {
-            id: 'starboard-realty-mock',
-            company_name: 'Starboard Realty',
-            company_description: 'Headquartered in Irvine, California, Starboard Realty Advisors, LLC, is a privately held, fully-integrated real estate firm, whose principals have more than 30 years of hands-on, cycle-tested experience in acquiring, developing, leasing, repositioning, managing, financing and disposing of retail, multifamily, office and industrial real estate. Starboard acquires multifamily, multi-tenant retail shopping centers, and NNN lease properties. Starboard\'s mission is to acquire well-located properties across the U.S., in which current rents have growth potential and which can be acquired at below replacement cost. Starboard acquires primarily stabilized properties with a 7- to 10-year hold period for its 1031 exchange clients and value added properties with a 1- to 5-year hold.',
-            company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos//Starboard_reality.jpg',
-            state: 'California',
-            city: 'Irvine',
-            years_in_business: 10,
-            total_deal_volume: 608000000,
-            website_url: 'https://starboard-realty.com/',
-            slug: 'starboard-realty',
-            profiles: null
-          };
-        } else if (slug === 'clarion-partners' || slug?.includes('clarion')) {
-          syndicatorData = {
-            id: 'clarion-partners-mock',
-            company_name: 'Clarion Partners',
-            company_description: 'Clarion Partners is a leading global real estate investment company with over 40 years of experience, managing $73.1 billion in assets under management. We combine our broad scale and execution capabilities with a focus on high-quality real estate investments across the Americas and Europe.',
-            company_logo_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/syndicatorlogos//clarionpartners.png',
-            state: 'New York',
-            city: 'New York',
-            years_in_business: 40,
-            total_deal_volume: 73100000000,
-            website_url: 'https://www.clarionpartners.com/',
-            slug: 'clarion-partners',
-            profiles: null
-          };
-        } else {
-        console.error('Syndicator not found');
+      if (slugError) {
+        console.error('Error fetching syndicator by slug:', slugError);
         return;
-        }
       }
+      setSyndicator(syndicatorData);
 
-      setSyndicator({
-        ...syndicatorData,
-        profile: syndicatorData.profiles,
-        // Override total deal volume for specific syndicators
-        total_deal_volume: syndicatorData.company_name === 'Back Bay Capital' ? 30000000 : 
-                          syndicatorData.company_name === 'Starboard Realty' ? 608000000 : 
-                          syndicatorData.company_name === 'Clarion Partners' ? 73100000000 : 
-                          syndicatorData.total_deal_volume,
-        // Override profile info for specific syndicators
-        ...(syndicatorData.company_name === 'Back Bay Capital' && {
-          profile: {
-            full_name: 'Drew Fielder',
-            avatar_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/avatars/investors/DrewFielder.png',
-            email: 'andrew.fielder@backbayig.com'
-          }
-        }),
-        ...(syndicatorData.company_name === 'Sutera Properties' && {
-          profile: {
-            full_name: 'Art Heckman',
-            avatar_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/avatars/investors/art.png',
-            email: 'art@suteraproperties.com'
-          }
-        }),
-        ...(syndicatorData.company_name === 'Starboard Realty' && {
-          profile: {
-            full_name: 'Daniel De Leon',
-            avatar_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/avatars/investors/dan.png',
-            email: 'info@starboard-realty.com'
-          },
-          website_url: 'https://starboard-realty.com/'
-        }),
-        ...(syndicatorData.company_name === 'Clarion Partners' && {
-          profile: {
-            full_name: 'David Gilbert',
-            avatar_url: null,
-            email: 'info@clarionpartners.com'
-          },
-          website_url: 'https://www.clarionpartners.com/'
-        })
-      });
-
-      const { data: activeDealsData } = await supabase
+      const { data: dealsData, error: dealsError } = await supabase
         .from('deals')
         .select('*')
         .eq('syndicator_id', syndicatorData.id)
-        .eq('status', 'active');
 
-      // Filter out unwanted deals like Innovation Square and Marina Residences
-      let finalActiveDeals = activeDealsData ? activeDealsData.filter(deal => 
-        deal.title !== 'Innovation Square' && 
-        !deal.title.includes('Innovation Square') &&
-        deal.title !== 'The Marina Residences' &&
-        !deal.title.includes('Marina Residences')
-      ) : [];
-
-      // If this is Back Bay Capital and no deals found in database, add mock deals
-      if (syndicatorData.company_name === 'Back Bay Capital' && finalActiveDeals.length === 0) {
-        const today = new Date().toISOString();
-        finalActiveDeals = [
-          {
-            id: 'backbay-1',
-            syndicator_id: syndicatorData.id,
-            title: 'San Diego Multi-Family Offering',
-            location: 'San Diego, CA',
-            property_type: 'Multi-Family',
-            status: 'active',
-            target_irr: 15,
-            minimum_investment: 500000,
-            investment_term: 5,
-            description: 'Back Bay Investment Group presents an opportunity to invest in a fund focused on multifamily development and value-add projects in Southern California. Leveraging the region\'s robust economy, diverse job market, and housing demand, the fund aims to capitalize on the region\'s housing shortage while delivering superior risk-adjusted returns.',
-            address: { street: '', city: 'San Diego', state: 'CA', zip: '' },
-            investment_highlights: ['Access to Institutional Grade Assets', 'Prime Residential Markets', 'Tax Deductions & Bonus Depreciation Benefits', 'Target 75% Cash on Cash', '15% Target Investor IRR', '1.75x Target Equity Multiple'],
-            total_equity: 10000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_SanDeigo.jpg',
-            created_at: today,
-            updated_at: today,
-            slug: 'san-diego-multi-family-offering'
-          },
-          {
-            id: 'backbay-2',
-            syndicator_id: syndicatorData.id,
-            title: 'Newport Beach Residential Offering',
-            location: 'Newport Beach, CA',
-            property_type: 'Residential',
-            status: 'active',
-            target_irr: 20,
-            minimum_investment: 250000,
-            investment_term: 2,
-            description: 'Back Bay Investment Group is offering an exclusive opportunity to invest in residential real estate in Newport Beach and surrounding coastal communities, targeting high-demand neighborhoods with limited inventory and strong growth potential.',
-            address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
-            investment_highlights: ['Short Term Investment', 'Value-Add Strategy', 'Multiple Exit Options', 'Target 60% Cash on Cash', '20% Target Investor IRR', '1.6x Target Equity Multiple'],
-            total_equity: 10000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg',
-            created_at: today,
-            updated_at: today,
-            slug: 'newport-beach-residential-offering'
-          },
-          {
-            id: 'backbay-3',
-            syndicator_id: syndicatorData.id,
-            title: 'Orange County Pref Equity Offering',
-            location: 'Newport Beach, CA',
-            property_type: 'Preferred Equity',
-            status: 'active',
-            target_irr: 15,
-            minimum_investment: 100000,
-            investment_term: 2,
-            description: 'Back Bay Investment Group is offering a preferred equity investment with a fixed 15% annual return, paid quarterly, and a targeted holding period of 1–3 years. Designed for investors seeking secure, predictable income, this offering provides priority in the capital stack above common equity.',
-            address: { street: '', city: 'Newport Beach', state: 'CA', zip: '' },
-            investment_highlights: ['Quarterly Payments', 'Fixed 15% Return', 'Priority in the Equity Stack', 'Target 45% Cash on Cash', '15% Target Investor IRR', '1.45x Target Equity Multiple'],
-            total_equity: 10000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_OrangeCounty.jpg',
-            created_at: today,
-            updated_at: today,
-            slug: 'orange-county-pref-equity-offering'
-          }
-        ];
+      if (dealsError) {
+        console.error('Error fetching deals:', dealsError);
+        return
       }
-
-      // If this is Sutera Properties, always add the Greenville deal
-      if (syndicatorData.company_name === 'Sutera Properties') {
-        const today = new Date().toISOString();
-        finalActiveDeals = [
-          {
-            id: 'sutera-1',
-            syndicator_id: syndicatorData.id,
-            title: 'Greenville Apartment Complex',
-            location: 'Travelers Rest, SC',
-            property_type: 'Multi-Family',
-            status: 'active',
-            target_irr: 17.19,
-            minimum_investment: 50000,
-            investment_term: 5,
-            description: `Project Overview:
-Sutera Properties presents Liva, a ground-up multifamily development in Travelers Rest, South Carolina, a rapidly growing suburb of Greenville. The project spans 10.5 acres and includes 120 multifamily units and 32 individually platted townhomes, totaling 152 units. The site is 100% shovel-ready with Land Disturbance Permits secured as of March 2025.
-
-Investment Highlights:
-• Updated Business Plan: The multifamily portion will be held as a rental property with a projected un-trended Yield on Cost of 7.19% (up from 6.8%), while townhomes will be sold to individual buyers, responding to strong local demand.
-• Cost Efficiency: Reduced per-unit basis for the multifamily to $205k (from $250k), compared to recent market comps like The Standard at Pinestone, which received bids at $230k/unit in 2024.
-• Prime Location: Located near the Swamp Rabbit Trail and half a mile from Travelers Rest's Main Street, with planned streetscape improvements enhancing connectivity.
-• Market Dynamics: Travelers Rest is experiencing 3.43% annual population growth, with zero projected multifamily deliveries in the North Greenville submarket, positioning Liva to capitalize on strong demand.
-
-Financial Snapshot:
-• Total Project Cost: $38,226,500
-• Equity Raise: $12,340,000
-• Construction LTV: 65%
-• Estimated Hold Period: 5 years
-
-Amenities & Design:
-Liva promotes an active lifestyle with resort-style amenities including a pool, clubhouse, fitness center, fire pit, dog park, bike barn, and a multi-use path connecting to the Main Street corridor. Units feature spacious, open floor plans tailored to the unique fabric of Travelers Rest.
-
-Why Invest?
-Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, strong risk-adjusted returns, and a prime position in a high-growth market. With construction set to begin upon capitalization, this is a timely opportunity to invest in the thriving Upstate South Carolina region.`,
-            address: { street: '', city: 'Travelers Rest', state: 'SC', zip: '' },
-            investment_highlights: [
-              'Ground-up development',
-              '152 total units (120 multifamily + 32 townhomes)',
-              'Resort-style amenities',
-              'Pool and clubhouse',
-              'Fitness center',
-              'Dog park and bike barn',
-              'Prime location near Swamp Rabbit Trail',
-              'Shovel-ready with permits secured'
-            ],
-            total_equity: 12340000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0980.jpeg',
-                  media_urls: [
-            // Actual images that exist in liva_2025 folder (IMG_0980 to IMG_0986)
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0980.jpeg',
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0981.jpeg',
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg',
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0983.jpeg',
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0984.jpeg',
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0985.jpeg',
-            'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0986.jpeg'
-        ],
-            created_at: today,
-            updated_at: today,
-            slug: 'greenville-apartment-complex'
-          }
-        ];
-      }
-
-      // If this is Starboard Realty and no deals found in database, add mock deals
-      if (syndicatorData.company_name === 'Starboard Realty' && finalActiveDeals.length === 0) {
-        const today = new Date().toISOString();
-        finalActiveDeals = [
-          {
-            id: 'starboard-2',
-            syndicator_id: syndicatorData.id,
-            title: 'Multifamily ADU Opportunity',
-            location: 'Southern California',
-            property_type: 'Multi-Family',
-            status: 'active',
-            target_irr: 30,
-            minimum_investment: 50000,
-            investment_term: 3,
-            description: 'Starboard Realty Advisors is offering investors the opportunity to invest in the high-demand multifamily markets of Southern California. With a growing pipeline of opportunities, the Fund will be opportunistically deploying capital to acquire small multifamily buildings with the intent of maximizing revenue growth through renovations and the addition of units by leveraging California\'s recent Accessory Dwelling Unit (ADU) legislation.',
-            address: { street: '', city: 'Southern California', state: 'CA', zip: '' },
-            investment_highlights: ['30%+ Target Property IRR', '1.60X - 1.90X+ Equity Multiple', '2-3 Year Investment Horizon', 'ADU Legislation Leverage', 'Economies of Scale', 'Cost Segregation & Tax Benefits'],
-            total_equity: 5000000,
-            featured: true,
-            cover_image_url: 'https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png',
-            created_at: today,
-            updated_at: today,
-            slug: 'multifamily-adu-opportunity'
-          }
-        ];
-      }
-
-      setActiveDeals(finalActiveDeals);
-
-      const { data: pastDealsData } = await supabase
-        .from('deals')
-        .select('*')
-        .eq('syndicator_id', syndicatorData.id)
-        .in('status', ['closed', 'archived']);
-
-      setPastDeals(pastDealsData || []);
+      setActiveDeals(dealsData?.filter(d => d.status === 'active'));
+      setPastDeals(dealsData.filter(d => d.status === 'closed' || d.status === 'archived'));
 
       const { data: reviewsData } = await supabase
         .from('syndicator_reviews')
@@ -430,54 +156,11 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
         setAverageRating(Math.round(avg * 10) / 10);
       }
 
-      // Override ratings for specific syndicators
-      if (syndicatorData.company_name === 'Sutera Properties' || 
-          syndicatorData.company_name === 'Back Bay Capital' || 
-          syndicatorData.company_name === 'Starboard Realty') {
-        setAverageRating(5.0);
-        // If no actual reviews exist, create some mock review data for display
-        if (!reviewsData || reviewsData.length === 0) {
-          const mockReviews = [
-            {
-              id: 'mock-review-1',
-              rating: 5,
-              review_text: 'Exceptional investment opportunities and outstanding communication throughout the entire process. Highly professional team.',
-              created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
-              reviewer: {
-                full_name: 'Michael Johnson',
-                avatar_url: null
-              }
-            },
-            {
-              id: 'mock-review-2',
-              rating: 5,
-              review_text: 'Great returns and transparent reporting. The team is knowledgeable and responsive to investor questions.',
-              created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days ago
-              reviewer: {
-                full_name: 'Sarah Williams',
-                avatar_url: null
-              }
-            },
-            {
-              id: 'mock-review-3',
-              rating: 5,
-              review_text: 'Solid investment strategy and excellent execution. I highly recommend working with this team.',
-              created_at: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days ago
-              reviewer: {
-                full_name: 'David Chen',
-                avatar_url: null
-              }
-            }
-          ];
-          setReviews(mockReviews);
-        }
-      }
-
       setProjectStats({
-        totalDeals: finalActiveDeals.length + (pastDealsData?.length || 0),
-        activeDeals: finalActiveDeals.length,
-        averageReturn: syndicatorData.company_name === 'Starboard Realty' ? 30 : Math.round(Math.random() * 10 + 15),
-        totalInvestors: syndicatorData.company_name === 'Starboard Realty' ? 445 : Math.floor(Math.random() * 500 + 100)
+        totalDeals: dealsData.length,
+        activeDeals: activeDeals.length,
+        averageReturn: syndicatorData.average_return,
+        totalInvestors: syndicatorData.total_investors
       });
 
     } catch (error) {
@@ -541,7 +224,8 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
   }
 
   if (!syndicator) {
-    return <Navigate to="/404" />;
+    console.warn('Syndicator not found redirect');
+    return <Navigate to="/404" replace />;
   }
 
   return (
@@ -702,7 +386,6 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                 {activeDeals.map((deal: any) => (
                   <DealCard
                     key={deal.id}
-                    id={deal.id}
                     slug={deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
                     image={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
                     title={deal.title}
@@ -883,7 +566,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                 {reviews.map((review) => (
                   <div key={review.id} className="border-b last:border-0 pb-6 last:pb-0">
                     <div className="flex items-center mb-4">
-                      {review.reviewer.avatar_url ? (
+                      {review.reviewer?.avatar_url ? (
                         <img
                           src={review.reviewer.avatar_url}
                           alt={review.reviewer.full_name}
@@ -895,7 +578,7 @@ Backed by Sutera Properties' expertise, Liva offers a flexible exit strategy, st
                         </div>
                       )}
                       <div className="ml-4">
-                        <div className="font-medium">{review.reviewer.full_name}</div>
+                        <div className="font-medium">{review.reviewer?.full_name}</div>
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <Star

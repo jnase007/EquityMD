@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Building, MapPin, DollarSign, Clock, TrendingUp, ListPlus } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
@@ -10,6 +10,9 @@ export function NewDeal() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [userSyndicators, setUserSyndicators] = useState<any[]>([]);
+  const [selectedSyndicator, setSelectedSyndicator] = useState<string>('');
+  const [loadingSyndicators, setLoadingSyndicators] = useState(true);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -38,6 +41,38 @@ export function NewDeal() {
     'Student Housing'
   ];
 
+  // Fetch user's syndicators on component mount
+  useEffect(() => {
+    async function fetchUserSyndicators() {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('syndicators')
+          .select('id, company_name, verification_status')
+          .eq('claimed_by', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching syndicators:', error);
+          return;
+        }
+
+        setUserSyndicators(data || []);
+        // Auto-select the first syndicator if available
+        if (data && data.length > 0) {
+          setSelectedSyndicator(data[0].id);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoadingSyndicators(false);
+      }
+    }
+
+    fetchUserSyndicators();
+  }, [user]);
+
   const handleHighlightChange = (index: number, value: string) => {
     const newHighlights = [...formData.investmentHighlights];
     newHighlights[index] = value;
@@ -65,14 +100,19 @@ export function NewDeal() {
       return;
     }
 
-    console.log('Creating deal with user:', user.id);
+    if (!selectedSyndicator) {
+      alert('Please select a syndicator to create this deal for.');
+      return;
+    }
+
+    console.log('Creating deal with syndicator:', selectedSyndicator);
     console.log('Form data:', formData);
     
     setLoading(true);
     try {
       // Prepare deal data
       const dealData = {
-        syndicator_id: user.id,
+        syndicator_id: selectedSyndicator,
         title: formData.title,
         description: formData.description,
         property_type: formData.propertyType,
@@ -140,6 +180,42 @@ export function NewDeal() {
             {/* Basic Information */}
             <div>
               <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
+              
+              {/* Syndicator Selection */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Select Syndicator
+                </label>
+                {loadingSyndicators ? (
+                  <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+                    Loading your syndicators...
+                  </div>
+                ) : userSyndicators.length === 0 ? (
+                  <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-red-50 text-red-800">
+                    You don't have any syndicators yet. Please create a syndicator profile first.
+                  </div>
+                ) : (
+                  <select
+                    value={selectedSyndicator}
+                    onChange={(e) => setSelectedSyndicator(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  >
+                    <option value="">Select a syndicator...</option>
+                    {userSyndicators.map((syndicator) => (
+                      <option key={syndicator.id} value={syndicator.id}>
+                        {syndicator.company_name} 
+                        {syndicator.verification_status === 'verified' && ' ✓'}
+                        {syndicator.verification_status === 'premier' && ' ⭐'}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                <p className="text-sm text-gray-500 mt-1">
+                  This deal will be created under the selected syndicator profile.
+                </p>
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

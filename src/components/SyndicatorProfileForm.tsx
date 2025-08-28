@@ -60,9 +60,11 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
 
     try {
       const { data, error } = await supabase
-        .from('syndicator_profiles')
+        .from('syndicators')
         .select('*')
-        .eq('id', user.id)
+        .eq('claimed_by', user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
         .single();
 
       if (error) {
@@ -115,30 +117,55 @@ export function SyndicatorProfileForm({ setMessage }: SyndicatorProfileFormProps
 
       if (profileError) throw profileError;
 
-      // Update syndicator profile
-      const { error: syndicatorError } = await supabase
-        .from('syndicator_profiles')
-        .update({
-          company_name: formData.companyName,
-          company_description: formData.companyDescription,
-          company_logo_url: formData.companyLogoUrl,
-          website_url: formData.websiteUrl,
-          linkedin_url: formData.linkedinUrl,
-          years_in_business: formData.yearsInBusiness ? parseInt(formData.yearsInBusiness) : null,
-          total_deal_volume: formData.totalDealVolume ? parseFloat(formData.totalDealVolume) : null,
-          state: formData.state,
-          city: formData.city,
-          verification_documents: {
-            ...syndicatorProfile?.verification_documents,
-            past_deals: pastDeals
-          },
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
+      // Update or create syndicator profile
+      if (syndicatorProfile) {
+        const { error: syndicatorError } = await supabase
+          .from('syndicators')
+          .update({
+            company_name: formData.companyName,
+            company_description: formData.companyDescription,
+            company_logo_url: formData.companyLogoUrl,
+            website_url: formData.websiteUrl,
+            linkedin_url: formData.linkedinUrl,
+            years_in_business: formData.yearsInBusiness ? parseInt(formData.yearsInBusiness) : null,
+            total_deal_volume: formData.totalDealVolume ? parseFloat(formData.totalDealVolume) : null,
+            state: formData.state,
+            city: formData.city,
+            verification_documents: {
+              ...syndicatorProfile?.verification_documents,
+              past_deals: pastDeals
+            },
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', syndicatorProfile.id)
+          .eq('claimed_by', user.id);
+        
+        if (syndicatorError) throw syndicatorError;
+      } else {
+        // Create new syndicator
+        const { error: syndicatorError } = await supabase
+          .from('syndicators')
+          .insert([{
+            company_name: formData.companyName,
+            company_description: formData.companyDescription,
+            company_logo_url: formData.companyLogoUrl,
+            website_url: formData.websiteUrl,
+            linkedin_url: formData.linkedinUrl,
+            years_in_business: formData.yearsInBusiness ? parseInt(formData.yearsInBusiness) : null,
+            total_deal_volume: formData.totalDealVolume ? parseFloat(formData.totalDealVolume) : null,
+            state: formData.state,
+            city: formData.city,
+            verification_documents: { past_deals: pastDeals },
+            claimed_by: user.id,
+            claimed_at: new Date().toISOString(),
+            claimable: false,
+            verification_status: 'unverified'
+          }]);
+        
+        if (syndicatorError) throw syndicatorError;
+      }
 
-      if (syndicatorError) throw syndicatorError;
-
-      setMessage('Profile updated successfully!');
+      setMessage(syndicatorProfile ? 'Profile updated successfully!' : 'Syndicator profile created successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
       setMessage('Error updating profile. Please try again.');

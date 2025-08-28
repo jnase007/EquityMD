@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, ShieldCheck, Crown, Search, Save, AlertCircle } from 'lucide-react';
+import { Shield, ShieldCheck, Crown, Search, Save, AlertCircle, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { VerificationBadge, VerificationStatus } from './VerificationBadge';
 import { supabase } from '../lib/supabase';
 
@@ -11,6 +12,12 @@ interface SyndicatorAdmin {
   created_at: string;
   updated_at: string;
   deal_count: number;
+  slug: string;
+  claimed_by_profile: {
+    full_name: string | null;
+    user_type: string;
+    is_admin: boolean;
+  } | null;
 }
 
 export function SyndicatorVerificationAdmin() {
@@ -28,20 +35,26 @@ export function SyndicatorVerificationAdmin() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('syndicator_profiles')
+        .from('syndicators')
         .select(`
           id,
           company_name,
+          slug,
           verification_status,
           created_at,
           updated_at,
-          profiles!syndicator_profiles_id_fkey (
-            email
+          claimed_at,
+          claimed_by_profile:profiles!syndicators_claimed_by_fkey (
+            email,
+            full_name,
+            user_type,
+            is_admin
           )
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+      console.log('syndicators data', data);
 
       // Transform data and get deal counts
       const transformedData = await Promise.all(
@@ -52,14 +65,23 @@ export function SyndicatorVerificationAdmin() {
             .select('*', { count: 'exact', head: true })
             .eq('syndicator_id', syndicator.id);
 
+          // supabase reduces this to a single object, but typescript thinks its always an array
+          const profile = syndicator.claimed_by_profile as any as { email: any; full_name: any; user_type: any; is_admin: any; };
+          
           return {
             id: syndicator.id,
             company_name: syndicator.company_name,
-            email: Array.isArray(syndicator.profiles) ? syndicator.profiles[0]?.email || 'No email' : 'No email',
+            slug: syndicator.slug,
+            email: profile?.email || 'No email',
             verification_status: (syndicator.verification_status || 'unverified') as VerificationStatus,
             created_at: syndicator.created_at,
             updated_at: syndicator.updated_at,
-            deal_count: count || 0
+            deal_count: count || 0,
+            claimed_by_profile: profile ? {
+              full_name: profile.full_name,
+              user_type: profile.user_type,
+              is_admin: profile.is_admin
+            } : null
           };
         })
       );
@@ -80,7 +102,7 @@ export function SyndicatorVerificationAdmin() {
 
     try {
       const { data, error } = await supabase
-        .from('syndicator_profiles')
+        .from('syndicators')
         .update({
           verification_status: newStatus,
           updated_at: new Date().toISOString()
@@ -106,10 +128,15 @@ export function SyndicatorVerificationAdmin() {
     }
   };
 
-  const filteredSyndicators = syndicators.filter(syndicator =>
-    syndicator.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    syndicator.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSyndicators = syndicators.filter(syndicator => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      syndicator.company_name.toLowerCase().includes(searchLower) ||
+      syndicator.email.toLowerCase().includes(searchLower) ||
+      (syndicator.claimed_by_profile?.full_name?.toLowerCase().includes(searchLower)) ||
+      (syndicator.claimed_by_profile?.user_type.toLowerCase().includes(searchLower))
+    );
+  });
 
   const statusCounts = {
     unverified: syndicators.filter(s => s.verification_status === 'unverified').length,
@@ -156,7 +183,7 @@ export function SyndicatorVerificationAdmin() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by company name or email..."
+            placeholder="Search by company name, email, or claimed by..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -194,6 +221,9 @@ export function SyndicatorVerificationAdmin() {
                 Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Claimed By
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Current Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -211,10 +241,32 @@ export function SyndicatorVerificationAdmin() {
             {filteredSyndicators.map((syndicator) => (
               <tr key={syndicator.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-gray-900">{syndicator.company_name}</div>
+                  <Link 
+                    to={`/syndicators/${syndicator.slug}`}
+                    className="font-medium text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+                  >
+                    {syndicator.company_name}
+                    <ExternalLink className="h-3 w-3" />
+                  </Link>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-600">{syndicator.email}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {syndicator.claimed_by_profile ? (
+                    <div className="text-sm">
+                      <div className="font-medium text-gray-900">
+                        {syndicator.claimed_by_profile.full_name || 'No name'}
+                      </div>
+                      {syndicator.claimed_by_profile.is_admin && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                          Admin
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-400 italic">Unclaimed</div>
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <VerificationBadge status={syndicator.verification_status} size="sm" />

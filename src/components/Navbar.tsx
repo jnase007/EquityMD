@@ -188,11 +188,8 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
     setShowAuthModal(true);
   };
 
-  const baseClasses = "relative";
-  const bgClasses = isTransparent ? "" : "bg-white shadow-sm";
-
   return (
-    <nav className={`${baseClasses} ${bgClasses}`}>
+    <nav className={isTransparent ? "" : "bg-white shadow-sm"}>
       <div className="max-w-[1200px] mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
         <Link to="/" className="flex items-center hover:scale-105 transition-transform">
         <img 
