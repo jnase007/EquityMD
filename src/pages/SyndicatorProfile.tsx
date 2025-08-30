@@ -123,6 +123,7 @@ export function SyndicatorProfile() {
         .from('syndicator_profiles')
         .select()
         .eq('slug', slug)
+        .in('verification_status', ['verified', 'premier'])
         .single();
 
       if (slugError) {

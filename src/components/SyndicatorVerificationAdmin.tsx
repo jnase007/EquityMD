@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, ShieldCheck, Crown, Search, Save, AlertCircle, ExternalLink } from 'lucide-react';
+import { Shield, ShieldCheck, Crown, Search, Save, AlertCircle, ExternalLink, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VerificationBadge, VerificationStatus } from './VerificationBadge';
 import { supabase } from '../lib/supabase';
@@ -128,6 +128,33 @@ export function SyndicatorVerificationAdmin() {
     }
   };
 
+  const deleteSyndicator = async (syndicatorId: string, companyName: string) => {
+    if (!confirm(`Are you sure you want to delete "${companyName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    setUpdating(syndicatorId);
+    setMessage(null);
+
+    try {
+      const { error } = await supabase
+        .from('syndicators')
+        .delete()
+        .eq('id', syndicatorId);
+
+      if (error) throw error;
+
+      // Update local state
+      setSyndicators(prev => prev.filter(syndicator => syndicator.id !== syndicatorId));
+      setMessage({ type: 'success', text: 'Syndicator deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting syndicator:', error);
+      setMessage({ type: 'error', text: 'Failed to delete syndicator' });
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   const filteredSyndicators = syndicators.filter(syndicator => {
     const searchLower = searchTerm.toLowerCase();
     return (
@@ -235,6 +262,9 @@ export function SyndicatorVerificationAdmin() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Joined
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -293,6 +323,16 @@ export function SyndicatorVerificationAdmin() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {new Date(syndicator.created_at).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => deleteSyndicator(syndicator.id, syndicator.company_name)}
+                    disabled={updating === syndicator.id}
+                    className="text-red-600 hover:text-red-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    title="Delete syndicator"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </td>
               </tr>
             ))}
