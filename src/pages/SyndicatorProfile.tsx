@@ -36,8 +36,7 @@ interface ProjectStats {
   totalInvestors: number;
 }
 
-// Past projects will be loaded from database when available
-const pastProjects: any[] = [];
+// Past projects will be loaded from database
 
 
 export function SyndicatorProfile() {
@@ -46,6 +45,7 @@ export function SyndicatorProfile() {
   const [syndicator, setSyndicator] = useState<any>(null);
   const [activeDeals, setActiveDeals] = useState<any[]>([]);
   const [pastDeals, setPastDeals] = useState<any[]>([]);
+  const [pastProjects, setPastProjects] = useState<any[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState(0);
   const [userReview, setUserReview] = useState({ rating: 0, review_text: '' });
@@ -114,6 +114,19 @@ export function SyndicatorProfile() {
       if (reviewsData?.length) {
         const avg = reviewsData.reduce((acc, review) => acc + review.rating, 0) / reviewsData.length;
         setAverageRating(Math.round(avg * 10) / 10);
+      }
+
+      // Fetch past projects
+      const { data: pastProjectsData, error: pastProjectsError } = await supabase
+        .from('past_projects')
+        .select('*')
+        .eq('syndicator_id', syndicatorData.id)
+        .order('exit_year', { ascending: false });
+
+      if (pastProjectsError) {
+        console.error('Error fetching past projects:', pastProjectsError);
+      } else {
+        setPastProjects(pastProjectsData || []);
       }
 
       setProjectStats({
@@ -368,7 +381,7 @@ export function SyndicatorProfile() {
                   {pastProjects.map((project) => (
                     <div key={project.id} className="flex gap-6 border-b pb-6 last:border-0 last:pb-0">
                       <img
-                        src={project.image}
+                        src={project.image_url}
                         alt={project.name}
                         className="w-48 h-32 object-cover rounded-lg"
                       />
@@ -378,6 +391,9 @@ export function SyndicatorProfile() {
                           <MapPin className="h-4 w-4 mr-1" />
                           {project.location}
                         </div>
+                        {project.description && (
+                          <p className="text-gray-600 text-sm mb-3">{project.description}</p>
+                        )}
                         <div className="grid grid-cols-3 gap-4">
                           <div>
                             <div className="text-sm text-gray-500">IRR</div>
@@ -385,13 +401,19 @@ export function SyndicatorProfile() {
                           </div>
                           <div>
                             <div className="text-sm text-gray-500">Total Value</div>
-                            <div className="font-semibold">{project.totalValue}</div>
+                            <div className="font-semibold">{project.total_value}</div>
                           </div>
                           <div>
                             <div className="text-sm text-gray-500">Exit Year</div>
-                            <div className="font-semibold">{project.exitYear}</div>
+                            <div className="font-semibold">{project.exit_year}</div>
                           </div>
                         </div>
+                        {project.units && (
+                          <div className="mt-2">
+                            <div className="text-sm text-gray-500">Units</div>
+                            <div className="font-semibold">{project.units}</div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -671,4 +693,5 @@ export function SyndicatorProfile() {
       <Footer />
     </div>
   );
+}
 }
