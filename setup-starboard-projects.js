@@ -16,98 +16,10 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function addStarboardPastProjects() {
+async function setupStarboardProjects() {
   console.log('🚀 Setting up Starboard Realty past projects and updating average return...');
   
   try {
-    // First, run the migration to create the past_projects table
-    console.log('📋 Creating past_projects table...');
-    const migrationSQL = `
-      -- Create past_projects table for completed syndicator projects
-      CREATE TABLE IF NOT EXISTS past_projects (
-        id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        syndicator_id uuid NOT NULL REFERENCES syndicator_profiles(id) ON DELETE CASCADE,
-        name text NOT NULL,
-        location text NOT NULL,
-        type text NOT NULL,
-        units integer,
-        sqft text,
-        total_value text NOT NULL,
-        irr text NOT NULL,
-        exit_year integer NOT NULL,
-        image_url text NOT NULL,
-        description text,
-        created_at timestamptz DEFAULT now(),
-        updated_at timestamptz DEFAULT now()
-      );
-
-      -- Enable Row Level Security
-      ALTER TABLE past_projects ENABLE ROW LEVEL SECURITY;
-
-      -- Create policies
-      CREATE POLICY "Public can view past projects"
-        ON past_projects
-        FOR SELECT
-        TO public
-        USING (true);
-
-      CREATE POLICY "Syndicators can manage their own past projects"
-        ON past_projects
-        FOR ALL
-        TO authenticated
-        USING (
-          EXISTS (
-            SELECT 1 FROM syndicator_profiles
-            WHERE id = syndicator_id
-            AND claimed_by = auth.uid()
-          )
-        )
-        WITH CHECK (
-          EXISTS (
-            SELECT 1 FROM syndicator_profiles
-            WHERE id = syndicator_id
-            AND claimed_by = auth.uid()
-          )
-        );
-
-      CREATE POLICY "Admins can manage all past projects"
-        ON past_projects
-        FOR ALL
-        TO authenticated
-        USING (
-          EXISTS (
-            SELECT 1 FROM profiles
-            WHERE id = auth.uid()
-            AND is_admin = true
-          )
-        )
-        WITH CHECK (
-          EXISTS (
-            SELECT 1 FROM profiles
-            WHERE id = auth.uid()
-            AND is_admin = true
-          )
-        );
-
-      -- Create trigger for updating updated_at
-      CREATE TRIGGER update_past_projects_updated_at
-        BEFORE UPDATE ON past_projects
-        FOR EACH ROW
-        EXECUTE FUNCTION update_updated_at_column();
-
-      -- Create index for better performance
-      CREATE INDEX IF NOT EXISTS idx_past_projects_syndicator_id ON past_projects(syndicator_id);
-      CREATE INDEX IF NOT EXISTS idx_past_projects_exit_year ON past_projects(exit_year);
-    `;
-
-    const { error: migrationError } = await supabase.rpc('exec_sql', { sql: migrationSQL });
-    
-    if (migrationError) {
-      console.log('⚠️ Migration may have already been run or failed:', migrationError.message);
-    } else {
-      console.log('✅ Past projects table created successfully');
-    }
-
     // Get the Starboard Realty syndicator ID
     const { data: starboard, error: starboardError } = await supabase
       .from('syndicator_profiles')
@@ -138,6 +50,43 @@ async function addStarboardPastProjects() {
       console.error('❌ Error updating average return:', updateError);
     } else {
       console.log('✅ Average return updated to 18.7%');
+    }
+
+    // Check if past_projects table exists by trying to query it
+    console.log('📋 Checking if past_projects table exists...');
+    const { data: tableCheck, error: tableError } = await supabase
+      .from('past_projects')
+      .select('id')
+      .limit(1);
+
+    if (tableError) {
+      console.log('⚠️ Past projects table does not exist. Please run the migration first:');
+      console.log('   Go to Supabase Dashboard > SQL Editor');
+      console.log('   Run the migration: supabase/migrations/20250121_create_past_projects_table.sql');
+      console.log('   Then run this script again.');
+      return;
+    }
+
+    console.log('✅ Past projects table exists');
+
+    // Check if projects already exist
+    const { data: existingProjects, error: existingError } = await supabase
+      .from('past_projects')
+      .select('id, name')
+      .eq('syndicator_id', starboard.id);
+
+    if (existingError) {
+      console.error('❌ Error checking existing projects:', existingError);
+      return;
+    }
+
+    if (existingProjects && existingProjects.length > 0) {
+      console.log('⚠️ Past projects already exist for Starboard Realty:');
+      existingProjects.forEach(project => {
+        console.log(`  - ${project.name}`);
+      });
+      console.log('Skipping project insertion to avoid duplicates.');
+      return;
     }
 
     // Define the past projects
@@ -181,6 +130,7 @@ async function addStarboardPastProjects() {
     ];
 
     // Insert the past projects
+    console.log('📝 Adding past projects...');
     const { data, error } = await supabase
       .from('past_projects')
       .insert(pastProjects)
@@ -196,11 +146,13 @@ async function addStarboardPastProjects() {
       console.log(`  - ${project.name} (${project.location})`);
     });
 
-    console.log('🎉 Starboard Realty past projects added successfully!');
+    console.log('🎉 Starboard Realty setup completed successfully!');
+    console.log('📊 Average return updated to 18.7%');
+    console.log('🏢 3 past projects added');
     
   } catch (error) {
-    console.error('❌ Error in addStarboardPastProjects:', error);
+    console.error('❌ Error in setupStarboardProjects:', error);
   }
 }
 
-addStarboardPastProjects();
+setupStarboardProjects();
