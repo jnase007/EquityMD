@@ -157,7 +157,7 @@ export function LogoManager() {
             <h3 className="font-medium mb-4">Black Logo</h3>
             <div className="bg-white border rounded-lg p-4">
               <ImageUpload
-                currentImageUrl={settings?.logo_black || `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`}
+                currentImageUrl={settings?.logo_black || `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-black.png`}
                 onImageUploaded={(url) => updateLogo('black', url)}
                 bucket="logos"
                 folder="site"
@@ -173,7 +173,7 @@ export function LogoManager() {
             <h3 className="font-medium mb-4">White Logo</h3>
             <div className="bg-gray-900 border rounded-lg p-4">
               <ImageUpload
-                currentImageUrl={settings?.logo_white || `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-white.png`}
+                currentImageUrl={settings?.logo_white || `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-white.png`}
                 onImageUploaded={(url) => updateLogo('white', url)}
                 bucket="logos"
                 folder="site"
