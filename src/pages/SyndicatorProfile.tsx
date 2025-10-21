@@ -96,8 +96,12 @@ export function SyndicatorProfile() {
         console.error('Error fetching deals:', dealsError);
         return
       }
-      setActiveDeals(dealsData?.filter(d => d.status === 'active'));
-      setPastDeals(dealsData.filter(d => d.status === 'closed' || d.status === 'archived'));
+      
+      const activeDealsData = dealsData?.filter(d => d.status === 'active') || [];
+      const pastDealsData = dealsData?.filter(d => d.status === 'closed' || d.status === 'archived') || [];
+      
+      setActiveDeals(activeDealsData);
+      setPastDeals(pastDealsData);
 
       const { data: reviewsData } = await supabase
         .from('syndicator_reviews')
@@ -113,8 +117,8 @@ export function SyndicatorProfile() {
       }
 
       setProjectStats({
-        totalDeals: dealsData.length,
-        activeDeals: activeDeals.length,
+        totalDeals: dealsData?.length || 0,
+        activeDeals: activeDealsData.length,
         averageReturn: syndicatorData.average_return,
         totalInvestors: syndicatorData.total_investors
       });
