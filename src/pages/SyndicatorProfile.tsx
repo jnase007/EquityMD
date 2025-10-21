@@ -36,54 +36,9 @@ interface ProjectStats {
   totalInvestors: number;
 }
 
-const dummyPastProjects = [
-  {
-    id: 1,
-    name: "The Grand Residences",
-    location: "Austin, TX",
-    type: "Multi-Family",
-    units: 250,
-    totalValue: "$45M",
-    irr: "22%",
-    exitYear: 2022,
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 2,
-    name: "Parkview Commons",
-    location: "Denver, CO",
-    type: "Mixed-Use",
-    units: 180,
-    totalValue: "$38M",
-    irr: "19%",
-    exitYear: 2023,
-    image: "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&q=80"
-  },
-  {
-    id: 3,
-    name: "The Metropolitan",
-    location: "Nashville, TN",
-    type: "Office",
-    sqft: "125,000",
-    totalValue: "$52M",
-    irr: "21%",
-    exitYear: 2023,
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80"
-  }
-];
+// Past projects will be loaded from database when available
+const pastProjects: any[] = [];
 
-const dummyCompanyDescription = `
-With over a decade of experience in real estate investment and development, we specialize in identifying and executing value-add opportunities in high-growth markets across the United States. Our team combines deep market knowledge with innovative investment strategies to deliver superior returns for our investors.
-
-Our approach focuses on:
-• Strategic market selection in high-growth regions
-• Comprehensive due diligence and risk management
-• Active asset management to maximize value
-• Strong relationships with local market participants
-• Transparent communication with investors
-
-We have successfully completed over $500 million in real estate transactions, consistently delivering above-market returns to our investors while maintaining the highest standards of integrity and professionalism.
-`;
 
 export function SyndicatorProfile() {
   const { slug } = useParams();
@@ -404,38 +359,45 @@ export function SyndicatorProfile() {
 
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-6">Past Projects</h2>
-              <div className="grid gap-6">
-                {dummyPastProjects.map((project) => (
-                  <div key={project.id} className="flex gap-6 border-b pb-6 last:border-0 last:pb-0">
-                    <img
-                      src={project.image}
-                      alt={project.name}
-                      className="w-48 h-32 object-cover rounded-lg"
-                    />
-                    <div>
-                      <h3 className="text-xl font-bold mb-2">{project.name}</h3>
-                      <div className="flex items-center text-gray-600 mb-2">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {project.location}
-                      </div>
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <div className="text-sm text-gray-500">IRR</div>
-                          <div className="font-semibold text-green-600">{project.irr}</div>
+              {pastProjects.length > 0 ? (
+                <div className="grid gap-6">
+                  {pastProjects.map((project) => (
+                    <div key={project.id} className="flex gap-6 border-b pb-6 last:border-0 last:pb-0">
+                      <img
+                        src={project.image}
+                        alt={project.name}
+                        className="w-48 h-32 object-cover rounded-lg"
+                      />
+                      <div>
+                        <h3 className="text-xl font-bold mb-2">{project.name}</h3>
+                        <div className="flex items-center text-gray-600 mb-2">
+                          <MapPin className="h-4 w-4 mr-1" />
+                          {project.location}
                         </div>
-                        <div>
-                          <div className="text-sm text-gray-500">Total Value</div>
-                          <div className="font-semibold">{project.totalValue}</div>
-                        </div>
-                        <div>
-                          <div className="text-sm text-gray-500">Exit Year</div>
-                          <div className="font-semibold">{project.exitYear}</div>
+                        <div className="grid grid-cols-3 gap-4">
+                          <div>
+                            <div className="text-sm text-gray-500">IRR</div>
+                            <div className="font-semibold text-green-600">{project.irr}</div>
+                          </div>
+                          <div>
+                            <div className="text-sm text-gray-500">Total Value</div>
+                            <div className="font-semibold">{project.totalValue}</div>
+                          </div>
+                          <div>
+                            <div className="text-sm text-gray-500">Exit Year</div>
+                            <div className="font-semibold">{project.exitYear}</div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="text-gray-500 text-lg mb-2">No past projects available</div>
+                  <div className="text-gray-400 text-sm">Past projects will be displayed here when available</div>
+                </div>
+              )}
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">

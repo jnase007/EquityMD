@@ -161,7 +161,7 @@ export function getNewInvestorSignupTemplate({
     title: 'New Investor Registration - EquityMD',
     content,
     buttonText: 'View Admin Dashboard',
-    buttonUrl: 'https://equitymd.com/admin/dashboard'
+    buttonUrl: 'https://equitymd.com/admin'
   });
 }
 

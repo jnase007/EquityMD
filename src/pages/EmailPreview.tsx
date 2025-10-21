@@ -203,7 +203,7 @@ export function EmailPreview() {
                   </div>
 
                   <div style="text-align: center;">
-                    <a href="https://equitymd.com/admin/dashboard" class="button">
+                    <a href="https://equitymd.com/admin" class="button">
                       View Admin Dashboard
                     </a>
                   </div>
@@ -660,7 +660,7 @@ export function EmailPreview() {
                   </div>
 
                   <div style="text-align: center;">
-                    <a href="https://equitymd.com/admin/dashboard?tab=users" class="button">
+                    <a href="https://equitymd.com/admin?tab=users" class="button">
                       View User in Admin Dashboard
                     </a>
                   </div>
@@ -720,7 +720,7 @@ export function EmailPreview() {
                   </div>
 
                   <div style="text-align: center;">
-                    <a href="https://equitymd.com/admin/dashboard?tab=verification" class="button">
+                    <a href="https://equitymd.com/admin?tab=verification" class="button">
                       Review & Approve Syndicator
                     </a>
                   </div>
@@ -781,7 +781,7 @@ export function EmailPreview() {
                   </div>
 
                   <div style="text-align: center;">
-                    <a href="https://equitymd.com/admin/dashboard?tab=analytics" class="button">
+                    <a href="https://equitymd.com/admin?tab=analytics" class="button">
                       View Analytics Dashboard
                     </a>
                   </div>

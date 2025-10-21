@@ -935,7 +935,7 @@ export function Profile() {
               </button>
               {profile?.is_admin && user?.email === 'justin@brandastic.com' && (
                 <Link
-                  to="/admin/dashboard"
+                  to="/admin"
                   className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition hover:scale-105 transform"
                 >
                   <Shield className="h-4 w-4 mr-2" />
