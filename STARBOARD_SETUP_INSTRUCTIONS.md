@@ -91,8 +91,8 @@ CREATE INDEX IF NOT EXISTS idx_past_projects_exit_year ON past_projects(exit_yea
 Run this SQL to update the average return to 18.7%:
 
 ```sql
-UPDATE syndicator_profiles 
-SET average_return = 18.7 
+UPDATE syndicator_profiles
+SET average_return = 18.7
 WHERE company_name = 'Starboard Realty';
 ```
 
@@ -117,7 +117,7 @@ INSERT INTO past_projects (
   image_url,
   description
 )
-SELECT 
+SELECT
   starboard.id,
   'Harper''s Retreat',
   'Conroe, TX',
@@ -132,7 +132,7 @@ FROM starboard
 
 UNION ALL
 
-SELECT 
+SELECT
   starboard.id,
   'Arden Woods',
   'Spring, TX',
@@ -147,7 +147,7 @@ FROM starboard
 
 UNION ALL
 
-SELECT 
+SELECT
   starboard.id,
   'The Dylan',
   'Fort Worth, TX',
@@ -167,12 +167,12 @@ Run this query to verify everything was set up correctly:
 
 ```sql
 -- Check average return
-SELECT company_name, average_return 
-FROM syndicator_profiles 
+SELECT company_name, average_return
+FROM syndicator_profiles
 WHERE company_name = 'Starboard Realty';
 
 -- Check past projects
-SELECT name, location, units, exit_year 
+SELECT name, location, units, exit_year
 FROM past_projects pp
 JOIN syndicator_profiles sp ON pp.syndicator_id = sp.id
 WHERE sp.company_name = 'Starboard Realty'
@@ -187,5 +187,6 @@ After running these queries, you should see:
 2. **Past Projects**: 3 projects (Harper's Retreat, Arden Woods, The Dylan)
 
 The Starboard Realty profile at https://equitymd.com/syndicators/starboard-reality should now display:
+
 - Average Return: 18.7%
 - 3 past projects with images and descriptions
