@@ -4,7 +4,7 @@ export interface Profile {
   full_name: string | null;
   avatar_url: string | null;
   phone_number: string | null;
-  user_type?: 'investor' | 'syndicator'; // Now optional - profiles are user-centric
+  user_type?: "investor" | "syndicator"; // Now optional - profiles are user-centric
   is_verified: boolean;
   is_admin: boolean;
   sms_opt_in: boolean;
@@ -45,7 +45,7 @@ export interface SyndicatorProfile {
   years_in_business: number | null;
   total_deal_volume: number | null;
   verification_documents: Record<string, any>;
-  verification_status: 'unverified' | 'verified' | 'featured' | 'premium';
+  verification_status: "unverified" | "verified" | "featured" | "premium";
   verification_notes: string | null;
   verified_by: string | null;
   verified_at: string | null;
@@ -67,7 +67,7 @@ export interface Syndicator {
   years_in_business: number | null;
   total_deal_volume: number | null;
   verification_documents: Record<string, any>;
-  verification_status: 'unverified' | 'verified' | 'premier';
+  verification_status: "unverified" | "verified" | "premier";
   average_rating: number;
   total_reviews: number;
   active_deals: number;
@@ -101,7 +101,7 @@ export interface Deal {
   target_irr: number;
   investment_term: number;
   total_equity: number;
-  status: 'draft' | 'active' | 'closed' | 'archived';
+  status: "draft" | "active" | "closed" | "archived";
   featured: boolean;
   highlighted: boolean;
   cover_image_url: string | null;
@@ -112,21 +112,15 @@ export interface Deal {
 }
 
 export interface DealFile {
-  id: string;
-  deal_id: string;
-  file_name: string;
-  file_type: string;
-  file_size: number;
-  file_url: string;
-  is_private: boolean;
-  created_at: string;
+  name: string;
+  url: string;
 }
 
 export interface DealInterest {
   id: string;
   deal_id: string;
   investor_id: string;
-  status: 'interested' | 'contacted' | 'invested' | 'passed';
+  status: "interested" | "contacted" | "invested" | "passed";
   notes: string | null;
   created_at: string;
   updated_at: string;
@@ -145,7 +139,7 @@ export interface InvestmentRequest {
   deal_id: string;
   user_id: string;
   amount: number;
-  status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
+  status: "pending" | "approved" | "rejected" | "withdrawn";
   created_at: string;
   updated_at: string;
 }
@@ -167,7 +161,7 @@ export interface SyndicatorClaimRequest {
   company_email: string;
   company_website: string;
   proof_documents: Record<string, any>;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   admin_notes: string | null;
   created_at: string;
   updated_at: string;
