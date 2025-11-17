@@ -51,6 +51,10 @@ interface DealWithSyndicator extends Deal {
     company_description: string | null;
     website_url: string | null;
     total_deal_volume: number | null;
+    city: string | null;
+    state: string | null;
+    average_rating: number | null;
+    total_reviews: number | null;
   };
 }
 
@@ -125,7 +129,11 @@ export function DealDetails() {
             years_in_business,
             company_description,
             website_url,
-            total_deal_volume
+            total_deal_volume,
+            city,
+            state,
+            average_rating,
+            total_reviews
           )
         `
         )
@@ -398,6 +406,70 @@ export function DealDetails() {
               })()}
               className="mb-6"
             />
+
+            {/* Syndicator Information */}
+            {deal.syndicator && (
+              <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-lg shadow-sm p-6">
+                <div className="flex items-center gap-1 mb-4">
+                  <div className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1">
+                    <span>⭐</span> FEATURED
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0">
+                    {deal.syndicator.company_logo_url ? (
+                      <img
+                        src={deal.syndicator.company_logo_url}
+                        alt={deal.syndicator.company_name}
+                        className="w-20 h-20 rounded-lg object-cover bg-white border border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-lg bg-blue-100 flex items-center justify-center border border-gray-200">
+                        <Briefcase className="h-10 w-10 text-blue-600" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">
+                      {deal.syndicator.company_name}
+                    </h3>
+                    {(deal.syndicator.city || deal.syndicator.state) && (
+                      <div className="flex items-center text-sm text-gray-600 mb-2">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        <span>
+                          {deal.syndicator.city && deal.syndicator.state
+                            ? `${deal.syndicator.city}, ${deal.syndicator.state}`
+                            : deal.syndicator.city || deal.syndicator.state}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-center text-sm text-gray-500">
+                      <span className="text-yellow-500 mr-1">⭐</span>
+                      <span className="font-semibold text-gray-900">
+                        {deal.syndicator.average_rating?.toFixed(1) || "0"}
+                      </span>
+                      <span className="ml-1">
+                        ({deal.syndicator.total_reviews || 0} reviews)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {deal.syndicator.website_url && (
+                  <a
+                    href={deal.syndicator.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 w-full bg-white text-blue-600 border border-blue-600 py-2 rounded-lg hover:bg-blue-50 transition flex items-center justify-center text-sm font-medium"
+                  >
+                    <Globe className="h-4 w-4 mr-2" />
+                    Visit Website
+                  </a>
+                )}
+              </div>
+            )}
 
             {/* Investment Interest */}
             <div className="bg-white rounded-lg shadow-sm p-6">

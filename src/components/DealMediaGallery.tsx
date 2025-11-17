@@ -35,7 +35,7 @@ export function DealMediaGallery({ media }: DealMediaGalleryProps) {
   return (
     <>
       {/* Thumbnail Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {media.map((item, index) => (
           <div
             key={item.id}
@@ -43,23 +43,23 @@ export function DealMediaGallery({ media }: DealMediaGalleryProps) {
               setCurrentIndex(index);
               setShowLightbox(true);
             }}
-            className="cursor-pointer group relative"
+            className="cursor-pointer group relative overflow-hidden rounded-lg bg-gray-100 aspect-[4/3]"
           >
             {item.type === 'image' ? (
               <img
                 src={item.url}
                 alt={item.title}
-                className="w-full h-48 object-cover rounded-lg transition duration-200 group-hover:brightness-90"
+                className="w-full h-full object-cover transition duration-200 group-hover:scale-105"
               />
             ) : (
               <video
                 src={item.url}
-                className="w-full h-48 object-cover rounded-lg transition duration-200 group-hover:brightness-90"
+                className="w-full h-full object-cover transition duration-200 group-hover:scale-105"
               />
             )}
             {item.title && (
-              <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition duration-200 rounded-b-lg">
-                <p className="text-white text-sm truncate">{item.title}</p>
+              <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition duration-200">
+                <p className="text-white text-sm font-medium truncate">{item.title}</p>
               </div>
             )}
           </div>
