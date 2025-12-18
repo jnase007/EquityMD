@@ -55,6 +55,7 @@ interface DealWithSyndicator extends Deal {
     state: string | null;
     average_rating: number | null;
     total_reviews: number | null;
+    claimed_by: string | null;
   };
 }
 
@@ -133,7 +134,8 @@ export function DealDetails() {
             city,
             state,
             average_rating,
-            total_reviews
+            total_reviews,
+            claimed_by
           )
         `
         )
@@ -486,8 +488,8 @@ export function DealDetails() {
                 />
               </div>
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-4 border-b">
-                  <div className="flex items-center">
+              {investmentRequests.count > 0 && <div className="flex items-center justify-between py-4 border-b">
+                   <div className="flex items-center">
                     <Users className="h-5 w-5 text-blue-600 mr-2" />
                     <span className="text-gray-600">Investment Requests</span>
                   </div>
@@ -498,7 +500,7 @@ export function DealDetails() {
                       {investmentRequests.count}+
                     </span>
                   )}
-                </div>
+                </div>}
 
                 <div className="flex items-center justify-between py-4 border-b">
                   <div className="flex items-center">
@@ -524,7 +526,9 @@ export function DealDetails() {
               <div className="space-y-3 mt-6">
                 <button
                   onClick={() => handleAction("invest")}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
+                  disabled={!deal.syndicator?.claimed_by}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
                 >
                   <Wallet className="h-5 w-5 mr-2" />
                   Invest Now
@@ -532,7 +536,9 @@ export function DealDetails() {
 
                 <button
                   onClick={() => handleAction("contact")}
-                  className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center"
+                  disabled={!deal.syndicator?.claimed_by}
+                  className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
                   Contact Syndicator
@@ -541,6 +547,18 @@ export function DealDetails() {
                 <FavoriteButton dealId={deal.id} className="w-full py-3" />
               </div>
             </div>
+
+            {/* Unclaimed Profile Warning */}
+            {!deal.syndicator?.claimed_by && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div className="flex">
+                  <AlertCircle className="h-5 w-5 text-blue-400 mr-2" />
+                  <div className="text-sm text-blue-700">
+                    This syndicator profile hasn't been claimed yet. Messaging will be available once the syndicator claims their profile.
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Accredited Warning */}
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -556,21 +574,21 @@ export function DealDetails() {
         </div>
       </div>
 
-      {showMessageModal && deal && (
+      {showMessageModal && deal && deal.syndicator?.claimed_by && (
         <MessageModal
           dealId={deal.id}
           dealTitle={deal.title}
-          syndicatorId={deal.syndicator_id}
+          receiverId={deal.syndicator.claimed_by}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
           onClose={() => setShowMessageModal(false)}
         />
       )}
 
-      {showInvestModal && deal && (
+      {showInvestModal && deal && deal.syndicator?.claimed_by && (
         <MessageModal
           dealId={deal.id}
           dealTitle={deal.title}
-          syndicatorId={deal.syndicator_id}
+          receiverId={deal.syndicator.claimed_by}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
           onClose={() => setShowInvestModal(false)}
           isInvestment

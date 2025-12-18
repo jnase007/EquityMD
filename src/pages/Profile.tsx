@@ -1137,9 +1137,9 @@ export function Profile() {
       </div>
 
       {/* Message Modal */}
-      {showMessageModal && selectedSyndicator && (
+      {showMessageModal && selectedSyndicator && selectedSyndicator.claimed_by && (
         <MessageModal
-          syndicatorId={selectedSyndicator.id}
+          receiverId={selectedSyndicator.claimed_by}
           syndicatorName={selectedSyndicator.company_name}
           onClose={() => setShowMessageModal(false)}
         />

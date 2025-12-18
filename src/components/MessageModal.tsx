@@ -8,13 +8,13 @@ import toast from 'react-hot-toast';
 interface MessageModalProps {
   dealId?: string;
   dealTitle?: string;
-  syndicatorId: string;
+  receiverId: string;
   syndicatorName: string;
   onClose: () => void;
   isInvestment?: boolean;
 }
 
-export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, onClose, isInvestment = false }: MessageModalProps) {
+export function MessageModal({ dealId, dealTitle, receiverId, syndicatorName, onClose, isInvestment = false }: MessageModalProps) {
   const { user } = useAuthStore();
   const [message, setMessage] = useState('');
   const [investmentAmount, setInvestmentAmount] = useState('');
@@ -49,7 +49,7 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
 
       const messageData: any = {
         sender_id: user.id,
-        receiver_id: syndicatorId,
+        receiver_id: receiverId,
         content
       };
 
@@ -72,7 +72,7 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
             .from('investor_connections')
             .select('id')
             .eq('investor_id', user.id)
-            .eq('syndicator_id', syndicatorId)
+            .eq('syndicator_id', receiverId)
             .single();
 
           // Create connection if it doesn't exist
@@ -81,7 +81,7 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
               .from('investor_connections')
               .insert({
                 investor_id: user.id,
-                syndicator_id: syndicatorId,
+                syndicator_id: receiverId,
                 initiated_by: 'investor',
                 status: 'pending'
               });
@@ -127,7 +127,7 @@ export function MessageModal({ dealId, dealTitle, syndicatorId, syndicatorName, 
         trackInvestmentInterest(dealId || '', parseInt(getRawNumber(investmentAmount)), user.id);
       } else {
         // Track syndicator contact
-        trackSyndicatorContact(syndicatorId, dealId, user.id);
+        trackSyndicatorContact(receiverId, dealId, user.id);
       }
 
       setSuccess(true);

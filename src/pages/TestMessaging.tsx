@@ -10,6 +10,7 @@ interface TestSyndicator {
   id: string;
   company_name: string;
   company_description: string;
+  claimed_by: string | null;
 }
 
 export function TestMessaging() {
@@ -28,12 +29,14 @@ export function TestMessaging() {
     try {
       // Fetch some syndicators for testing
       const { data: syndicatorData, error: syndicatorError } = await supabase
-        .from('syndicator_profiles')
-        .select('id, company_name, company_description, state, city')
+        .from('syndicators')
+        .select('id, company_name, company_description, state, city, claimed_by')
         .not('company_name', 'ilike', '%equitymd admin%')
         .not('company_name', 'ilike', '%admin%')
         .not('company_name', 'ilike', '%test%')
         .neq('company_name', 'Metropolitan Real Estate')
+        .in('verification_status', ['verified', 'premier'])
+        .not('claimed_by', 'is', null)
         .limit(5);
 
       if (syndicatorError) throw syndicatorError;
@@ -45,13 +48,16 @@ export function TestMessaging() {
           item.state && 
           item.city &&
           item.company_description && 
-          item.company_description.length >= 50;
+          item.company_description.length >= 50 &&
+          item.claimed_by; // Must be claimed to send messages
         
         return hasRequiredFields || 
-          // Always include verified premier syndicators
-          item.company_name === 'Back Bay Capital' || 
-          item.company_name === 'Sutera Properties' || 
-          item.company_name === 'Starboard Realty';
+          // Always include verified premier syndicators if claimed
+          (item.claimed_by && (
+            item.company_name === 'Back Bay Capital' || 
+            item.company_name === 'Sutera Properties' || 
+            item.company_name === 'Starboard Realty'
+          ));
       });
       
       setSyndicators(completeProfiles);
@@ -183,9 +189,9 @@ export function TestMessaging() {
         </div>
       </div>
 
-      {showMessageModal && selectedSyndicator && (
+      {showMessageModal && selectedSyndicator && selectedSyndicator.claimed_by && (
         <MessageModal
-          syndicatorId={selectedSyndicator.id}
+          receiverId={selectedSyndicator.claimed_by}
           syndicatorName={selectedSyndicator.company_name}
           onClose={handleCloseModal}
         />

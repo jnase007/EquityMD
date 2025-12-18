@@ -264,7 +264,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             password_label: 'Password',
             button_label: 'Sign in',
             loading_button_label: 'Signing in...',
-            link_text: "Don't have an account? Sign up",
+            link_text: "Already have an account? Sign in",
           },
           sign_up: {
             social_provider_text: 'Sign up with',
@@ -272,7 +272,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             password_label: 'Create a Password',
             button_label: 'Sign up',
             loading_button_label: 'Signing up...',
-            link_text: 'Already have an account? Sign in',
+            link_text: "Don't have an account? Sign up",
           },
         },
       }}

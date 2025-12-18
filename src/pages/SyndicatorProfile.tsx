@@ -314,11 +314,13 @@ export function SyndicatorProfile() {
                   onClick={() => {
                     if (!user) {
                       setShowAuthModal(true);
-                    } else {
+                    } else if (syndicator.claimed_by) {
                       setShowMessageModal(true);
                     }
                   }}
-                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  disabled={user && !syndicator.claimed_by}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={user && !syndicator.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
                 >
                   {!user ? (
                     <>
@@ -821,11 +823,11 @@ export function SyndicatorProfile() {
         </div>
       </div>
 
-      {showMessageModal && (
+      {showMessageModal && syndicator?.claimed_by && (
         <MessageModal
           dealId=""
           dealTitle=""
-          syndicatorId={syndicator.id}
+          receiverId={syndicator.claimed_by}
           syndicatorName={syndicator.company_name}
           onClose={() => setShowMessageModal(false)}
         />
