@@ -405,199 +405,257 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 bg-white z-50 md:hidden overflow-y-auto mobile-scroll safe-area-inset">
-          <div className="p-4 safe-area-top">
-            <div className="flex justify-between items-center mb-6">
-              <Link to="/" className="flex items-center touch-manipulation" onClick={() => setIsMenuOpen(false)}>
-                <img 
-                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-black.png`}
-                  alt="EquityMD"
-                  className="h-10"
-                />
-              </Link>
-              <button 
-                onClick={() => setIsMenuOpen(false)}
-                className="touch-manipulation min-h-touch min-w-touch flex items-center justify-center tap-highlight-none"
-                aria-label="Close menu"
-              >
-                <X className="h-6 w-6 text-gray-900" />
-              </button>
+        <div className="fixed inset-0 z-50 md:hidden overflow-hidden">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          
+          {/* Menu Panel */}
+          <div className="absolute inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl overflow-y-auto">
+            {/* Header with Gradient */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-4 sticky top-0 z-10">
+              <div className="flex justify-between items-center">
+                <Link to="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
+                  <img 
+                    src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-white.png`}
+                    alt="EquityMD"
+                    className="h-8"
+                  />
+                </Link>
+                <button 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5 text-white" />
+                </button>
+              </div>
             </div>
 
-            {user ? (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
-                    {profile?.avatar_url ? (
-                      <img
-                        src={profile.avatar_url}
-                        alt={profile.full_name || 'User'}
-                        className="w-12 h-12 rounded-full"
-                      />
-                    ) : (
-                      <User className="h-6 w-6 text-white" />
-                    )}
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <div className="flex items-center justify-between">
-                      <div className="font-medium text-gray-900">{profile?.full_name || 'User'}</div>
-                      {profile && (
-                        <AccountTypeBadge
-                          userType={profile.user_type}
-                          isAdmin={profile.is_admin}
-                          isVerified={profile.is_verified}
-                          size="sm"
+            <div className="p-4">
+              {user ? (
+                /* Logged In User Card */
+                <div className="mb-6 p-4 bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl border border-blue-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                      {profile?.avatar_url ? (
+                        <img
+                          src={profile.avatar_url}
+                          alt={profile.full_name || 'User'}
+                          className="w-14 h-14 rounded-2xl object-cover"
                         />
+                      ) : (
+                        <User className="h-7 w-7 text-white" />
                       )}
                     </div>
-                    <div className="text-sm text-gray-500">{profile?.email}</div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Link
-                    to="/dashboard"
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    to="/profile"
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Profile Settings
-                  </Link>
-                  {(profile?.user_type === 'investor' || profile?.is_admin) && (
-                    <>
-                      <Link
-                        to="/find"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Find Deals
-                      </Link>
-                      <Link
-                        to="/favorites"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        My Favorites
-                      </Link>
-                    </>
-                  )}
-                  {profile?.user_type === 'syndicator' && (
-                    <>
-                      <Link
-                        to="/dashboard"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        to="/deals/new"
-                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Post New Deal
-                      </Link>
-                    </>
-                  )}
-                  {profile?.is_admin && (
-                    <Link
-                      to="/admin"
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Admin Dashboard
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3 mb-6">
-                <button
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setAuthModalType('investor');
-                    setAuthModalView('sign_in');
-                    setShowAuthModal(true);
-                  }}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setAuthModalType('investor');
-                    setAuthModalView('sign_up');
-                    setShowAuthModal(true);
-                  }}
-                  className="w-full bg-gray-100 text-gray-900 py-3 rounded-lg hover:bg-gray-200 transition text-center"
-                >
-                  Get Started
-                </button>
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {mobileMenuItems.map((item) => (
-                <div key={item.label}>
-                  {item.items ? (
-                    <div>
-                      <button
-                        onClick={() => toggleMenuItem(item.label)}
-                        className="flex items-center justify-between w-full py-2 text-gray-900"
-                      >
-                        <span className="font-medium">{item.label}</span>
-                        <ChevronRight
-                          className={`h-5 w-5 transform transition-transform ${
-                            expandedMenuItems.includes(item.label) ? 'rotate-90' : ''
-                          }`}
-                        />
-                      </button>
-                      {expandedMenuItems.includes(item.label) && (
-                        <div className="ml-4 mt-2 space-y-2">
-                          {item.items.map((subItem) => (
-                            <Link
-                              key={subItem.label}
-                              to={subItem.path}
-                              className="flex items-center py-2 text-gray-600 hover:text-gray-900"
-                              onClick={() => setIsMenuOpen(false)}
-                            >
-                              <ChevronRight className="h-4 w-4 mr-2" />
-                              {subItem.label}
-                            </Link>
-                          ))}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-gray-900 truncate">{profile?.full_name || 'User'}</div>
+                      <div className="text-sm text-gray-500 truncate">{profile?.email}</div>
+                      {profile && (
+                        <div className="mt-1">
+                          <AccountTypeBadge
+                            userType={profile.user_type}
+                            isAdmin={profile.is_admin}
+                            isVerified={profile.is_verified}
+                            size="sm"
+                          />
                         </div>
                       )}
                     </div>
-                  ) : (
+                  </div>
+                  
+                  {/* Quick Actions */}
+                  <div className="grid grid-cols-2 gap-2">
                     <Link
-                      to={item.path!}
-                      className="flex items-center justify-between py-2 text-gray-900"
+                      to="/dashboard"
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <span className="font-medium">{item.label}</span>
-                      <ChevronRight className="h-5 w-5" />
+                      <LayoutGrid className="h-4 w-4" />
+                      Dashboard
                     </Link>
-                  )}
+                    <Link
+                      to="/profile"
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 bg-white text-gray-700 rounded-xl font-medium text-sm border border-gray-200 hover:bg-gray-50 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                  </div>
                 </div>
-              ))}
-            </div>
+              ) : (
+                /* Sign In/Up Buttons */
+                <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+                  <p className="text-center text-sm text-gray-600 mb-4">
+                    Join 10,000+ investors discovering deals
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setAuthModalType('investor');
+                        setAuthModalView('sign_up');
+                        setShowAuthModal(true);
+                      }}
+                      className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg"
+                    >
+                      Get Started Free
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setAuthModalType('investor');
+                        setAuthModalView('sign_in');
+                        setShowAuthModal(true);
+                      }}
+                      className="w-full py-3 bg-white text-gray-700 rounded-xl font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                </div>
+              )}
 
-            {user && (
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <button
-                  onClick={handleSignOut}
-                  className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+              {/* Primary Actions */}
+              <div className="mb-6">
+                <Link
+                  to="/find"
+                  className="flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl mb-3 shadow-lg hover:shadow-xl transition-all"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  Sign Out
-                </button>
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold">Find Deals</div>
+                    <div className="text-emerald-100 text-sm">Browse investment opportunities</div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 ml-auto" />
+                </Link>
+                
+                <Link
+                  to="/directory"
+                  className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <Building2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold">Find Syndicators</div>
+                    <div className="text-purple-100 text-sm">Verified investment partners</div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 ml-auto" />
+                </Link>
               </div>
-            )}
+
+              {/* Menu Sections */}
+              <div className="space-y-2">
+                {mobileMenuItems.map((item) => (
+                  <div key={item.label}>
+                    {item.items ? (
+                      <div className="bg-gray-50 rounded-xl overflow-hidden">
+                        <button
+                          onClick={() => toggleMenuItem(item.label)}
+                          className="flex items-center justify-between w-full p-4 text-gray-900 hover:bg-gray-100 transition-colors"
+                        >
+                          <span className="font-semibold">{item.label}</span>
+                          <ChevronRight
+                            className={`h-5 w-5 text-gray-400 transform transition-transform duration-200 ${
+                              expandedMenuItems.includes(item.label) ? 'rotate-90' : ''
+                            }`}
+                          />
+                        </button>
+                        {expandedMenuItems.includes(item.label) && (
+                          <div className="px-4 pb-3 space-y-1 border-t border-gray-100">
+                            {item.items.map((subItem) => (
+                              <Link
+                                key={subItem.label}
+                                to={subItem.path}
+                                className="flex items-center gap-2 py-2.5 px-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                onClick={() => setIsMenuOpen(false)}
+                              >
+                                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+                                {subItem.label}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Link
+                        to={item.path!}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-xl text-gray-900 hover:bg-gray-100 transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span className="font-semibold">{item.label}</span>
+                        <ChevronRight className="h-5 w-5 text-gray-400" />
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* User Actions */}
+              {user && (
+                <div className="mt-6 pt-4 border-t border-gray-100">
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    {(profile?.user_type === 'investor' || profile?.is_admin) && (
+                      <Link
+                        to="/favorites"
+                        className="flex items-center justify-center gap-2 p-3 bg-gray-50 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        <span className="text-sm font-medium">Favorites</span>
+                      </Link>
+                    )}
+                    {profile?.user_type === 'syndicator' && (
+                      <Link
+                        to="/deals/new"
+                        className="flex items-center justify-center gap-2 p-3 bg-blue-50 rounded-xl text-blue-700 hover:bg-blue-100 transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <TrendingUp className="h-4 w-4" />
+                        <span className="text-sm font-medium">Post Deal</span>
+                      </Link>
+                    )}
+                    {profile?.is_admin && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center justify-center gap-2 p-3 bg-purple-50 rounded-xl text-purple-700 hover:bg-purple-100 transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <Lock className="h-4 w-4" />
+                        <span className="text-sm font-medium">Admin</span>
+                      </Link>
+                    )}
+                  </div>
+                  
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center justify-center gap-2 p-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-medium transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
+
+              {/* Trust Footer */}
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <div className="flex items-center justify-center gap-4 text-xs text-gray-400">
+                  <span>🔒 Secure</span>
+                  <span>•</span>
+                  <span>✓ SEC Compliant</span>
+                  <span>•</span>
+                  <span>🏢 10K+</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
