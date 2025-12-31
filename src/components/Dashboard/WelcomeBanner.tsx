@@ -21,7 +21,7 @@ export function WelcomeBanner({ userType, userName, onDismiss }: WelcomeBannerPr
       icon: Search,
       label: 'Browse Deals',
       description: 'Find your next investment',
-      href: '/deals',
+      href: '/find',
       color: 'bg-blue-500',
       primary: true,
     },
@@ -37,7 +37,7 @@ export function WelcomeBanner({ userType, userName, onDismiss }: WelcomeBannerPr
       icon: Heart,
       label: 'Save Deals',
       description: 'Build your watchlist',
-      href: '/deals',
+      href: '/favorites',
       color: 'bg-red-500',
     },
   ].filter(a => a.show !== false);

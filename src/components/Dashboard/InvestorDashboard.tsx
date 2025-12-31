@@ -236,7 +236,7 @@ export function InvestorDashboard() {
             </div>
           </div>
           <Link
-            to="/browse"
+            to="/find"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
           >
             <Search className="h-5 w-5" />
