@@ -14,6 +14,9 @@ import { AchievementsModal } from '../Gamification/AchievementsModal';
 import { AchievementUnlocked } from '../Gamification/AchievementUnlocked';
 import { WelcomeBanner, ProfileNudge, useWelcomeBanner } from './WelcomeBanner';
 import { calculateProfileCompletion } from '../../lib/profileCompletion';
+import { PersonalizedGreeting } from './PersonalizedGreeting';
+import { ActivityFeed } from './ActivityFeed';
+import { SmartRecommendations } from './SmartRecommendations';
 
 interface InvestorDashboardProps {
   // Optional props for customization
@@ -37,6 +40,7 @@ export function InvestorDashboard() {
   const [loading, setLoading] = useState(true);
   const [profileCompletion, setProfileCompletion] = useState(0);
   const [investorPrefs, setInvestorPrefs] = useState<any>(null);
+  const [lastViewedDeal, setLastViewedDeal] = useState<{ title: string; slug: string } | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -169,6 +173,22 @@ export function InvestorDashboard() {
 
       setFavoriteDeals(favoritesData?.map(f => f.deals).filter(Boolean) || []);
 
+      // Fetch last viewed deal from deal_views
+      const { data: lastViewed } = await supabase
+        .from('deal_views')
+        .select('deal_id, deals(title, slug)')
+        .eq('viewer_id', user!.id)
+        .order('viewed_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (lastViewed?.deals) {
+        setLastViewedDeal({
+          title: (lastViewed.deals as any).title,
+          slug: (lastViewed.deals as any).slug
+        });
+      }
+
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -186,78 +206,17 @@ export function InvestorDashboard() {
   const nextIncomplete = gamification.nextSteps.find(s => !s.completed);
 
   return (
-    <div className="space-y-8">
-      {/* First-Time Welcome Banner */}
-      {!bannerDismissed && (
-        <WelcomeBanner
-          userType="investor"
-          userName={firstName}
-          onDismiss={dismissBanner}
-        />
-      )}
-
-      {/* Gamified Welcome Section - show if banner is dismissed */}
-      {bannerDismissed && (
-        <WelcomeBackCard
-          userName={firstName}
-          streak={gamification.streak}
-          todayPoints={0}
-          nextStep={nextIncomplete}
-        />
-      )}
-      
-      {/* Level and Progress Bar */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 lg:p-8 text-white">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl">
-              {gamification.level.icon}
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-xl lg:text-2xl font-bold">
-                  Level {gamification.level.level}: {gamification.level.title}
-                </h1>
-              </div>
-              <div className="flex items-center gap-3 text-blue-100">
-                <span className="flex items-center gap-1">
-                  <Zap className="h-4 w-4 text-yellow-300" />
-                  {gamification.totalPoints} pts
-                </span>
-                <span>•</span>
-                <button 
-                  onClick={() => setShowAchievements(true)}
-                  className="flex items-center gap-1 hover:text-white transition-colors"
-                >
-                  <Trophy className="h-4 w-4" />
-                  {gamification.achievementCount}/{gamification.totalAchievements} badges
-                </button>
-              </div>
-            </div>
-          </div>
-          <Link
-            to="/find"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
-          >
-            <Search className="h-5 w-5" />
-            Browse Deals
-          </Link>
-        </div>
-        
-        {/* Progress to next level */}
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-blue-200 mb-1">
-            <span>Progress to next level</span>
-            <span>{gamification.progressToNextLevel}%</span>
-          </div>
-          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-white rounded-full transition-all duration-500"
-              style={{ width: `${gamification.progressToNextLevel}%` }}
-            />
-          </div>
-        </div>
-      </div>
+    <div className="space-y-6">
+      {/* Personalized Greeting with Stats */}
+      <PersonalizedGreeting
+        userName={profile?.full_name || 'Investor'}
+        streak={gamification.streak}
+        points={gamification.totalPoints}
+        level={gamification.level.level}
+        levelTitle={gamification.level.title}
+        profileCompletion={profileCompletion}
+        lastViewedDeal={lastViewedDeal}
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -394,6 +353,9 @@ export function InvestorDashboard() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Live Activity Feed */}
+          <ActivityFeed />
+
           {/* Saved Deals */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-5 border-b border-gray-100 flex justify-between items-center">
@@ -410,7 +372,7 @@ export function InvestorDashboard() {
               <div className="p-6 text-center">
                 <Heart className="h-8 w-8 text-gray-200 mx-auto mb-2" />
                 <p className="text-sm text-gray-500">No saved deals yet</p>
-                <Link to="/browse" className="text-blue-600 hover:underline text-xs">
+                <Link to="/find" className="text-blue-600 hover:underline text-xs">
                   Start exploring
                 </Link>
               </div>
@@ -484,73 +446,14 @@ export function InvestorDashboard() {
         </div>
       </div>
       
-      {/* Recommended Deals Section - Based on Preferences */}
-      {recommendedDeals.length > 0 && investorPrefs?.preferred_property_types?.length > 0 && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-100 rounded-lg">
-                <Sparkles className="h-5 w-5 text-emerald-600" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">Recommended For You</h2>
-                <p className="text-sm text-gray-600">Based on your preferences</p>
-              </div>
-            </div>
-            <Link
-              to="/deals"
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium flex items-center gap-1"
-            >
-              View All <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {recommendedDeals.slice(0, 4).map((deal) => (
-              <Link
-                key={deal.id}
-                to={`/deals/${deal.slug}`}
-                className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-emerald-100"
-              >
-                <div className="h-32 bg-gray-100 relative overflow-hidden">
-                  {deal.cover_image_url ? (
-                    <img
-                      src={deal.cover_image_url}
-                      alt={deal.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-100 to-teal-100">
-                      <Building2 className="h-10 w-10 text-emerald-300" />
-                    </div>
-                  )}
-                  {deal.syndicators?.verification_status === 'verified' && (
-                    <div className="absolute top-2 left-2 bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <CheckCircle className="h-3 w-3" /> Verified
-                    </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">
-                    {deal.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                    <MapPin className="h-3 w-3" /> {deal.location || 'Location TBD'}
-                  </p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-emerald-600 font-semibold">
-                      {deal.target_irr}% IRR
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      ${(deal.minimum_investment / 1000).toFixed(0)}K min
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Smart Recommendations with Filters */}
+      <SmartRecommendations
+        userId={user?.id || ''}
+        preferredTypes={investorPrefs?.preferred_property_types || []}
+        preferredLocations={investorPrefs?.preferred_locations || []}
+        investmentMin={investorPrefs?.investment_range_min}
+        investmentMax={investorPrefs?.investment_range_max}
+      />
 
       {/* Achievements Modal */}
       <AchievementsModal
