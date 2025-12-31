@@ -20,6 +20,7 @@ const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: modu
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ default: module.Favorites })));
 const InvestmentRequests = lazy(() => import('./pages/InvestmentRequests').then(module => ({ default: module.InvestmentRequests })));
+const Portfolio = lazy(() => import('./pages/Portfolio').then(module => ({ default: module.Portfolio })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -401,6 +402,10 @@ export default function App() {
         <Route 
           path="/investment-requests" 
           element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <InvestmentRequests />)} 
+        />
+        <Route 
+          path="/portfolio" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Portfolio />)} 
         />
 
         {/* Admin Routes */}

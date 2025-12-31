@@ -26,6 +26,7 @@ import { DealMediaGallery } from "../components/DealMediaGallery";
 import { VideoEmbed } from "../components/VideoEmbed";
 import { AuthModal } from "../components/AuthModal";
 import { FavoriteButton } from "../components/FavoriteButton";
+import { DocumentRoom } from "../components/DocumentRoom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { supabase } from "../lib/supabase";
@@ -343,56 +344,13 @@ export function DealDetails() {
               </ul>
             </div>
 
-            {/* Documents */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold mb-4">Documents</h2>
-              <div className="space-y-4">
-                {files.length > 0 ? (
-                  files.map((file) => (
-                    <a
-                      key={file.id}
-                      href={file.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex items-center">
-                        <FileText className="h-6 w-6 text-blue-600 mr-3" />
-                        <div>
-                          <div className="font-medium">{file.name}</div>
-                        </div>
-                      </div>
-                      {file.is_private && user && (
-                        <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">
-                          Private
-                        </span>
-                      )}
-                    </a>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 mb-2">No documents available</p>
-                    {!user ? (
-                      <p className="text-sm text-gray-400">
-                        <span
-                          onClick={() => setShowAuthModal(true)}
-                          className="text-blue-600 hover:text-blue-700 cursor-pointer"
-                        >
-                          Sign in
-                        </span>{" "}
-                        to view private documents
-                      </p>
-                    ) : (
-                      <p className="text-sm text-gray-400">
-                        Documents will appear here when uploaded by the
-                        syndicator
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
+            {/* Document Room */}
+            <DocumentRoom 
+              dealId={deal.id}
+              dealTitle={deal.title}
+              isOwner={user?.id === deal.syndicator?.claimed_by}
+              syndicatorId={deal.syndicator_id}
+            />
 
             {/* Returns Calculator directly after Documents */}
             <div className="max-w-2xl mx-auto px-4">
