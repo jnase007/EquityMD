@@ -526,15 +526,15 @@ export function DealDetails() {
                   </span>
                 </div>
 
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-sm text-blue-800">
-                    <strong>Active Interest:</strong> This deal has received{" "}
-                    {investmentRequests.loading
-                      ? "..."
-                      : investmentRequests.count}{" "}
-                    investment requests from accredited investors.
+                {/* Only show active interest when there are 10+ requests */}
+                {!investmentRequests.loading && investmentRequests.count >= 10 && (
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <div className="text-sm text-blue-800">
+                      <strong>Active Interest:</strong> This deal has received{" "}
+                      {investmentRequests.count} investment requests from accredited investors.
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="space-y-3 mt-6">
