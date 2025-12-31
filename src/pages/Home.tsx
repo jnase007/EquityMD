@@ -369,26 +369,26 @@ export function Home() {
       </section>
 
       {/* Featured Deals Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      <section className="py-20 px-6 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 relative overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
         
         <div className="max-w-[1200px] mx-auto relative">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
             <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium mb-3">
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-3">
                 <TrendingUp className="h-4 w-4" />
                 Featured Deals
               </span>
-              <h2 className="text-3xl font-bold text-white">
+              <h2 className="text-3xl font-bold text-gray-900">
                 Investment Opportunities
               </h2>
-              <p className="text-slate-400 mt-2">Curated deals from verified syndicators</p>
+              <p className="text-gray-600 mt-2">Curated deals from verified syndicators</p>
             </div>
             {!user ? (
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur text-white rounded-xl hover:bg-white/20 transition-all border border-white/20"
+                className="flex items-center gap-2 px-5 py-2.5 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-all border border-gray-200 shadow-sm"
               >
                 <Lock className="h-4 w-4" />
                 Sign in for details
@@ -396,7 +396,7 @@ export function Home() {
             ) : (
               <Link
                 to="/find"
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all shadow-lg"
               >
                 View All Deals
                 <ArrowRight className="h-4 w-4" />
@@ -428,9 +428,9 @@ export function Home() {
                   ))
                 ) : (
                   <div className="w-full text-center py-12">
-                    <Building className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                    <p className="text-slate-400 text-lg">No featured deals available at the moment.</p>
-                    <p className="text-slate-500 text-sm mt-2">Check back soon for new investment opportunities.</p>
+                    <Building className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p className="text-gray-500 text-lg">No featured deals available at the moment.</p>
+                    <p className="text-gray-400 text-sm mt-2">Check back soon for new investment opportunities.</p>
                   </div>
                 )}
               </div>
@@ -439,8 +439,8 @@ export function Home() {
             {/* Gradient Overlays */}
             {featuredDeals.length > 0 && (
               <>
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900 to-transparent pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none" />
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-100 to-transparent pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-indigo-100 to-transparent pointer-events-none" />
               </>
             )}
           </div>
