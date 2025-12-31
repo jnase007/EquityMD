@@ -19,7 +19,6 @@ const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ defau
 const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ default: module.Favorites })));
-const InvestmentRequests = lazy(() => import('./pages/InvestmentRequests').then(module => ({ default: module.InvestmentRequests })));
 const Portfolio = lazy(() => import('./pages/Portfolio').then(module => ({ default: module.Portfolio })));
 
 // Keep lightweight components as regular imports
@@ -398,10 +397,6 @@ export default function App() {
         <Route 
           path="/favorites" 
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Favorites />)} 
-        />
-        <Route 
-          path="/investment-requests" 
-          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <InvestmentRequests />)} 
         />
         <Route 
           path="/portfolio" 

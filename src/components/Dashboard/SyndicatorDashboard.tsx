@@ -4,14 +4,38 @@ import {
   Plus, Building2, Users, TrendingUp, 
   MessageSquare, Eye, CheckCircle, AlertCircle,
   Sparkles, Trophy, Zap, Edit, MapPin, ExternalLink,
-  Camera, Clock, ArrowRight, Globe, Upload
+  Camera, Clock, ArrowRight, Globe, Upload, XCircle,
+  DollarSign, User, MoreHorizontal, Phone
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
 import { useGamification } from '../Gamification/useGamification';
 import { AchievementsModal } from '../Gamification/AchievementsModal';
 import { AchievementUnlocked } from '../Gamification/AchievementUnlocked';
+import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
+
+interface InvestmentRequest {
+  id: string;
+  deal_id: string;
+  user_id: string;
+  amount: number;
+  status: 'pending' | 'approved' | 'rejected' | 'withdrawn';
+  created_at: string;
+  deal?: {
+    id: string;
+    title: string;
+    slug: string;
+    cover_image_url: string;
+  };
+  investor?: {
+    id: string;
+    full_name: string;
+    email: string;
+    avatar_url: string;
+    phone_number: string;
+  };
+}
 
 export function SyndicatorDashboard() {
   const { user, profile } = useAuthStore();
@@ -20,6 +44,7 @@ export function SyndicatorDashboard() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [syndicator, setSyndicator] = useState<any>(null);
   const [deals, setDeals] = useState<any[]>([]);
+  const [investmentRequests, setInvestmentRequests] = useState<InvestmentRequest[]>([]);
   const [stats, setStats] = useState({
     activeDeals: 0,
     totalInvestors: 0,
@@ -30,12 +55,21 @@ export function SyndicatorDashboard() {
   const [showCreateBusiness, setShowCreateBusiness] = useState(false);
   const [newBusinessName, setNewBusinessName] = useState('');
   const [creating, setCreating] = useState(false);
+  const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
       fetchData();
     }
   }, [user]);
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
 
   async function fetchData() {
     try {
@@ -90,11 +124,114 @@ export function SyndicatorDashboard() {
           pendingRequests,
           unreadMessages: unreadCount || 0,
         });
+
+        // Fetch investment requests with details
+        await fetchInvestmentRequests(syndicatorData.id, dealsData || []);
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchInvestmentRequests(syndicatorId: string, dealsData: any[]) {
+    try {
+      if (!dealsData || dealsData.length === 0) {
+        setInvestmentRequests([]);
+        return;
+      }
+
+      const dealIds = dealsData.map(d => d.id);
+
+      // Get investment requests for these deals
+      const { data: requestsData, error: requestsError } = await supabase
+        .from('investment_requests')
+        .select('*')
+        .in('deal_id', dealIds)
+        .order('created_at', { ascending: false });
+
+      if (requestsError) throw requestsError;
+
+      // Get investor profiles
+      const investorIds = [...new Set(requestsData?.map(r => r.user_id) || [])];
+      
+      let investorProfiles: any[] = [];
+      if (investorIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, email, avatar_url, phone_number')
+          .in('id', investorIds);
+        investorProfiles = profiles || [];
+      }
+
+      // Combine data
+      const enrichedRequests = requestsData?.map(request => ({
+        ...request,
+        deal: dealsData.find(d => d.id === request.deal_id),
+        investor: investorProfiles?.find(p => p.id === request.user_id),
+      })) || [];
+
+      setInvestmentRequests(enrichedRequests);
+    } catch (error) {
+      console.error('Error fetching investment requests:', error);
+    }
+  }
+
+  async function updateRequestStatus(requestId: string, newStatus: 'approved' | 'rejected') {
+    try {
+      const { error } = await supabase
+        .from('investment_requests')
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', requestId);
+
+      if (error) throw error;
+
+      // Update local state
+      setInvestmentRequests(prev => prev.map(r => 
+        r.id === requestId ? { ...r, status: newStatus } : r
+      ));
+
+      // Update pending count in stats
+      setStats(prev => ({
+        ...prev,
+        pendingRequests: prev.pendingRequests - 1
+      }));
+
+      // Get the request to notify the investor
+      const request = investmentRequests.find(r => r.id === requestId);
+      if (request?.investor?.id) {
+        // Create notification for investor
+        await supabase
+          .from('notifications')
+          .insert({
+            user_id: request.investor.id,
+            type: 'investment_status',
+            title: newStatus === 'approved' 
+              ? '🎉 Investment Request Approved!' 
+              : 'Investment Request Update',
+            content: newStatus === 'approved'
+              ? `Your investment request of ${formatCurrency(request.amount)} for ${request.deal?.title} has been approved!`
+              : `Your investment request for ${request.deal?.title} has been updated.`,
+            data: {
+              deal_id: request.deal_id,
+              deal_slug: request.deal?.slug,
+              status: newStatus,
+            },
+            read: false
+          });
+      }
+
+      toast.success(
+        newStatus === 'approved' 
+          ? '✅ Investment request approved!' 
+          : 'Investment request declined'
+      );
+
+      setShowActionMenu(null);
+    } catch (error) {
+      console.error('Error updating request:', error);
+      toast.error('Failed to update request');
     }
   }
 
@@ -236,6 +373,10 @@ export function SyndicatorDashboard() {
     );
   }
 
+  // Get pending requests for display
+  const pendingRequests = investmentRequests.filter(r => r.status === 'pending');
+  const recentRequests = investmentRequests.slice(0, 5);
+
   // Has business - show streamlined dashboard
   return (
     <div className="space-y-6">
@@ -339,15 +480,6 @@ export function SyndicatorDashboard() {
                     </span>
                   )}
                 </Link>
-                {stats.pendingRequests > 0 && (
-                  <Link
-                    to="/investment-requests"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors"
-                  >
-                    <Clock className="h-3.5 w-3.5" />
-                    {stats.pendingRequests} Pending Requests
-                  </Link>
-                )}
               </div>
             </div>
 
@@ -415,10 +547,7 @@ export function SyndicatorDashboard() {
           <p className="text-3xl font-bold text-gray-900">{stats.totalInvestors}</p>
         </div>
         
-        <Link 
-          to="/investment-requests"
-          className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:border-orange-200 hover:shadow-md transition-all"
-        >
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-orange-100 rounded-lg">
               <Clock className="h-5 w-5 text-orange-600" />
@@ -426,7 +555,7 @@ export function SyndicatorDashboard() {
             <span className="text-gray-500 text-sm">Pending</span>
           </div>
           <p className="text-3xl font-bold text-gray-900">{stats.pendingRequests}</p>
-        </Link>
+        </div>
         
         <Link 
           to="/inbox"
@@ -441,6 +570,148 @@ export function SyndicatorDashboard() {
           <p className="text-3xl font-bold text-gray-900">{stats.unreadMessages}</p>
         </Link>
       </div>
+
+      {/* Investment Requests Section */}
+      {investmentRequests.length > 0 && (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-100 rounded-lg">
+                <DollarSign className="h-5 w-5 text-emerald-600" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Investment Requests</h2>
+                <p className="text-gray-500 text-sm">
+                  {pendingRequests.length > 0 
+                    ? `${pendingRequests.length} pending review`
+                    : 'All requests processed'}
+                </p>
+              </div>
+            </div>
+            {pendingRequests.length > 0 && (
+              <span className="px-3 py-1 bg-orange-100 text-orange-700 text-sm font-medium rounded-full flex items-center gap-1.5">
+                <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                {pendingRequests.length} Pending
+              </span>
+            )}
+          </div>
+
+          <div className="divide-y divide-gray-100">
+            {/* Show pending first, then recent */}
+            {[...pendingRequests, ...investmentRequests.filter(r => r.status !== 'pending').slice(0, 3)].slice(0, 5).map((request) => (
+              <div 
+                key={request.id}
+                className={`p-5 hover:bg-gray-50 transition-colors ${
+                  request.status === 'pending' ? 'bg-orange-50/50' : ''
+                }`}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  {/* Deal & Investor Info */}
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
+                    <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+                      {request.deal?.cover_image_url ? (
+                        <img 
+                          src={request.deal.cover_image_url} 
+                          alt={request.deal.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Building2 className="h-5 w-5 text-gray-400" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-6 h-6 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                          {request.investor?.avatar_url ? (
+                            <img 
+                              src={request.investor.avatar_url} 
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <User className="h-3 w-3 text-gray-400" />
+                            </div>
+                          )}
+                        </div>
+                        <span className="font-medium text-gray-900 truncate">
+                          {request.investor?.full_name || 'Unknown'}
+                        </span>
+                        <span className="text-gray-400">•</span>
+                        <span className="text-sm text-gray-500 truncate">
+                          {request.deal?.title}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Amount */}
+                  <div className="flex items-center gap-4">
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-emerald-600">
+                        {formatCurrency(request.amount)}
+                      </p>
+                      <p className="text-xs text-gray-500">Investment</p>
+                    </div>
+
+                    {/* Status / Actions */}
+                    {request.status === 'pending' ? (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateRequestStatus(request.id, 'approved')}
+                          className="p-2 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors"
+                          title="Approve"
+                        >
+                          <CheckCircle className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => updateRequestStatus(request.id, 'rejected')}
+                          className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                          title="Decline"
+                        >
+                          <XCircle className="h-5 w-5" />
+                        </button>
+                        <Link
+                          to="/inbox"
+                          className="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                          title="Message"
+                        >
+                          <MessageSquare className="h-5 w-5" />
+                        </Link>
+                      </div>
+                    ) : (
+                      <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                        request.status === 'approved'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : request.status === 'rejected'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        {request.status === 'approved' && <CheckCircle className="h-3 w-3 inline mr-1" />}
+                        {request.status === 'rejected' && <XCircle className="h-3 w-3 inline mr-1" />}
+                        {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {investmentRequests.length === 0 && (
+            <div className="p-8 text-center">
+              <DollarSign className="h-8 w-8 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500">No investment requests yet</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Deals Section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
