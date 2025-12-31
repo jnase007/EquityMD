@@ -240,7 +240,7 @@ export function DealDetails() {
     .replace(/[^a-z0-9]+/g, "-");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <head>
         <title>Invest in Top CRE Deals | EquityMD</title>
         <meta
@@ -255,7 +255,7 @@ export function DealDetails() {
       <Navbar />
 
       {/* Hero Section */}
-      <div className="relative h-[400px]">
+      <div className="relative h-[450px]">
         <img
           src={
             deal.cover_image_url ||
@@ -264,18 +264,18 @@ export function DealDetails() {
           alt={deal.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl mx-auto px-4 text-white">
-            <div className="flex items-center text-sm mb-4">
-              <span>Deals</span>
-              <ChevronRight className="h-4 w-4 mx-2" />
-              <span>{deal.property_type}</span>
-              <ChevronRight className="h-4 w-4 mx-2" />
-              <span>{deal.title}</span>
-            </div>
+            <nav className="flex items-center text-sm mb-6">
+              <span className="text-white/70 hover:text-white cursor-pointer">Deals</span>
+              <ChevronRight className="h-4 w-4 mx-2 text-white/50" />
+              <span className="text-white/70 hover:text-white cursor-pointer">{deal.property_type}</span>
+              <ChevronRight className="h-4 w-4 mx-2 text-white/50" />
+              <span className="text-white">{deal.title}</span>
+            </nav>
             <div className="flex items-center gap-4 mb-4">
-              <h1 className="text-4xl font-bold">{deal.title}</h1>
+              <h1 className="text-4xl lg:text-5xl font-bold">{deal.title}</h1>
               {/* Edit Button - Only visible to deal owner */}
               {user && deal.syndicator?.claimed_by === user.id && (
                 <Link
@@ -406,8 +406,8 @@ export function DealDetails() {
             </div>
 
             {/* Investment Highlights */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold mb-4">Investment Highlights</h2>
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Investment Highlights</h2>
               <ul className="space-y-4">
                 {deal.investment_highlights?.map((highlight, index) => (
                   <li key={index} className="flex items-start">
@@ -448,7 +448,7 @@ export function DealDetails() {
 
             {/* Syndicator Information */}
             {deal.syndicator && (
-              <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-lg shadow-sm p-6">
+              <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-100 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-1 mb-4">
                   <div className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1">
                     <span>⭐</span> FEATURED

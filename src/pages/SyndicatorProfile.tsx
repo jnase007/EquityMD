@@ -222,7 +222,7 @@ export function SyndicatorProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-xl text-gray-600">
           Loading syndicator profile...
         </div>
@@ -236,11 +236,13 @@ export function SyndicatorProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <Navbar />
 
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Modern Header */}
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        <div className="max-w-7xl mx-auto px-4 py-12 relative">
           <div className="flex flex-col md:flex-row items-start gap-8">
             <div className="flex-shrink-0">
               {getSyndicatorLogo(
@@ -255,21 +257,21 @@ export function SyndicatorProfile() {
                     )!
                   }
                   alt={syndicator.company_name}
-                  className="w-32 h-32 object-contain rounded-lg border p-2"
+                  className="w-28 h-28 object-contain rounded-2xl bg-white p-3 shadow-xl"
                 />
               ) : (
-                <div className="w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Building2 className="w-16 h-16 text-blue-600" />
+                <div className="w-28 h-28 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <Building2 className="w-14 h-14 text-white" />
                 </div>
               )}
             </div>
 
             <div className="flex-grow">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">
                 {syndicator.company_name}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
+              <div className="flex flex-wrap items-center gap-4 text-white/80 mb-6">
                 <div className="flex items-center">
                   <MapPin className="h-5 w-5 mr-1" />
                   <span>
@@ -295,7 +297,7 @@ export function SyndicatorProfile() {
                     className="h-5 w-5 mr-1 text-yellow-400"
                     fill="currentColor"
                   />
-                  <span>
+                  <span className="text-white">
                     {averageRating} ({reviews.length} reviews)
                   </span>
                 </div>
@@ -303,13 +305,13 @@ export function SyndicatorProfile() {
                   <Briefcase className="h-5 w-5 mr-1" />
                   <span>{syndicator.years_in_business} years in business</span>
                 </div>
-                <div className="flex items-center">
-                  <Shield className="h-5 w-5 mr-1" />
-                  <span>Verified Syndicator</span>
+                <div className="flex items-center bg-white/20 px-3 py-1 rounded-full">
+                  <Shield className="h-4 w-4 mr-1" />
+                  <span className="text-sm font-medium">Verified</span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => {
                     if (!user) {
@@ -319,7 +321,7 @@ export function SyndicatorProfile() {
                     }
                   }}
                   disabled={user && !syndicator.claimed_by}
-                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center px-5 py-2.5 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   title={user && !syndicator.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
                 >
                   {!user ? (
@@ -340,11 +342,11 @@ export function SyndicatorProfile() {
                     href={syndicator.website_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition"
+                    className="flex items-center px-5 py-2.5 bg-white/20 backdrop-blur text-white font-medium rounded-xl hover:bg-white/30 transition"
                   >
-                    <Globe className="h-5 w-5 mr-2 text-gray-600" />
-                    Visit Website
-                    <ExternalLink className="h-4 w-4 ml-1 text-gray-400" />
+                    <Globe className="h-5 w-5 mr-2" />
+                    Website
+                    <ExternalLink className="h-4 w-4 ml-1 opacity-70" />
                   </a>
                 )}
 
@@ -353,24 +355,23 @@ export function SyndicatorProfile() {
                     href={syndicator.linkedin_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 transition"
+                    className="flex items-center px-5 py-2.5 bg-white/20 backdrop-blur text-white font-medium rounded-xl hover:bg-white/30 transition"
                   >
                     <svg
-                      className="h-5 w-5 mr-2 text-[#0A66C2]"
+                      className="h-5 w-5 mr-2"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
                     </svg>
                     LinkedIn
-                    <ExternalLink className="h-4 w-4 ml-1 text-gray-400" />
                   </a>
                 )}
 
                 {!syndicator.profile && (
                   <button
                     onClick={() => setShowClaimModal(true)}
-                    className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                    className="flex items-center px-5 py-2.5 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition shadow-lg"
                   >
                     <CheckCircle className="h-5 w-5 mr-2" />
                     Claim Profile
@@ -382,11 +383,11 @@ export function SyndicatorProfile() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold mb-4">
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 About {syndicator.company_name}
               </h2>
               <p className="text-gray-600 whitespace-pre-line mb-6">
