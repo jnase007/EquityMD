@@ -335,183 +335,125 @@ export function ImageUpload({
         )}
       </div>
 
-      {/* Image Editor Modal */}
+      {/* Image Editor Modal - Compact */}
       {showCropModal && previewUrl && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-5xl w-full max-h-[95vh] overflow-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center space-x-2">
-                  <CropIcon className="h-5 w-5 text-blue-600" />
-                  <h3 className="text-lg font-semibold">Edit {label}</h3>
-                </div>
-                <button
-                  onClick={handleCancelCrop}
-                  className="text-gray-500 hover:text-gray-700 p-1"
+          <div className="bg-white rounded-xl max-w-md w-full max-h-[85vh] overflow-auto shadow-2xl">
+            {/* Header */}
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <CropIcon className="h-4 w-4 text-blue-600" />
+                Edit {label}
+              </h3>
+              <button
+                onClick={handleCancelCrop}
+                className="text-gray-400 hover:text-gray-600 p-1"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Image Preview */}
+            <div className="p-4">
+              <div className="relative border border-gray-200 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                <ReactCrop
+                  crop={crop}
+                  onChange={(_, percentCrop) => setCrop(percentCrop)}
+                  onComplete={(c) => setCompletedCrop(c)}
+                  aspect={cropAspectRatio}
+                  circularCrop={circularCrop}
+                  className="max-w-full"
                 >
-                  <X className="h-6 w-6" />
-                </button>
+                  <img
+                    ref={imageRef}
+                    src={previewUrl}
+                    alt="Crop preview"
+                    style={{
+                      transform: `scale(${scale}) rotate(${rotation}deg)`,
+                      maxWidth: '100%',
+                      maxHeight: '250px'
+                    }}
+                  />
+                </ReactCrop>
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-                {/* Image Preview */}
-                <div className="xl:col-span-3">
-                  <div className="relative border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-100 min-h-[400px] flex items-center justify-center">
-                    <ReactCrop
-                      crop={crop}
-                      onChange={(_, percentCrop) => setCrop(percentCrop)}
-                      onComplete={(c) => setCompletedCrop(c)}
-                      aspect={cropAspectRatio}
-                      circularCrop={circularCrop}
-                      className="max-w-full max-h-[500px]"
-                    >
-                      <img
-                        ref={imageRef}
-                        src={previewUrl}
-                        alt="Crop preview"
-                        style={{
-                          transform: `scale(${scale}) rotate(${rotation}deg)`,
-                          maxWidth: '100%',
-                          maxHeight: '500px'
-                        }}
-                      />
-                    </ReactCrop>
-                  </div>
-                  
-                  {/* Progress indicator */}
-                  {uploading && (
-                    <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
-                        <div className="text-blue-700">
-                          <div className="font-medium">Processing your image...</div>
-                          <div className="text-sm text-blue-600">Please wait while we crop and optimize your image.</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+              {/* Compact Controls */}
+              <div className="mt-4 space-y-3">
+                {/* Zoom */}
+                <div className="flex items-center gap-3">
+                  <ZoomOut className="h-4 w-4 text-gray-400" />
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="2"
+                    step="0.1"
+                    value={scale}
+                    onChange={(e) => setScale(parseFloat(e.target.value))}
+                    className="flex-1"
+                  />
+                  <ZoomIn className="h-4 w-4 text-gray-400" />
                 </div>
 
-                {/* Controls */}
-                <div className="space-y-6">
-                  {/* Zoom Control */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center">
-                      <ZoomIn className="h-4 w-4 mr-2" />
-                      Zoom: {Math.round(scale * 100)}%
-                    </label>
-                    <div className="space-y-2">
-                      <input
-                        type="range"
-                        min="0.5"
-                        max="3"
-                        step="0.1"
-                        value={scale}
-                        onChange={(e) => setScale(parseFloat(e.target.value))}
-                        className="w-full"
-                      />
-                      <div className="flex justify-between space-x-2">
-                        <button
-                          onClick={() => setScale(Math.max(0.5, scale - 0.1))}
-                          className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
-                        >
-                          <ZoomOut className="h-3 w-3" />
-                        </button>
-                        <button
-                          onClick={() => setScale(1)}
-                          className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
-                        >
-                          Reset
-                        </button>
-                        <button
-                          onClick={() => setScale(Math.min(3, scale + 0.1))}
-                          className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
-                        >
-                          <ZoomIn className="h-3 w-3" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Rotation Control */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center">
-                      <RotateCw className="h-4 w-4 mr-2" />
-                      Rotation: {rotation}°
-                    </label>
-                    <div className="space-y-2">
-                      <input
-                        type="range"
-                        min="-180"
-                        max="180"
-                        step="1"
-                        value={rotation}
-                        onChange={(e) => setRotation(parseInt(e.target.value))}
-                        className="w-full"
-                      />
-                      <div className="flex justify-between space-x-2">
-                        <button
-                          onClick={() => setRotation(rotation - 90)}
-                          className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
-                        >
-                          -90°
-                        </button>
-                        <button
-                          onClick={() => setRotation(0)}
-                          className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
-                        >
-                          Reset
-                        </button>
-                        <button
-                          onClick={() => setRotation(rotation + 90)}
-                          className="px-2 py-1 text-xs border rounded hover:bg-gray-50"
-                        >
-                          +90°
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Output Info */}
-                  <div className="bg-gray-50 p-3 rounded-lg text-sm">
-                    <div className="font-medium text-gray-700 mb-2">Output Settings</div>
-                    <div className="space-y-1 text-gray-600">
-                      <div>Max size: {maxWidth} × {maxHeight}px</div>
-                      <div>Format: JPEG (90% quality)</div>
-                      <div>Shape: {circularCrop ? 'Circular' : 'Square'}</div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="space-y-3 pt-4 border-t">
-                    <button
-                      onClick={handleCropComplete}
-                      disabled={uploading || !completedCrop}
-                      className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center font-medium"
-                    >
-                      {uploading ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <Check className="h-4 w-4 mr-2" />
-                          Save {label}
-                        </>
-                      )}
-                    </button>
-                    
-                    <button
-                      onClick={handleCancelCrop}
-                      disabled={uploading}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                {/* Rotation */}
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => setRotation(rotation - 90)}
+                    className="px-3 py-1.5 text-xs border rounded-lg hover:bg-gray-50 flex items-center gap-1"
+                  >
+                    <RotateCw className="h-3 w-3 rotate-180" />
+                    -90°
+                  </button>
+                  <button
+                    onClick={() => { setScale(1); setRotation(0); }}
+                    className="px-3 py-1.5 text-xs border rounded-lg hover:bg-gray-50"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    onClick={() => setRotation(rotation + 90)}
+                    className="px-3 py-1.5 text-xs border rounded-lg hover:bg-gray-50 flex items-center gap-1"
+                  >
+                    +90°
+                    <RotateCw className="h-3 w-3" />
+                  </button>
                 </div>
               </div>
+
+              {/* Progress indicator */}
+              {uploading && (
+                <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                  <span className="text-sm text-blue-700">Processing...</span>
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="p-4 border-t bg-gray-50 flex gap-3">
+              <button
+                onClick={handleCancelCrop}
+                disabled={uploading}
+                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 disabled:opacity-50 transition-colors text-sm font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCropComplete}
+                disabled={uploading || !completedCrop}
+                className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+              >
+                {uploading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Save
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
