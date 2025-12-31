@@ -31,6 +31,23 @@ export function PropertyListingWizard() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
+  // Format number with commas for display
+  const formatWithCommas = (value: string): string => {
+    const num = value.replace(/[^\d]/g, '');
+    return num ? parseInt(num, 10).toLocaleString('en-US') : '';
+  };
+
+  // Parse formatted value back to number string
+  const parseFormattedValue = (value: string): string => {
+    return value.replace(/[^\d]/g, '');
+  };
+
+  // Handle currency input change
+  const handleCurrencyChange = (field: keyof PropertyFormData, value: string) => {
+    const numericValue = parseFormattedValue(value);
+    updateFormData({ [field]: numericValue });
+  };
+
   // Load user's syndicators
   useEffect(() => {
     async function fetchUserSyndicators() {
@@ -653,9 +670,10 @@ export function PropertyListingWizard() {
                         <div className="relative">
                           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                           <input
-                            type="number"
-                            value={formData.minimumInvestment}
-                            onChange={(e) => updateFormData({ minimumInvestment: e.target.value })}
+                            type="text"
+                            inputMode="numeric"
+                            value={formatWithCommas(formData.minimumInvestment)}
+                            onChange={(e) => handleCurrencyChange('minimumInvestment', e.target.value)}
                             placeholder="50,000"
                             className={`w-full pl-8 pr-4 py-3 border-2 rounded-xl focus:ring-0 focus:border-emerald-500 transition-colors ${
                               errors.minimumInvestment ? 'border-red-300' : 'border-gray-200'
@@ -677,9 +695,10 @@ export function PropertyListingWizard() {
                         <div className="relative">
                           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                           <input
-                            type="number"
-                            value={formData.totalEquity}
-                            onChange={(e) => updateFormData({ totalEquity: e.target.value })}
+                            type="text"
+                            inputMode="numeric"
+                            value={formatWithCommas(formData.totalEquity)}
+                            onChange={(e) => handleCurrencyChange('totalEquity', e.target.value)}
                             placeholder="5,000,000"
                             className={`w-full pl-8 pr-4 py-3 border-2 rounded-xl focus:ring-0 focus:border-emerald-500 transition-colors ${
                               errors.totalEquity ? 'border-red-300' : 'border-gray-200'
