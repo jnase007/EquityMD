@@ -159,7 +159,29 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-800 flex justify-between items-center">
+      {/* SEC Disclaimer */}
+      <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-800">
+        <div className="bg-gray-800/50 rounded-lg p-4 mb-6">
+          <p className="text-xs text-gray-400 leading-relaxed">
+            <strong className="text-gray-300">Important Disclaimer:</strong> EquityMD is an online marketplace that connects 
+            accredited investors with real estate syndicators. EquityMD is not a registered broker-dealer, investment advisor, 
+            funding portal, or crowdfunding portal. EquityMD does not provide investment advice, endorsement, analysis, or 
+            recommendations with respect to any securities or investment opportunities posted on our platform.
+          </p>
+          <p className="text-xs text-gray-400 leading-relaxed mt-2">
+            All securities listed on EquityMD are offered by the issuing syndicator, who is solely responsible for the 
+            accuracy of information provided and compliance with applicable securities laws including SEC Regulation D. 
+            Investments in private placements are speculative, illiquid, and involve a high degree of risk, including 
+            the possible loss of your entire investment. Past performance is not indicative of future results.
+          </p>
+          <p className="text-xs text-gray-400 leading-relaxed mt-2">
+            By using EquityMD, you acknowledge that you are an accredited investor as defined by SEC Rule 501 and that 
+            you understand these risks. Always conduct your own due diligence before making any investment decision.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="text-gray-500 text-sm">
           © {new Date().getFullYear()} EquityMD. All rights reserved.
         </div>

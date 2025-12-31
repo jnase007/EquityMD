@@ -558,6 +558,21 @@ export function DealDetails() {
                 </div>
               </div>
             </div>
+            
+            {/* Platform Disclaimer */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <div className="text-xs text-gray-500 space-y-2">
+                <p>
+                  <strong>Platform Disclaimer:</strong> EquityMD is a marketplace that connects investors with syndicators. 
+                  EquityMD does not verify, endorse, or guarantee any information in this listing.
+                </p>
+                <p>
+                  The syndicator is solely responsible for all content and compliance with securities laws. 
+                  EquityMD is not a broker-dealer, investment advisor, or funding portal. 
+                  Always conduct your own due diligence before investing.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

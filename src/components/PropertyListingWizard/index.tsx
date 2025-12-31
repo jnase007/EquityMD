@@ -31,6 +31,7 @@ export function PropertyListingWizard() {
   const [draftId, setDraftId] = useState<string | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(false);
 
   // Format number with commas for display
   const formatWithCommas = (value: string): string => {
@@ -1121,8 +1122,44 @@ export function PropertyListingWizard() {
                       </div>
                     </div>
                     
-                    {/* Publish Options */}
+                    {/* Compliance Disclaimer */}
                     <div className="border-t pt-6 space-y-4">
+                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <h4 className="font-semibold text-amber-900 mb-2 flex items-center gap-2">
+                          <AlertCircle className="h-5 w-5" />
+                          Important Legal Disclaimer
+                        </h4>
+                        <div className="text-sm text-amber-800 space-y-2">
+                          <p>
+                            By publishing this listing on EquityMD, you acknowledge and agree that:
+                          </p>
+                          <ul className="list-disc pl-5 space-y-1 text-amber-700">
+                            <li><strong>You are solely responsible</strong> for all content, information, and representations made in this listing.</li>
+                            <li>EquityMD is a <strong>marketplace platform only</strong> and does not verify, endorse, or guarantee any deal information.</li>
+                            <li>You are responsible for ensuring compliance with all applicable <strong>SEC regulations, state securities laws, and other legal requirements</strong>.</li>
+                            <li>You will only offer securities to <strong>accredited investors</strong> as defined by SEC Rule 501.</li>
+                            <li>EquityMD is <strong>not a broker-dealer, investment advisor, or funding portal</strong> and does not provide investment advice.</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-emerald-300 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={disclaimerAcknowledged}
+                          onChange={(e) => setDisclaimerAcknowledged(e.target.checked)}
+                          className="mt-1 h-5 w-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
+                        />
+                        <div>
+                          <span className="font-medium text-gray-900">
+                            I acknowledge and agree to the above terms
+                          </span>
+                          <p className="text-sm text-gray-500 mt-1">
+                            I confirm that I am solely responsible for all content in this listing and that I am in compliance with all applicable securities laws and regulations.
+                          </p>
+                        </div>
+                      </label>
+                      
                       {errors.submit && (
                         <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
                           <p className="text-red-700 flex items-center gap-2">
@@ -1148,8 +1185,8 @@ export function PropertyListingWizard() {
                         
                         <button
                           onClick={() => handlePublish('active')}
-                          disabled={publishing}
-                          className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all flex items-center justify-center gap-2"
+                          disabled={publishing || !disclaimerAcknowledged}
+                          className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {publishing ? (
                             <Loader2 className="h-5 w-5 animate-spin" />
@@ -1161,7 +1198,7 @@ export function PropertyListingWizard() {
                       </div>
                       
                       <p className="text-xs text-gray-500 text-center">
-                        You can always edit your listing after publishing
+                        You can always edit your listing after publishing. EquityMD reserves the right to remove any listing that violates our terms of service.
                       </p>
                     </div>
                   </div>
