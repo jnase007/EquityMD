@@ -65,14 +65,47 @@ function saveStoredData(userId: string, data: StoredGamificationData): void {
 }
 
 export function useGamification(): GamificationData {
-  const { user, profile, syndicator, investorProfile } = useAuthStore();
+  const { user, profile } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
   const [storedData, setStoredData] = useState<StoredGamificationData | null>(null);
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null);
+  const [syndicator, setSyndicator] = useState<any>(null);
+  const [investorProfile, setInvestorProfile] = useState<any>(null);
   
   const userRole: UserRole = profile?.user_type === 'syndicator' ? 'syndicator' : 'investor';
   const baseAchievements = userRole === 'investor' ? INVESTOR_ACHIEVEMENTS : SYNDICATOR_ACHIEVEMENTS;
   const baseNextSteps = userRole === 'investor' ? INVESTOR_NEXT_STEPS : SYNDICATOR_NEXT_STEPS;
+
+  // Fetch syndicator or investor profile data
+  useEffect(() => {
+    async function fetchProfileData() {
+      if (!user?.id || !profile) return;
+      
+      try {
+        if (profile.user_type === 'syndicator') {
+          // Fetch syndicator profile
+          const { data } = await supabase
+            .from('syndicators')
+            .select('*')
+            .eq('claimed_by', user.id)
+            .single();
+          setSyndicator(data);
+        } else {
+          // Fetch investor profile
+          const { data } = await supabase
+            .from('investor_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          setInvestorProfile(data);
+        }
+      } catch (e) {
+        console.error('Error fetching profile data for gamification:', e);
+      }
+    }
+    
+    fetchProfileData();
+  }, [user?.id, profile?.user_type]);
 
   // Calculate which achievements are unlocked based on profile data
   const calculateUnlockedAchievements = useCallback(async (): Promise<string[]> => {
@@ -390,12 +423,12 @@ export function useGamification(): GamificationData {
     }
   }, [user?.id, calculateUnlockedAchievements, baseAchievements]);
 
-  // Initial load
+  // Initial load and refresh when profile data changes
   useEffect(() => {
-    if (user?.id) {
+    if (user?.id && (syndicator || investorProfile || profile)) {
       refreshData();
     }
-  }, [user?.id, profile, investorProfile, syndicator]);
+  }, [user?.id, profile, investorProfile, syndicator, refreshData]);
 
   // Build achievements with unlock status
   const achievements = useMemo((): Achievement[] => {

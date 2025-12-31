@@ -22,6 +22,7 @@ export interface PropertyFormData {
   totalEquity: string;
   preferredReturn: string;
   equityMultiple: string;
+  closingDate: string; // ISO date string for investment deadline
   
   // Description & Highlights
   description: string;
@@ -141,6 +142,7 @@ export const initialFormData: PropertyFormData = {
   totalEquity: '',
   preferredReturn: '',
   equityMultiple: '',
+  closingDate: '',
   description: '',
   investmentHighlights: [''],
   images: [],

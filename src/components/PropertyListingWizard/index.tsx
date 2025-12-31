@@ -299,6 +299,7 @@ export function PropertyListingWizard() {
         total_equity: parseFloat(formData.totalEquity) || 0,
         preferred_return: formData.preferredReturn ? parseFloat(formData.preferredReturn) : null,
         equity_multiple: formData.equityMultiple ? parseFloat(formData.equityMultiple) : null,
+        closing_date: formData.closingDate ? new Date(formData.closingDate).toISOString() : null,
         status,
         cover_image_url: null
       };
@@ -811,6 +812,23 @@ export function PropertyListingWizard() {
                           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">x</span>
                         </div>
                       </div>
+                    </div>
+                    
+                    {/* Closing Date */}
+                    <div className="mt-6">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Investment Deadline <span className="text-gray-400 font-normal">(Optional - when will you stop accepting investors?)</span>
+                      </label>
+                      <input
+                        type="date"
+                        value={formData.closingDate}
+                        onChange={(e) => updateFormData({ closingDate: e.target.value })}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-emerald-500 transition-colors"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        A countdown timer will appear on your deal page if set
+                      </p>
                     </div>
                   </div>
                 )}

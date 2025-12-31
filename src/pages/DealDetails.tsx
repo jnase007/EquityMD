@@ -18,6 +18,8 @@ import {
   Info,
   Edit,
   Settings,
+  Eye,
+  Share2,
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -112,6 +114,32 @@ export function DealDetails() {
     }
   }
 
+  // Track deal view
+  async function trackDealView(dealId: string) {
+    try {
+      // Check if we've already viewed this deal in this session
+      const viewedKey = `deal_viewed_${dealId}`;
+      if (sessionStorage.getItem(viewedKey)) {
+        return; // Already tracked this session
+      }
+
+      // Call the increment function
+      await supabase.rpc('increment_deal_view', { deal_uuid: dealId });
+
+      // Also record detailed view for analytics
+      await supabase.from('deal_views').insert({
+        deal_id: dealId,
+        viewer_id: user?.id || null,
+      });
+
+      // Mark as viewed for this session
+      sessionStorage.setItem(viewedKey, 'true');
+    } catch (error) {
+      // Don't block page load if view tracking fails
+      console.error('Error tracking deal view:', error);
+    }
+  }
+
   async function fetchDealDetails() {
     try {
       // Find deal by slug directly
@@ -155,6 +183,9 @@ export function DealDetails() {
       }
 
       setDeal(dealData);
+
+      // Track view (fire and forget - don't block the page load)
+      trackDealView(dealData.id);
 
       // Fetch deal files - show both public and private files to authenticated users
       setFiles(dealData.documents || []);
@@ -260,6 +291,53 @@ export function DealDetails() {
               <MapPin className="h-5 w-5 mr-2" />
               <span>{deal.location}</span>
             </div>
+            {/* View count and share buttons */}
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-2 text-white/80 text-sm">
+                <Eye className="h-4 w-4" />
+                <span>{deal.view_count || 0} views</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const url = window.location.href;
+                    const text = `Check out this investment opportunity: ${deal.title}`;
+                    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
+                  }}
+                  className="p-2 bg-white/20 hover:bg-white/30 backdrop-blur rounded-lg transition-colors"
+                  title="Share on LinkedIn"
+                >
+                  <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const url = window.location.href;
+                    const text = `Check out this investment opportunity: ${deal.title}`;
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400');
+                  }}
+                  className="p-2 bg-white/20 hover:bg-white/30 backdrop-blur rounded-lg transition-colors"
+                  title="Share on X"
+                >
+                  <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const url = window.location.href;
+                    const subject = `Investment Opportunity: ${deal.title}`;
+                    const body = `I thought you might be interested in this real estate investment opportunity:\n\n${deal.title}\n${deal.location}\n\n${url}`;
+                    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                  }}
+                  className="p-2 bg-white/20 hover:bg-white/30 backdrop-blur rounded-lg transition-colors"
+                  title="Share via Email"
+                >
+                  <Share2 className="h-4 w-4 text-white" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -360,26 +438,13 @@ export function DealDetails() {
 
           {/* Sidebar */}
           <div className="space-y-6 lg:sticky lg:top-8 h-fit">
-            {/* Countdown Timer */}
-            <CountdownTimer
-              endDate={(() => {
-                // Different deadlines for different deals
-                const now = new Date();
-                switch (deal.slug) {
-                  case "san-diego-multi-family-offering":
-                    return new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000); // 45 days
-                  case "newport-beach-residential-offering":
-                    return new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000); // 21 days
-                  case "greenville-apartment-complex":
-                    return new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000); // 60 days
-                  case "multifamily-adu-opportunity":
-                    return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
-                  default:
-                    return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // Default 30 days
-                }
-              })()}
-              className="mb-6"
-            />
+            {/* Countdown Timer - only show if closing_date is set */}
+            {deal.closing_date && (
+              <CountdownTimer
+                endDate={new Date(deal.closing_date)}
+                className="mb-6"
+              />
+            )}
 
             {/* Syndicator Information */}
             {deal.syndicator && (
