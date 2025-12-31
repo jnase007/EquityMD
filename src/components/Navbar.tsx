@@ -332,22 +332,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                     </>
                   )}
                   {profile?.user_type === 'syndicator' && (
-                    <>
-                      <Link
-                        to="/dashboard"
-                        className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        to="/deals/new"
-                        className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        Post New Deal
-                      </Link>
-                    </>
+                    <Link
+                      to="/deals/new"
+                      className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Post New Deal
+                    </Link>
                   )}
                   {profile?.is_admin && (
                     <Link
