@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Briefcase, Mail, Phone, Award, CheckCircle, DollarSign,
+import { Users, Briefcase, Mail, Award, CheckCircle, DollarSign,
   BarChart, Target, Clock, Percent, Shield, Building, ChevronRight,
-  MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck, Bell
+  MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck, Bell,
+  Sparkles, TrendingUp, Star, Zap
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { DealCard, FeatureCard, StatCard, InvestorCard } from '../components/Cards';
@@ -45,16 +46,15 @@ const getPropertyImage = (propertyType: string, index: number) => {
 export function Home() {
   const { user } = useAuthStore();
   const [featuredDeals, setFeaturedDeals] = useState<Deal[]>([]);
-  const [totalDealVolume, setTotalDealVolume] = useState<string>('$450M+'); // Default fallback
+  const [totalDealVolume, setTotalDealVolume] = useState<string>('$450M+');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [useVideo, setUseVideo] = useState(true);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
   const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
   
-  // Apply scroll fix hook
   useScrollFix();
   
-  // Featured investor data with realistic portfolio information
+  // Featured investor data
   const featuredInvestors = [
     {
       name: "Sarah",
@@ -135,91 +135,31 @@ export function Home() {
     fetchTotalDealVolume();
   }, []);
 
-  // async function fetchFeaturedDeals() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('deals')
-  //       .select('*')
-  //       .eq('status', 'active')
-  //       .order('created_at', { ascending: false });
-
-  //     console.log('Fetched deals:', data);
-  //     console.log('Error fetching deals:', error);
-
-  //     if (error) {
-  //       console.error('Error fetching featured deals:', error);
-  //       setFeaturedDeals(fallbackMockDeals);
-  //       return;
-  //     }
-
-  //     // Only include deals from the three real syndicators
-  //     const allowedSyndicators = ['back-bay-capital', 'starboard-realty', 'sutera-properties'];
-  //     const filteredData = data ? data.filter(deal => 
-  //       allowedSyndicators.includes(deal.syndicator_id)
-  //     ) : [];
-      
-  //     // Always include priority mock deals (BackBay, Starboard, and Sutera)
-  //     const today = new Date().toISOString();
-  //     const priorityDeals = fallbackMockDeals.filter(deal => 
-  //       allowedSyndicators.includes(deal.syndicator_id)
-  //     ).map(deal => ({
-  //       ...deal,
-  //       created_at: today,
-  //       updated_at: today
-  //     }));
-
-  //     // Combine database deals with priority mock deals
-  //     const allDeals = [...priorityDeals, ...filteredData];
-
-  //     // Remove any duplicates (in case priority deals exist in both mock and database)
-  //     const uniqueDeals = allDeals.filter((deal, index, self) => 
-  //       index === self.findIndex(d => d.title === deal.title)
-  //     );
-
-  //     setFeaturedDeals(uniqueDeals.slice(0, 6)); // Limit to 6 featured deals
-
-  //     console.log('Featured deals:', uniqueDeals.slice(0, 6));
-
-  //   } catch (error) {
-  //     console.error('Error fetching featured deals:', error);
-  //     setFeaturedDeals(fallbackMockDeals);
-  //   }
-  // }
-
   async function fetchFeaturedDeals() {
-  try {
-    const { data, error } = await supabase
-      .from('deals')
-      .select('*')
-      .eq('status', 'active')
-      .order('highlighted', { ascending: false })
-      .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .eq('status', 'active')
+        .order('highlighted', { ascending: false })
+        .order('created_at', { ascending: false });
 
-    console.log('Fetched deals:', data);
-    console.log('Error fetching deals:', error);
+      if (error || !data) {
+        console.error('Error fetching featured deals:', error);
+        setFeaturedDeals([]);
+        return;
+      }
 
-    if (error || !data) {
-      console.error('Error fetching featured deals:', error);
+      const highlightedDeals = data.filter((deal: any) => deal.highlighted);
+      const otherDeals = data.filter((deal: any) => !deal.highlighted);
+      const featuredList = [...highlightedDeals, ...otherDeals].slice(0, 6);
+      
+      setFeaturedDeals(featuredList);
+    } catch (error) {
+      console.error('Unexpected error fetching featured deals:', error);
       setFeaturedDeals([]);
-      return;
     }
-
-    // Prioritize highlighted deals first, then other deals
-    const highlightedDeals = data.filter((deal: any) => deal.highlighted);
-    const otherDeals = data.filter((deal: any) => !deal.highlighted);
-    
-    // Show highlighted deals first, then fill with other deals if needed
-    const featuredList = [...highlightedDeals, ...otherDeals].slice(0, 6);
-    
-    console.log('Featured deals (highlighted first):', featuredList);
-    setFeaturedDeals(featuredList);
-
-  } catch (error) {
-    console.error('Unexpected error fetching featured deals:', error);
-    setFeaturedDeals([]);
   }
-}
-
 
   async function fetchTotalDealVolume() {
     try {
@@ -233,12 +173,10 @@ export function Home() {
         return;
       }
 
-      // Calculate total deal volume from all syndicators
       const total = data.reduce((sum: number, syndicator: any) => {
         return sum + (syndicator.total_deal_volume || 0);
       }, 0);
 
-      // Format the total in a readable way
       if (total >= 1000000000) {
         setTotalDealVolume(`$${(total / 1000000000).toFixed(1)}B+`);
       } else if (total >= 1000000) {
@@ -248,24 +186,11 @@ export function Home() {
       }
     } catch (error) {
       console.error('Error calculating total deal volume:', error);
-      // Keep the default fallback value
     }
   }
 
-  // useEffect(() => {
-
-  // })
-
-
-
-  // const handleGetStarted = () => {
-  //   setAuthModalType('investor');
-  //   setAuthModalView('sign_up');
-  //   setShowAuthModal(true);
-  // };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-white">
       <SEO 
         title="Find Top CRE Deals - Largest Syndication Directory | EquityMD"
         description="EquityMD connects accredited investors with institutional-quality real estate investment opportunities through a curated platform of verified syndicators."
@@ -274,11 +199,25 @@ export function Home() {
       />
       
       {/* Activity Banner */}
-      <div className="bg-blue-600 text-white py-2 px-4 text-center">
-        <div className="max-w-[1200px] mx-auto">
-          <p className="text-sm sm:text-base">
-            🔥 <strong>24+ investors</strong> joined today • <strong>3 new deals</strong> added this week • <strong>Active marketplace</strong> for accredited investors
-          </p>
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-2.5 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+        <div className="max-w-[1200px] mx-auto relative">
+          <div className="flex items-center justify-center gap-2 sm:gap-6 text-sm sm:text-base flex-wrap">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <strong>24+ investors</strong> joined today
+            </span>
+            <span className="hidden sm:inline text-white/40">•</span>
+            <span className="flex items-center gap-1.5">
+              <Zap className="h-4 w-4 text-yellow-300" />
+              <strong>3 new deals</strong> this week
+            </span>
+            <span className="hidden sm:inline text-white/40">•</span>
+            <span className="hidden md:flex items-center gap-1.5">
+              <Star className="h-4 w-4 text-yellow-300" />
+              <strong>Active marketplace</strong> for accredited investors
+            </span>
+          </div>
         </div>
       </div>
 
@@ -291,7 +230,7 @@ export function Home() {
               muted
               loop
               playsInline
-              className="w-full h-[500px] sm:h-[600px] object-cover brightness-50"
+              className="w-full h-[550px] sm:h-[650px] object-cover"
               onError={() => setUseVideo(false)}
             >
               <source
@@ -301,36 +240,49 @@ export function Home() {
               <img 
                 src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
                 alt="Modern Apartment Building"
-                className="w-full h-[500px] sm:h-[600px] object-cover brightness-50"
+                className="w-full h-[550px] sm:h-[650px] object-cover"
               />
             </video>
           ) : (
             <img 
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
               alt="Modern Apartment Building"
-              className="w-full h-[500px] sm:h-[600px] object-cover brightness-50"
+              className="w-full h-[550px] sm:h-[650px] object-cover"
             />
           )}
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/60 to-slate-900/80" />
+          {/* Pattern Overlay */}
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
         </div>
         
         <div className="relative z-20">
           <Navbar isTransparent />
           
-          <div className="max-w-4xl mx-auto text-center px-4 pt-28 pb-16 sm:py-24 md:py-36 safe-area-top">
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-4 sm:mb-6 mobile-heading-responsive">
+          <div className="max-w-5xl mx-auto text-center px-4 pt-28 pb-20 sm:py-32 md:py-40 safe-area-top">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6">
+              <Sparkles className="h-4 w-4 text-yellow-300" />
+              <span className="text-white/90 text-sm font-medium">Trusted by 10,000+ Accredited Investors</span>
+            </div>
+            
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Matching Investors with<br />
-              Profitable Real Estate Deals
+              <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                Profitable Real Estate Deals
+              </span>
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-white mb-6 sm:mb-8 mobile-text-responsive max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
               Exclusive marketplace platform for accredited investors to discover and participate in vetted real estate syndication deals.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center px-2">
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-2 mb-12">
               <Link 
                 to="/find"
-                className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors inline-flex items-center justify-center"
+                className="group bg-white text-slate-900 px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl hover:shadow-2xl inline-flex items-center justify-center gap-2"
               >
                 Find Opportunities
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <button 
                 onClick={() => {
@@ -338,57 +290,117 @@ export function Home() {
                   setAuthModalView('sign_up');
                   setShowAuthModal(true);
                 }}
-                className="bg-blue-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-400 transition-colors border-2 border-blue-400"
+                className="bg-white/10 backdrop-blur text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/30"
               >
-                Get Started
+                Get Started Free
               </button>
+            </div>
+            
+            {/* Mini Stats */}
+            <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+              <div className="text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-white">$43M+</p>
+                <p className="text-white/60 text-sm">Deal Volume</p>
+              </div>
+              <div className="hidden sm:block w-px h-12 bg-white/20"></div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-white">10K+</p>
+                <p className="text-white/60 text-sm">Investors</p>
+              </div>
+              <div className="hidden sm:block w-px h-12 bg-white/20"></div>
+              <div className="text-center">
+                <p className="text-2xl sm:text-3xl font-bold text-white">20+</p>
+                <p className="text-white/60 text-sm">Syndicators</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Features Section */}
-      <section className="py-16 sm:py-20 px-6 mt-16 sm:mt-0">
+      <section className="py-20 sm:py-24 px-6 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-[1200px] mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12 sm:mb-16 text-gray-800">
-            Why Choose EquityMD?
-          </h2>
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
+              <ShieldCheck className="h-4 w-4" />
+              Why Choose Us
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              The Trusted Platform for<br />
+              <span className="text-blue-600">Real Estate Syndication</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Connect with verified syndicators and access exclusive investment opportunities
+            </p>
+          </div>
           
-          <div className="grid md:grid-cols-3 gap-12">
-            <FeatureCard 
-              icon={<ShieldCheck className="h-8 w-8 text-blue-600" />}
-              title="Verified Opportunities"
-              description="Every syndication deal undergoes thorough due diligence and verification before listing."
-            />
-            <FeatureCard 
-              icon={<Bell className="h-8 w-8 text-blue-600" />}
-              title="New Deal Alerts"
-              description="Get new CRE deal alerts on Equitymd.com. Browse and email syndicators. No deal recommendations. Contact off-platform."
-            />
-            <FeatureCard 
-              icon={<Mail className="h-8 w-8 text-blue-600" />}
-              title="Direct Syndicator Access"
-              description="Email CRE syndicators directly on Equitymd.com. No investor fees, no transactions here. No deal endorsements."
-            />
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-blue-200">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Verified Opportunities</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Every syndication deal undergoes thorough due diligence and verification before listing on our platform.
+              </p>
+            </div>
+            
+            <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-emerald-200">
+              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Bell className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">New Deal Alerts</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Get notified when new deals matching your criteria are listed. Never miss an investment opportunity.
+              </p>
+            </div>
+            
+            <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-purple-200">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Mail className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Direct Syndicator Access</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Connect directly with syndicators. No middlemen, no investor fees, just direct communication.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Featured Deals Section */}
-      <section className="bg-slate-50 py-20 px-6">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Featured Investment Opportunities
-            </h2>
-            {!user && (
+      <section className="py-20 px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        <div className="max-w-[1200px] mx-auto relative">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+            <div>
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium mb-3">
+                <TrendingUp className="h-4 w-4" />
+                Featured Deals
+              </span>
+              <h2 className="text-3xl font-bold text-white">
+                Investment Opportunities
+              </h2>
+              <p className="text-slate-400 mt-2">Curated deals from verified syndicators</p>
+            </div>
+            {!user ? (
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="flex items-center text-blue-600 hover:text-blue-700"
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur text-white rounded-xl hover:bg-white/20 transition-all border border-white/20"
               >
-                <Lock className="h-4 w-4 mr-1" />
-                Sign in for full details
+                <Lock className="h-4 w-4" />
+                Sign in for details
               </button>
+            ) : (
+              <Link
+                to="/find"
+                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all"
+              >
+                View All Deals
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             )}
           </div>
           
@@ -396,30 +408,29 @@ export function Home() {
             <div className="horizontal-scroll-container pb-4">
               <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
                 {featuredDeals.length > 0 ? (
-                  featuredDeals.map((deal, index) => {
-                    return (
-                      <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0 card-container">
-                        <DealCard
-                          slug={deal.slug}
-                          image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
-                          title={deal.title}
-                          location={deal.location}
-                          metrics={{
-                            target: `${deal.target_irr}% IRR`,
-                            minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                            term: `${deal.investment_term} years`
-                          }}
-                          detailed
-                          isAuthenticated={!!user}
-                          onAuthRequired={() => setShowAuthModal(true)}
-                        />
-                      </div>
-                    );
-                  })
+                  featuredDeals.map((deal, index) => (
+                    <div key={deal.id} className="w-[300px] md:w-[350px] relative flex-shrink-0 card-container">
+                      <DealCard
+                        slug={deal.slug}
+                        image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                        title={deal.title}
+                        location={deal.location}
+                        metrics={{
+                          target: `${deal.target_irr}% IRR`,
+                          minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                          term: `${deal.investment_term} years`
+                        }}
+                        detailed
+                        isAuthenticated={!!user}
+                        onAuthRequired={() => setShowAuthModal(true)}
+                      />
+                    </div>
+                  ))
                 ) : (
                   <div className="w-full text-center py-12">
-                    <p className="text-gray-500 text-lg">No featured deals available at the moment.</p>
-                    <p className="text-gray-400 text-sm mt-2">Please check back later for new investment opportunities.</p>
+                    <Building className="h-12 w-12 text-slate-600 mx-auto mb-4" />
+                    <p className="text-slate-400 text-lg">No featured deals available at the moment.</p>
+                    <p className="text-slate-500 text-sm mt-2">Check back soon for new investment opportunities.</p>
                   </div>
                 )}
               </div>
@@ -428,8 +439,8 @@ export function Home() {
             {/* Gradient Overlays */}
             {featuredDeals.length > 0 && (
               <>
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900 to-transparent pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none" />
               </>
             )}
           </div>
@@ -437,11 +448,15 @@ export function Home() {
       </section>
 
       {/* Current Investors Section */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 bg-gradient-to-b from-white to-slate-50">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Current Investors
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium mb-4">
+              <Users className="h-4 w-4" />
+              Our Community
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Join Successful Investors
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Join a community of successful real estate investors building wealth through strategic property investments.
@@ -468,64 +483,113 @@ export function Home() {
             
             {/* Gradient Overlays */}
             <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-6 bg-gray-50">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <StatCard number="$43M" label="Investor Requested Amount" icon={<Building className="h-8 w-8 text-blue-600" />} />
-            <StatCard number="10K+" label="Accredited Investors" icon={<Briefcase className="h-8 w-8 text-blue-600" />} />
-            <StatCard number="20+" label="Featured Syndicators" icon={<Users className="h-8 w-8 text-blue-600" />} />
+      <section className="py-20 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden">
+        {/* Pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+        
+        <div className="max-w-[1200px] mx-auto relative">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">Platform Statistics</h2>
+            <p className="text-blue-100">Trusted by investors and syndicators nationwide</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="h-8 w-8 text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-2">$43M</p>
+              <p className="text-blue-100">Investor Requested Amount</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-2">10K+</p>
+              <p className="text-blue-100">Accredited Investors</p>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="h-8 w-8 text-white" />
+              </div>
+              <p className="text-4xl font-bold text-white mb-2">20+</p>
+              <p className="text-blue-100">Featured Syndicators</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative">
-        <div 
-          className="absolute inset-0 opacity-70"
-          style={{
-            backgroundImage: `url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80")`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.4)'
-          }}
-        />
+      <section className="py-24 px-6 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-30"></div>
         
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-600/80 to-blue-900/80" />
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-4 py-20">
-          <h2 className="text-3xl font-bold text-white mb-6">
-            Ready to Expand Your Investment Portfolio?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join EquityMD today to access exclusive real estate syndication opportunities.
-          </p>
-          <div className="flex justify-center gap-4">
-            <button 
-              onClick={() => {
-                setAuthModalType('investor');
-                setAuthModalView('sign_up');
-                setShowAuthModal(true);
-              }}
-              className="bg-white text-blue-600 text-lg px-8 py-3 rounded-lg hover:bg-blue-50 transition"
-            >
-              Create Investor Profile
-            </button>
-            <button 
-              onClick={() => {
-                setAuthModalType('syndicator');
-                setAuthModalView('sign_up');
-                setShowAuthModal(true);
-              }}
-              className="bg-blue-700 text-white text-lg px-8 py-3 rounded-lg hover:bg-blue-800 transition border border-white"
-            >
-              Create Syndicator Profile
-            </button>
+        <div className="max-w-4xl mx-auto relative">
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-10 md:p-16 text-center shadow-2xl border border-slate-700/50">
+            {/* Pattern */}
+            <div className="absolute inset-0 rounded-3xl bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+            
+            <div className="relative">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium mb-6">
+                <Sparkles className="h-4 w-4" />
+                Start Your Journey
+              </div>
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                Ready to Expand Your<br />
+                <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  Investment Portfolio?
+                </span>
+              </h2>
+              <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">
+                Join EquityMD today to access exclusive real estate syndication opportunities and connect with verified syndicators.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <button 
+                  onClick={() => {
+                    setAuthModalType('investor');
+                    setAuthModalView('sign_up');
+                    setShowAuthModal(true);
+                  }}
+                  className="group bg-white text-slate-900 text-lg px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl inline-flex items-center justify-center gap-2"
+                >
+                  Get Started Free
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                <Link
+                  to="/find"
+                  className="bg-white/10 backdrop-blur text-white text-lg px-8 py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/30"
+                >
+                  Browse Deals
+                </Link>
+              </div>
+              
+              {/* Trust Indicators */}
+              <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-slate-400">
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-emerald-400" />
+                  No fees for investors
+                </span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-emerald-400" />
+                  Verified syndicators
+                </span>
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-emerald-400" />
+                  SEC compliant
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
