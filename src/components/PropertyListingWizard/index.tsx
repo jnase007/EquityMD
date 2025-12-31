@@ -348,6 +348,40 @@ export function PropertyListingWizard() {
       // Clear draft from localStorage
       localStorage.removeItem(`deal_draft_${user.id}`);
       
+      // Send admin notification for new active deals
+      if (status === 'active') {
+        try {
+          // Get syndicator info for notification
+          const syndicator = userSyndicators.find(s => s.id === formData.syndicatorId);
+          const { data: userProfile } = await supabase
+            .from('profiles')
+            .select('email')
+            .eq('id', user.id)
+            .single();
+          
+          await supabase.functions.invoke('send-email', {
+            body: {
+              type: 'new_deal_listed',
+              data: {
+                syndicatorName: syndicator?.company_name || 'Unknown',
+                syndicatorEmail: userProfile?.email || user.email,
+                dealTitle: formData.title,
+                dealSlug: deal.slug,
+                propertyType: formData.propertyType,
+                location: location,
+                minimumInvestment: `$${parseInt(formData.minimumInvestment).toLocaleString()}`,
+                targetIrr: formData.targetIrr,
+                listedDate: new Date().toLocaleDateString()
+              }
+            }
+          });
+          console.log('Admin notification sent for new deal');
+        } catch (emailError) {
+          console.error('Failed to send admin notification:', emailError);
+          // Don't block the flow if email fails
+        }
+      }
+      
       // Success!
       toast.success(status === 'active' ? 'Deal published successfully!' : 'Draft saved!');
       

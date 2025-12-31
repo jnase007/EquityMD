@@ -182,6 +182,24 @@ export function Welcome() {
           accredited_status: true,
         });
 
+      // Send admin notification email
+      try {
+        await supabase.functions.invoke('send-email', {
+          body: {
+            type: 'new_investor_signup',
+            data: {
+              userName: investorData.fullName,
+              userEmail: user.email,
+              signupDate: new Date().toLocaleDateString()
+            }
+          }
+        });
+        console.log('Admin notification sent for new investor');
+      } catch (emailError) {
+        console.error('Failed to send admin notification:', emailError);
+        // Don't block the flow if email fails
+      }
+
       setShowConfetti(true);
       setStep(4); // Success step
 
@@ -227,6 +245,24 @@ export function Welcome() {
           claimable: false,
           verification_status: 'unverified',
         });
+
+      // Send admin notification email
+      try {
+        await supabase.functions.invoke('send-email', {
+          body: {
+            type: 'new_syndicator_signup',
+            data: {
+              userName: syndicatorData.fullName,
+              userEmail: user.email,
+              signupDate: new Date().toLocaleDateString()
+            }
+          }
+        });
+        console.log('Admin notification sent for new syndicator');
+      } catch (emailError) {
+        console.error('Failed to send admin notification:', emailError);
+        // Don't block the flow if email fails
+      }
 
       setShowConfetti(true);
       setStep(4); // Success step

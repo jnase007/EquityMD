@@ -1,9 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate, getInvestorLaunchTemplate, getInvestmentInterestTemplate, getNewMessageTemplate } from './templates.ts';
+import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate, getInvestorLaunchTemplate, getInvestmentInterestTemplate, getNewMessageTemplate, getNewDealListedTemplate } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = 'hello@equitymd.com';
-const ADMIN_EMAIL = 'hello@equitymd.com'; // Replace with your admin email
+const ADMIN_EMAIL = 'justin@brandastic.com'; // Admin notification email
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -154,6 +154,28 @@ serve(async (req) => {
         });
         emailTo = to;
         emailSubject = `💬 New Message from ${data.senderName}`;
+        break;
+
+      case 'new_deal_listed':
+        if (!data?.dealTitle || !data?.syndicatorName) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for new deal notification' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getNewDealListedTemplate({
+          syndicatorName: data.syndicatorName,
+          syndicatorEmail: data.syndicatorEmail || 'Not provided',
+          dealTitle: data.dealTitle,
+          dealSlug: data.dealSlug || '',
+          propertyType: data.propertyType || 'Not specified',
+          location: data.location || 'Not specified',
+          minimumInvestment: data.minimumInvestment || 'Not specified',
+          targetIrr: data.targetIrr,
+          listedDate: data.listedDate || new Date().toLocaleDateString()
+        });
+        emailTo = ADMIN_EMAIL;
+        emailSubject = `🏢 New Deal Listed: ${data.dealTitle}`;
         break;
 
       default:

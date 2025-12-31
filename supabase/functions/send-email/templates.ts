@@ -353,6 +353,65 @@ export function getNewMessageTemplate({
   });
 }
 
+export interface NewDealListedProps {
+  syndicatorName: string;
+  syndicatorEmail: string;
+  dealTitle: string;
+  dealSlug: string;
+  propertyType: string;
+  location: string;
+  minimumInvestment: string;
+  targetIrr?: string;
+  listedDate: string;
+}
+
+export function getNewDealListedTemplate({
+  syndicatorName,
+  syndicatorEmail,
+  dealTitle,
+  dealSlug,
+  propertyType,
+  location,
+  minimumInvestment,
+  targetIrr,
+  listedDate,
+}: NewDealListedProps): string {
+  const content = `
+    <p>🏢 <strong>New Deal Listed!</strong> A syndicator has published a new investment opportunity.</p>
+    
+    <div class="info-box" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-left-color: #2563eb;">
+      <h4 style="color: #1e40af;">📋 Deal Details</h4>
+      <p><strong>Title:</strong> ${dealTitle}</p>
+      <p><strong>Property Type:</strong> ${propertyType}</p>
+      <p><strong>Location:</strong> ${location}</p>
+      <p><strong>Minimum Investment:</strong> ${minimumInvestment}</p>
+      ${targetIrr ? `<p><strong>Target IRR:</strong> ${targetIrr}%</p>` : ''}
+      <p><strong>Listed:</strong> ${listedDate}</p>
+    </div>
+    
+    <div class="info-box">
+      <h4>👤 Syndicator Information</h4>
+      <p><strong>Name:</strong> ${syndicatorName}</p>
+      <p><strong>Email:</strong> ${syndicatorEmail}</p>
+    </div>
+    
+    <p><strong>Admin Actions:</strong></p>
+    <ul style="color: #4b5563;">
+      <li>Review the deal for compliance and accuracy</li>
+      <li>Verify syndicator credentials if not already verified</li>
+      <li>Feature the deal if it meets quality standards</li>
+      <li>Monitor for investor interest</li>
+    </ul>
+  `;
+
+  return getBaseTemplate({
+    title: `🏢 New Deal Listed: ${dealTitle}`,
+    content,
+    buttonText: 'View Deal',
+    buttonUrl: `https://equitymd.com/deals/${dealSlug}`
+  });
+}
+
 export function getInvestorLaunchTemplate(firstName: string): string {
   return `
     <!DOCTYPE html>
