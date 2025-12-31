@@ -343,6 +343,8 @@ const EnhancedProfileCompletionCard = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [hasShownConfetti, setHasShownConfetti] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -360,11 +362,25 @@ const EnhancedProfileCompletionCard = ({
     };
   }, []);
 
+  // Trigger confetti when hitting 100%
+  useEffect(() => {
+    if (completion?.percentage === 100 && !hasShownConfetti) {
+      setShowConfetti(true);
+      setHasShownConfetti(true);
+      // Auto-hide confetti after 4 seconds
+      const timer = setTimeout(() => setShowConfetti(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [completion?.percentage, hasShownConfetti]);
+
   if (!completion) return null;
 
   const percentage = completion.percentage;
   const isComplete = percentage === 100;
   const isSyndicator = userType === 'syndicator';
+  const isNearVerification = percentage >= 70 && percentage < 80;
+  const canGetVerified = percentage >= 80;
+  const hasNoLogo = completion.missingFields?.includes('Company Logo') || completion.missingFields?.includes('Profile Picture');
 
   // Minimized state when scrolled
   if (isScrolled) {
@@ -431,72 +447,151 @@ const EnhancedProfileCompletionCard = ({
 
   // Full state when at top of page
   return (
-    <div className="sticky top-0 z-10 bg-white p-6 shadow-md rounded-lg mb-6 animate-fade-in transition-all duration-300">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold">Profile Completion</h2>
-          <p className="text-sm text-gray-600">
-            Complete your {isSyndicator ? 'syndicator' : 'investor'} profile to attract {isSyndicator ? 'investors' : 'syndicators'}!
-          </p>
-          <p className="text-sm text-gray-500 mt-1">
-            {completion.completedFields} of {completion.totalFields} fields completed
-          </p>
+    <>
+      {/* Confetti Animation */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-bounce"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `-20px`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${2 + Math.random() * 2}s`,
+              }}
+            >
+              <div
+                className="w-3 h-3 rounded-sm"
+                style={{
+                  backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6'][Math.floor(Math.random() * 5)],
+                  transform: `rotate(${Math.random() * 360}deg)`,
+                  animation: `fall ${3 + Math.random() * 2}s linear forwards`,
+                }}
+              />
+            </div>
+          ))}
+          <style>{`
+            @keyframes fall {
+              to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+              }
+            }
+          `}</style>
         </div>
-        <div className="relative w-24 h-24" data-tip="Complete your profile to get a Verified badge!">
-          <svg className="w-full h-full animate-pulse" viewBox="0 0 36 36">
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke="#e5e7eb"
-              strokeWidth="2"
-            />
-            <path
-              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-              fill="none"
-              stroke={isComplete ? '#22c55e' : '#3b82f6'}
-              strokeWidth="2"
-              strokeDasharray={`${percentage}, 100`}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-lg font-bold">{percentage}%</span>
+      )}
+
+      <div className="sticky top-0 z-10 bg-white p-6 shadow-md rounded-lg mb-6 animate-fade-in transition-all duration-300">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold">Profile Completion</h2>
+            <p className="text-sm text-gray-600">
+              Complete your {isSyndicator ? 'syndicator' : 'investor'} profile to attract {isSyndicator ? 'investors' : 'syndicators'}!
+            </p>
+            <p className="text-sm text-gray-500 mt-1">
+              {completion.completedFields} of {completion.totalFields} fields completed
+            </p>
+          </div>
+          <div className="relative w-24 h-24" data-tip="Complete your profile to get a Verified badge!">
+            <svg className={`w-full h-full ${isComplete ? '' : 'animate-pulse'}`} viewBox="0 0 36 36">
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="#e5e7eb"
+                strokeWidth="2"
+              />
+              <path
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke={isComplete ? '#22c55e' : canGetVerified ? '#10b981' : '#3b82f6'}
+                strokeWidth="2"
+                strokeDasharray={`${percentage}, 100`}
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className={`text-lg font-bold ${isComplete ? 'text-green-600' : ''}`}>{percentage}%</span>
+            </div>
+            {isComplete && (
+              <div className="absolute -top-1 -right-1">
+                <span className="text-2xl">🎉</span>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-      
-      {/* Next Steps Buttons */}
-      {!isComplete && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {completion.missingFields.slice(0, 3).map((field: string) => (
-            <button
-              key={field}
-              onClick={() => onFieldFocus(field)}
-              className="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 transition hover:scale-105 transform"
-            >
-              Add {field}
-            </button>
-          ))}
-          {completion.missingFields.length > 3 && (
-            <span className="text-sm text-gray-500 px-3 py-2">
-              +{completion.missingFields.length - 3} more fields
+
+        {/* Verification Badge Unlocked Message */}
+        {canGetVerified && !isComplete && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg flex items-center gap-2">
+            <Award className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+            <span className="text-sm font-medium text-emerald-800">
+              🏆 Verified badge unlocked! Complete remaining fields to stand out.
             </span>
-          )}
-        </div>
-      )}
+          </div>
+        )}
 
-      {isComplete && (
-        <div className="mt-4 flex items-center">
-          <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-          <span className="text-base font-medium text-green-800">Profile Complete! You're ready to get verified! 🎉</span>
-        </div>
-      )}
+        {/* Near Verification Message */}
+        {isNearVerification && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg flex items-center gap-2">
+            <Target className="h-5 w-5 text-amber-600 flex-shrink-0" />
+            <span className="text-sm font-medium text-amber-800">
+              💡 Just {80 - percentage}% more to unlock the Verified badge!
+            </span>
+          </div>
+        )}
 
-      <Tooltip 
-        id="progress-tooltip" 
-        place="bottom"
-        className="bg-gray-900 text-white text-xs rounded-lg px-2 py-1"
-      />
-    </div>
+        {/* Social Proof Nudge for Logo */}
+        {hasNoLogo && !isComplete && (
+          <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-blue-600 flex-shrink-0" />
+            <span className="text-sm font-medium text-blue-800">
+              📈 Profiles with photos get <strong>3x more views</strong> from {isSyndicator ? 'investors' : 'syndicators'}!
+            </span>
+          </div>
+        )}
+        
+        {/* Next Steps Buttons */}
+        {!isComplete && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {completion.missingFields.slice(0, 3).map((field: string) => (
+              <button
+                key={field}
+                onClick={() => onFieldFocus(field)}
+                className="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 transition hover:scale-105 transform"
+              >
+                Add {field}
+              </button>
+            ))}
+            {completion.missingFields.length > 3 && (
+              <span className="text-sm text-gray-500 px-3 py-2">
+                +{completion.missingFields.length - 3} more fields
+              </span>
+            )}
+          </div>
+        )}
+
+        {isComplete && (
+          <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-green-800">Profile Complete! 🎉</p>
+                <p className="text-sm text-green-600">You're ready to get verified and attract more {isSyndicator ? 'investors' : 'opportunities'}!</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Tooltip 
+          id="progress-tooltip" 
+          place="bottom"
+          className="bg-gray-900 text-white text-xs rounded-lg px-2 py-1"
+        />
+      </div>
+    </>
   );
 };
 
