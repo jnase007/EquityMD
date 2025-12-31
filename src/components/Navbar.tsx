@@ -347,6 +347,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                       >
                         Investment Requests
                       </Link>
+                      <Link
+                        to="/pipeline"
+                        className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Investor Pipeline
+                      </Link>
                     </>
                   )}
                   {profile?.is_admin && (
@@ -501,6 +508,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                         onClick={() => setIsMenuOpen(false)}
                       >
                         Investment Requests
+                      </Link>
+                      <Link
+                        to="/pipeline"
+                        className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Investor Pipeline
                       </Link>
                     </>
                   )}
