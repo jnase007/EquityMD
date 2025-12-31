@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Star, MapPin, Search, Filter, TrendingUp, SlidersHorizontal, Globe, LayoutGrid, List, ChevronRight } from 'lucide-react';
+import { Building2, Star, MapPin, Search, Filter, TrendingUp, Globe, LayoutGrid, List, ChevronRight, Users, Award, Sparkles, ArrowRight, Briefcase } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
-import { PageBanner } from '../components/PageBanner';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { isProfileCompleteForDirectory } from '../lib/syndicator-completion';
 import { supabase } from '../lib/supabase';
@@ -46,7 +45,7 @@ const states = [
 ];
 
 const yearsInBusinessRanges = [
-  { label: 'All', value: '0' },
+  { label: 'All Experience', value: '0' },
   { label: '0-5 years', value: '5' },
   { label: '5-10 years', value: '10' },
   { label: '10-20 years', value: '20' },
@@ -54,7 +53,7 @@ const yearsInBusinessRanges = [
 ];
 
 const dealVolumeRanges = [
-  { label: 'All', value: '0' },
+  { label: 'All Volumes', value: '0' },
   { label: 'Under $100M', value: '100000000' },
   { label: '$100M - $500M', value: '500000000' },
   { label: '$500M - $1B', value: '1000000000' },
@@ -78,24 +77,19 @@ export function Directory() {
 
   async function fetchSyndicators() {
     try {
-      console.log('🔍 Fetching syndicators from database...');
       const { data: syndicatorData, error: syndicatorError } = await supabase
         .from('syndicators')
         .select()
         .in('verification_status', ['verified', 'premier']);
 
       if (syndicatorError) {
-        console.error('❌ Error fetching syndicators:', syndicatorError);
+        console.error('Error fetching syndicators:', syndicatorError);
         setSyndicators([]);
         setLoading(false);
         return;
       }
 
-      console.log('📊 Raw syndicator data from database:', syndicatorData);
-      console.log('📊 Number of syndicators found:', syndicatorData?.length || 0);
-
       if (!syndicatorData) {
-        console.log('⚠️ No syndicator data returned from database');
         setSyndicators([]);
         setLoading(false);
         return;
@@ -105,8 +99,6 @@ export function Directory() {
         .filter(s => s.company_name && s.company_name.length >= 3)
         .filter(s => !s.company_name.toLowerCase().includes('admin'))
         .filter(s => !s.company_name.toLowerCase().includes('test'))
-        // .filter(s => s.company_name !== 'Metropolitan Real Estate')
-        // .filter(s => s.company_name !== 'Evergreen Residential')
         .map(s => ({
           ...s,
           average_rating: s.average_rating || 0,
@@ -122,14 +114,9 @@ export function Directory() {
           certifications: s.certifications || []
         }));
 
-      console.log('✅ Final filtered data:', filteredData);
-      console.log('✅ Final count:', filteredData.length);
-      console.log('✅ Company names:', filteredData.map(s => s.company_name));
-
-      console.log('syndicators filteredData', filteredData);
       setSyndicators(filteredData);
     } catch (error) {
-      console.error('❌ Error fetching syndicators:', error);
+      console.error('Error fetching syndicators:', error);
       setSyndicators([]);
     } finally {
       setLoading(false);
@@ -171,54 +158,27 @@ export function Directory() {
       }
     });
 
+  const featuredSyndicators = syndicators.filter(s => s.feat);
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
         <SEO 
           title="Top CRE Syndicator Directory | Deals on Equitymd.com"
-          description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 10K elite investors on Equitymd.com. Browse free—join today!"
-          keywords="CRE syndicator directory, real estate syndicators, multifamily syndicators, industrial real estate, commercial real estate directory"
+          description="Discover premier CRE syndicators with multifamily, industrial deals."
           canonical="https://equitymd.com/directory"
         />
         <Navbar />
 
-        <PageBanner 
-          title="Syndicator Directory"
-          subtitle="Connect with experienced real estate investment firms"
-        />
-
-        <div className="max-w-[1200px] mx-auto px-4 py-16">
-          {/* Featured Syndicators Skeleton */}
-          <div className="mb-12">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="h-6 w-6 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-8 bg-gray-200 rounded w-64 animate-pulse"></div>
-            </div>
-            <LoadingSkeleton type="syndicator" count={3} />
+        {/* Hero Skeleton */}
+        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700">
+          <div className="max-w-7xl mx-auto px-4 py-12">
+            <div className="h-10 w-64 bg-white/20 rounded-lg animate-pulse mb-4"></div>
+            <div className="h-6 w-96 bg-white/20 rounded-lg animate-pulse"></div>
           </div>
+        </div>
 
-          {/* All Syndicators Header Skeleton */}
-          <div className="flex justify-between items-center mb-8">
-            <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
-            <div className="flex items-center space-x-4">
-              <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
-              <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
-            </div>
-          </div>
-
-          {/* Filters Skeleton */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-            <div className="grid md:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index}>
-                  <div className="h-4 bg-gray-200 rounded w-20 mb-2 animate-pulse"></div>
-                  <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Content Skeleton */}
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <LoadingSkeleton type="syndicator" count={6} />
         </div>
 
@@ -228,7 +188,7 @@ export function Directory() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
       <SEO 
         title="Top CRE Syndicator Directory | Deals on Equitymd.com"
         description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 10K elite investors on Equitymd.com. Browse free—join today!"
@@ -237,209 +197,267 @@ export function Directory() {
       />
       <Navbar />
 
-      <PageBanner 
-        title="Syndicator Directory"
-        subtitle="Connect with experienced real estate investment firms"
-      />
-
-      <div className="max-w-[1200px] mx-auto px-4 py-16">
-        {/* Featured Syndicators Section */}
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6">
-            <Star className="h-6 w-6 text-yellow-400" fill="currentColor" />
-            <h2 className="text-2xl font-bold text-gray-900">Featured Syndicators</h2>
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 relative overflow-hidden">
+        {/* Decorative pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        {/* Floating buildings decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(5)].map((_, i) => (
+            <Briefcase 
+              key={i}
+              className="absolute text-white/5"
+              style={{
+                left: `${10 + i * 20}%`,
+                top: `${15 + (i % 2) * 40}%`,
+                width: `${40 + i * 10}px`,
+                height: `${40 + i * 10}px`,
+                transform: `rotate(${-10 + i * 5}deg)`,
+              }}
+            />
+          ))}
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 py-12 relative">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
+              <Users className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">Syndicator Directory</h1>
+              <p className="text-white/80 mt-1">Connect with experienced real estate investment firms</p>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {syndicators
-              .filter(s => s.feat)
-              .slice(0, 3)
-              .map((syndicator) => (
+          
+          {/* Stats Row */}
+          <div className="flex flex-wrap gap-4 mt-6 mb-8">
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Verified Syndicators</span>
+              <p className="text-white font-bold text-xl">{syndicators.length}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Featured Partners</span>
+              <p className="text-white font-bold text-xl">{featuredSyndicators.length}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Total Active Deals</span>
+              <p className="text-white font-bold text-xl">{syndicators.reduce((sum, s) => sum + (s.active_deals || 0), 0)}</p>
+            </div>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 h-5 w-5" />
+              <input
+                type="text"
+                placeholder="Search by company name, location, or specialty..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/60 text-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Featured Syndicators Section */}
+        {featuredSyndicators.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-amber-100 rounded-xl">
+                <Award className="h-5 w-5 text-amber-600" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900">Featured Syndicators</h2>
+              <div className="flex-1 h-px bg-gradient-to-r from-amber-200 to-transparent"></div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredSyndicators.slice(0, 3).map((syndicator) => (
                 <Link
                   key={syndicator.id}
                   to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                  className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg shadow-md hover:shadow-lg transition p-6 border-2 border-blue-200 relative overflow-hidden"
+                  className="group relative"
                 >
-                  {/* Featured Badge */}
-                  <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                    <Star className="h-3 w-3" fill="currentColor" />
-                    FEATURED
-                  </div>
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl opacity-20 group-hover:opacity-30 transition blur"></div>
+                  
+                  <div className="relative bg-white rounded-2xl shadow-lg p-6 border border-amber-100 hover:shadow-xl transition">
+                    {/* Featured Badge */}
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-400 to-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                      <Star className="h-3 w-3" fill="currentColor" />
+                      FEATURED
+                    </div>
 
-                  <div className="flex items-center gap-4 mb-4">
-                    {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
-                      <img
-                        src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
-                        alt={syndicator.company_name}
-                        className="w-20 h-20 object-contain rounded-lg border bg-white p-2"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-10 h-10 text-blue-600" />
-                      </div>
-                    )}
-                                         <div>
-                       <h3 className="font-bold text-gray-900 text-lg">{syndicator.company_name}</h3>
-                       <div className="flex items-center text-gray-600 text-sm">
-                         <MapPin className="w-4 h-4 mr-1" />
-                         {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
-                       </div>
-                      <div className="flex items-center mt-1">
-                        <Star className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" />
-                        <span className="font-medium text-sm">{syndicator.average_rating}</span>
-                        <span className="text-sm text-gray-500 ml-1">({syndicator.total_reviews} reviews)</span>
+                    <div className="flex items-center gap-4 mb-4">
+                      {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
+                        <img
+                          src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
+                          alt={syndicator.company_name}
+                          className="w-16 h-16 object-contain rounded-xl border bg-white p-1"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center">
+                          <Building2 className="w-8 h-8 text-emerald-600" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-gray-900 text-lg truncate">{syndicator.company_name}</h3>
+                        <div className="flex items-center text-gray-600 text-sm">
+                          <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
+                          <span className="truncate">
+                            {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="text-sm text-gray-700 mb-4 line-clamp-2">
-                    {syndicator.company_description}
-                  </div>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 text-amber-400 mr-1" fill="currentColor" />
+                        <span className="font-medium">{syndicator.average_rating}</span>
+                        <span className="text-gray-500 text-sm ml-1">({syndicator.total_reviews})</span>
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {syndicator.active_deals} active deal{syndicator.active_deals !== 1 ? 's' : ''}
+                      </div>
+                    </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {syndicator.specialties?.slice(0, 3).map((specialty, index) => (
-                      <span
-                        key={`${syndicator.id}-specialty-${index}`}
-                        className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full font-medium"
-                      >
-                        {specialty}
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {syndicator.company_description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {syndicator.specialties?.slice(0, 3).map((specialty, index) => (
+                        <span
+                          key={`${syndicator.id}-specialty-${index}`}
+                          className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium"
+                        >
+                          {specialty}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <TrendingUp className="w-4 h-4 mr-1" />
+                        {syndicator.total_deal_volume && syndicator.total_deal_volume > 0 ? 
+                          `$${(syndicator.total_deal_volume / 1000000).toFixed(0)}M volume` : 
+                          'Volume TBD'
+                        }
+                      </div>
+                      <span className="flex items-center text-emerald-600 text-sm font-medium group-hover:text-emerald-700">
+                        View Profile
+                        <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </span>
-                    ))}
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <TrendingUp className="w-4 h-4 mr-1" />
-                      {syndicator.total_deal_volume && syndicator.total_deal_volume > 0 ? 
-                        `$${syndicator.total_deal_volume.toLocaleString()} volume` : 
-                        'Volume not disclosed'
-                      }
-                    </div>
-                    <div className="flex items-center text-blue-600 text-sm font-medium">
-                      View Profile
-                      <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
                 </Link>
               ))}
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-800">
-            All Syndicators ({filteredSyndicators.length})
-          </h2>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm"
-            >
-              <Filter className="h-5 w-5 text-gray-600" />
-              <span className="text-sm font-medium">Filters</span>
-            </button>
-
-            <div className="hidden md:flex items-center space-x-2 text-gray-600">
-              <Filter className="h-5 w-5" />
-              <span>Sort by: </span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'rating' | 'deals' | 'volume')}
-                className="border-none bg-transparent font-medium focus:ring-0"
-              >
-                <option value="rating">Rating</option>
-                <option value="deals">Active Deals</option>
-                <option value="volume">Deal Volume</option>
-              </select>
-            </div>
-
-            <div className="hidden md:flex items-center space-x-2 border-l pl-4">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === 'grid' 
-                    ? 'bg-blue-100 text-blue-600' 
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                <LayoutGrid className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === 'list' 
-                    ? 'bg-blue-100 text-blue-600' 
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                <List className="h-5 w-5" />
-              </button>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Filters */}
-        <div className={`bg-white rounded-lg shadow-sm p-6 mb-8 ${showFilters ? 'block' : 'hidden md:block'}`}>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Search
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Search syndicators..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+        {/* Filters Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-gray-900 font-semibold text-lg">
+                {filteredSyndicators.length} Syndicator{filteredSyndicators.length !== 1 ? 's' : ''}
+              </span>
+              {searchTerm && (
+                <span className="text-gray-500 text-sm">
+                  matching "{searchTerm}"
+                </span>
+              )}
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                State
-              </label>
+            
+            <div className="flex flex-wrap items-center gap-3">
+              {/* State Filter */}
               <select
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm cursor-pointer"
               >
                 <option value="">All States</option>
                 {states.map(state => (
                   <option key={state} value={state}>{state}</option>
                 ))}
               </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Years in Business
-              </label>
+              
+              {/* Years Filter */}
               <select
                 value={yearsInBusiness}
                 onChange={(e) => setYearsInBusiness(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm cursor-pointer"
               >
                 {yearsInBusinessRanges.map(range => (
                   <option key={range.value} value={range.value}>{range.label}</option>
                 ))}
               </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Deal Volume
-              </label>
+              
+              {/* Volume Filter */}
               <select
                 value={dealVolume}
                 onChange={(e) => setDealVolume(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm cursor-pointer"
               >
                 {dealVolumeRanges.map(range => (
                   <option key={range.value} value={range.value}>{range.label}</option>
                 ))}
               </select>
+              
+              {/* Sort */}
+              <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2">
+                <Filter className="w-4 h-4 text-gray-400" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'rating' | 'deals' | 'volume')}
+                  className="bg-transparent border-none focus:ring-0 text-sm cursor-pointer font-medium"
+                >
+                  <option value="rating">By Rating</option>
+                  <option value="deals">By Active Deals</option>
+                  <option value="volume">By Volume</option>
+                </select>
+              </div>
+
+              {/* View Toggle */}
+              <div className="flex items-center bg-gray-100 rounded-xl p-1">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-lg transition ${
+                    viewMode === 'grid' 
+                      ? 'bg-white text-emerald-600 shadow-sm' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <LayoutGrid className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-lg transition ${
+                    viewMode === 'list' 
+                      ? 'bg-white text-emerald-600 shadow-sm' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <List className="h-5 w-5" />
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* All Syndicators Section */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-emerald-100 rounded-xl">
+              <Building2 className="h-5 w-5 text-emerald-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">All Syndicators</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-emerald-200 to-transparent"></div>
           </div>
         </div>
 
@@ -449,112 +467,106 @@ export function Directory() {
               <Link
                 key={syndicator.id}
                 to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                className="bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
+                className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 border border-gray-100 group"
               >
                 <div className="flex items-center gap-4 mb-4">
-                                  {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
+                  {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
                     <img
-                    src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
+                      src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                       alt={syndicator.company_name}
-                      className="w-16 h-16 object-contain rounded-lg"
+                      className="w-14 h-14 object-contain rounded-xl"
                     />
                   ) : (
-                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Building2 className="w-8 h-8 text-blue-600" />
+                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center">
+                      <Building2 className="w-7 h-7 text-emerald-600" />
                     </div>
                   )}
-                  <div>
-                    <h3 className="font-bold text-gray-900">{syndicator.company_name}</h3>
-                    <div className="flex items-center text-gray-600 text-sm">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-900 truncate group-hover:text-emerald-600 transition">{syndicator.company_name}</h3>
+                    <div className="flex items-center text-gray-500 text-sm">
+                      <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">
+                        {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <div className="text-sm text-gray-500">Rating</div>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-gray-50 rounded-xl p-2 text-center">
+                    <div className="text-xs text-gray-500">Rating</div>
                     {syndicator.average_rating > 0 ? (
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" />
-                        <span className="font-medium">{syndicator.average_rating}</span>
-                        <span className="text-sm text-gray-500 ml-1">
-                          ({syndicator.total_reviews})
-                        </span>
+                      <div className="flex items-center justify-center">
+                        <Star className="w-4 h-4 text-amber-400 mr-1" fill="currentColor" />
+                        <span className="font-semibold">{syndicator.average_rating}</span>
                       </div>
                     ) : (
-                      <div className="text-sm text-gray-500">Not verified</div>
+                      <div className="text-sm text-gray-400">-</div>
                     )}
                   </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Active Deals</div>
-                    <div className="font-medium">{syndicator.active_deals}</div>
+                  <div className="bg-gray-50 rounded-xl p-2 text-center">
+                    <div className="text-xs text-gray-500">Deals</div>
+                    <div className="font-semibold">{syndicator.active_deals}</div>
                   </div>
                 </div>
 
-                <div className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {syndicator.company_description}
-                </div>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  {syndicator.company_description || 'Real estate investment opportunities.'}
+                </p>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {syndicator.specialties?.slice(0, 3).map((specialty, index) => (
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {syndicator.specialties?.slice(0, 2).map((specialty, index) => (
                     <span
                       key={`${syndicator.id}-specialty-${index}`}
-                      className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
+                      className="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full"
                     >
                       {specialty}
                     </span>
                   ))}
                 </div>
 
-                <div className="flex items-center text-gray-600 text-sm">
-                  <TrendingUp className="w-4 h-4 mr-1" />
-                  {syndicator.total_deal_volume && syndicator.total_deal_volume > 0 ? 
-                    `$${syndicator.total_deal_volume.toLocaleString()} total volume` : 
-                    'Volume not disclosed'
-                  }
-                </div>
-
-                {syndicator.website_url && (
-                  <div className="mt-2 flex items-center text-blue-600 text-sm">
-                    <Globe className="w-4 h-4 mr-1" />
-                    <span className="truncate">{new URL(syndicator.website_url).hostname}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div className="flex items-center text-gray-500 text-xs">
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    {syndicator.total_deal_volume && syndicator.total_deal_volume > 0 ? 
+                      `$${(syndicator.total_deal_volume / 1000000).toFixed(0)}M` : 
+                      'TBD'
+                    }
                   </div>
-                )}
+                  <span className="flex items-center text-emerald-600 text-sm font-medium">
+                    View
+                    <ChevronRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {filteredSyndicators.map((syndicator) => (
               <Link
                 key={syndicator.id}
                 to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                className="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-6"
+                className="block bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 border border-gray-100 group"
               >
                 <div className="flex gap-6">
                   {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
                     <img
                       src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                       alt={syndicator.company_name}
-                      className="w-32 h-32 object-contain rounded-lg"
-                      onError={(e) => {
-                        // Fallback to placeholder if image fails to load
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        target.nextElementSibling?.classList.remove('hidden');
-                      }}
+                      className="w-24 h-24 object-contain rounded-xl flex-shrink-0"
                     />
-                  ) : null}
-                  <div className={`w-32 h-32 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 ${getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? 'hidden' : ''}`}>
-                    <Building2 className="w-16 h-16 text-blue-600" />
-                  </div>
-                  <div className="flex-grow">
+                  ) : (
+                    <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Building2 className="w-12 h-12 text-emerald-600" />
+                    </div>
+                  )}
+                  
+                  <div className="flex-grow min-w-0">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">{syndicator.company_name}</h3>
-                        <div className="flex items-center text-gray-600 mt-1">
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition">{syndicator.company_name}</h3>
+                        <div className="flex items-center text-gray-500 mt-1">
                           <MapPin className="w-4 h-4 mr-1" />
                           {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).city}, {getSyndicatorLocation(syndicator.company_name, syndicator.city, syndicator.state).state}
                         </div>
@@ -562,14 +574,12 @@ export function Directory() {
                       <div className="flex items-center">
                         {syndicator.average_rating > 0 ? (
                           <>
-                            <Star className="w-5 h-5 text-yellow-400 mr-1" fill="currentColor" />
-                            <span className="font-medium">{syndicator.average_rating}</span>
-                            <span className="text-sm text-gray-500 ml-1">
-                              ({syndicator.total_reviews} reviews)
-                            </span>
+                            <Star className="w-5 h-5 text-amber-400 mr-1" fill="currentColor" />
+                            <span className="font-semibold">{syndicator.average_rating}</span>
+                            <span className="text-gray-500 text-sm ml-1">({syndicator.total_reviews})</span>
                           </>
                         ) : (
-                          <span className="text-sm text-gray-500">Not verified</span>
+                          <span className="text-gray-400 text-sm">Not yet rated</span>
                         )}
                       </div>
                     </div>
@@ -580,7 +590,7 @@ export function Directory() {
                       {syndicator.specialties?.map((specialty, index) => (
                         <span
                           key={`${syndicator.id}-specialty-${index}`}
-                          className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
+                          className="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full"
                         >
                           {specialty}
                         </span>
@@ -589,19 +599,19 @@ export function Directory() {
 
                     <div className="grid grid-cols-3 gap-8 mt-4">
                       <div>
-                        <div className="text-sm text-gray-500">Years in Business</div>
-                        <div className="font-medium">{syndicator.years_in_business}</div>
+                        <div className="text-sm text-gray-500">Years</div>
+                        <div className="font-semibold">{syndicator.years_in_business || '-'}</div>
                       </div>
                       <div>
                         <div className="text-sm text-gray-500">Active Deals</div>
-                        <div className="font-medium">{syndicator.active_deals}</div>
+                        <div className="font-semibold">{syndicator.active_deals}</div>
                       </div>
                       <div>
                         <div className="text-sm text-gray-500">Total Volume</div>
-                        <div className="font-medium">
+                        <div className="font-semibold">
                           {syndicator.total_deal_volume && syndicator.total_deal_volume > 0 ? 
-                            `$${syndicator.total_deal_volume.toLocaleString()}` : 
-                            'Not disclosed'
+                            `$${(syndicator.total_deal_volume / 1000000).toFixed(0)}M` : 
+                            'TBD'
                           }
                         </div>
                       </div>
@@ -613,11 +623,61 @@ export function Directory() {
           </div>
         )}
 
+        {/* Empty State */}
         {filteredSyndicators.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-500">No syndicators found matching your criteria</div>
+          <div className="text-center py-16">
+            <div className="relative inline-block mb-8">
+              <div className="w-32 h-32 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto">
+                <Users className="w-16 h-16 text-emerald-300" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center animate-bounce">
+                <Search className="w-5 h-5 text-white" />
+              </div>
+            </div>
+            
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              No Syndicators Found
+            </h3>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              Try adjusting your filters or search criteria.
+            </p>
+            
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedState('');
+                setYearsInBusiness('0');
+                setDealVolume('0');
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              Clear Filters
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
         )}
+
+        {/* CTA for Syndicators */}
+        <div className="mt-16 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+          <div className="relative flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 className="text-2xl lg:text-3xl font-bold text-white mb-2">
+                List Your Company
+              </h3>
+              <p className="text-white/80 text-lg">
+                Get your firm in front of thousands of accredited investors.
+              </p>
+            </div>
+            <Link
+              to="/signup/start"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-emerald-600 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              Join Directory
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
       </div>
 
       <Footer />

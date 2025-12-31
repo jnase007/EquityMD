@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, LayoutGrid, List, Lock, ChevronRight, TrendingUp, DollarSign, Clock } from 'lucide-react';
+import { Search, Filter, MapPin, LayoutGrid, List, Lock, ChevronRight, TrendingUp, DollarSign, Clock, Sparkles, Building2, ArrowRight, Target, Gem } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { DealCard, DealListItem } from '../components/Cards';
 import { Footer } from '../components/Footer';
-import { PageBanner } from '../components/PageBanner';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
@@ -44,7 +44,6 @@ const syndicatorVerificationStatus: Record<string, VerificationStatus> = {
   'back-bay-capital': 'premier',
   'sutera-properties': 'premier', 
   'starboard-realty': 'premier',
-  // Add other syndicators as needed with their appropriate status
 };
 
 export function Browse() {
@@ -108,7 +107,7 @@ export function Browse() {
         return (b.target_irr || 0) - (a.target_irr || 0);
       case 'minimum':
         return (a.minimum_investment || 0) - (b.minimum_investment || 0);
-      default: // 'recent'
+      default:
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     }
   });
@@ -120,55 +119,24 @@ export function Browse() {
   const types = ['All', 'Office', 'Multi-Family', 'Medical', 'Student Housing', 'Industrial', 'Preferred Equity', 'Residential'];
   const statuses = ['All', 'Active', 'Coming Soon'];
 
+  // Calculate stats
+  const avgIRR = deals.length > 0 ? (deals.reduce((sum, d) => sum + (d.target_irr || 0), 0) / deals.length).toFixed(1) : '0';
+  const minInvestment = deals.length > 0 ? Math.min(...deals.map(d => d.minimum_investment || 0)) : 0;
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <Navbar />
         
-        <PageBanner 
-          title="Browse Investment Opportunities"
-          subtitle="Discover and invest in institutional-quality real estate deals"
-        >
-          <div className="max-w-3xl mx-auto mt-8">
-            <div className="flex flex-col md:flex-row md:items-center gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Search by property name or location..."
-                  className="w-full pl-10 pr-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/70"
-                  disabled
-                />
-              </div>
-              
-              <div className="flex gap-2">
-                <select
-                  className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-transparent"
-                  disabled
-                >
-                  <option>All Types</option>
-                </select>
-                
-                <select
-                  className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-transparent"
-                  disabled
-                >
-                  <option>All Status</option>
-                </select>
-              </div>
-            </div>
+        {/* Hero Header Skeleton */}
+        <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 py-12">
+            <div className="h-10 w-64 bg-white/20 rounded-lg animate-pulse mb-4"></div>
+            <div className="h-6 w-96 bg-white/20 rounded-lg animate-pulse"></div>
           </div>
-        </PageBanner>
+        </div>
 
-        <div className="max-w-[1200px] mx-auto px-4 py-8">
-          <div className="flex justify-between items-center mb-6">
-            <div className="h-8 bg-gray-200 rounded w-64 animate-pulse"></div>
-            <div className="flex items-center space-x-4">
-              <div className="h-10 bg-gray-200 rounded w-32 animate-pulse"></div>
-              <div className="h-10 bg-gray-200 rounded w-24 animate-pulse"></div>
-            </div>
-          </div>
-
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <LoadingSkeleton type="property" count={6} />
         </div>
 
@@ -178,170 +146,202 @@ export function Browse() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 animate-fade-in">
       <Navbar />
       
-      <PageBanner 
-        title="Locate Investment Opportunities"
-        subtitle="Discover and invest in institutional-quality real estate deals"
-      >
-        <div className="max-w-3xl mx-auto mt-8">
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                placeholder="Search by property name or location..."
-                className="w-full pl-10 pr-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/70"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        {/* Floating buildings decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(5)].map((_, i) => (
+            <Building2 
+              key={i}
+              className="absolute text-white/5"
+              style={{
+                left: `${10 + i * 20}%`,
+                top: `${15 + (i % 2) * 40}%`,
+                width: `${40 + i * 10}px`,
+                height: `${40 + i * 10}px`,
+                transform: `rotate(${-10 + i * 5}deg)`,
+              }}
+            />
+          ))}
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 py-12 relative">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
+              <Gem className="w-8 h-8 text-white" />
             </div>
-            
-            <div className="flex gap-2">
-              <select
-                className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-transparent"
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-              >
-                {types.map(type => (
-                  <option key={type} value={type} className="text-gray-900">{type}</option>
-                ))}
-              </select>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">Find Investment Opportunities</h1>
+              <p className="text-white/80 mt-1">Discover institutional-quality real estate deals</p>
+            </div>
+          </div>
+          
+          {/* Stats Row */}
+          <div className="flex flex-wrap gap-4 mt-6 mb-8">
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Active Deals</span>
+              <p className="text-white font-bold text-xl">{deals.length}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Avg. Target IRR</span>
+              <p className="text-white font-bold text-xl">{avgIRR}%</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Starts From</span>
+              <p className="text-white font-bold text-xl">${minInvestment.toLocaleString()}</p>
+            </div>
+          </div>
+          
+          {/* Search Bar in Hero */}
+          <div className="max-w-3xl">
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Search by property name or location..."
+                  className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/60 text-lg"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
               
-              <select
-                className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-transparent"
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                {statuses.map(status => (
-                  <option key={status} value={status} className="text-gray-900">{status}</option>
-                ))}
-              </select>
+              <div className="flex gap-2">
+                <select
+                  className="px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-white/50 focus:border-transparent cursor-pointer"
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                >
+                  {types.map(type => (
+                    <option key={type} value={type} className="text-gray-900">{type === 'All' ? 'All Types' : type}</option>
+                  ))}
+                </select>
+                
+                <select
+                  className="px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white focus:ring-2 focus:ring-white/50 focus:border-transparent cursor-pointer"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  {statuses.map(status => (
+                    <option key={status} value={status} className="text-gray-900">{status === 'All' ? 'All Status' : status}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>
-      </PageBanner>
+      </div>
 
-      <div className="max-w-[1200px] mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
-            {filteredDeals.length} Investment Opportunities
-          </h2>
-          <div className="flex items-center space-x-4">
-            {!user && (
-              <button
-                onClick={() => setShowAuthModal(true)}
-                className="flex items-center text-blue-600 hover:text-blue-700"
-              >
-                <Lock className="h-4 w-4 mr-1" />
-                <span className="hidden md:inline">Sign in to view details</span>
-              </button>
-            )}
-
-            {/* Mobile Sort Button */}
-            <div className="relative md:hidden">
-              <button
-                onClick={() => setShowSortMenu(!showSortMenu)}
-                className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm"
-              >
-                <Filter className="h-5 w-5 text-gray-600" />
-                <span className="text-sm font-medium">Sort</span>
-              </button>
-
-              {showSortMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                  {sortOptions.map(option => (
-                    <button
-                      key={option.value}
-                      onClick={() => {
-                        setSortBy(option.value);
-                        setShowSortMenu(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm ${
-                        sortBy === option.value 
-                          ? 'bg-blue-50 text-blue-600' 
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Controls Bar */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="text-gray-900 font-semibold text-lg">
+                {filteredDeals.length} {filteredDeals.length === 1 ? 'Opportunity' : 'Opportunities'}
+              </span>
+              {searchTerm && (
+                <span className="text-gray-500 text-sm">
+                  matching "{searchTerm}"
+                </span>
               )}
             </div>
+            
+            <div className="flex items-center gap-4">
+              {!user && (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  <Lock className="h-4 w-4" />
+                  <span className="hidden md:inline">Sign in for details</span>
+                </button>
+              )}
 
-            {/* Desktop Sort Dropdown */}
-            <div className="hidden md:flex items-center space-x-2 text-gray-600">
-              <Filter className="h-5 w-5" />
-              <span>Sort by: </span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="border-none bg-transparent font-medium focus:ring-0"
-              >
-                {sortOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* Sort Dropdown */}
+              <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2">
+                <Filter className="w-4 h-4 text-gray-400" />
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="bg-transparent border-none focus:ring-0 text-sm cursor-pointer font-medium"
+                >
+                  {sortOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="flex items-center space-x-2 border-l pl-4">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === 'grid' 
-                    ? 'bg-blue-100 text-blue-600' 
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                <LayoutGrid className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === 'list' 
-                    ? 'bg-blue-100 text-blue-600' 
-                    : 'text-gray-400 hover:text-gray-600'
-                }`}
-              >
-                <List className="h-5 w-5" />
-              </button>
+              {/* View Toggle */}
+              <div className="flex items-center bg-gray-100 rounded-xl p-1">
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-lg transition ${
+                    viewMode === 'grid' 
+                      ? 'bg-white text-blue-600 shadow-sm' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <LayoutGrid className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-lg transition ${
+                    viewMode === 'list' 
+                      ? 'bg-white text-blue-600 shadow-sm' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <List className="h-5 w-5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Highlighted Deals Section */}
+        {/* Featured Deals Section */}
         {highlightedDeals.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <TrendingUp className="h-6 w-6 text-yellow-500" />
-              <h3 className="text-xl font-semibold text-gray-800">Featured Opportunities</h3>
-              <div className="flex-1 h-px bg-gradient-to-r from-yellow-200 to-transparent"></div>
+              <div className="p-2 bg-amber-100 rounded-xl">
+                <Sparkles className="h-5 w-5 text-amber-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">Featured Opportunities</h3>
+              <div className="flex-1 h-px bg-gradient-to-r from-amber-200 to-transparent"></div>
             </div>
             
             {viewMode === 'grid' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
                 {highlightedDeals.map((deal, index) => (
-                  <div key={deal.id} className="h-full">
-                    <DealCard
-                      id={deal.id}
-                      slug={deal.slug}
-                      image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
-                      title={deal.title}
-                      location={deal.location}
-                      metrics={{
-                        target: `${deal.target_irr}% IRR`,
-                        minimum: `$${deal.minimum_investment.toLocaleString()}`,
-                        term: `${deal.investment_term} years`
-                      }}
-                      detailed
-                      isAuthenticated={!!user}
-                      onAuthRequired={() => setShowAuthModal(true)}
-                      verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
-                    />
+                  <div key={deal.id} className="h-full relative group">
+                    {/* Featured glow effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl opacity-20 group-hover:opacity-30 transition blur"></div>
+                    <div className="relative h-full">
+                      <DealCard
+                        id={deal.id}
+                        slug={deal.slug}
+                        image={deal.cover_image_url || getPropertyImage(deal.property_type, index)}
+                        title={deal.title}
+                        location={deal.location}
+                        metrics={{
+                          target: `${deal.target_irr}% IRR`,
+                          minimum: `$${deal.minimum_investment.toLocaleString()}`,
+                          term: `${deal.investment_term} years`
+                        }}
+                        detailed
+                        isAuthenticated={!!user}
+                        onAuthRequired={() => setShowAuthModal(true)}
+                        verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -375,8 +375,10 @@ export function Browse() {
         {regularDeals.length > 0 && (
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <DollarSign className="h-6 w-6 text-blue-500" />
-              <h3 className="text-xl font-semibold text-gray-800">All Opportunities</h3>
+              <div className="p-2 bg-blue-100 rounded-xl">
+                <Target className="h-5 w-5 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">All Opportunities</h3>
               <div className="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent"></div>
             </div>
             
@@ -429,11 +431,60 @@ export function Browse() {
           </div>
         )}
 
+        {/* Empty State */}
         {filteredDeals.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-500">No investment opportunities found matching your criteria</div>
+          <div className="text-center py-16">
+            <div className="relative inline-block mb-8">
+              <div className="w-32 h-32 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto">
+                <Building2 className="w-16 h-16 text-blue-300" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center animate-bounce">
+                <Search className="w-5 h-5 text-white" />
+              </div>
+            </div>
+            
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              No Opportunities Found
+            </h3>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              Try adjusting your search criteria or explore all available deals.
+            </p>
+            
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setSelectedType('All');
+                setSelectedStatus('All');
+              }}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl"
+            >
+              Clear Filters
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
         )}
+
+        {/* CTA for Syndicators */}
+        <div className="mt-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+          <div className="relative flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 className="text-2xl lg:text-3xl font-bold text-white mb-2">
+                Are You a Syndicator?
+              </h3>
+              <p className="text-white/80 text-lg">
+                List your investment opportunities and connect with accredited investors.
+              </p>
+            </div>
+            <Link
+              to="/signup/start"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              List Your Deal
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
       </div>
 
       {showAuthModal && (
