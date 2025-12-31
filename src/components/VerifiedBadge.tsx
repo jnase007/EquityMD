@@ -128,13 +128,13 @@ export function VerifiedBadge({
         )}
       </div>
       
-      {/* Tooltip */}
+      {/* Tooltip - appears below to avoid header cutoff */}
       {showTooltip && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50">
-          <div className="bg-gray-900 text-white text-sm rounded-lg py-3 px-4 w-80 text-center shadow-lg leading-relaxed">
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 z-[100]">
+          <div className="bg-gray-900 text-white text-sm rounded-lg py-3 px-4 w-72 text-center shadow-xl leading-relaxed">
+            {/* Arrow pointing up */}
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900"></div>
             {badgeConfig.tooltip}
-            {/* Arrow */}
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
           </div>
         </div>
       )}
