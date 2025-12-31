@@ -6,6 +6,7 @@ import {
   CheckCircle, Loader2, Plus, Trash2, Play, Video, Youtube, Eye
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
 import { Navbar } from '../Navbar';
@@ -263,10 +264,17 @@ export function PropertyListingWizard() {
   };
 
   const handlePublish = async (status: 'draft' | 'active' = 'draft') => {
-    if (!validateStep(5)) return;
-    if (!user || !formData.syndicatorId) return;
+    if (!validateStep(5)) {
+      setErrors({ submit: 'Please fill in all required fields before publishing.' });
+      return;
+    }
+    if (!user || !formData.syndicatorId) {
+      setErrors({ submit: 'Please select a syndicator for this listing.' });
+      return;
+    }
     
     setPublishing(true);
+    setErrors({});
     
     try {
       // Build location string
@@ -287,8 +295,10 @@ export function PropertyListingWizard() {
         target_irr: formData.targetIrr ? parseFloat(formData.targetIrr) : null,
         investment_term: formData.investmentTerm ? parseInt(formData.investmentTerm) : null,
         total_equity: parseFloat(formData.totalEquity) || 0,
+        preferred_return: formData.preferredReturn ? parseFloat(formData.preferredReturn) : null,
+        equity_multiple: formData.equityMultiple ? parseFloat(formData.equityMultiple) : null,
         status,
-        cover_image_url: '' // Will update after image upload
+        cover_image_url: null // Will update after image upload
       };
       
       // Add video URL if provided
@@ -296,36 +306,68 @@ export function PropertyListingWizard() {
         dealData.video_url = formData.videoUrl;
       }
       
+      console.log('Creating deal with data:', dealData);
+      
       const { data: deal, error: dealError } = await supabase
         .from('deals')
         .insert(dealData)
         .select('*')
         .single();
       
-      if (dealError) throw dealError;
+      if (dealError) {
+        console.error('Deal insert error:', dealError);
+        throw new Error(`Failed to create deal: ${dealError.message}`);
+      }
       
-      // Upload images and get cover URL
-      const coverImageUrl = await uploadImages(deal.id);
+      if (!deal) {
+        throw new Error('Deal was not created - no data returned');
+      }
+      
+      console.log('Deal created successfully:', deal.id);
+      
+      // Upload images and get cover URL (skip if no images with files)
+      let coverImageUrl: string | null = null;
+      const imagesWithFiles = formData.images.filter(img => img.file);
+      
+      if (imagesWithFiles.length > 0) {
+        try {
+          coverImageUrl = await uploadImages(deal.id);
+          console.log('Images uploaded, cover URL:', coverImageUrl);
+        } catch (uploadError) {
+          console.error('Image upload error (non-fatal):', uploadError);
+          // Don't fail the whole publish if image upload fails
+        }
+      }
       
       // Update cover image URL if we have one
       if (coverImageUrl) {
-        await supabase
+        const { error: updateError } = await supabase
           .from('deals')
           .update({ cover_image_url: coverImageUrl })
           .eq('id', deal.id);
+        
+        if (updateError) {
+          console.error('Cover image update error (non-fatal):', updateError);
+        }
       }
       
       // Clear draft
       const draftKey = `deal_draft_${user.id}`;
       localStorage.removeItem(draftKey);
       
+      console.log('Navigating to deal:', deal.slug);
+      
+      // Show success toast
+      toast.success(status === 'active' ? 'Deal published successfully!' : 'Draft saved successfully!');
+      
       // Navigate to the deal
       navigate(`/deals/${deal.slug}`);
       
     } catch (error: any) {
       console.error('Error creating deal:', error);
-      setErrors({ submit: error.message || 'Failed to create listing. Please try again.' });
-    } finally {
+      const errorMessage = error.message || 'Failed to create listing. Please try again.';
+      setErrors({ submit: errorMessage });
+      toast.error(errorMessage);
       setPublishing(false);
     }
   };
