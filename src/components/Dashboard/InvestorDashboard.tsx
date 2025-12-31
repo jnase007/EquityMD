@@ -1,32 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  TrendingUp, Heart, MessageSquare, Search, DollarSign, 
-  Building2, ChevronRight, Star, Clock, Bell, Target,
-  Briefcase, MapPin, Users, CheckCircle, ArrowUpRight, Trophy, Zap, Sparkles
+  Heart, MessageSquare, 
+  Building2, ChevronRight, Target,
+  Briefcase, MapPin, Users, CheckCircle, ArrowUpRight, Trophy
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
 import { useGamification } from '../Gamification/useGamification';
-import { WelcomeBackCard, NextStepsCard } from '../Gamification/NextSteps';
-import { ProgressCard, LevelBadge } from '../Gamification/ProgressCard';
+import { NextStepsCard } from '../Gamification/NextSteps';
 import { AchievementsModal } from '../Gamification/AchievementsModal';
 import { AchievementUnlocked } from '../Gamification/AchievementUnlocked';
-import { WelcomeBanner, ProfileNudge, useWelcomeBanner } from './WelcomeBanner';
+import { ProfileNudge } from './WelcomeBanner';
 import { calculateProfileCompletion } from '../../lib/profileCompletion';
 import { PersonalizedGreeting } from './PersonalizedGreeting';
 import { ActivityFeed } from './ActivityFeed';
 import { SmartRecommendations } from './SmartRecommendations';
 
-interface InvestorDashboardProps {
-  // Optional props for customization
-}
-
 export function InvestorDashboard() {
   const { user, profile } = useAuthStore();
   const navigate = useNavigate();
   const gamification = useGamification();
-  const { isDismissed: bannerDismissed, dismiss: dismissBanner } = useWelcomeBanner();
   const [showAchievements, setShowAchievements] = useState(false);
   const [stats, setStats] = useState({
     favoriteDeals: 0,
