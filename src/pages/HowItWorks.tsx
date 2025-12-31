@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { AuthModal } from '../components/AuthModal';
-import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award } from 'lucide-react';
+import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award, Trophy, Zap, Target, Flame, Lock, Sparkles } from 'lucide-react';
 
 export function HowItWorks() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -239,6 +239,280 @@ export function HowItWorks() {
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Gamification Section */}
+      <div className="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden relative">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl" />
+        
+        <div className="max-w-6xl mx-auto px-4 relative">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 rounded-full mb-6">
+              <Sparkles className="h-5 w-5 text-amber-400" />
+              <span className="text-amber-300 font-medium">Your Journey, Gamified</span>
+            </div>
+            <h2 className="text-4xl font-bold mb-4">
+              Earn Achievements. Level Up. Build Wealth.
+            </h2>
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+              Track your progress, unlock badges, and level up as you build your real estate portfolio on EquityMD.
+            </p>
+          </div>
+
+          {/* Two-column layout for Investor & Syndicator */}
+          <div className="grid lg:grid-cols-2 gap-8 mb-16">
+            {/* Investor Journey */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Investor Journey</h3>
+                  <p className="text-slate-400 text-sm">Your path to building wealth</p>
+                </div>
+              </div>
+
+              {/* Investor Levels */}
+              <div className="mb-6">
+                <p className="text-sm text-slate-400 mb-3">Level Progression</p>
+                <div className="flex items-center gap-2">
+                  {[
+                    { level: 1, icon: '🌱', title: 'Newcomer' },
+                    { level: 2, icon: '🔍', title: 'Explorer' },
+                    { level: 3, icon: '📈', title: 'Active' },
+                    { level: 4, icon: '💎', title: 'Seasoned' },
+                    { level: 5, icon: '👑', title: 'Elite' },
+                  ].map((level) => (
+                    <div 
+                      key={level.level}
+                      className="flex-1 text-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-default group"
+                      title={level.title}
+                    >
+                      <div className="text-2xl mb-1 group-hover:scale-110 transition-transform">{level.icon}</div>
+                      <div className="text-xs text-slate-500">Lvl {level.level}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sample Investor Achievements */}
+              <div>
+                <p className="text-sm text-slate-400 mb-3">Sample Achievements</p>
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { icon: '🎯', title: 'First Steps', rarity: 'common', unlocked: true },
+                    { icon: '📸', title: 'Picture Perfect', rarity: 'common', unlocked: true },
+                    { icon: '❤️', title: 'Heart Eyes', rarity: 'common', unlocked: true },
+                    { icon: '🤝', title: 'Interested Party', rarity: 'uncommon', unlocked: false },
+                    { icon: '💬', title: 'Conversation Starter', rarity: 'uncommon', unlocked: false },
+                    { icon: '💰', title: 'Making Moves', rarity: 'rare', unlocked: false },
+                    { icon: '🏆', title: 'Accredited', rarity: 'epic', unlocked: false },
+                    { icon: '🚀', title: 'Early Adopter', rarity: 'epic', unlocked: false },
+                  ].map((achievement, idx) => (
+                    <div 
+                      key={idx}
+                      className={`relative group cursor-default ${!achievement.unlocked ? 'opacity-40 grayscale' : ''}`}
+                      title={achievement.title}
+                    >
+                      <div className={`w-full aspect-square rounded-xl flex items-center justify-center text-2xl ${
+                        achievement.rarity === 'common' ? 'bg-gray-700/50' :
+                        achievement.rarity === 'uncommon' ? 'bg-emerald-900/50' :
+                        achievement.rarity === 'rare' ? 'bg-blue-900/50' :
+                        'bg-purple-900/50'
+                      } ${achievement.unlocked ? 'ring-2 ring-offset-2 ring-offset-slate-900' : ''} ${
+                        achievement.rarity === 'common' && achievement.unlocked ? 'ring-gray-500' :
+                        achievement.rarity === 'uncommon' && achievement.unlocked ? 'ring-emerald-500' :
+                        achievement.rarity === 'rare' && achievement.unlocked ? 'ring-blue-500' :
+                        achievement.unlocked ? 'ring-purple-500' : ''
+                      }`}>
+                        {achievement.unlocked ? achievement.icon : <Lock className="h-4 w-4 text-slate-600" />}
+                      </div>
+                      {achievement.unlocked && (
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                          <CheckCircle className="h-3 w-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Syndicator Journey */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                  <Building2 className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Syndicator Journey</h3>
+                  <p className="text-slate-400 text-sm">Grow your investor network</p>
+                </div>
+              </div>
+
+              {/* Syndicator Levels */}
+              <div className="mb-6">
+                <p className="text-sm text-slate-400 mb-3">Level Progression</p>
+                <div className="flex items-center gap-2">
+                  {[
+                    { level: 1, icon: '🌱', title: 'New' },
+                    { level: 2, icon: '📊', title: 'Growing' },
+                    { level: 3, icon: '🏢', title: 'Established' },
+                    { level: 4, icon: '⭐', title: 'Top' },
+                    { level: 5, icon: '👑', title: 'Master' },
+                  ].map((level) => (
+                    <div 
+                      key={level.level}
+                      className="flex-1 text-center p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-default group"
+                      title={level.title}
+                    >
+                      <div className="text-2xl mb-1 group-hover:scale-110 transition-transform">{level.icon}</div>
+                      <div className="text-xs text-slate-500">Lvl {level.level}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sample Syndicator Achievements */}
+              <div>
+                <p className="text-sm text-slate-400 mb-3">Sample Achievements</p>
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { icon: '🏢', title: 'Brand Identity', rarity: 'common', unlocked: true },
+                    { icon: '🌐', title: 'Web Presence', rarity: 'common', unlocked: true },
+                    { icon: '🏠', title: 'First Listing', rarity: 'uncommon', unlocked: true },
+                    { icon: '📢', title: 'Live Deal', rarity: 'rare', unlocked: false },
+                    { icon: '👁️', title: 'Catching Eyes', rarity: 'uncommon', unlocked: false },
+                    { icon: '🔥', title: 'In Demand', rarity: 'rare', unlocked: false },
+                    { icon: '💰', title: 'Deal Maker', rarity: 'epic', unlocked: false },
+                    { icon: '🏆', title: '$1M Club', rarity: 'legendary', unlocked: false },
+                  ].map((achievement, idx) => (
+                    <div 
+                      key={idx}
+                      className={`relative group cursor-default ${!achievement.unlocked ? 'opacity-40 grayscale' : ''}`}
+                      title={achievement.title}
+                    >
+                      <div className={`w-full aspect-square rounded-xl flex items-center justify-center text-2xl ${
+                        achievement.rarity === 'common' ? 'bg-gray-700/50' :
+                        achievement.rarity === 'uncommon' ? 'bg-emerald-900/50' :
+                        achievement.rarity === 'rare' ? 'bg-blue-900/50' :
+                        achievement.rarity === 'epic' ? 'bg-purple-900/50' :
+                        'bg-amber-900/50'
+                      } ${achievement.unlocked ? 'ring-2 ring-offset-2 ring-offset-slate-900' : ''} ${
+                        achievement.rarity === 'common' && achievement.unlocked ? 'ring-gray-500' :
+                        achievement.rarity === 'uncommon' && achievement.unlocked ? 'ring-emerald-500' :
+                        achievement.rarity === 'rare' && achievement.unlocked ? 'ring-blue-500' :
+                        achievement.rarity === 'epic' && achievement.unlocked ? 'ring-purple-500' :
+                        achievement.unlocked ? 'ring-amber-500' : ''
+                      }`}>
+                        {achievement.unlocked ? achievement.icon : <Lock className="h-4 w-4 text-slate-600" />}
+                      </div>
+                      {achievement.unlocked && (
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                          <CheckCircle className="h-3 w-3 text-white" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Points & Progress Section */}
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-2xl p-6 border border-amber-500/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center">
+                  <Zap className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold">Earn Points</h4>
+                  <p className="text-sm text-slate-400">Every action counts</p>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm">
+                Complete your profile, save deals, express interest, and more to earn points and level up.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl p-6 border border-purple-500/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
+                  <Trophy className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold">Unlock Badges</h4>
+                  <p className="text-sm text-slate-400">From Common to Legendary</p>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm">
+                Achievements come in 5 rarities. Can you unlock them all and showcase your expertise?
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl p-6 border border-orange-500/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
+                  <Flame className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-bold">Build Streaks</h4>
+                  <p className="text-sm text-slate-400">Stay engaged, earn more</p>
+                </div>
+              </div>
+              <p className="text-slate-300 text-sm">
+                Log in daily to build your streak and unlock special "Committed" achievements.
+              </p>
+            </div>
+          </div>
+
+          {/* Sample Next Steps */}
+          <div className="bg-gradient-to-r from-indigo-600/80 to-purple-600/80 backdrop-blur rounded-2xl p-8 border border-white/10">
+            <div className="flex items-center gap-3 mb-6">
+              <Target className="h-8 w-8 text-white" />
+              <div>
+                <h3 className="text-xl font-bold">Guided Next Steps</h3>
+                <p className="text-indigo-200">We'll show you exactly what to do next</p>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-4">
+              {[
+                { icon: '👤', title: 'Complete Your Profile', points: 50, completed: true },
+                { icon: '✓', title: 'Verify Accreditation', points: 100, completed: false },
+                { icon: '🏠', title: 'Browse Opportunities', points: 25, completed: false },
+              ].map((step, idx) => (
+                <div 
+                  key={idx}
+                  className={`flex items-center gap-4 p-4 rounded-xl ${
+                    step.completed 
+                      ? 'bg-white/10 border border-white/10' 
+                      : 'bg-white/5 border border-dashed border-white/20'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${
+                    step.completed ? 'bg-emerald-500' : 'bg-white/10'
+                  }`}>
+                    {step.completed ? <CheckCircle className="h-6 w-6 text-white" /> : step.icon}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`font-medium ${step.completed ? 'text-emerald-300 line-through' : 'text-white'}`}>
+                      {step.title}
+                    </p>
+                    <div className="flex items-center gap-1 text-sm text-indigo-300">
+                      <Zap className="h-3 w-3" />
+                      <span>+{step.points} pts</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

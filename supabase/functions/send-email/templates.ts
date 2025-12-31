@@ -12,6 +12,25 @@ export interface SignupNotificationProps {
   signupDate: string;
 }
 
+export interface InvestmentInterestProps {
+  investorName: string;
+  investorEmail: string;
+  dealTitle: string;
+  dealSlug: string;
+  investmentAmount: string;
+  message?: string;
+  timestamp: string;
+}
+
+export interface NewMessageProps {
+  senderName: string;
+  senderType: 'investor' | 'syndicator';
+  messagePreview: string;
+  dealTitle?: string;
+  dealSlug?: string;
+  timestamp: string;
+}
+
 export function getBaseTemplate({
   title,
   content,
@@ -239,6 +258,98 @@ export function getWelcomeEmailTemplate(userType: 'investor' | 'syndicator', use
     content,
     buttonText: 'Complete Your Profile',
     buttonUrl: 'https://equitymd.com/dashboard'
+  });
+}
+
+// New Investment Interest Template - Sent to Syndicators
+export function getInvestmentInterestTemplate({
+  investorName,
+  investorEmail,
+  dealTitle,
+  dealSlug,
+  investmentAmount,
+  message,
+  timestamp,
+}: InvestmentInterestProps): string {
+  const content = `
+    <p>🎉 <strong>Great news!</strong> An investor has expressed interest in your deal.</p>
+    
+    <div class="info-box" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-left-color: #10b981;">
+      <h4 style="color: #059669;">💰 New Investment Interest</h4>
+      <p><strong>Deal:</strong> ${dealTitle}</p>
+      <p><strong>Investor:</strong> ${investorName}</p>
+      <p><strong>Contact:</strong> ${investorEmail}</p>
+      <p><strong>Interest Amount:</strong> <span style="color: #059669; font-weight: 700; font-size: 18px;">${investmentAmount}</span></p>
+      <p><strong>Received:</strong> ${timestamp}</p>
+    </div>
+    
+    ${message ? `
+    <div class="info-box">
+      <h4>💬 Message from Investor:</h4>
+      <p style="font-style: italic;">"${message}"</p>
+    </div>
+    ` : ''}
+    
+    <div style="background: #fef3c7; border-radius: 8px; padding: 16px; margin: 24px 0; border-left: 4px solid #f59e0b;">
+      <p style="margin: 0; color: #92400e;">
+        <strong>⏰ Quick Response Matters!</strong><br>
+        Investors who receive a response within 24 hours are 3x more likely to proceed with their investment.
+      </p>
+    </div>
+    
+    <p><strong>Recommended Next Steps:</strong></p>
+    <ol style="color: #4b5563;">
+      <li>Review the investor's interest and their profile</li>
+      <li>Respond promptly to introduce yourself</li>
+      <li>Share additional deal materials if requested</li>
+      <li>Schedule a call to discuss the opportunity</li>
+    </ol>
+  `;
+
+  return getBaseTemplate({
+    title: `💰 New Investment Interest - ${dealTitle}`,
+    content,
+    buttonText: 'View & Respond Now',
+    buttonUrl: `https://equitymd.com/inbox`
+  });
+}
+
+// New Message Notification Template
+export function getNewMessageTemplate({
+  senderName,
+  senderType,
+  messagePreview,
+  dealTitle,
+  dealSlug,
+  timestamp,
+}: NewMessageProps): string {
+  const senderLabel = senderType === 'investor' ? '💼 Investor' : '🏢 Syndicator';
+  
+  const content = `
+    <p>You have a new message from ${senderLabel === '💼 Investor' ? 'an investor' : 'a syndicator'} on EquityMD.</p>
+    
+    <div class="info-box">
+      <h4>${senderLabel}: ${senderName}</h4>
+      ${dealTitle ? `<p><strong>Regarding:</strong> ${dealTitle}</p>` : ''}
+      <p><strong>Received:</strong> ${timestamp}</p>
+    </div>
+    
+    <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin: 16px 0;">
+      <p style="margin: 0; color: #374151; font-style: italic;">
+        "${messagePreview.length > 200 ? messagePreview.substring(0, 200) + '...' : messagePreview}"
+      </p>
+    </div>
+    
+    <p style="color: #6b7280; font-size: 14px;">
+      Reply directly on EquityMD to continue the conversation.
+    </p>
+  `;
+
+  return getBaseTemplate({
+    title: `New Message from ${senderName}`,
+    content,
+    buttonText: 'View & Reply',
+    buttonUrl: 'https://equitymd.com/inbox'
   });
 }
 

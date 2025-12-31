@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate, getInvestorLaunchTemplate } from './templates.ts';
+import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate, getInvestorLaunchTemplate, getInvestmentInterestTemplate, getNewMessageTemplate } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = 'hello@equitymd.com';
@@ -115,6 +115,45 @@ serve(async (req) => {
         html = getInvestorLaunchTemplate(data.firstName);
         emailTo = to;
         emailSubject = '🚀 You\'ve Been Selected - Welcome to EquityMD';
+        break;
+
+      case 'investment_interest':
+        if (!data?.investorName || !data?.dealTitle || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for investment interest notification' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getInvestmentInterestTemplate({
+          investorName: data.investorName,
+          investorEmail: data.investorEmail || 'Not provided',
+          dealTitle: data.dealTitle,
+          dealSlug: data.dealSlug || '',
+          investmentAmount: data.investmentAmount || 'Not specified',
+          message: data.message,
+          timestamp: data.timestamp || new Date().toLocaleString()
+        });
+        emailTo = to;
+        emailSubject = `💰 New Investment Interest - ${data.dealTitle}`;
+        break;
+
+      case 'new_message':
+        if (!data?.senderName || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for new message notification' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getNewMessageTemplate({
+          senderName: data.senderName,
+          senderType: data.senderType || 'investor',
+          messagePreview: data.messagePreview || 'You have a new message.',
+          dealTitle: data.dealTitle,
+          dealSlug: data.dealSlug,
+          timestamp: data.timestamp || new Date().toLocaleString()
+        });
+        emailTo = to;
+        emailSubject = `💬 New Message from ${data.senderName}`;
         break;
 
       default:

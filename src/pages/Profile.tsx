@@ -520,8 +520,6 @@ export function Profile() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [message, setMessage] = useState('');
   const [showEmailForm, setShowEmailForm] = useState(false);
-  const [showAccountTypeForm, setShowAccountTypeForm] = useState(false);
-  const [changingAccountType, setChangingAccountType] = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
   const [additionalProfile, setAdditionalProfile] = useState<any>(null);
   const [profileCompletion, setProfileCompletion] = useState<any>(null);
@@ -700,69 +698,6 @@ export function Profile() {
       }
     } else {
       toast.error(`Field "${field}" not found`);
-    }
-  };
-
-  const handleAccountTypeChange = async (newType: 'investor' | 'syndicator') => {
-    if (!user || !profile || newType === profile.user_type) return;
-    
-    setChangingAccountType(true);
-    try {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ user_type: newType })
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
-
-      if (newType === 'investor') {
-        const { data: existingInvestor } = await supabase
-          .from('investor_profiles')
-          .select('id')
-          .eq('id', user.id)
-          .single();
-
-        if (!existingInvestor) {
-          const { error: investorError } = await supabase
-            .from('investor_profiles')
-            .insert([{
-              id: user.id,
-              accredited_status: false,
-              investment_preferences: {},
-              preferred_property_types: [],
-              preferred_locations: []
-            }]);
-          
-          if (investorError) throw investorError;
-        }
-      } else {
-        const { data: existingSyndicator } = await supabase
-          .from('syndicator_profiles')
-          .select('id')
-          .eq('id', user.id)
-          .single();
-
-        if (!existingSyndicator) {
-          const { error: syndicatorError } = await supabase
-            .from('syndicator_profiles')
-            .insert([{
-              id: user.id,
-              company_name: profile.full_name || 'My Company',
-              verification_documents: {}
-            }]);
-          
-          if (syndicatorError) throw syndicatorError;
-        }
-      }
-
-      toast.success(`Account type successfully changed to ${newType}`);
-      setShowAccountTypeForm(false);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error changing account type:', error);
-      toast.error('Error changing account type. Please try again.');
-    } finally {
-      setChangingAccountType(false);
     }
   };
 
@@ -974,63 +909,13 @@ export function Profile() {
                 <Settings className="h-6 w-6 text-blue-600 mr-3" />
                 <h2 className="text-2xl font-semibold text-gray-900">Account Settings</h2>
               </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowAccountTypeForm(!showAccountTypeForm)}
-                  className="text-blue-600 hover:text-blue-700 transition font-medium"
-                >
-                  {showAccountTypeForm ? 'Cancel' : 'Change Account Type'}
-                </button>
-                <button
-                  onClick={() => setShowEmailForm(!showEmailForm)}
-                  className="text-blue-600 hover:text-blue-700 transition font-medium"
-                >
-                  {showEmailForm ? 'Cancel' : 'Update Email'}
-                </button>
-              </div>
+              <button
+                onClick={() => setShowEmailForm(!showEmailForm)}
+                className="text-blue-600 hover:text-blue-700 transition font-medium"
+              >
+                {showEmailForm ? 'Cancel' : 'Update Email'}
+              </button>
             </div>
-
-            {showAccountTypeForm && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold mb-4">Change Account Type</h3>
-                <p className="text-gray-600 mb-4">
-                  You can switch between investor and syndicator accounts. Your existing data will be preserved.
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <button
-                    onClick={() => handleAccountTypeChange('investor')}
-                    disabled={changingAccountType || profile?.user_type === 'investor'}
-                    className={`p-4 border rounded-lg text-center flex items-center justify-center transition hover:scale-105 transform ${
-                      profile?.user_type === 'investor'
-                        ? 'bg-blue-100 border-blue-300 text-blue-800'
-                        : 'bg-white border-gray-300 text-gray-700 hover:border-blue-300'
-                    }`}
-                  >
-                    <User className="h-6 w-6 mr-2" />
-                    <div>
-                      <div className="font-semibold">Investor</div>
-                      <div className="text-sm">Find investment opportunities</div>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => handleAccountTypeChange('syndicator')}
-                    disabled={changingAccountType || profile?.user_type === 'syndicator'}
-                    className={`p-4 border rounded-lg text-center flex items-center justify-center transition hover:scale-105 transform ${
-                      profile?.user_type === 'syndicator'
-                        ? 'bg-blue-100 border-blue-300 text-blue-800'
-                        : 'bg-white border-gray-300 text-gray-700 hover:border-blue-300'
-                    }`}
-                  >
-                    <Building2 className="h-6 w-6 mr-2" />
-                    <div>
-                      <div className="font-semibold">Syndicator</div>
-                      <div className="text-sm">List deals for investors</div>
-                    </div>
-                  </button>
-                </div>
-              </div>
-            )}
 
             {showEmailForm && (
               <div className="mb-6">
@@ -1094,19 +979,19 @@ export function Profile() {
             />
           </div>
 
-          {/* Syndicator Management Section */}
+          {/* Business Profile Section */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-gray-50 text-gray-500">
-                Syndicator Management
+                Business Profile
               </span>
             </div>
           </div>
 
-          {/* Syndicator Management */}
+          {/* Business Profile */}
           {!editingSyndicator ? (
             <SyndicatorManager
               onCreateNew={() => {

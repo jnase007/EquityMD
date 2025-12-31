@@ -12,12 +12,14 @@ const Profile = lazy(() => import('./pages/Profile').then(module => ({ default: 
 const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
 const DealDetails = lazy(() => import('./pages/DealDetails').then(module => ({ default: module.DealDetails })));
 const NewDeal = lazy(() => import('./pages/NewDeal').then(module => ({ default: module.NewDeal })));
+const EditDeal = lazy(() => import('./pages/EditDeal').then(module => ({ default: module.EditDeal })));
 const SyndicatorProfile = lazy(() => import('./pages/SyndicatorProfile').then(module => ({ default: module.SyndicatorProfile })));
 const Directory = lazy(() => import('./pages/Directory').then(module => ({ default: module.Directory })));
 const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
 const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
 const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ default: module.Favorites })));
+const InvestmentRequests = lazy(() => import('./pages/InvestmentRequests').then(module => ({ default: module.InvestmentRequests })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -385,12 +387,20 @@ export default function App() {
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <NewDeal />)} 
         />
         <Route 
+          path="/deals/:slug/edit" 
+          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <EditDeal />)} 
+        />
+        <Route 
           path="/inbox" 
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Inbox />)} 
         />
         <Route 
           path="/favorites" 
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Favorites />)} 
+        />
+        <Route 
+          path="/investment-requests" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <InvestmentRequests />)} 
         />
 
         {/* Admin Routes */}

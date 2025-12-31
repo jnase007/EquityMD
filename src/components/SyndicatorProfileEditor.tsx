@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { ImageUpload } from './ImageUpload';
-import { Building2, Plus, X, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Building2, Plus, X, CheckCircle, AlertCircle, ArrowLeft, Save, Loader2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Syndicator {
@@ -119,13 +119,31 @@ export function SyndicatorProfileEditor({ syndicator, onSave, onCancel }: Syndic
 
       if (error) throw error;
 
-      toast.success('Syndicator profile updated successfully!');
-      onSave(data);
+      // Show success with celebration
+      toast.success('Profile saved successfully! 🎉', {
+        duration: 2000,
+        icon: '✅'
+      });
+      
+      // Small delay before closing to let user see the success
+      setTimeout(() => {
+        onSave(data);
+      }, 500);
     } catch (error) {
       console.error('Error updating syndicator profile:', error);
       toast.error('Error updating syndicator profile. Please try again.');
-    } finally {
       setLoading(false);
+    }
+  };
+
+  // Handler for logo upload with immediate feedback
+  const handleLogoUploaded = (url: string) => {
+    setFormData(prev => ({ ...prev, companyLogoUrl: url }));
+    if (url) {
+      toast.success('Logo uploaded! Click "Save Changes" to apply.', {
+        duration: 3000,
+        icon: '🖼️'
+      });
     }
   };
 
@@ -220,13 +238,14 @@ export function SyndicatorProfileEditor({ syndicator, onSave, onCancel }: Syndic
           />
         </div>
 
-        <div>
-          <label className="block text-base font-semibold text-gray-900 mb-3">
+        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-100">
+          <label className="block text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-purple-600" />
             Company Logo
           </label>
           <ImageUpload
             currentImageUrl={formData.companyLogoUrl}
-            onImageUploaded={(url) => setFormData(prev => ({ ...prev, companyLogoUrl: url }))}
+            onImageUploaded={handleLogoUploaded}
             bucket="logos"
             folder="companies"
             showEditor={true}
@@ -236,9 +255,12 @@ export function SyndicatorProfileEditor({ syndicator, onSave, onCancel }: Syndic
             maxHeight={600}
             label="Company Logo"
           />
-          <p className="mt-2 text-sm text-gray-500">
-            Recommended: Square format (1:1 aspect ratio) for best display
-          </p>
+          <div className="mt-3 p-3 bg-white/70 rounded-lg border border-purple-100">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium text-purple-700">Pro tip:</span> Square logos (1:1) display best.
+              Upload a high-resolution image for best results.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -467,21 +489,39 @@ export function SyndicatorProfileEditor({ syndicator, onSave, onCancel }: Syndic
           </div>
         </div>
 
-        <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 transition"
-          >
-            {loading ? 'Saving...' : 'Save Changes'}
-          </button>
+        {/* Sticky Save Bar */}
+        <div className="sticky bottom-0 bg-white border-t border-gray-200 -mx-6 px-6 py-4 mt-6 shadow-lg">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-500 hidden sm:block">
+              Remember to save your changes before leaving
+            </p>
+            <div className="flex space-x-4 ml-auto">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 transition shadow-lg shadow-purple-500/25 font-medium flex items-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4" />
+                    Save Changes
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </div>

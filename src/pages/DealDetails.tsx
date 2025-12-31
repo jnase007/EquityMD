@@ -16,6 +16,8 @@ import {
   Wallet,
   Play,
   Info,
+  Edit,
+  Settings,
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -240,7 +242,19 @@ export function DealDetails() {
               <ChevronRight className="h-4 w-4 mx-2" />
               <span>{deal.title}</span>
             </div>
-            <h1 className="text-4xl font-bold mb-4">{deal.title}</h1>
+            <div className="flex items-center gap-4 mb-4">
+              <h1 className="text-4xl font-bold">{deal.title}</h1>
+              {/* Edit Button - Only visible to deal owner */}
+              {user && deal.syndicator?.claimed_by === user.id && (
+                <Link
+                  to={`/deals/${deal.slug}/edit`}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur text-white rounded-lg transition-colors text-sm font-medium"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit Deal
+                </Link>
+              )}
+            </div>
             <div className="flex items-center">
               <MapPin className="h-5 w-5 mr-2" />
               <span>{deal.location}</span>
@@ -524,32 +538,48 @@ export function DealDetails() {
               </div>
 
               <div className="space-y-3 mt-6">
-                <button
-                  onClick={() => handleAction("invest")}
-                  disabled={!deal.syndicator?.claimed_by}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
-                >
-                  <Wallet className="h-5 w-5 mr-2" />
-                  Invest Now
-                </button>
+                {/* Owner View - Can't invest in your own deal */}
+                {user && deal.syndicator?.claimed_by === user.id ? (
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                    <div className="text-purple-700 font-medium mb-2">This is your listing</div>
+                    <Link
+                      to={`/deals/${deal.slug}/edit`}
+                      className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Deal
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleAction("invest")}
+                      disabled={!deal.syndicator?.claimed_by}
+                      className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
+                    >
+                      <Wallet className="h-5 w-5 mr-2" />
+                      Invest Now
+                    </button>
 
-                <button
-                  onClick={() => handleAction("contact")}
-                  disabled={!deal.syndicator?.claimed_by}
-                  className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
-                >
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  Contact Syndicator
-                </button>
+                    <button
+                      onClick={() => handleAction("contact")}
+                      disabled={!deal.syndicator?.claimed_by}
+                      className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
+                    >
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      Contact Syndicator
+                    </button>
+                  </>
+                )}
 
                 <FavoriteButton dealId={deal.id} className="w-full py-3" />
               </div>
             </div>
 
-            {/* Unclaimed Profile Warning */}
-            {!deal.syndicator?.claimed_by && (
+            {/* Unclaimed Profile Warning - Only show to non-owners */}
+            {!deal.syndicator?.claimed_by && !(user && deal.syndicator?.claimed_by === user.id) && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                 <div className="flex">
                   <AlertCircle className="h-5 w-5 text-blue-400 mr-2" />
@@ -578,6 +608,7 @@ export function DealDetails() {
         <MessageModal
           dealId={deal.id}
           dealTitle={deal.title}
+          dealSlug={deal.slug}
           receiverId={deal.syndicator.claimed_by}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
           onClose={() => setShowMessageModal(false)}
@@ -588,6 +619,7 @@ export function DealDetails() {
         <MessageModal
           dealId={deal.id}
           dealTitle={deal.title}
+          dealSlug={deal.slug}
           receiverId={deal.syndicator.claimed_by}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
           onClose={() => setShowInvestModal(false)}
