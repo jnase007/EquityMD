@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { 
   Palette, Type, Layout, Sparkles, Check, Copy, 
-  Square, Circle, ArrowRight, Heart, Star, Zap
+  Square, Circle, ArrowRight, Heart, Star, Zap, Paintbrush
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -68,7 +68,7 @@ function ColorSwatch({ name, hex, usage }: { name: string; hex: string; usage: s
     <div className="group">
       <button
         onClick={copyHex}
-        className="w-full aspect-[4/3] rounded-xl shadow-sm border border-gray-100 mb-3 relative overflow-hidden hover:scale-105 transition-transform"
+        className="w-full aspect-[4/3] rounded-2xl shadow-sm border border-gray-100 mb-3 relative overflow-hidden hover:scale-105 transition-transform"
         style={{ backgroundColor: hex }}
       >
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
@@ -84,24 +84,67 @@ function ColorSwatch({ name, hex, usage }: { name: string; hex: string; usage: s
 
 export function BrandingGuide() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
       <Navbar />
       
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4" />
-            Design System
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
+        {/* Pattern overlay */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        {/* Floating decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(5)].map((_, i) => (
+            <Paintbrush 
+              key={i}
+              className="absolute text-white/5"
+              style={{
+                left: `${10 + i * 20}%`,
+                top: `${15 + (i % 2) * 40}%`,
+                width: `${40 + i * 10}px`,
+                height: `${40 + i * 10}px`,
+                transform: `rotate(${-10 + i * 20}deg)`,
+              }}
+            />
+          ))}
+        </div>
+        
+        <div className="max-w-6xl mx-auto px-4 py-16 relative">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
+              <Sparkles className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <p className="text-white/80 text-sm font-medium mb-1">Design System</p>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">
+                Equity<span className="text-pink-200">MD</span> Brand Guide
+              </h1>
+            </div>
           </div>
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Equity<span className="text-blue-600">MD</span> Brand Guide
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          
+          <p className="text-white/80 text-lg max-w-2xl">
             Our visual language and design principles for creating consistent, beautiful experiences.
           </p>
+          
+          {/* Quick stats */}
+          <div className="flex flex-wrap gap-4 mt-8">
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Colors</span>
+              <p className="text-white font-bold text-xl">12</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Font Sizes</span>
+              <p className="text-white font-bold text-xl">7</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Border Radius</span>
+              <p className="text-white font-bold text-xl">5</p>
+            </div>
+          </div>
         </div>
+      </div>
 
+      <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Logo Section */}
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-6">
@@ -109,12 +152,13 @@ export function BrandingGuide() {
               <Square className="h-6 w-6 text-blue-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Logo</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-blue-200 to-transparent"></div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Primary Logo</h3>
-              <div className="bg-gray-50 rounded-xl p-8 flex items-center justify-center mb-4">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-8 flex items-center justify-center mb-4">
                 <span className="text-4xl font-extrabold">
                   Equity<span className="text-blue-600">MD</span>
                 </span>
@@ -124,9 +168,9 @@ export function BrandingGuide() {
               </p>
             </div>
             
-            <div className="bg-slate-900 rounded-2xl shadow-lg p-8">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-lg p-8">
               <h3 className="font-semibold text-white mb-4">Inverted Logo</h3>
-              <div className="bg-slate-800 rounded-xl p-8 flex items-center justify-center mb-4">
+              <div className="bg-slate-800/50 rounded-xl p-8 flex items-center justify-center mb-4">
                 <span className="text-4xl font-extrabold text-white">
                   Equity<span className="text-blue-400">MD</span>
                 </span>
@@ -145,10 +189,11 @@ export function BrandingGuide() {
               <Palette className="h-6 w-6 text-purple-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Colors</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-purple-200 to-transparent"></div>
           </div>
           
           <div className="space-y-8">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-6">Primary Blues</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {colors.primary.map((color) => (
@@ -157,7 +202,7 @@ export function BrandingGuide() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-6">Secondary Colors</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {colors.secondary.map((color) => (
@@ -166,7 +211,7 @@ export function BrandingGuide() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-6">Neutrals</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {colors.neutral.map((color) => (
@@ -184,23 +229,24 @@ export function BrandingGuide() {
               <Type className="h-6 w-6 text-emerald-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Typography</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-emerald-200 to-transparent"></div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Headings</h3>
-              <p className="text-sm text-gray-500 mb-6 font-mono">{fonts.headings.family}</p>
+              <p className="text-sm text-gray-500 mb-6 font-mono bg-gray-50 rounded-lg px-3 py-2 inline-block">{fonts.headings.family}</p>
               
               <div className="space-y-4">
-                <div>
+                <div className="pb-4 border-b border-gray-100">
                   <span className="text-3xl font-bold text-gray-900">Heading 1 (3xl)</span>
                   <p className="text-xs text-gray-400 mt-1">30px • Bold/Extra Bold</p>
                 </div>
-                <div>
+                <div className="pb-4 border-b border-gray-100">
                   <span className="text-2xl font-bold text-gray-900">Heading 2 (2xl)</span>
                   <p className="text-xs text-gray-400 mt-1">24px • Bold</p>
                 </div>
-                <div>
+                <div className="pb-4 border-b border-gray-100">
                   <span className="text-xl font-semibold text-gray-900">Heading 3 (xl)</span>
                   <p className="text-xs text-gray-400 mt-1">20px • Semibold</p>
                 </div>
@@ -211,16 +257,16 @@ export function BrandingGuide() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Body Text</h3>
-              <p className="text-sm text-gray-500 mb-6 font-mono">{fonts.body.family}</p>
+              <p className="text-sm text-gray-500 mb-6 font-mono bg-gray-50 rounded-lg px-3 py-2 inline-block">{fonts.body.family}</p>
               
               <div className="space-y-4">
-                <div>
+                <div className="pb-4 border-b border-gray-100">
                   <span className="text-base text-gray-900">Body Regular (base)</span>
                   <p className="text-xs text-gray-400 mt-1">16px • Regular/Medium</p>
                 </div>
-                <div>
+                <div className="pb-4 border-b border-gray-100">
                   <span className="text-sm text-gray-600">Body Small (sm)</span>
                   <p className="text-xs text-gray-400 mt-1">14px • Regular</p>
                 </div>
@@ -240,16 +286,17 @@ export function BrandingGuide() {
               <Layout className="h-6 w-6 text-amber-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Spacing & Radius</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-amber-200 to-transparent"></div>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-6">Spacing Scale</h3>
               <div className="space-y-3">
                 {spacing.map((s) => (
-                  <div key={s.name} className="flex items-center gap-4">
+                  <div key={s.name} className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-xl transition">
                     <div 
-                      className="bg-blue-500 rounded" 
+                      className="bg-gradient-to-r from-blue-500 to-indigo-500 rounded" 
                       style={{ width: s.value, height: s.value, minWidth: s.value }}
                     />
                     <div className="flex-1">
@@ -257,26 +304,26 @@ export function BrandingGuide() {
                       <span className="text-gray-400 mx-2">•</span>
                       <span className="text-gray-500 text-sm">{s.value}</span>
                     </div>
-                    <code className="text-xs text-gray-400 font-mono">{s.tailwind}</code>
+                    <code className="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-1 rounded">{s.tailwind}</code>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-6">Border Radius</h3>
               <div className="space-y-4">
                 {borderRadius.map((r) => (
-                  <div key={r.name} className="flex items-center gap-4">
+                  <div key={r.name} className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-xl transition">
                     <div 
-                      className="w-12 h-12 bg-blue-100 border-2 border-blue-500"
+                      className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 border-2 border-blue-500"
                       style={{ borderRadius: r.value }}
                     />
                     <div className="flex-1">
                       <span className="font-medium text-gray-900">{r.name}</span>
                       <p className="text-xs text-gray-400">{r.usage}</p>
                     </div>
-                    <code className="text-xs text-gray-400 font-mono">{r.tailwind}</code>
+                    <code className="text-xs text-gray-400 font-mono bg-gray-50 px-2 py-1 rounded">{r.tailwind}</code>
                   </div>
                 ))}
               </div>
@@ -291,12 +338,13 @@ export function BrandingGuide() {
               <Zap className="h-6 w-6 text-red-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Components</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-red-200 to-transparent"></div>
           </div>
           
-          <div className="bg-white rounded-2xl shadow-lg p-8">
+          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
             <h3 className="font-semibold text-gray-900 mb-6">Buttons</h3>
             <div className="flex flex-wrap gap-4 mb-8">
-              <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition">
+              <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition shadow-lg shadow-blue-500/25">
                 Primary Button
               </button>
               <button className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition">
@@ -305,7 +353,7 @@ export function BrandingGuide() {
               <button className="px-6 py-3 border-2 border-blue-600 text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition">
                 Outline Button
               </button>
-              <button className="px-6 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition flex items-center gap-2">
+              <button className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-600 transition flex items-center gap-2 shadow-lg shadow-emerald-500/25">
                 <Check className="h-5 w-5" />
                 With Icon
               </button>
@@ -313,7 +361,7 @@ export function BrandingGuide() {
 
             <h3 className="font-semibold text-gray-900 mb-6">Cards</h3>
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
                 <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                   <Star className="h-5 w-5 text-blue-600" />
                 </div>
@@ -321,12 +369,15 @@ export function BrandingGuide() {
                 <p className="text-sm text-gray-600">Light border, subtle shadow, rounded-2xl corners.</p>
               </div>
               
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
-                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                  <Sparkles className="h-5 w-5 text-white" />
+              <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+                <div className="relative">
+                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                    <Sparkles className="h-5 w-5 text-white" />
+                  </div>
+                  <h4 className="font-semibold mb-2">Gradient Card</h4>
+                  <p className="text-sm text-blue-100">For featured content and CTAs.</p>
                 </div>
-                <h4 className="font-semibold mb-2">Gradient Card</h4>
-                <p className="text-sm text-blue-100">For featured content and CTAs.</p>
               </div>
               
               <div className="bg-white rounded-2xl border-l-4 border-emerald-500 p-6 shadow-md">
@@ -347,27 +398,28 @@ export function BrandingGuide() {
               <Sparkles className="h-6 w-6 text-indigo-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">Design Principles</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-indigo-200 to-transparent"></div>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="text-4xl mb-4">✨</div>
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition group">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">✨</div>
               <h3 className="font-bold text-gray-900 mb-2">Clean & Modern</h3>
               <p className="text-gray-600 text-sm">
                 Generous whitespace, soft shadows, and rounded corners create a premium, approachable feel.
               </p>
             </div>
             
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="text-4xl mb-4">🎯</div>
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition group">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🎯</div>
               <h3 className="font-bold text-gray-900 mb-2">Focused & Clear</h3>
               <p className="text-gray-600 text-sm">
                 One primary action per screen. Guide users with visual hierarchy and clear CTAs.
               </p>
             </div>
             
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="text-4xl mb-4">🚀</div>
+            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition group">
+              <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🚀</div>
               <h3 className="font-bold text-gray-900 mb-2">Delightful Details</h3>
               <p className="text-gray-600 text-sm">
                 Subtle animations, emoji accents, and micro-interactions make the experience enjoyable.
@@ -383,4 +435,3 @@ export function BrandingGuide() {
 }
 
 export default BrandingGuide;
-
