@@ -20,9 +20,9 @@ export function Compliance() {
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-4">Platform Overview</h2>
             <p className="text-gray-600">
-              EquityMD operates as a marketplace platform connecting accredited investors with real estate investment opportunities. 
-              While we are not a broker-dealer or investment advisor, we maintain strict standards to ensure the quality and 
-              integrity of our platform.
+              EquityMD operates as a listing platform where real estate syndicators may post investment opportunities for accredited investors to discover. 
+              We are not a broker-dealer, investment advisor, or intermediary. We do not facilitate introductions or connections between parties. 
+              All communication and transactions occur independently between investors and syndicators outside of this platform.
             </p>
           </div>
 
@@ -144,9 +144,9 @@ export function Compliance() {
               <div>
                 <h3 className="font-bold text-yellow-800 mb-2">Marketplace Disclaimer</h3>
                 <p className="text-yellow-800">
-                  EquityMD is a marketplace platform that connects investors with real estate opportunities. We do not provide investment advice, 
-                  broker securities transactions, or hold investor funds. Please refer to our full legal disclaimer for important information about 
-                  our services and limitations.
+                  EquityMD is a listing platform where syndicators may post real estate investment opportunities. We do not make introductions, provide investment advice, 
+                  broker securities transactions, or hold investor funds. All communication and transactions occur independently outside this platform. 
+                  Please refer to our full legal disclaimer for important information about our services and limitations.
                 </p>
               </div>
             </div>

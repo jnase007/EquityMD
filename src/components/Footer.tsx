@@ -163,20 +163,21 @@ export function Footer() {
       <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-gray-800">
         <div className="bg-gray-800/50 rounded-lg p-4 mb-6">
           <p className="text-xs text-gray-400 leading-relaxed">
-            <strong className="text-gray-300">Important Disclaimer:</strong> EquityMD is an online marketplace that connects 
-            accredited investors with real estate syndicators. EquityMD is not a registered broker-dealer, investment advisor, 
-            funding portal, or crowdfunding portal. EquityMD does not provide investment advice, endorsement, analysis, or 
-            recommendations with respect to any securities or investment opportunities posted on our platform.
+            <strong className="text-gray-300">Important Disclaimer:</strong> EquityMD is an online listing platform where 
+            real estate syndicators may post investment opportunities. EquityMD is not a registered broker-dealer, investment 
+            advisor, funding portal, or crowdfunding portal. EquityMD does not facilitate transactions, make introductions, 
+            provide investment advice, or make any recommendations with respect to any securities or investment opportunities 
+            listed on our platform.
           </p>
           <p className="text-xs text-gray-400 leading-relaxed mt-2">
-            All securities listed on EquityMD are offered by the issuing syndicator, who is solely responsible for the 
-            accuracy of information provided and compliance with applicable securities laws including SEC Regulation D. 
-            Investments in private placements are speculative, illiquid, and involve a high degree of risk, including 
-            the possible loss of your entire investment. Past performance is not indicative of future results.
+            All investment opportunities listed on EquityMD are posted by the issuing syndicator, who is solely responsible 
+            for the accuracy of all information and compliance with applicable securities laws including SEC Regulation D. 
+            EquityMD does not verify, endorse, or guarantee any listing. Investments in private placements are speculative, 
+            illiquid, and involve a high degree of risk, including the possible loss of your entire investment.
           </p>
           <p className="text-xs text-gray-400 leading-relaxed mt-2">
-            By using EquityMD, you acknowledge that you are an accredited investor as defined by SEC Rule 501 and that 
-            you understand these risks. Always conduct your own due diligence before making any investment decision.
+            Any communication or transaction between investors and syndicators occurs independently and outside of EquityMD. 
+            Always conduct your own due diligence before making any investment decision.
           </p>
         </div>
       </div>

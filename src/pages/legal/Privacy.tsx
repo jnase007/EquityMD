@@ -66,7 +66,7 @@ export function Privacy() {
               <ul className="list-disc list-inside text-gray-600 ml-4">
                 <li>Provide and improve our platform services</li>
                 <li>Process your registration and maintain your account</li>
-                <li>Connect investors with investment opportunities</li>
+                <li>Display investment opportunities listed by syndicators</li>
                 <li>Send relevant communications and updates</li>
                 <li>Ensure platform security and prevent fraud</li>
                 <li>Comply with legal obligations</li>

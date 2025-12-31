@@ -35,7 +35,7 @@ export function Disclaimer() {
               General Information Only
             </h2>
             <p className="text-gray-600 mb-8">
-              EquityMD is a platform designed to connect accredited investors with real estate firms and syndicators by providing a space to list and discover investment opportunities. The information provided on this site, including deal listings, company profiles, and related content, is for informational and promotional purposes only. EquityMD does not provide investment advice, financial advice, or legal advice, nor does it endorse, recommend, or guarantee any investment opportunities listed on the platform.
+              EquityMD is a listing platform where real estate firms and syndicators may post investment opportunities for accredited investors to discover. The information provided on this site, including deal listings, company profiles, and related content, is for informational purposes only. EquityMD does not facilitate introductions or connections between parties. EquityMD does not provide investment advice, financial advice, or legal advice, nor does it endorse, recommend, or guarantee any investment opportunities listed on the platform.
             </p>
 
             <h2 className="text-2xl font-bold mb-4 flex items-center">

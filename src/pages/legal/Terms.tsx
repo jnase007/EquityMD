@@ -38,7 +38,7 @@ export function Terms() {
               Platform Overview
             </h2>
             <p className="text-gray-600 mb-8">
-              EquityMD is a marketplace platform that connects accredited investors with real estate investment opportunities. We provide a technology platform for real estate firms and syndicators to list their investment opportunities and for accredited investors to discover these opportunities. EquityMD is not a broker-dealer, investment advisor, or intermediary, and does not participate in any investment transactions.
+              EquityMD is a listing platform where real estate firms and syndicators may post their investment opportunities and accredited investors may discover these opportunities. EquityMD is not a broker-dealer, investment advisor, or intermediary. EquityMD does not facilitate introductions, make connections, or participate in any investment transactions. All communication and transactions occur independently between investors and syndicators outside of this platform.
             </p>
 
             <h2 className="text-2xl font-bold mb-4 flex items-center">
