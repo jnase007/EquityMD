@@ -18,7 +18,7 @@ import {
 } from './types';
 
 export function PropertyListingWizard() {
-  const { user } = useAuthStore();
+  const { user, profile } = useAuthStore();
   const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(0);
@@ -32,6 +32,12 @@ export function PropertyListingWizard() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(false);
+  
+  // Inline business profile creation
+  const [showBusinessCreation, setShowBusinessCreation] = useState(false);
+  const [businessName, setBusinessName] = useState('');
+  const [businessDescription, setBusinessDescription] = useState('');
+  const [creatingBusiness, setCreatingBusiness] = useState(false);
 
   // Format number with commas for display
   const formatWithCommas = (value: string): string => {
@@ -262,6 +268,66 @@ export function PropertyListingWizard() {
     }
     
     return coverImageUrl;
+  };
+
+  // Create business profile inline
+  const handleCreateBusiness = async () => {
+    if (!businessName.trim()) {
+      toast.error('Please enter your company name');
+      return;
+    }
+    
+    setCreatingBusiness(true);
+    try {
+      // Generate a slug from the company name
+      const slug = businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      
+      // Create syndicator profile
+      const { data: newSyndicator, error: syndicatorError } = await supabase
+        .from('syndicators')
+        .insert([{
+          company_name: businessName.trim(),
+          description: businessDescription.trim() || null,
+          slug: `${slug}-${Date.now().toString(36)}`,
+          claimed_by: user!.id,
+          verification_status: 'pending',
+          years_experience: 0,
+          total_deal_volume: 0,
+          contact_email: user!.email,
+        }])
+        .select()
+        .single();
+      
+      if (syndicatorError) throw syndicatorError;
+      
+      // Update user profile to syndicator type
+      await supabase
+        .from('profiles')
+        .update({ user_type: 'syndicator' })
+        .eq('id', user!.id);
+      
+      // Create syndicator_profiles entry
+      await supabase
+        .from('syndicator_profiles')
+        .upsert([{
+          id: user!.id,
+          company_name: businessName.trim(),
+        }]);
+      
+      // Update local state
+      setUserSyndicators([newSyndicator]);
+      setFormData(prev => ({ ...prev, syndicatorId: newSyndicator.id }));
+      setShowBusinessCreation(false);
+      setBusinessName('');
+      setBusinessDescription('');
+      
+      toast.success('Business profile created! You can now list deals.');
+    } catch (error: any) {
+      console.error('Error creating business:', error);
+      toast.error(error.message || 'Failed to create business profile');
+    } finally {
+      setCreatingBusiness(false);
+    }
   };
 
   const handlePublish = async (status: 'draft' | 'active' = 'draft') => {
@@ -516,17 +582,86 @@ export function PropertyListingWizard() {
                       {loadingSyndicators ? (
                         <div className="animate-pulse h-12 bg-gray-100 rounded-xl" />
                       ) : userSyndicators.length === 0 ? (
-                        <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                          <p className="text-amber-800 font-medium">No syndicator profile found</p>
-                          <p className="text-amber-600 text-sm mt-1">
-                            You need to create a syndicator profile before listing properties.
-                          </p>
-                          <button
-                            onClick={() => navigate('/profile')}
-                            className="mt-3 px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600"
-                          >
-                            Create Syndicator Profile
-                          </button>
+                        <div className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl">
+                          {!showBusinessCreation ? (
+                            <>
+                              <div className="text-center">
+                                <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                  <Building className="h-8 w-8 text-indigo-600" />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">Create Your Business Profile</h3>
+                                <p className="text-gray-600 text-sm mb-6">
+                                  To list a deal, you'll need to set up your syndicator profile first. This only takes a minute!
+                                </p>
+                                <button
+                                  onClick={() => setShowBusinessCreation(true)}
+                                  className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg"
+                                >
+                                  Get Started
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-lg font-bold text-gray-900">Create Business Profile</h3>
+                                <button
+                                  onClick={() => setShowBusinessCreation(false)}
+                                  className="text-gray-400 hover:text-gray-600"
+                                >
+                                  <X className="h-5 w-5" />
+                                </button>
+                              </div>
+                              
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Company Name *
+                                </label>
+                                <input
+                                  type="text"
+                                  value={businessName}
+                                  onChange={(e) => setBusinessName(e.target.value)}
+                                  placeholder="e.g., Horizon Real Estate Partners"
+                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-indigo-500"
+                                />
+                              </div>
+                              
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Brief Description (optional)
+                                </label>
+                                <textarea
+                                  value={businessDescription}
+                                  onChange={(e) => setBusinessDescription(e.target.value)}
+                                  placeholder="Tell investors about your company..."
+                                  rows={3}
+                                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-indigo-500 resize-none"
+                                />
+                              </div>
+                              
+                              <button
+                                onClick={handleCreateBusiness}
+                                disabled={creatingBusiness || !businessName.trim()}
+                                className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                              >
+                                {creatingBusiness ? (
+                                  <>
+                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                    Creating...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Check className="h-5 w-5" />
+                                    Create & Continue
+                                  </>
+                                )}
+                              </button>
+                              
+                              <p className="text-xs text-gray-500 text-center">
+                                You can add more details like logo and contact info later in your dashboard.
+                              </p>
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 gap-3">

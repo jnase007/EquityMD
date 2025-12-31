@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { AuthModal } from '../../components/AuthModal';
 import { CheckCircle, AlertTriangle, FileText, DollarSign, Award, ArrowRight, Shield, Sparkles } from 'lucide-react';
 
 export function Accreditation() {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  
   const requirements = [
     {
       title: "Income Requirement",
@@ -122,19 +125,23 @@ export function Accreditation() {
             <div className="relative">
               <h3 className="text-2xl font-bold text-white mb-2">Ready to Get Started?</h3>
               <p className="text-emerald-100 mb-6">Complete your investor profile to begin browsing opportunities.</p>
-              <Link
-                to="/signup/start"
+              <button
+                onClick={() => setShowAuthModal(true)}
                 className="inline-flex items-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-xl font-bold hover:bg-emerald-50 transition shadow-lg"
               >
                 Create Account
                 <ArrowRight className="h-5 w-5" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <Footer />
+      
+      {showAuthModal && (
+        <AuthModal onClose={() => setShowAuthModal(false)} />
+      )}
     </div>
   );
 }

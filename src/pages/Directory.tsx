@@ -670,7 +670,7 @@ export function Directory() {
               </p>
             </div>
             <Link
-              to="/signup/start"
+              to="/contact"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-emerald-600 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Join Directory

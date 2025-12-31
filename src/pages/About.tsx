@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { AuthModal } from '../components/AuthModal';
 import { Building2, Users, Shield, TrendingUp, Award, CheckCircle, ArrowRight, Sparkles, Target, Heart } from 'lucide-react';
 
 export function About() {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <SEO 
@@ -221,18 +224,18 @@ export function About() {
                 you need to succeed in commercial real estate.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link
-                  to="/signup/start"
+                <button
+                  onClick={() => setShowAuthModal(true)}
                   className="inline-flex items-center justify-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-2xl font-bold hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                  Join as Investor
+                  Get Started
                   <ArrowRight className="h-5 w-5" />
-                </Link>
+                </button>
                 <Link
-                  to="/signup/start"
+                  to="/find"
                   className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur text-white px-8 py-4 rounded-2xl font-bold hover:bg-white/20 transition border border-white/30"
                 >
-                  List Your Deals
+                  Browse Deals
                 </Link>
               </div>
             </div>
@@ -241,6 +244,10 @@ export function About() {
       </section>
 
       <Footer />
+      
+      {showAuthModal && (
+        <AuthModal onClose={() => setShowAuthModal(false)} />
+      )}
     </div>
   );
 }

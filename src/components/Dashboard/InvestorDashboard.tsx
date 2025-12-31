@@ -568,6 +568,29 @@ export function InvestorDashboard() {
         />
       )}
 
+      {/* Syndicator CTA Banner */}
+      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-2xl p-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+              <Building2 className="h-6 w-6 text-white" />
+            </div>
+            <div className="text-white">
+              <h3 className="font-bold text-lg">Are you a real estate syndicator?</h3>
+              <p className="text-white/80 text-sm">List your deals and reach 10,000+ accredited investors</p>
+            </div>
+          </div>
+          <Link
+            to="/deals/new"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            <Briefcase className="h-5 w-5" />
+            List a Deal
+          </Link>
+        </div>
+      </div>
+
       {/* Floating Profile Completion Nudge */}
       <ProfileNudge 
         percentage={profileCompletion} 

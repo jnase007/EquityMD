@@ -55,12 +55,8 @@ import { TestMessaging } from './pages/TestMessaging';
 import { TestAuth } from './pages/TestAuth';
 import { OnboardingDemo } from './pages/OnboardingDemo';
 import { AuthModal } from './components/AuthModal';
-import { SignupStart } from './pages/auth/SignupStart';
-import { SignupEmail } from './pages/auth/SignupEmail';
-import { SignupPassword } from './pages/auth/SignupPassword';
-import { SignupName } from './pages/auth/SignupName';
-import { SignupAccreditation } from './pages/auth/SignupAccreditation';
-import { SignupContinue } from './pages/auth/SignupContinue';
+// Signup pages removed - now using simplified social auth flow
+// All users start as investors and can upgrade to syndicator when listing a deal
 import { PerformanceMonitor } from './components/PerformanceMonitor';
 import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
@@ -317,13 +313,8 @@ export default function App() {
         <Route path="/legal/disclaimer" element={<Disclaimer />} />
         <Route path="/resources/glossary" element={<Glossary />} />
 
-        {/* Signup Routes */}
-        <Route path="/signup/start" element={<SignupStart />} />
-        <Route path="/signup/:type/email" element={<SignupEmail />} />
-        <Route path="/signup/:type/password" element={<SignupPassword />} />
-        <Route path="/signup/:type/name" element={<SignupName />} />
-        <Route path="/signup/:type/accreditation" element={<SignupAccreditation />} />
-        <Route path="/signup/:type/continue" element={<SignupContinue />} />
+        {/* Signup Routes - Redirect to home (auth handled via modal) */}
+        <Route path="/signup/*" element={<Navigate to="/" replace />} />
 
         {/* Public Browse Routes - No Authentication Required */}
         <Route path="/find" element={<Browse />} />
