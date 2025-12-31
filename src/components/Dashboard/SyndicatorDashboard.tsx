@@ -56,6 +56,10 @@ export function SyndicatorDashboard() {
   const [newBusinessName, setNewBusinessName] = useState('');
   const [creating, setCreating] = useState(false);
   const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
+  const [showEditBusiness, setShowEditBusiness] = useState(false);
+  const [editForm, setEditForm] = useState({ companyName: '', companyDescription: '' });
+  const [savingBusiness, setSavingBusiness] = useState(false);
+  const [showLogoUpload, setShowLogoUpload] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -266,6 +270,64 @@ export function SyndicatorDashboard() {
     }
   }
 
+  function openEditBusiness() {
+    if (syndicator) {
+      setEditForm({
+        companyName: syndicator.company_name || '',
+        companyDescription: syndicator.company_description || '',
+      });
+      setShowEditBusiness(true);
+    }
+  }
+
+  async function saveBusinessProfile() {
+    if (!syndicator) return;
+    setSavingBusiness(true);
+    try {
+      const { error } = await supabase
+        .from('syndicators')
+        .update({
+          company_name: editForm.companyName.trim(),
+          company_description: editForm.companyDescription.trim(),
+        })
+        .eq('id', syndicator.id);
+
+      if (error) throw error;
+
+      setSyndicator({
+        ...syndicator,
+        company_name: editForm.companyName.trim(),
+        company_description: editForm.companyDescription.trim(),
+      });
+      setShowEditBusiness(false);
+      toast.success('Business profile updated! ✨');
+    } catch (error: any) {
+      console.error('Error updating business:', error);
+      toast.error('Failed to update business profile');
+    } finally {
+      setSavingBusiness(false);
+    }
+  }
+
+  async function handleLogoUpdate(url: string) {
+    if (!syndicator) return;
+    try {
+      const { error } = await supabase
+        .from('syndicators')
+        .update({ company_logo_url: url })
+        .eq('id', syndicator.id);
+
+      if (error) throw error;
+
+      setSyndicator({ ...syndicator, company_logo_url: url });
+      setShowLogoUpload(false);
+      toast.success('Logo updated! 🎨');
+    } catch (error) {
+      console.error('Error updating logo:', error);
+      toast.error('Failed to update logo');
+    }
+  }
+
   // Loading state
   if (loading) {
     return (
@@ -388,13 +450,13 @@ export function SyndicatorDashboard() {
               <Building2 className="h-5 w-5" />
               Your Business
             </h2>
-            <Link
-              to="/profile"
+            <button
+              onClick={openEditBusiness}
               className="text-white/80 hover:text-white text-sm flex items-center gap-1 transition-colors"
             >
               <Edit className="h-4 w-4" />
-              Edit Profile
-            </Link>
+              Edit Business
+            </button>
           </div>
         </div>
         
@@ -414,12 +476,12 @@ export function SyndicatorDashboard() {
                 )}
               </div>
               {!syndicator.company_logo_url && (
-                <Link
-                  to="/profile"
+                <button
+                  onClick={openEditBusiness}
                   className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <Camera className="h-6 w-6 text-white" />
-                </Link>
+                </button>
               )}
             </div>
 
@@ -449,9 +511,9 @@ export function SyndicatorDashboard() {
               ) : (
                 <p className="text-gray-400 text-sm italic mb-3">
                   No description yet –{' '}
-                  <Link to="/profile" className="text-purple-600 hover:underline">
+                  <button onClick={openEditBusiness} className="text-purple-600 hover:underline">
                     add one to attract investors
-                  </Link>
+                  </button>
                 </p>
               )}
 
@@ -514,12 +576,12 @@ export function SyndicatorDashboard() {
                   </p>
                 </div>
               </div>
-              <Link
-                to="/profile"
+              <button
+                onClick={openEditBusiness}
                 className="px-4 py-2 bg-amber-200 text-amber-800 font-medium rounded-lg hover:bg-amber-300 transition-colors"
               >
                 Complete Now
-              </Link>
+              </button>
             </div>
           )}
         </div>
@@ -883,6 +945,153 @@ export function SyndicatorDashboard() {
       
       {/* Achievement Unlocked Animation */}
       <AchievementUnlocked />
+
+      {/* Edit Business Modal */}
+      {showEditBusiness && syndicator && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-100 rounded-xl">
+                    <Building2 className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900">Edit Business Profile</h2>
+                </div>
+                <button
+                  onClick={() => setShowEditBusiness(false)}
+                  className="p-2 text-gray-400 hover:text-gray-600 transition"
+                >
+                  <XCircle className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* Logo Section */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">Company Logo</label>
+                <div className="flex items-center gap-4">
+                  {syndicator.company_logo_url ? (
+                    <img
+                      src={syndicator.company_logo_url}
+                      alt={syndicator.company_name}
+                      className="w-16 h-16 rounded-xl object-cover border border-gray-200"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center">
+                      <Building2 className="h-7 w-7 text-gray-400" />
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setShowLogoUpload(true)}
+                    className="px-4 py-2 text-purple-600 border border-purple-200 rounded-lg hover:bg-purple-50 transition text-sm font-medium"
+                  >
+                    {syndicator.company_logo_url ? 'Change Logo' : 'Upload Logo'}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                <input
+                  type="text"
+                  value={editForm.companyName}
+                  onChange={(e) => setEditForm({ ...editForm, companyName: e.target.value })}
+                  placeholder="Your company name"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Company Description</label>
+                <textarea
+                  value={editForm.companyDescription}
+                  onChange={(e) => setEditForm({ ...editForm, companyDescription: e.target.value })}
+                  placeholder="Tell investors about your company, track record, and investment philosophy..."
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
+                />
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-100 flex gap-3">
+              <button
+                onClick={() => setShowEditBusiness(false)}
+                className="flex-1 py-3 text-gray-600 font-medium rounded-xl hover:bg-gray-100 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveBusinessProfile}
+                disabled={savingBusiness || !editForm.companyName.trim()}
+                className="flex-1 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {savingBusiness ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                ) : (
+                  <>
+                    <CheckCircle className="h-5 w-5" />
+                    Save Changes
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Logo Upload Modal */}
+      {showLogoUpload && syndicator && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 className="text-lg font-semibold mb-4">Upload Company Logo</h3>
+            <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-xl mb-4">
+              <Camera className="h-10 w-10 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 text-sm mb-3">Drag & drop your logo or click to browse</p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  
+                  try {
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${syndicator.id}/logo.${fileExt}`;
+                    
+                    const { error: uploadError } = await supabase.storage
+                      .from('logos')
+                      .upload(fileName, file, { upsert: true });
+                    
+                    if (uploadError) throw uploadError;
+                    
+                    const { data } = supabase.storage.from('logos').getPublicUrl(fileName);
+                    handleLogoUpdate(data.publicUrl);
+                  } catch (error) {
+                    console.error('Upload error:', error);
+                    toast.error('Failed to upload logo');
+                  }
+                }}
+                className="hidden"
+                id="logo-upload"
+              />
+              <label
+                htmlFor="logo-upload"
+                className="cursor-pointer px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm font-medium"
+              >
+                Choose File
+              </label>
+            </div>
+            <button
+              onClick={() => setShowLogoUpload(false)}
+              className="w-full py-2 text-gray-600 hover:text-gray-800 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

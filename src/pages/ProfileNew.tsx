@@ -47,7 +47,7 @@ const MARKETS = [
   { value: 'nationwide', label: 'Nationwide', icon: '🇺🇸' },
 ];
 
-type Section = 'profile' | 'investment' | 'business' | 'settings';
+type Section = 'profile' | 'investment' | 'settings';
 
 export function ProfileNew() {
   const { user, profile, setProfile } = useAuthStore();
@@ -57,7 +57,6 @@ export function ProfileNew() {
   const [investorProfile, setInvestorProfile] = useState<any>(null);
   const [syndicator, setSyndicator] = useState<any>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
-  const [showLogoUpload, setShowLogoUpload] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
   
   // Form states
@@ -215,30 +214,6 @@ export function ProfileNew() {
     }
   };
 
-  const handleSaveBusiness = async () => {
-    if (!syndicator) return;
-    setSaving(true);
-    try {
-      const { error } = await supabase
-        .from('syndicators')
-        .update({
-          company_name: formData.companyName,
-          company_description: formData.companyDescription,
-        })
-        .eq('id', syndicator.id);
-
-      if (error) throw error;
-
-      toast.success('Business profile saved! 🏢');
-      fetchProfileData();
-    } catch (error) {
-      console.error('Error saving business profile:', error);
-      toast.error('Failed to save business profile');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const handleAvatarUpload = async (url: string) => {
     try {
       const { error } = await supabase
@@ -256,25 +231,6 @@ export function ProfileNew() {
     } catch (error) {
       console.error('Error updating avatar:', error);
       toast.error('Failed to update photo');
-    }
-  };
-
-  const handleLogoUpload = async (url: string) => {
-    if (!syndicator) return;
-    try {
-      const { error } = await supabase
-        .from('syndicators')
-        .update({ company_logo_url: url })
-        .eq('id', syndicator.id);
-
-      if (error) throw error;
-
-      setSyndicator({ ...syndicator, company_logo_url: url });
-      setShowLogoUpload(false);
-      toast.success('Company logo updated! 🎨');
-    } catch (error) {
-      console.error('Error updating logo:', error);
-      toast.error('Failed to update logo');
     }
   };
 
@@ -307,7 +263,6 @@ export function ProfileNew() {
   const sections = [
     { id: 'profile' as Section, label: 'Basic Info', icon: User, completed: !!formData.fullName && !!profile?.avatar_url },
     { id: 'investment' as Section, label: 'Investment Profile', icon: Target, completed: !!formData.investmentRange },
-    ...(isSyndicator && syndicator ? [{ id: 'business' as Section, label: 'Business', icon: Building2, completed: !!formData.companyName }] : []),
     { id: 'settings' as Section, label: 'Settings', icon: Settings, completed: true },
   ];
 
@@ -615,84 +570,6 @@ export function ProfileNew() {
               </div>
             )}
 
-            {/* Business Section (Syndicators only) */}
-            {activeSection === 'business' && isSyndicator && syndicator && (
-              <div className="bg-white rounded-2xl shadow-lg p-8 animate-fade-in">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-purple-100 rounded-xl">
-                    <Building2 className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">Business Profile</h2>
-                    <p className="text-sm text-gray-500">Your company information</p>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Company Logo */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">Company Logo</label>
-                    <div className="flex items-center gap-4">
-                      {syndicator.company_logo_url ? (
-                        <img
-                          src={syndicator.company_logo_url}
-                          alt={syndicator.company_name}
-                          className="w-20 h-20 rounded-xl object-cover border border-gray-200"
-                        />
-                      ) : (
-                        <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center">
-                          <Building2 className="h-8 w-8 text-gray-400" />
-                        </div>
-                      )}
-                      <button
-                        onClick={() => setShowLogoUpload(true)}
-                        className="px-4 py-2 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition"
-                      >
-                        {syndicator.company_logo_url ? 'Change Logo' : 'Upload Logo'}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
-                    <input
-                      type="text"
-                      value={formData.companyName}
-                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                      placeholder="Your company name"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company Description</label>
-                    <textarea
-                      value={formData.companyDescription}
-                      onChange={(e) => setFormData({ ...formData, companyDescription: e.target.value })}
-                      placeholder="Tell investors about your company..."
-                      rows={4}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
-                    />
-                  </div>
-
-                  <button
-                    onClick={handleSaveBusiness}
-                    disabled={saving}
-                    className="w-full py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {saving ? (
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
-                    ) : (
-                      <>
-                        <Check className="h-5 w-5" />
-                        Save Business Info
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
-
             {/* Settings Section */}
             {activeSection === 'settings' && (
               <div className="space-y-6 animate-fade-in">
@@ -787,26 +664,6 @@ export function ProfileNew() {
         </div>
       )}
 
-      {/* Logo Upload Modal */}
-      {showLogoUpload && syndicator && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold mb-4">Update Company Logo</h3>
-            <ImageUpload
-              onImageUploaded={handleLogoUpload}
-              currentImage={syndicator.company_logo_url}
-              bucket="logos"
-              path={`${syndicator.id}/logo`}
-            />
-            <button
-              onClick={() => setShowLogoUpload(false)}
-              className="mt-4 w-full py-2 text-gray-600 hover:text-gray-800 transition"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
 
       <Footer />
 
