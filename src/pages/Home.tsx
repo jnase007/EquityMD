@@ -62,7 +62,7 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$2.4M",
+        totalInvested: "$275K",
         avgReturn: "18.5%"
       },
       specialties: ["Multi-Family", "Mixed-Use", "Value-Add"],
@@ -74,7 +74,7 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$1.8M",
+        totalInvested: "$486K",
         avgReturn: "16.2%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Passive Income"],
@@ -86,7 +86,7 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$3.1M",
+        totalInvested: "$325K",
         avgReturn: "21.3%"
       },
       specialties: ["Multi-Family", "Student Housing", "Long-term Growth"],
@@ -98,7 +98,7 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$1.5M",
+        totalInvested: "$150K",
         avgReturn: "14.8%"
       },
       specialties: ["Multi-Family", "Tax Benefits", "Passive Income"],
@@ -110,7 +110,7 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$2.7M",
+        totalInvested: "$625K",
         avgReturn: "19.1%"
       },
       specialties: ["Multi-Family", "Workforce Housing", "Diversification"],
@@ -122,7 +122,7 @@ export function Home() {
       company: "",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300",
       portfolio: {
-        totalInvested: "$1.9M",
+        totalInvested: "$195K",
         avgReturn: "17.6%"
       },
       specialties: ["Multi-Family", "Value-Add", "Portfolio Growth"],
