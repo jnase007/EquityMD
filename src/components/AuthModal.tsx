@@ -16,13 +16,38 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Fix LinkedIn button text display
   useEffect(() => {
-    const buttons = document.querySelectorAll('.supabase-auth-ui_ui-button');
-    buttons.forEach((btn) => {
-      if (btn.textContent?.toLowerCase().includes('linkedin')) {
-        btn.classList.add('linkedin-btn');
-      }
-    });
+    const fixLinkedInButton = () => {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach((btn) => {
+        if (btn.textContent?.includes('linkedin_oidc')) {
+          // Replace the text content while preserving the icon
+          const spans = btn.querySelectorAll('span');
+          spans.forEach(span => {
+            if (span.textContent?.includes('linkedin_oidc')) {
+              span.textContent = span.textContent.replace('linkedin_oidc', 'LinkedIn');
+            }
+          });
+          // Also check direct text nodes
+          btn.childNodes.forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent?.includes('linkedin_oidc')) {
+              node.textContent = node.textContent.replace('linkedin_oidc', 'LinkedIn');
+            }
+          });
+        }
+      });
+    };
+    
+    // Run immediately and after a short delay (for dynamic rendering)
+    fixLinkedInButton();
+    const timer = setTimeout(fixLinkedInButton, 100);
+    const timer2 = setTimeout(fixLinkedInButton, 500);
+    
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(timer2);
+    };
   }, []);
 
   useEffect(() => {
