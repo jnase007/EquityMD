@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Plus, Building2, Users, TrendingUp, DollarSign, 
-  MessageSquare, Eye, ChevronRight, BarChart3, 
-  ArrowUpRight, Star, Clock, CheckCircle, AlertCircle,
-  FileText, Sparkles, Trophy, Zap, Edit, MoreVertical,
-  MapPin, Calendar, ExternalLink
+  MessageSquare, Eye, CheckCircle, AlertCircle,
+  Sparkles, Trophy, Zap, Edit, MapPin, ExternalLink,
+  Camera, Clock, ArrowRight, Globe, Upload
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
 import { useGamification } from '../Gamification/useGamification';
-import { NextStepsCard } from '../Gamification/NextSteps';
 import { AchievementsModal } from '../Gamification/AchievementsModal';
 import { AchievementUnlocked } from '../Gamification/AchievementUnlocked';
+import toast from 'react-hot-toast';
 
 export function SyndicatorDashboard() {
   const { user, profile } = useAuthStore();
+  const navigate = useNavigate();
   const gamification = useGamification();
   const [showAchievements, setShowAchievements] = useState(false);
-  const [userSyndicators, setUserSyndicators] = useState<any[]>([]);
-  const [selectedSyndicator, setSelectedSyndicator] = useState<string | null>(null);
+  const [syndicator, setSyndicator] = useState<any>(null);
   const [deals, setDeals] = useState<any[]>([]);
   const [stats, setStats] = useState({
     activeDeals: 0,
@@ -29,94 +28,110 @@ export function SyndicatorDashboard() {
     unreadMessages: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [showCreateBusiness, setShowCreateBusiness] = useState(false);
+  const [newBusinessName, setNewBusinessName] = useState('');
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     if (user) {
-      fetchUserSyndicators();
+      fetchData();
     }
   }, [user]);
 
-  useEffect(() => {
-    if (selectedSyndicator) {
-      fetchDashboardData();
-    }
-  }, [selectedSyndicator]);
-
-  async function fetchUserSyndicators() {
+  async function fetchData() {
     try {
-      const { data, error } = await supabase
+      // Fetch syndicator (just get the first one - single business model)
+      const { data: syndicatorData, error: syndicatorError } = await supabase
         .from('syndicators')
         .select('*')
         .eq('claimed_by', user!.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
 
-      if (error) throw error;
-      
-      setUserSyndicators(data || []);
-      
-      if (data && data.length > 0) {
-        setSelectedSyndicator(data[0].id);
-      } else {
-        setLoading(false);
+      if (syndicatorError && syndicatorError.code !== 'PGRST116') {
+        console.error('Error fetching syndicator:', syndicatorError);
       }
-    } catch (error) {
-      console.error('Error fetching syndicators:', error);
-      setLoading(false);
-    }
-  }
 
-  async function fetchDashboardData() {
-    if (!selectedSyndicator) return;
-    
-    try {
-      // Fetch deals for this syndicator
-      const { data: dealsData, error: dealsError } = await supabase
-        .from('deals')
-        .select(`
-          *,
-          deal_interests (id),
-          investment_requests (id, status, amount)
-        `)
-        .eq('syndicator_id', selectedSyndicator)
-        .order('created_at', { ascending: false });
+      setSyndicator(syndicatorData || null);
 
-      if (dealsError) throw dealsError;
-      
-      setDeals(dealsData || []);
+      if (syndicatorData) {
+        // Fetch deals for this syndicator
+        const { data: dealsData, error: dealsError } = await supabase
+          .from('deals')
+          .select(`
+            *,
+            deal_interests (id),
+            investment_requests (id, status, amount)
+          `)
+          .eq('syndicator_id', syndicatorData.id)
+          .order('created_at', { ascending: false });
 
-      // Calculate stats
-      const activeDeals = dealsData?.filter(d => d.status === 'active').length || 0;
-      const totalInvestors = new Set(
-        dealsData?.flatMap(d => d.deal_interests?.map((i: any) => i.id) || [])
-      ).size;
-      const totalRaised = dealsData?.reduce((sum, d) => {
-        const approved = d.investment_requests?.filter((r: any) => r.status === 'approved') || [];
-        return sum + approved.reduce((s: number, r: any) => s + (r.amount || 0), 0);
-      }, 0) || 0;
-      const pendingRequests = dealsData?.reduce((sum, d) => {
-        const pending = d.investment_requests?.filter((r: any) => r.status === 'pending') || [];
-        return sum + pending.length;
-      }, 0) || 0;
+        if (dealsError) throw dealsError;
+        setDeals(dealsData || []);
 
-      // Fetch unread messages
-      const { count: unreadCount } = await supabase
-        .from('messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('receiver_id', user!.id)
-        .eq('is_read', false);
+        // Calculate stats
+        const activeDeals = dealsData?.filter(d => d.status === 'active').length || 0;
+        const totalInvestors = dealsData?.reduce((sum, d) => sum + (d.deal_interests?.length || 0), 0) || 0;
+        const totalRaised = dealsData?.reduce((sum, d) => {
+          const approved = d.investment_requests?.filter((r: any) => r.status === 'approved') || [];
+          return sum + approved.reduce((s: number, r: any) => s + (r.amount || 0), 0);
+        }, 0) || 0;
+        const pendingRequests = dealsData?.reduce((sum, d) => {
+          const pending = d.investment_requests?.filter((r: any) => r.status === 'pending') || [];
+          return sum + pending.length;
+        }, 0) || 0;
 
-      setStats({
-        activeDeals,
-        totalInvestors,
-        totalRaised,
-        pendingRequests,
-        unreadMessages: unreadCount || 0,
-      });
+        // Fetch unread messages
+        const { count: unreadCount } = await supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('receiver_id', user!.id)
+          .eq('is_read', false);
 
+        setStats({
+          activeDeals,
+          totalInvestors,
+          totalRaised,
+          pendingRequests,
+          unreadMessages: unreadCount || 0,
+        });
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function createBusiness() {
+    if (!newBusinessName.trim() || !user) return;
+    
+    setCreating(true);
+    try {
+      const { data, error } = await supabase
+        .from('syndicators')
+        .insert([{
+          company_name: newBusinessName.trim(),
+          claimed_by: user.id,
+          claimed_at: new Date().toISOString(),
+          claimable: false,
+          verification_status: 'unverified',
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setSyndicator(data);
+      setShowCreateBusiness(false);
+      setNewBusinessName('');
+      toast.success('Business created! Now add your first deal.');
+    } catch (error: any) {
+      console.error('Error creating business:', error);
+      toast.error(error.message || 'Failed to create business');
+    } finally {
+      setCreating(false);
     }
   }
 
@@ -126,499 +141,486 @@ export function SyndicatorDashboard() {
     return `$${value.toLocaleString()}`;
   };
 
-  const selectedSyndicatorData = userSyndicators.find(s => s.id === selectedSyndicator);
-
-  // No syndicators - prompt to create one
-  if (!loading && userSyndicators.length === 0) {
+  // Loading state
+  if (loading) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 border border-emerald-200 text-center">
-          <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Building2 className="h-8 w-8 text-emerald-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Create Your Syndicator Profile</h2>
-          <p className="text-gray-600 mb-6">
-            Set up your company profile to start listing investment opportunities and connecting with accredited investors.
-          </p>
-          <Link
-            to="/profile"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/25"
-          >
-            <Plus className="h-5 w-5" />
-            Create Syndicator Profile
-          </Link>
+      <div className="space-y-6 animate-pulse">
+        <div className="h-40 bg-gray-200 rounded-2xl" />
+        <div className="h-24 bg-gray-200 rounded-xl" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => <div key={i} className="h-48 bg-gray-200 rounded-xl" />)}
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Header with Syndicator Selector and Gamification */}
-      <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 lg:p-8 text-white">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* Syndicator Logo with Level */}
-            <div className="relative">
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                {selectedSyndicatorData?.company_logo_url ? (
-                  <img 
-                    src={selectedSyndicatorData.company_logo_url} 
-                    alt={selectedSyndicatorData.company_name}
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
-                ) : (
-                  <Building2 className="h-7 w-7 text-white" />
-                )}
-              </div>
-              {/* Level badge */}
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-white shadow-lg flex items-center justify-center text-lg">
-                {gamification.level.icon}
+  // No business yet - show setup
+  if (!syndicator) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        {!showCreateBusiness ? (
+          <div className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-3xl p-8 lg:p-12 text-white text-center shadow-2xl">
+            <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Building2 className="h-10 w-10 text-white" />
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome to EquityMD</h1>
+            <p className="text-purple-100 text-lg mb-8 max-w-md mx-auto">
+              Set up your business in 30 seconds and start connecting with accredited investors.
+            </p>
+            
+            <button
+              onClick={() => setShowCreateBusiness(true)}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-700 font-bold text-lg rounded-xl hover:bg-purple-50 transition-all shadow-lg hover:shadow-xl hover:scale-105"
+            >
+              <Sparkles className="h-6 w-6" />
+              Create Your Business
+              <ArrowRight className="h-5 w-5" />
+            </button>
+
+            <div className="mt-10 pt-8 border-t border-white/20">
+              <p className="text-purple-200 text-sm mb-4">What you'll get:</p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Business Profile</span>
+                <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Deal Listings</span>
+                <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Investor Connections</span>
               </div>
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                {userSyndicators.length > 1 ? (
-                  <select
-                    value={selectedSyndicator || ''}
-                    onChange={(e) => setSelectedSyndicator(e.target.value)}
-                    className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-white/50"
-                  >
-                    {userSyndicators.map((s) => (
-                      <option key={s.id} value={s.id} className="text-gray-900">
-                        {s.company_name}
-                      </option>
-                    ))}
-                  </select>
+          </div>
+        ) : (
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Building2 className="h-8 w-8 text-purple-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Create Your Business</h2>
+              <p className="text-gray-500 mt-2">Enter your company or LLC name</p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Business Name
+                </label>
+                <input
+                  type="text"
+                  value={newBusinessName}
+                  onChange={(e) => setNewBusinessName(e.target.value)}
+                  placeholder="e.g., Acme Real Estate Partners LLC"
+                  className="w-full px-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-0 transition-colors"
+                  autoFocus
+                  onKeyPress={(e) => e.key === 'Enter' && createBusiness()}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowCreateBusiness(false)}
+                  className="flex-1 px-6 py-4 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={createBusiness}
+                  disabled={!newBusinessName.trim() || creating}
+                  className="flex-1 px-6 py-4 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  {creating ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      Continue
+                      <ArrowRight className="h-5 w-5" />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <p className="text-center text-sm text-gray-500">
+                You can add logo and details after creating
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Has business - show streamlined dashboard
+  return (
+    <div className="space-y-6">
+      {/* Business Profile Card */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-white font-semibold flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Your Business
+            </h2>
+            <Link
+              to="/profile"
+              className="text-white/80 hover:text-white text-sm flex items-center gap-1 transition-colors"
+            >
+              <Edit className="h-4 w-4" />
+              Edit Profile
+            </Link>
+          </div>
+        </div>
+        
+        <div className="p-6">
+          <div className="flex items-start gap-5">
+            {/* Logo */}
+            <div className="relative group">
+              <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                {syndicator.company_logo_url ? (
+                  <img 
+                    src={syndicator.company_logo_url} 
+                    alt={syndicator.company_name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
-                  <h1 className="text-xl lg:text-2xl font-bold">
-                    {selectedSyndicatorData?.company_name || 'Dashboard'}
-                  </h1>
+                  <Building2 className="h-10 w-10 text-gray-400" />
                 )}
-                {selectedSyndicatorData?.verification_status === 'verified' && (
-                  <span className="bg-white/20 px-2 py-0.5 rounded-full text-xs flex items-center gap-1">
-                    <CheckCircle className="h-3 w-3" /> Verified
+              </div>
+              {!syndicator.company_logo_url && (
+                <Link
+                  to="/profile"
+                  className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Camera className="h-6 w-6 text-white" />
+                </Link>
+              )}
+            </div>
+
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 truncate">
+                  {syndicator.company_name}
+                </h3>
+                {syndicator.verification_status === 'verified' ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
+                    <CheckCircle className="h-3 w-3" />
+                    Verified
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                    <Clock className="h-3 w-3" />
+                    Unverified
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-3 text-emerald-100">
-                <span className="flex items-center gap-1">
-                  <Zap className="h-4 w-4 text-yellow-300" />
-                  {gamification.totalPoints} pts
-                </span>
-                <span>•</span>
-                <span>Level {gamification.level.level}: {gamification.level.title}</span>
-                <span>•</span>
-                <button 
-                  onClick={() => setShowAchievements(true)}
-                  className="flex items-center gap-1 hover:text-white transition-colors"
+              
+              {syndicator.company_description ? (
+                <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                  {syndicator.company_description}
+                </p>
+              ) : (
+                <p className="text-gray-400 text-sm italic mb-3">
+                  No description yet –{' '}
+                  <Link to="/profile" className="text-purple-600 hover:underline">
+                    add one to attract investors
+                  </Link>
+                </p>
+              )}
+
+              {/* Quick Actions */}
+              <div className="flex flex-wrap gap-2">
+                {syndicator.slug && (
+                  <a
+                    href={`/syndicator/${syndicator.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    <Globe className="h-3.5 w-3.5" />
+                    View Public Page
+                  </a>
+                )}
+                <Link
+                  to="/inbox"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors relative"
                 >
-                  <Trophy className="h-4 w-4" />
-                  {gamification.achievementCount} badges
-                </button>
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Messages
+                  {stats.unreadMessages > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {stats.unreadMessages}
+                    </span>
+                  )}
+                </Link>
+                {stats.pendingRequests > 0 && (
+                  <Link
+                    to="/investment-requests"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors"
+                  >
+                    <Clock className="h-3.5 w-3.5" />
+                    {stats.pendingRequests} Pending Requests
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {/* Gamification */}
+            <div className="hidden lg:flex flex-col items-end gap-2">
+              <button
+                onClick={() => setShowAchievements(true)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
+              >
+                <Trophy className="h-4 w-4" />
+                <span className="font-medium">{gamification.achievementCount} Badges</span>
+              </button>
+              <div className="text-sm text-gray-500 flex items-center gap-2">
+                <Zap className="h-4 w-4 text-yellow-500" />
+                {gamification.totalPoints} pts • Level {gamification.level.level}
               </div>
             </div>
           </div>
-          
-          <Link
-            to="/deals/new"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-600 font-semibold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
-          >
-            <Sparkles className="h-5 w-5" />
-            Create New Listing
-          </Link>
-        </div>
-        
-        {/* Progress to next level */}
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-emerald-200 mb-1">
-            <span>Progress to next level</span>
-            <span>{gamification.progressToNextLevel}%</span>
-          </div>
-          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-white rounded-full transition-all duration-500"
-              style={{ width: `${gamification.progressToNextLevel}%` }}
-            />
-          </div>
+
+          {/* Missing profile warning */}
+          {(!syndicator.company_logo_url || !syndicator.company_description) && (
+            <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+                <div>
+                  <p className="font-medium text-amber-800">Complete your profile</p>
+                  <p className="text-sm text-amber-600">
+                    {!syndicator.company_logo_url && 'Add a logo'}
+                    {!syndicator.company_logo_url && !syndicator.company_description && ' and '}
+                    {!syndicator.company_description && 'add a description'}
+                    {' to attract more investors'}
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/profile"
+                className="px-4 py-2 bg-amber-200 text-amber-800 font-medium rounded-lg hover:bg-amber-300 transition-colors"
+              >
+                Complete Now
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-3">
+      {/* Quick Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-emerald-100 rounded-lg">
               <Building2 className="h-5 w-5 text-emerald-600" />
             </div>
+            <span className="text-gray-500 text-sm">Active Deals</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.activeDeals}</p>
-          <p className="text-sm text-gray-500">Active Deals</p>
+          <p className="text-3xl font-bold text-gray-900">{stats.activeDeals}</p>
         </div>
-
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-3">
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-100 rounded-lg">
               <Users className="h-5 w-5 text-blue-600" />
             </div>
+            <span className="text-gray-500 text-sm">Interested</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalInvestors}</p>
-          <p className="text-sm text-gray-500">Interested Investors</p>
+          <p className="text-3xl font-bold text-gray-900">{stats.totalInvestors}</p>
         </div>
-
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-3 mb-3">
+        
+        <Link 
+          to="/investment-requests"
+          className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:border-orange-200 hover:shadow-md transition-all"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-orange-100 rounded-lg">
+              <Clock className="h-5 w-5 text-orange-600" />
+            </div>
+            <span className="text-gray-500 text-sm">Pending</span>
+          </div>
+          <p className="text-3xl font-bold text-gray-900">{stats.pendingRequests}</p>
+        </Link>
+        
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-green-100 rounded-lg">
               <DollarSign className="h-5 w-5 text-green-600" />
             </div>
+            <span className="text-gray-500 text-sm">Raised</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalRaised)}</p>
-          <p className="text-sm text-gray-500">Total Raised</p>
+          <p className="text-3xl font-bold text-gray-900">{formatCurrency(stats.totalRaised)}</p>
         </div>
-
-        <Link 
-          to="/investment-requests"
-          className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-orange-200 transition-all group relative"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-orange-100 rounded-lg group-hover:bg-orange-200 transition-colors">
-              <Clock className="h-5 w-5 text-orange-600" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.pendingRequests}</p>
-          <p className="text-sm text-gray-500">Pending Requests</p>
-          {stats.pendingRequests > 0 && (
-            <span className="absolute top-3 right-3 w-3 h-3 bg-orange-500 rounded-full animate-pulse" />
-          )}
-        </Link>
-
-        <Link 
-          to="/inbox"
-          className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all group relative"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
-              <MessageSquare className="h-5 w-5 text-purple-600" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.unreadMessages}</p>
-          <p className="text-sm text-gray-500">Messages</p>
-          {stats.unreadMessages > 0 && (
-            <span className="absolute top-3 right-3 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-          )}
-        </Link>
       </div>
 
-      {/* Your Deals Section - Full Width */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
+      {/* Deals Section */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Your Investment Listings</h2>
-            <p className="text-gray-500">Manage and track your deals</p>
+            <h2 className="text-xl font-bold text-gray-900">Your Deals</h2>
+            <p className="text-gray-500 text-sm">
+              {deals.length === 0 ? 'Create your first investment opportunity' : `${deals.length} deal${deals.length !== 1 ? 's' : ''} listed`}
+            </p>
           </div>
-          <Link 
-            to="/deals/new" 
-            className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-2"
+          <Link
+            to="/deals/new"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors shadow-sm"
           >
             <Plus className="h-5 w-5" />
-            Create New Deal
+            New Deal
           </Link>
         </div>
-        
-        {loading ? (
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-                <div className="h-48 bg-gray-200" />
-                <div className="p-5 space-y-3">
-                  <div className="h-5 bg-gray-200 rounded w-3/4" />
-                  <div className="h-4 bg-gray-200 rounded w-1/2" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : deals.length === 0 ? (
-          <div className="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 rounded-2xl p-12 border border-emerald-100 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/25">
-              <Building2 className="h-10 w-10 text-white" />
+
+        {deals.length === 0 ? (
+          <div className="p-12 text-center">
+            <div className="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Sparkles className="h-10 w-10 text-emerald-600" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Create Your First Deal</h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              List your investment opportunity and start connecting with accredited investors on EquityMD.
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Create Your First Deal</h3>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+              List your investment opportunity and start connecting with accredited investors.
             </p>
-            <Link 
+            <Link
               to="/deals/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/25"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-500/25"
             >
-              <Sparkles className="h-5 w-5" />
-              Create Your First Listing
+              <Plus className="h-5 w-5" />
+              Create Deal
             </Link>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {deals.map((deal) => {
-              const pendingCount = deal.investment_requests?.filter((r: any) => r.status === 'pending').length || 0;
-              const interestCount = deal.deal_interests?.length || 0;
-              const approvedAmount = deal.investment_requests?.filter((r: any) => r.status === 'approved')
-                .reduce((sum: number, r: any) => sum + (r.amount || 0), 0) || 0;
-              
-              return (
-                <div 
-                  key={deal.id}
-                  className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:border-emerald-200 transition-all duration-300"
-                >
-                  {/* Cover Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-                    {deal.cover_image_url ? (
-                      <img 
-                        src={deal.cover_image_url} 
-                        alt={deal.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Building2 className="h-16 w-16 text-gray-300" />
-                      </div>
-                    )}
-                    
-                    {/* Status Badge */}
-                    <div className="absolute top-3 left-3">
-                      <span className={`px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg flex items-center gap-1.5 ${
-                        deal.status === 'active' 
-                          ? 'bg-emerald-500 text-white'
-                          : deal.status === 'draft'
-                          ? 'bg-gray-700/80 text-white backdrop-blur'
-                          : 'bg-amber-500 text-white'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${
-                          deal.status === 'active' ? 'bg-white animate-pulse' : 'bg-white/60'
-                        }`} />
-                        {deal.status === 'active' ? 'Live' : deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
-                      </span>
-                    </div>
-                    
-                    {/* Pending Badge */}
-                    {pendingCount > 0 && (
-                      <div className="absolute top-3 right-3">
-                        <span className="px-3 py-1.5 bg-orange-500 text-white rounded-full text-xs font-semibold shadow-lg flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {pendingCount} Pending
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {deals.map((deal) => {
+                const interestCount = deal.deal_interests?.length || 0;
+                const pendingCount = deal.investment_requests?.filter((r: any) => r.status === 'pending').length || 0;
+                
+                return (
+                  <div 
+                    key={deal.id}
+                    className="group bg-white rounded-xl border-2 border-gray-100 overflow-hidden hover:border-emerald-300 hover:shadow-lg transition-all"
+                  >
+                    {/* Cover Image */}
+                    <div className="relative h-40 bg-gradient-to-br from-gray-100 to-gray-200">
+                      {deal.cover_image_url ? (
+                        <img 
+                          src={deal.cover_image_url} 
+                          alt={deal.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Building2 className="h-12 w-12 text-gray-300" />
+                        </div>
+                      )}
+                      
+                      {/* Status Badge */}
+                      <div className="absolute top-3 left-3">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold shadow ${
+                          deal.status === 'active' 
+                            ? 'bg-emerald-500 text-white'
+                            : deal.status === 'draft'
+                            ? 'bg-gray-700 text-white'
+                            : 'bg-amber-500 text-white'
+                        }`}>
+                          {deal.status === 'active' ? '● Live' : deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
                         </span>
                       </div>
-                    )}
-                    
-                    {/* Hover Overlay with Actions */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4 gap-2">
-                      <Link
-                        to={`/deals/${deal.slug}/edit`}
-                        className="px-4 py-2 bg-white text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-lg"
-                      >
-                        <Edit className="h-4 w-4" />
-                        Edit
-                      </Link>
-                      <Link
-                        to={`/deals/${deal.slug}`}
-                        className="px-4 py-2 bg-emerald-500 text-white rounded-lg text-sm font-medium hover:bg-emerald-600 transition-colors flex items-center gap-1.5 shadow-lg"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                        View
-                      </Link>
-                    </div>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-5">
-                    <h3 className="font-bold text-gray-900 text-lg mb-1 truncate group-hover:text-emerald-600 transition-colors">
-                      {deal.title}
-                    </h3>
-                    
-                    <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
-                      <MapPin className="h-3.5 w-3.5" />
-                      <span className="truncate">{deal.location || 'Location not set'}</span>
-                    </div>
-                    
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div className="text-center p-2 bg-gray-50 rounded-lg">
-                        <p className="text-lg font-bold text-gray-900">
-                          {deal.minimum_investment ? `$${(deal.minimum_investment / 1000).toFixed(0)}K` : '—'}
-                        </p>
-                        <p className="text-xs text-gray-500">Min. Invest</p>
-                      </div>
-                      <div className="text-center p-2 bg-gray-50 rounded-lg">
-                        <p className="text-lg font-bold text-emerald-600">
-                          {deal.target_irr ? `${deal.target_irr}%` : '—'}
-                        </p>
-                        <p className="text-xs text-gray-500">Target IRR</p>
-                      </div>
-                      <div className="text-center p-2 bg-gray-50 rounded-lg">
-                        <p className="text-lg font-bold text-gray-900">
-                          {deal.investment_term ? `${deal.investment_term}yr` : '—'}
-                        </p>
-                        <p className="text-xs text-gray-500">Term</p>
-                      </div>
-                    </div>
-                    
-                    {/* Interest & Investment Stats */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5 text-sm">
-                          <Users className="h-4 w-4 text-blue-500" />
-                          <span className="font-medium text-gray-700">{interestCount}</span>
-                          <span className="text-gray-400">interested</span>
-                        </div>
-                      </div>
                       
-                      {approvedAmount > 0 && (
-                        <div className="text-sm">
-                          <span className="text-gray-500">Raised: </span>
-                          <span className="font-semibold text-emerald-600">
-                            ${(approvedAmount / 1000).toFixed(0)}K
+                      {/* Pending Badge */}
+                      {pendingCount > 0 && (
+                        <div className="absolute top-3 right-3">
+                          <span className="px-2.5 py-1 bg-orange-500 text-white rounded-full text-xs font-semibold shadow flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {pendingCount}
                           </span>
                         </div>
                       )}
+                      
+                      {/* Hover Actions */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                        <Link
+                          to={`/deals/${deal.slug}/edit`}
+                          className="px-4 py-2 bg-white text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-100 transition flex items-center gap-1.5 shadow-lg"
+                        >
+                          <Edit className="h-4 w-4" />
+                          Edit
+                        </Link>
+                        <Link
+                          to={`/deals/${deal.slug}`}
+                          className="px-4 py-2 bg-emerald-500 text-white rounded-lg text-sm font-medium hover:bg-emerald-600 transition flex items-center gap-1.5 shadow-lg"
+                        >
+                          <Eye className="h-4 w-4" />
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-4">
+                      <h4 className="font-bold text-gray-900 truncate group-hover:text-emerald-600 transition-colors mb-1">
+                        {deal.title}
+                      </h4>
+                      
+                      {deal.location && (
+                        <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-3">
+                          <MapPin className="h-3.5 w-3.5" />
+                          <span className="truncate">{deal.location}</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-3">
+                          {deal.minimum_investment && (
+                            <span className="text-gray-600">
+                              <span className="font-semibold">${(deal.minimum_investment / 1000).toFixed(0)}K</span> min
+                            </span>
+                          )}
+                          {deal.target_irr && (
+                            <span className="text-emerald-600 font-semibold">
+                              {deal.target_irr}% IRR
+                            </span>
+                          )}
+                        </div>
+                        
+                        {interestCount > 0 && (
+                          <span className="flex items-center gap-1 text-blue-600">
+                            <Users className="h-4 w-4" />
+                            {interestCount}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-            
-            {/* Add New Deal Card */}
-            <Link
-              to="/deals/new"
-              className="group flex flex-col items-center justify-center min-h-[380px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300 hover:border-emerald-400 hover:from-emerald-50 hover:to-teal-50 transition-all duration-300"
-            >
-              <div className="w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center mb-4 group-hover:shadow-xl group-hover:scale-110 transition-all">
-                <Plus className="h-8 w-8 text-gray-400 group-hover:text-emerald-500 transition-colors" />
-              </div>
-              <h3 className="font-semibold text-gray-600 group-hover:text-emerald-700 transition-colors">
-                Add New Listing
-              </h3>
-              <p className="text-sm text-gray-400 group-hover:text-emerald-600 transition-colors">
-                Create another deal
-              </p>
-            </Link>
-          </div>
-        )}
-      </div>
-
-      {/* Quick Actions & Resources Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Profile Card */}
-        {selectedSyndicatorData && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900">Company Profile</h3>
-              <Link to="/profile" className="text-emerald-600 hover:text-emerald-700 text-sm">
-                Edit
-              </Link>
-            </div>
-            
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Status</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                  selectedSyndicatorData.verification_status === 'verified'
-                    ? 'bg-emerald-100 text-emerald-700'
-                    : 'bg-yellow-100 text-yellow-700'
-                }`}>
-                  {selectedSyndicatorData.verification_status === 'verified' ? 'Verified' : 'Pending'}
-                </span>
-              </div>
-              {selectedSyndicatorData.years_in_business && (
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-500">Experience</span>
-                  <span className="font-medium">{selectedSyndicatorData.years_in_business} years</span>
-                </div>
-              )}
-            </div>
-            
-            {selectedSyndicatorData.slug && (
+                );
+              })}
+              
+              {/* Add New Deal Card */}
               <Link
-                to={`/syndicators/${selectedSyndicatorData.slug}`}
-                className="mt-4 w-full flex items-center justify-center gap-2 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                to="/deals/new"
+                className="group flex flex-col items-center justify-center min-h-[260px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-dashed border-gray-300 hover:border-emerald-400 hover:from-emerald-50 hover:to-teal-50 transition-all"
               >
-                <Eye className="h-4 w-4" />
-                View Profile
-              </Link>
-            )}
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-5 text-white">
-          <h3 className="font-semibold mb-4">Quick Actions</h3>
-          <div className="space-y-2">
-            <Link 
-              to="/investment-requests"
-              className="flex items-center gap-3 p-2.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-lg hover:from-emerald-500/30 hover:to-teal-500/30 transition-colors relative"
-            >
-              <DollarSign className="h-4 w-4 text-emerald-400" />
-              <span className="text-sm font-medium">Investment Requests</span>
-              {stats.pendingRequests > 0 && (
-                <span className="absolute right-2 px-2 py-0.5 bg-amber-500 text-white text-xs font-bold rounded-full">
-                  {stats.pendingRequests}
+                <div className="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-3 group-hover:scale-110 group-hover:shadow-md transition-all">
+                  <Plus className="h-7 w-7 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                </div>
+                <span className="font-semibold text-gray-600 group-hover:text-emerald-700 transition-colors">
+                  Add New Deal
                 </span>
-              )}
-            </Link>
-            <Link 
-              to="/inbox"
-              className="flex items-center gap-3 p-2.5 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-            >
-              <MessageSquare className="h-4 w-4" />
-              <span className="text-sm">Messages</span>
-            </Link>
-            <Link 
-              to="/profile"
-              className="flex items-center gap-3 p-2.5 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-            >
-              <FileText className="h-4 w-4" />
-              <span className="text-sm">Manage Profile</span>
-            </Link>
+                <span className="text-sm text-gray-400 group-hover:text-emerald-600 transition-colors">
+                  List another property
+                </span>
+              </Link>
+            </div>
           </div>
-        </div>
-
-        {/* Gamification - Next Steps */}
-        {gamification.nextSteps.some(s => !s.completed) && (
-          <NextStepsCard
-            steps={gamification.nextSteps}
-            title="Grow Your Profile"
-            subtitle="Complete to earn badges"
-          />
         )}
-
-        {/* Tips */}
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-5 border border-emerald-100">
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
-              <Star className="h-4 w-4 text-emerald-600" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-emerald-900 mb-1">Pro Tip</h4>
-              <p className="text-sm text-emerald-700">
-                Listings with high-quality photos receive 3x more investor interest.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
-      
+
       {/* Achievements Modal */}
-      <AchievementsModal
-        isOpen={showAchievements}
-        onClose={() => setShowAchievements(false)}
-        achievements={gamification.achievements}
-        totalPoints={gamification.totalPoints}
+      <AchievementsModal 
+        isOpen={showAchievements} 
+        onClose={() => setShowAchievements(false)} 
       />
       
-      {/* Achievement Unlock Celebration */}
-      {gamification.newAchievement && (
-        <AchievementUnlocked
-          achievement={gamification.newAchievement}
-          onClose={gamification.clearNewAchievement}
-        />
-      )}
+      {/* Achievement Unlocked Animation */}
+      <AchievementUnlocked />
     </div>
   );
 }
-
