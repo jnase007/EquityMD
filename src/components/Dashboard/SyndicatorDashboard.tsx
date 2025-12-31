@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Plus, Building2, Users, TrendingUp, DollarSign, 
+  Plus, Building2, Users, TrendingUp, 
   MessageSquare, Eye, CheckCircle, AlertCircle,
   Sparkles, Trophy, Zap, Edit, MapPin, ExternalLink,
   Camera, Clock, ArrowRight, Globe, Upload
@@ -23,7 +23,6 @@ export function SyndicatorDashboard() {
   const [stats, setStats] = useState({
     activeDeals: 0,
     totalInvestors: 0,
-    totalRaised: 0,
     pendingRequests: 0,
     unreadMessages: 0,
   });
@@ -73,10 +72,6 @@ export function SyndicatorDashboard() {
         // Calculate stats
         const activeDeals = dealsData?.filter(d => d.status === 'active').length || 0;
         const totalInvestors = dealsData?.reduce((sum, d) => sum + (d.deal_interests?.length || 0), 0) || 0;
-        const totalRaised = dealsData?.reduce((sum, d) => {
-          const approved = d.investment_requests?.filter((r: any) => r.status === 'approved') || [];
-          return sum + approved.reduce((s: number, r: any) => s + (r.amount || 0), 0);
-        }, 0) || 0;
         const pendingRequests = dealsData?.reduce((sum, d) => {
           const pending = d.investment_requests?.filter((r: any) => r.status === 'pending') || [];
           return sum + pending.length;
@@ -92,7 +87,6 @@ export function SyndicatorDashboard() {
         setStats({
           activeDeals,
           totalInvestors,
-          totalRaised,
           pendingRequests,
           unreadMessages: unreadCount || 0,
         });
@@ -134,12 +128,6 @@ export function SyndicatorDashboard() {
       setCreating(false);
     }
   }
-
-  const formatCurrency = (value: number) => {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
-    return `$${value.toLocaleString()}`;
-  };
 
   // Loading state
   if (loading) {
@@ -440,15 +428,18 @@ export function SyndicatorDashboard() {
           <p className="text-3xl font-bold text-gray-900">{stats.pendingRequests}</p>
         </Link>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+        <Link 
+          to="/inbox"
+          className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:border-purple-200 hover:shadow-md transition-all"
+        >
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <DollarSign className="h-5 w-5 text-green-600" />
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <MessageSquare className="h-5 w-5 text-purple-600" />
             </div>
-            <span className="text-gray-500 text-sm">Raised</span>
+            <span className="text-gray-500 text-sm">Messages</span>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{formatCurrency(stats.totalRaised)}</p>
-        </div>
+          <p className="text-3xl font-bold text-gray-900">{stats.unreadMessages}</p>
+        </Link>
       </div>
 
       {/* Deals Section */}
