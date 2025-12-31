@@ -102,11 +102,24 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-5 py-4 text-white">
+        <div className={`px-5 py-4 text-white ${
+          defaultView === 'sign_up' 
+            ? 'bg-gradient-to-r from-emerald-600 to-teal-700' 
+            : 'bg-gradient-to-r from-blue-600 to-indigo-700'
+        }`}>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <LogIn className="h-5 w-5" />
-              <h2 className="text-lg font-bold">Welcome Back</h2>
+              {defaultView === 'sign_up' ? (
+                <>
+                  <UserPlus className="h-5 w-5" />
+                  <h2 className="text-lg font-bold">Get Started</h2>
+                </>
+              ) : (
+                <>
+                  <LogIn className="h-5 w-5" />
+                  <h2 className="text-lg font-bold">Welcome Back</h2>
+                </>
+              )}
             </div>
             <button
               onClick={onClose}
@@ -184,7 +197,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             providers={['google', 'facebook', 'linkedin_oidc']}
             onlyThirdPartyProviders={false}
             redirectTo={`${window.location.origin}/dashboard`}
-            view="sign_in"
+            view={defaultView === 'sign_up' ? 'sign_up' : 'sign_in'}
             socialLayout="horizontal"
             localization={{
               variables: {
@@ -208,18 +221,32 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             }}
           />
 
-          {/* Sign Up CTA */}
+          {/* Bottom CTA - show opposite action */}
           <div className="mt-4 pt-4 border-t border-gray-100">
             <div className="text-center">
-              <p className="text-gray-600 text-sm mb-2">New to EquityMD?</p>
-              <button
-                onClick={handleSignUpClick}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm"
-              >
-                <UserPlus className="h-4 w-4" />
-                Create an Account
-                <ArrowRight className="h-4 w-4" />
-              </button>
+              {defaultView === 'sign_up' ? (
+                <>
+                  <p className="text-gray-600 text-sm mb-2">Already have an account?</p>
+                  <button
+                    onClick={onClose}
+                    className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                  >
+                    Sign in instead
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-600 text-sm mb-2">New to EquityMD?</p>
+                  <button
+                    onClick={handleSignUpClick}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    Create an Account
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
