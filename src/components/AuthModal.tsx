@@ -94,22 +94,19 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
 
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start md:items-center justify-center z-50 pt-4 md:pt-0 overflow-y-auto" 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto" 
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 my-4 md:my-0 overflow-hidden"
+        className="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden max-h-[90vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white">
-          <div className="flex justify-between items-start">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <LogIn className="h-6 w-6" />
-                <h2 className="text-xl font-bold">Welcome Back</h2>
-              </div>
-              <p className="text-blue-100 text-sm">Sign in to access your account</p>
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-5 py-4 text-white">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <LogIn className="h-5 w-5" />
+              <h2 className="text-lg font-bold">Welcome Back</h2>
             </div>
             <button
               onClick={onClose}
@@ -121,9 +118,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-5">
           {error && (
-            <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-xl text-sm">
+            <div className="mb-3 p-3 bg-red-50 text-red-700 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -138,33 +135,49 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                     brand: '#2563eb',
                     brandAccent: '#1d4ed8',
                   },
+                  space: {
+                    inputPadding: '10px 12px',
+                    buttonPadding: '10px 12px',
+                  },
+                  fontSizes: {
+                    baseInputSize: '14px',
+                    baseButtonSize: '14px',
+                  },
                 },
               },
               style: {
                 button: {
-                  borderRadius: '0.75rem',
-                  height: '44px',
+                  borderRadius: '0.5rem',
+                  height: '40px',
                   position: 'relative',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: '500',
+                  fontSize: '14px',
                 },
                 input: {
-                  borderRadius: '0.75rem',
-                  padding: '0.75rem 1rem',
+                  borderRadius: '0.5rem',
+                  padding: '10px 12px',
+                  fontSize: '14px',
+                },
+                label: {
+                  fontSize: '13px',
+                  marginBottom: '4px',
                 },
                 anchor: {
                   color: '#2563eb',
+                  fontSize: '13px',
                 },
                 message: {
-                  borderRadius: '0.75rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '13px',
                 },
                 container: {
-                  gap: '1rem',
+                  gap: '0.75rem',
                 },
                 divider: {
-                  margin: '1.5rem 0',
+                  margin: '1rem 0',
                 },
               },
             }}
@@ -176,7 +189,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             localization={{
               variables: {
                 sign_in: {
-                  social_provider_text: 'Continue with',
+                  social_provider_text: '',
                   email_label: 'Email address',
                   password_label: 'Password',
                   button_label: 'Sign in',
@@ -184,7 +197,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                   link_text: '',
                 },
                 sign_up: {
-                  social_provider_text: 'Sign up with',
+                  social_provider_text: '',
                   email_label: 'Email address',
                   password_label: 'Create a Password',
                   button_label: 'Sign up',
@@ -196,14 +209,14 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
           />
 
           {/* Sign Up CTA */}
-          <div className="mt-6 pt-6 border-t border-gray-100">
+          <div className="mt-4 pt-4 border-t border-gray-100">
             <div className="text-center">
-              <p className="text-gray-600 text-sm mb-3">New to EquityMD?</p>
+              <p className="text-gray-600 text-sm mb-2">New to EquityMD?</p>
               <button
                 onClick={handleSignUpClick}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg shadow-emerald-500/20"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-medium rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all text-sm"
               >
-                <UserPlus className="h-5 w-5" />
+                <UserPlus className="h-4 w-4" />
                 Create an Account
                 <ArrowRight className="h-4 w-4" />
               </button>
