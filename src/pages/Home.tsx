@@ -277,7 +277,7 @@ export function Home() {
       <div className="bg-blue-600 text-white py-2 px-4 text-center">
         <div className="max-w-[1200px] mx-auto">
           <p className="text-sm sm:text-base">
-            🔥 <strong>23+ investors</strong> joined today • <strong>3 new deals</strong> added this week • <strong>Active marketplace</strong> for accredited investors
+            🔥 <strong>24+ investors</strong> joined today • <strong>3 new deals</strong> added this week • <strong>Active marketplace</strong> for accredited investors
           </p>
         </div>
       </div>
