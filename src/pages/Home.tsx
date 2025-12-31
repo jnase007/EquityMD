@@ -222,7 +222,7 @@ export function Home() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative">
+      <div className="relative min-h-[500px] sm:min-h-[580px]">
         <div className="absolute inset-0">
           {useVideo ? (
             <video
@@ -230,7 +230,7 @@ export function Home() {
               muted
               loop
               playsInline
-              className="w-full h-[550px] sm:h-[650px] object-cover"
+              className="w-full h-full object-cover"
               onError={() => setUseVideo(false)}
             >
               <source
@@ -240,14 +240,14 @@ export function Home() {
               <img 
                 src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
                 alt="Modern Apartment Building"
-                className="w-full h-[550px] sm:h-[650px] object-cover"
+                className="w-full h-full object-cover"
               />
             </video>
           ) : (
             <img 
               src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
               alt="Modern Apartment Building"
-              className="w-full h-[550px] sm:h-[650px] object-cover"
+              className="w-full h-full object-cover"
             />
           )}
           {/* Gradient Overlay */}
@@ -259,7 +259,7 @@ export function Home() {
         <div className="relative z-20">
           <Navbar isTransparent />
           
-          <div className="max-w-5xl mx-auto text-center px-4 pt-28 pb-20 sm:py-32 md:py-40 safe-area-top">
+          <div className="max-w-5xl mx-auto text-center px-4 pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20 safe-area-top">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6">
               <Sparkles className="h-4 w-4 text-yellow-300" />
