@@ -1,51 +1,9 @@
 import React from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { Star, Building2, TrendingUp, Quote } from 'lucide-react';
+import { Star, TrendingUp } from 'lucide-react';
 
 export function SuccessStories() {
-  const stories = [
-    {
-      title: "The Metropolitan",
-      location: "Austin, TX",
-      image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80",
-      metrics: {
-        irr: "22%",
-        equity: "$45M",
-        timeline: "24 months"
-      },
-      quote: "EQUITYMD enabled us to efficiently raise capital for our largest project to date, connecting us with quality investors who shared our vision.",
-      author: "Sarah Chen",
-      role: "Managing Partner, Horizon Capital"
-    },
-    {
-      title: "Parkview Commons",
-      location: "Denver, CO",
-      image: "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&q=80",
-      metrics: {
-        irr: "19%",
-        equity: "$38M",
-        timeline: "18 months"
-      },
-      quote: "The platform's streamlined process and professional investor base helped us close our funding round in record time.",
-      author: "Michael Rodriguez",
-      role: "CEO, Summit Properties"
-    },
-    {
-      title: "The Grand Residences",
-      location: "Nashville, TN",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80",
-      metrics: {
-        irr: "21%",
-        equity: "$52M",
-        timeline: "30 months"
-      },
-      quote: "EQUITYMD's technology platform and investor network were instrumental in helping us scale our operations nationally.",
-      author: "David Thompson",
-      role: "President, Elite Investments"
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -59,58 +17,6 @@ export function SuccessStories() {
           <p className="text-xl text-blue-100">
             Discover how real estate syndicators and investors are achieving their goals with EQUITYMD.
           </p>
-        </div>
-      </div>
-
-      {/* Stories Section */}
-      <div className="max-w-[1200px] mx-auto px-4 py-16">
-        <div className="space-y-16">
-          {stories.map((story, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="grid md:grid-cols-2">
-                <div className="h-full">
-                  <img
-                    src={story.image}
-                    alt={story.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-2 text-gray-600 mb-4">
-                    <Building2 className="h-5 w-5" />
-                    <span>{story.location}</span>
-                  </div>
-                  
-                  <h2 className="text-2xl font-bold mb-6">{story.title}</h2>
-                  
-                  <div className="grid grid-cols-3 gap-4 mb-8">
-                    <div>
-                      <div className="text-gray-500 text-sm">IRR</div>
-                      <div className="text-xl font-bold text-green-600">{story.metrics.irr}</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-500 text-sm">Equity Raised</div>
-                      <div className="text-xl font-bold">{story.metrics.equity}</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-500 text-sm">Timeline</div>
-                      <div className="text-xl font-bold">{story.metrics.timeline}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-8">
-                    <Quote className="h-8 w-8 text-blue-600 mb-4" />
-                    <p className="text-gray-600 italic">"{story.quote}"</p>
-                  </div>
-                  
-                  <div>
-                    <div className="font-bold">{story.author}</div>
-                    <div className="text-gray-600">{story.role}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
