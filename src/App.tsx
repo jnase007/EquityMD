@@ -8,7 +8,7 @@ import { preloadCriticalResources, preloadRoute } from './utils/performance';
 // Lazy load heavy components
 const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
 const Browse = lazy(() => import('./pages/Browse').then(module => ({ default: module.Browse })));
-const Profile = lazy(() => import('./pages/Profile').then(module => ({ default: module.Profile })));
+const Profile = lazy(() => import('./pages/ProfileNew').then(module => ({ default: module.ProfileNew })));
 const Dashboard = lazy(() => import('./pages/UnifiedDashboard').then(module => ({ default: module.UnifiedDashboard })));
 const Welcome = lazy(() => import('./pages/Welcome').then(module => ({ default: module.Welcome })));
 const DealDetails = lazy(() => import('./pages/DealDetails').then(module => ({ default: module.DealDetails })));
