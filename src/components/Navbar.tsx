@@ -309,7 +309,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   {(profile?.user_type === 'investor' || profile?.is_admin) && (
                     <>
                       <Link
-                        to="/deals"
+                        to="/find"
                         className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
                         onClick={() => setIsDropdownOpen(false)}
                       >
@@ -457,7 +457,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   {(profile?.user_type === 'investor' || profile?.is_admin) && (
                     <>
                       <Link
-                        to="/deals"
+                        to="/find"
                         className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
                         onClick={() => setIsMenuOpen(false)}
                       >
