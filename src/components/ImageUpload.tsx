@@ -175,9 +175,22 @@ export function ImageUpload({
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from(bucket)
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Supabase storage error:', uploadError);
+        // Provide more helpful error messages
+        if (uploadError.message?.includes('bucket') || uploadError.message?.includes('not found')) {
+          throw new Error(`Storage bucket "${bucket}" not found. Please contact support.`);
+        } else if (uploadError.message?.includes('policy') || uploadError.message?.includes('permission')) {
+          throw new Error('Permission denied. Please ensure you are logged in.');
+        } else {
+          throw uploadError;
+        }
+      }
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
