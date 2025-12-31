@@ -109,6 +109,14 @@ export function Footer() {
                 Glossary
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => handleNavigation('/branding')}
+                className="hover:text-white transition"
+              >
+                Brand Guidelines
+              </button>
+            </li>
           </ul>
         </div>
 
