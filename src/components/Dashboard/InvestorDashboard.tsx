@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, Heart, MessageSquare, Search, DollarSign, 
   Building2, ChevronRight, Star, Clock, Bell, Target,
-  Briefcase, MapPin, Users, CheckCircle, ArrowUpRight, Trophy, Zap
+  Briefcase, MapPin, Users, CheckCircle, ArrowUpRight, Trophy, Zap, Sparkles
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
@@ -12,6 +12,8 @@ import { WelcomeBackCard, NextStepsCard } from '../Gamification/NextSteps';
 import { ProgressCard, LevelBadge } from '../Gamification/ProgressCard';
 import { AchievementsModal } from '../Gamification/AchievementsModal';
 import { AchievementUnlocked } from '../Gamification/AchievementUnlocked';
+import { WelcomeBanner, ProfileNudge, useWelcomeBanner } from './WelcomeBanner';
+import { calculateProfileCompletion } from '../../lib/profileCompletion';
 
 interface InvestorDashboardProps {
   // Optional props for customization
@@ -19,7 +21,9 @@ interface InvestorDashboardProps {
 
 export function InvestorDashboard() {
   const { user, profile } = useAuthStore();
+  const navigate = useNavigate();
   const gamification = useGamification();
+  const { isDismissed: bannerDismissed, dismiss: dismissBanner } = useWelcomeBanner();
   const [showAchievements, setShowAchievements] = useState(false);
   const [stats, setStats] = useState({
     favoriteDeals: 0,
@@ -28,14 +32,36 @@ export function InvestorDashboard() {
     activeDeals: 0,
   });
   const [recentDeals, setRecentDeals] = useState<any[]>([]);
+  const [recommendedDeals, setRecommendedDeals] = useState<any[]>([]);
   const [favoriteDeals, setFavoriteDeals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileCompletion, setProfileCompletion] = useState(0);
+  const [investorPrefs, setInvestorPrefs] = useState<any>(null);
 
   useEffect(() => {
     if (user) {
       fetchDashboardData();
+      fetchProfileCompletion();
     }
   }, [user]);
+
+  async function fetchProfileCompletion() {
+    try {
+      const { data: investorProfile } = await supabase
+        .from('investor_profiles')
+        .select('*')
+        .eq('id', user!.id)
+        .single();
+
+      if (investorProfile) {
+        setInvestorPrefs(investorProfile);
+        const completion = calculateProfileCompletion(profile, investorProfile);
+        setProfileCompletion(completion.percentage);
+      }
+    } catch (error) {
+      console.error('Error fetching profile completion:', error);
+    }
+  }
 
   async function fetchDashboardData() {
     try {
@@ -88,6 +114,44 @@ export function InvestorDashboard() {
 
       setRecentDeals(recentDealsData || []);
 
+      // Fetch recommended deals based on investor preferences
+      const { data: investorProfile } = await supabase
+        .from('investor_profiles')
+        .select('preferred_property_types, preferred_locations, investment_range_min, investment_range_max')
+        .eq('id', user!.id)
+        .single();
+
+      if (investorProfile) {
+        let recommendedQuery = supabase
+          .from('deals')
+          .select(`
+            *,
+            syndicators (
+              company_name,
+              company_logo_url,
+              verification_status
+            )
+          `)
+          .eq('status', 'active');
+
+        // Filter by property type if preferences exist
+        if (investorProfile.preferred_property_types?.length > 0) {
+          recommendedQuery = recommendedQuery.in('property_type', investorProfile.preferred_property_types);
+        }
+
+        // Filter by investment range
+        if (investorProfile.investment_range_min) {
+          recommendedQuery = recommendedQuery.gte('minimum_investment', 0)
+            .lte('minimum_investment', investorProfile.investment_range_max || 10000000);
+        }
+
+        const { data: recommendedData } = await recommendedQuery
+          .order('created_at', { ascending: false })
+          .limit(4);
+
+        setRecommendedDeals(recommendedData || []);
+      }
+
       // Fetch favorite deals
       const { data: favoritesData } = await supabase
         .from('favorites')
@@ -123,13 +187,24 @@ export function InvestorDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Gamified Welcome Section */}
-      <WelcomeBackCard
-        userName={firstName}
-        streak={gamification.streak}
-        todayPoints={0}
-        nextStep={nextIncomplete}
-      />
+      {/* First-Time Welcome Banner */}
+      {!bannerDismissed && (
+        <WelcomeBanner
+          userType="investor"
+          userName={firstName}
+          onDismiss={dismissBanner}
+        />
+      )}
+
+      {/* Gamified Welcome Section - show if banner is dismissed */}
+      {bannerDismissed && (
+        <WelcomeBackCard
+          userName={firstName}
+          streak={gamification.streak}
+          todayPoints={0}
+          nextStep={nextIncomplete}
+        />
+      )}
       
       {/* Level and Progress Bar */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 lg:p-8 text-white">
@@ -409,6 +484,74 @@ export function InvestorDashboard() {
         </div>
       </div>
       
+      {/* Recommended Deals Section - Based on Preferences */}
+      {recommendedDeals.length > 0 && investorPrefs?.preferred_property_types?.length > 0 && (
+        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-100">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-100 rounded-lg">
+                <Sparkles className="h-5 w-5 text-emerald-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Recommended For You</h2>
+                <p className="text-sm text-gray-600">Based on your preferences</p>
+              </div>
+            </div>
+            <Link
+              to="/deals"
+              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium flex items-center gap-1"
+            >
+              View All <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {recommendedDeals.slice(0, 4).map((deal) => (
+              <Link
+                key={deal.id}
+                to={`/deals/${deal.slug}`}
+                className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-emerald-100"
+              >
+                <div className="h-32 bg-gray-100 relative overflow-hidden">
+                  {deal.cover_image_url ? (
+                    <img
+                      src={deal.cover_image_url}
+                      alt={deal.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-100 to-teal-100">
+                      <Building2 className="h-10 w-10 text-emerald-300" />
+                    </div>
+                  )}
+                  {deal.syndicators?.verification_status === 'verified' && (
+                    <div className="absolute top-2 left-2 bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3" /> Verified
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">
+                    {deal.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                    <MapPin className="h-3 w-3" /> {deal.location || 'Location TBD'}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-emerald-600 font-semibold">
+                      {deal.target_irr}% IRR
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      ${(deal.minimum_investment / 1000).toFixed(0)}K min
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Achievements Modal */}
       <AchievementsModal
         isOpen={showAchievements}
@@ -424,6 +567,12 @@ export function InvestorDashboard() {
           onClose={gamification.clearNewAchievement}
         />
       )}
+
+      {/* Floating Profile Completion Nudge */}
+      <ProfileNudge 
+        percentage={profileCompletion} 
+        onClick={() => navigate('/profile')} 
+      />
     </div>
   );
 }
