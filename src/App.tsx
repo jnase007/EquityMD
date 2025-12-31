@@ -10,6 +10,7 @@ const Home = lazy(() => import('./pages/Home').then(module => ({ default: module
 const Browse = lazy(() => import('./pages/Browse').then(module => ({ default: module.Browse })));
 const Profile = lazy(() => import('./pages/Profile').then(module => ({ default: module.Profile })));
 const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
+const Welcome = lazy(() => import('./pages/Welcome').then(module => ({ default: module.Welcome })));
 const DealDetails = lazy(() => import('./pages/DealDetails').then(module => ({ default: module.DealDetails })));
 const NewDeal = lazy(() => import('./pages/NewDeal').then(module => ({ default: module.NewDeal })));
 const EditDeal = lazy(() => import('./pages/EditDeal').then(module => ({ default: module.EditDeal })));
@@ -377,6 +378,10 @@ export default function App() {
         <Route 
           path="/profile" 
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Profile />)} 
+        />
+        <Route 
+          path="/welcome" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Welcome />)} 
         />
         <Route 
           path="/dashboard" 

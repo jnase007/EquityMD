@@ -50,16 +50,16 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             onClose();
             navigate('/dashboard');
           } else {
-            // New user from social login - create basic profile and redirect to onboarding
+            // New user from social login - create basic profile and redirect to welcome onboarding
             const { error: profileError } = await supabase
               .from('profiles')
               .insert([{
                 id: user.id,
                 email: user.email,
-                full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
+                full_name: user.user_metadata?.full_name || '',
                 avatar_url: user.user_metadata?.avatar_url,
-                user_type: 'investor', // Default for social login
-                is_verified: true,
+                user_type: 'investor', // Will be updated in onboarding
+                is_verified: false,
                 is_admin: user.email === 'justin@brandastic.com',
               }]);
 
@@ -68,14 +68,14 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
               throw profileError;
             }
 
-            // Create investor profile
+            // Create investor profile placeholder
             await supabase.from('investor_profiles').insert([{
               id: user.id,
               accredited_status: false
             }]);
 
             onClose();
-            navigate('/profile'); // Navigate to complete profile
+            navigate('/welcome'); // Navigate to welcome onboarding
           }
         } catch (error) {
           console.error('AuthModal: Error in auth state change handler:', error);
