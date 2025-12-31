@@ -39,7 +39,7 @@ export function MarketReports() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <SEO
         title="Real Estate Market Reports & Investment Analysis | EquityMD"
         description="Research top US multifamily markets with real data on cap rates, rent growth, job growth, and investment scores. Data-driven market analysis for accredited investors."
@@ -48,28 +48,46 @@ export function MarketReports() {
       <Navbar />
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">
-              Market Research & Analysis
-            </h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              Data-driven insights on {MARKET_DATA.length} top US multifamily markets. 
-              Updated Q4 2024.
-            </p>
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        <div className="max-w-6xl mx-auto px-4 py-16 relative">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
+              <BarChart3 className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">
+                Market Research & Analysis
+              </h1>
+              <p className="text-white/80 mt-1">
+                Data-driven insights on {MARKET_DATA.length} top US multifamily markets
+              </p>
+            </div>
+          </div>
+          
+          {/* Stats */}
+          <div className="flex flex-wrap gap-4 mb-8">
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Markets Tracked</span>
+              <p className="text-white font-bold text-xl">{MARKET_DATA.length}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Last Updated</span>
+              <p className="text-white font-bold text-xl">Q4 2024</p>
+            </div>
           </div>
 
           {/* Search */}
-          <div className="max-w-xl mx-auto">
+          <div className="max-w-xl">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/60" />
               <input
                 type="text"
                 placeholder="Search by city or state..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white text-gray-900 rounded-xl focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/60 text-lg"
               />
             </div>
           </div>
@@ -78,9 +96,11 @@ export function MarketReports() {
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* National Overview Stats */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-blue-600" />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg flex items-center justify-center">
+              <BarChart3 className="h-4 w-4 text-blue-600" />
+            </div>
             National Multifamily Averages (Q4 2024)
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -157,7 +177,7 @@ export function MarketReports() {
             <div
               key={market.slug}
               onClick={() => setSelectedMarket(market)}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:border-blue-200 overflow-hidden"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer border border-gray-100 hover:border-blue-200 overflow-hidden group"
             >
               {/* Header */}
               <div className="p-5 border-b border-gray-100">
@@ -234,14 +254,17 @@ export function MarketReports() {
         </div>
 
         {filteredMarkets.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-xl">
-            <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          <div className="text-center py-16 bg-white rounded-2xl shadow-lg border border-gray-100">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="h-10 w-10 text-gray-300" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">No markets found</h3>
             <p className="text-gray-500">No markets found matching "{searchTerm}"</p>
           </div>
         )}
 
         {/* Data Sources */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-6">
           <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
             <Info className="h-5 w-5 text-blue-600" />
             Data Sources & Methodology

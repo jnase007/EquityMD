@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
-import { PageBanner } from '../../components/PageBanner';
-import { Search, Book } from 'lucide-react';
+import { Search, Book, Sparkles, Filter, ArrowRight, BookOpen } from 'lucide-react';
 
 interface GlossaryTerm {
   term: string;
@@ -86,26 +85,10 @@ const glossaryTerms: GlossaryTerm[] = [
     definition: "A method of distributing profits among partners in a predetermined order, typically giving preference to limited partners up to a certain return.",
     category: "Investment Structure"
   },
-  // Additional 50 terms
   {
-    term: "Absorption Rate",
-    definition: "The rate at which available properties are sold or leased in a specific market during a given time period.",
-    category: "Market Metrics"
-  },
-  {
-    term: "Amortization",
-    definition: "The gradual reduction of a debt over a period of time through regular payments of principal and interest.",
-    category: "Financial Terms"
-  },
-  {
-    term: "Asset Management Fee",
-    definition: "A fee charged by the sponsor for managing the investment property and implementing the business plan.",
-    category: "Fees and Expenses"
-  },
-  {
-    term: "Basis Point",
-    definition: "A unit of measurement equal to 1/100th of 1% (0.01%), commonly used in discussing interest rates and returns.",
-    category: "Financial Terms"
+    term: "1031 Exchange",
+    definition: "A tax-deferred exchange that allows an investor to sell a property and reinvest the proceeds in a new property while deferring capital gains taxes.",
+    category: "Tax Strategy"
   },
   {
     term: "Bridge Loan",
@@ -113,44 +96,9 @@ const glossaryTerms: GlossaryTerm[] = [
     category: "Financing"
   },
   {
-    term: "Capital Call",
-    definition: "A request from the general partner to limited partners for additional capital beyond their initial investment.",
-    category: "Investment Structure"
-  },
-  {
-    term: "Capital Expenditures (CapEx)",
-    definition: "Funds used to purchase, maintain, or improve long-term physical assets such as buildings or equipment.",
-    category: "Financial Terms"
-  },
-  {
     term: "Capital Stack",
     definition: "The layers of capital that comprise the total funding of a real estate investment, including debt and various classes of equity.",
     category: "Investment Structure"
-  },
-  {
-    term: "Class A/B/C Property",
-    definition: "Classification system for real estate properties based on age, location, quality, and amenities.",
-    category: "Property Classification"
-  },
-  {
-    term: "Closing Costs",
-    definition: "Fees and expenses paid at the closing of a real estate transaction, beyond the purchase price.",
-    category: "Transaction Costs"
-  },
-  {
-    term: "Core Investment",
-    definition: "A low-risk investment strategy focusing on high-quality, well-located properties with stable cash flows.",
-    category: "Investment Strategy"
-  },
-  {
-    term: "Core Plus Investment",
-    definition: "An investment strategy with slightly higher risk than core, typically involving minor property improvements.",
-    category: "Investment Strategy"
-  },
-  {
-    term: "Cost Segregation",
-    definition: "A tax planning strategy that identifies and reclassifies personal property assets to enable faster depreciation.",
-    category: "Tax Strategy"
   },
   {
     term: "Debt Service Coverage Ratio (DSCR)",
@@ -158,205 +106,18 @@ const glossaryTerms: GlossaryTerm[] = [
     category: "Financial Metrics"
   },
   {
-    term: "Depreciation",
-    definition: "A tax deduction that allows real estate investors to write off the cost of their property over time.",
-    category: "Tax Strategy"
-  },
-  {
-    term: "Earnest Money",
-    definition: "A deposit made to show good faith in a real estate transaction, typically held in escrow.",
-    category: "Transaction Terms"
-  },
-  {
-    term: "Environmental Site Assessment",
-    definition: "An investigation of a property's current and historical uses to identify potential environmental contamination.",
-    category: "Due Diligence"
-  },
-  {
-    term: "Force Majeure",
-    definition: "A contract clause that frees parties from obligations due to extraordinary events beyond their control.",
-    category: "Legal Terms"
-  },
-  {
-    term: "Going-in Cap Rate",
-    definition: "The capitalization rate at the time of property acquisition, based on the purchase price and projected first-year NOI.",
-    category: "Financial Metrics"
-  },
-  {
-    term: "Gross Rent Multiplier (GRM)",
-    definition: "A property valuation metric calculated by dividing the property price by its gross rental income.",
-    category: "Financial Metrics"
-  },
-  {
-    term: "Hard Money Loan",
-    definition: "A short-term loan secured by real estate, typically with higher interest rates and lower loan-to-value ratios.",
-    category: "Financing"
-  },
-  {
-    term: "Hold Period",
-    definition: "The expected length of time an investment property will be owned before being sold.",
-    category: "Investment Terms"
-  },
-  {
-    term: "Institutional Quality",
-    definition: "Properties that meet the quality and size requirements of major institutional investors.",
-    category: "Property Classification"
-  },
-  {
-    term: "Letter of Intent (LOI)",
-    definition: "A document outlining the preliminary terms and conditions of a real estate transaction.",
-    category: "Legal Documents"
-  },
-  {
     term: "Loan-to-Value Ratio (LTV)",
     definition: "The ratio of a loan amount to the value of the property securing the loan.",
     category: "Financial Metrics"
   },
-  {
-    term: "Master Lease",
-    definition: "A primary lease that controls subsequent leases and gives the lessee the right to sublease the property.",
-    category: "Legal Terms"
-  },
-  {
-    term: "Mezzanine Debt",
-    definition: "A hybrid of debt and equity financing that gives the lender rights to ownership if the loan defaults.",
-    category: "Financing"
-  },
-  {
-    term: "Net Lease",
-    definition: "A lease agreement where the tenant pays some or all of the property's operating expenses in addition to rent.",
-    category: "Legal Terms"
-  },
-  {
-    term: "Occupancy Rate",
-    definition: "The percentage of rented or used space compared to the total amount of available space.",
-    category: "Property Metrics"
-  },
-  {
-    term: "Operating Expense Ratio",
-    definition: "The ratio of operating expenses to effective gross income, used to measure property management efficiency.",
-    category: "Financial Metrics"
-  },
-  {
-    term: "Opportunistic Investment",
-    definition: "A high-risk, high-return strategy involving properties requiring significant improvement or development.",
-    category: "Investment Strategy"
-  },
-  {
-    term: "Parking Ratio",
-    definition: "The number of parking spaces available relative to a building's square footage or number of units.",
-    category: "Property Metrics"
-  },
-  {
-    term: "Phase I Environmental",
-    definition: "An initial environmental site assessment to identify potential or existing environmental contamination liabilities.",
-    category: "Due Diligence"
-  },
-  {
-    term: "Pro Forma",
-    definition: "A financial projection showing anticipated revenues, expenses, and returns for a property investment.",
-    category: "Financial Analysis"
-  },
-  {
-    term: "Property Condition Assessment",
-    definition: "A detailed evaluation of a property's physical condition, including building systems and components.",
-    category: "Due Diligence"
-  },
-  {
-    term: "Recourse Loan",
-    definition: "A loan that allows the lender to pursue the borrower's personal assets if the loan defaults.",
-    category: "Financing"
-  },
-  {
-    term: "Rent Roll",
-    definition: "A detailed list of tenants, their lease terms, and rental rates for a property.",
-    category: "Property Management"
-  },
-  {
-    term: "Replacement Reserve",
-    definition: "Funds set aside for future capital improvements and major repairs to a property.",
-    category: "Financial Terms"
-  },
-  {
-    term: "Sale-Leaseback",
-    definition: "A transaction where a property owner sells their property and simultaneously leases it back from the buyer.",
-    category: "Transaction Types"
-  },
-  {
-    term: "Stabilized Occupancy",
-    definition: "The long-term average occupancy rate that a property is expected to achieve after lease-up.",
-    category: "Property Metrics"
-  },
-  {
-    term: "Subordination",
-    definition: "The process of ranking creditors' interests in order of priority in the event of default.",
-    category: "Legal Terms"
-  },
-  {
-    term: "Tax Basis",
-    definition: "The original cost of property plus improvements, minus depreciation, used for tax purposes.",
-    category: "Tax Strategy"
-  },
-  {
-    term: "Title Insurance",
-    definition: "Insurance that protects against financial loss from defects in title to real estate.",
-    category: "Legal Protection"
-  },
-  {
-    term: "Triple Net Lease (NNN)",
-    definition: "A lease agreement where the tenant pays all property expenses including taxes, insurance, and maintenance.",
-    category: "Legal Terms"
-  },
-  {
-    term: "Underwriting",
-    definition: "The process of evaluating a property's financial, physical, and market characteristics to determine its investment potential.",
-    category: "Investment Process"
-  },
-  {
-    term: "Vacancy Rate",
-    definition: "The percentage of all available units or space that is vacant or unoccupied at a particular time.",
-    category: "Property Metrics"
-  },
-  {
-    term: "Weighted Average Cost of Capital (WACC)",
-    definition: "The average rate of return a company expects to pay to finance its assets, weighted by the proportion of debt and equity.",
-    category: "Financial Metrics"
-  },
-  {
-    term: "Zoning",
-    definition: "Local laws that specify how real estate can and cannot be used in certain areas.",
-    category: "Legal Terms"
-  },
-  {
-    term: "1031 Exchange",
-    definition: "A tax-deferred exchange that allows an investor to sell a property and reinvest the proceeds in a new property while deferring capital gains taxes.",
-    category: "Tax Strategy"
-  },
-  {
-    term: "1040 Schedule E",
-    definition: "The tax form used to report income or loss from rental real estate, royalties, partnerships, and S corporations.",
-    category: "Tax Strategy"
-  },
-  {
-    term: "2-and-20 Fee Structure",
-    definition: "A common fee arrangement where managers charge 2% for management fees and 20% of profits above a certain threshold.",
-    category: "Fees and Expenses"
-  },
-  {
-    term: "50% Rule",
-    definition: "A quick calculation method estimating that a property's operating expenses will be approximately 50% of its gross rental income.",
-    category: "Financial Analysis"
-  }
 ];
 
 export function Glossary() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  // Get unique categories
   const categories = ['all', ...new Set(glossaryTerms.map(term => term.category))];
 
-  // Filter terms based on search and category
   const filteredTerms = glossaryTerms.filter(term => {
     const matchesSearch = term.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          term.definition.toLowerCase().includes(searchTerm.toLowerCase());
@@ -364,69 +125,126 @@ export function Glossary() {
     return matchesSearch && matchesCategory;
   });
 
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
+      'Financial Metrics': 'bg-blue-100 text-blue-700',
+      'Investment Structure': 'bg-purple-100 text-purple-700',
+      'Tax Strategy': 'bg-emerald-100 text-emerald-700',
+      'Legal Documents': 'bg-amber-100 text-amber-700',
+      'Investment Strategy': 'bg-rose-100 text-rose-700',
+      'Investment Process': 'bg-cyan-100 text-cyan-700',
+      'Investor Qualifications': 'bg-indigo-100 text-indigo-700',
+      'Financing': 'bg-orange-100 text-orange-700',
+    };
+    return colors[category] || 'bg-gray-100 text-gray-700';
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
       <Navbar />
 
-      <PageBanner 
-        title="Real Estate Investment Glossary"
-        subtitle="Essential terms and definitions for real estate investors"
-      />
-
-      <div className="max-w-[1200px] mx-auto px-4 py-16">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          {/* Search and Filter */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-700 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        <div className="max-w-6xl mx-auto px-4 py-16 relative">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
+              <BookOpen className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">Investment Glossary</h1>
+              <p className="text-white/80 mt-1">Essential terms and definitions for real estate investors</p>
+            </div>
+          </div>
+          
+          {/* Stats */}
+          <div className="flex flex-wrap gap-4 mt-6 mb-8">
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Total Terms</span>
+              <p className="text-white font-bold text-xl">{glossaryTerms.length}</p>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
+              <span className="text-white/70 text-sm">Categories</span>
+              <p className="text-white font-bold text-xl">{categories.length - 1}</p>
+            </div>
+          </div>
+          
+          {/* Search */}
+          <div className="max-w-xl">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 h-5 w-5" />
               <input
                 type="text"
                 placeholder="Search terms..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:ring-2 focus:ring-white/50 focus:border-transparent text-white placeholder-white/60 text-lg"
               />
             </div>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>
-                  {category === 'all' ? 'All Categories' : category}
-                </option>
-              ))}
-            </select>
           </div>
+        </div>
+      </div>
 
-          {/* Terms List */}
-          <div className="space-y-8">
-            {filteredTerms.map((term, index) => (
-              <div key={index} className="border-b last:border-0 pb-8 last:pb-0">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Book className="h-5 w-5 text-blue-600" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold mb-2">{term.term}</h3>
-                    <p className="text-gray-600 mb-2">{term.definition}</p>
-                    <span className="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full">
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        {/* Filter */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-8">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Filter className="w-5 h-5 text-gray-400" />
+              <span className="text-gray-600 font-medium">Filter by category:</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map(category => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
+                    selectedCategory === category
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {category === 'all' ? 'All Categories' : category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Results count */}
+        <p className="text-gray-500 mb-6">{filteredTerms.length} terms found</p>
+
+        {/* Terms List */}
+        <div className="space-y-4">
+          {filteredTerms.map((term, index) => (
+            <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition group">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <Book className="h-6 w-6 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex flex-wrap items-center gap-3 mb-2">
+                    <h3 className="text-xl font-bold text-gray-900">{term.term}</h3>
+                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${getCategoryColor(term.category)}`}>
                       {term.category}
                     </span>
                   </div>
+                  <p className="text-gray-600 leading-relaxed">{term.definition}</p>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
 
-            {filteredTerms.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No terms found matching your search
+          {filteredTerms.length === 0 && (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-10 h-10 text-gray-300" />
               </div>
-            )}
-          </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No terms found</h3>
+              <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+            </div>
+          )}
         </div>
       </div>
 

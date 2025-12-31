@@ -1,25 +1,41 @@
 import React from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
-import { PageBanner } from '../../components/PageBanner';
-import { Shield, Scale, FileText, AlertTriangle, Users, Building2, CheckCircle } from 'lucide-react';
+import { Shield, Scale, FileText, AlertTriangle, Users, Building2, CheckCircle, Gavel, Mail } from 'lucide-react';
 
 export function Compliance() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
       <Navbar />
 
-      <PageBanner 
-        title="Marketplace Guidelines"
-        subtitle="Our commitment to maintaining a trusted real estate investment platform"
-      />
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
+        
+        <div className="max-w-4xl mx-auto px-4 py-16 relative">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
+              <Gavel className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-white">SEC Compliance</h1>
+              <p className="text-white/80 mt-1">Our commitment to maintaining a trusted real estate investment platform</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-16">
-        <div className="bg-white rounded-lg shadow-sm p-8">
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
           {/* Introduction */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">Platform Overview</h2>
-            <p className="text-gray-600">
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-indigo-100 rounded-xl">
+                <Scale className="h-6 w-6 text-indigo-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Platform Overview</h2>
+            </div>
+            <p className="text-gray-600 leading-relaxed">
               EquityMD operates as a listing platform where real estate syndicators may post investment opportunities for accredited investors to discover. 
               We are not a broker-dealer, investment advisor, or intermediary. We do not facilitate introductions or connections between parties. 
               All communication and transactions occur independently between investors and syndicators outside of this platform.
@@ -27,140 +43,108 @@ export function Compliance() {
           </div>
 
           {/* Syndicator Requirements */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <Building2 className="h-6 w-6 mr-2 text-blue-600" />
-              Syndicator Requirements
-            </h2>
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-blue-100 rounded-xl">
+                <Building2 className="h-6 w-6 text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Syndicator Requirements</h2>
+            </div>
             <div className="space-y-4">
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Business Verification</h3>
-                  <p className="text-gray-600">
-                    All syndicators must provide proof of business registration, operating history, and track record in real estate investments.
-                  </p>
+              {[
+                { title: "Business Verification", desc: "All syndicators must provide proof of business registration, operating history, and track record in real estate investments." },
+                { title: "Deal Documentation", desc: "Each listed opportunity must include comprehensive documentation, including property details, financial projections, and risk factors." },
+                { title: "Transparency", desc: "Clear disclosure of fees, terms, and potential conflicts of interest is required for all listings." },
+              ].map((item, index) => (
+                <div key={index} className="flex items-start gap-4 p-4 bg-blue-50 rounded-xl">
+                  <CheckCircle className="h-5 w-5 text-emerald-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-gray-600 text-sm">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Deal Documentation</h3>
-                  <p className="text-gray-600">
-                    Each listed opportunity must include comprehensive documentation, including property details, financial projections, and risk factors.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Transparency</h3>
-                  <p className="text-gray-600">
-                    Clear disclosure of fees, terms, and potential conflicts of interest is required for all listings.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
           {/* Investor Guidelines */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <Users className="h-6 w-6 mr-2 text-blue-600" />
-              Investor Guidelines
-            </h2>
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-emerald-100 rounded-xl">
+                <Users className="h-6 w-6 text-emerald-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Investor Guidelines</h2>
+            </div>
             <div className="space-y-4">
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Accreditation</h3>
-                  <p className="text-gray-600">
-                    Investors must self-certify their accredited status and maintain accurate profile information.
-                  </p>
+              {[
+                { title: "Accreditation", desc: "Investors must self-certify their accredited status and maintain accurate profile information." },
+                { title: "Due Diligence", desc: "Investors are responsible for conducting their own research and due diligence on all investment opportunities." },
+                { title: "Professional Advice", desc: "We encourage all investors to consult with qualified financial and legal advisors before making investment decisions." },
+              ].map((item, index) => (
+                <div key={index} className="flex items-start gap-4 p-4 bg-emerald-50 rounded-xl">
+                  <CheckCircle className="h-5 w-5 text-emerald-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-gray-600 text-sm">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Due Diligence</h3>
-                  <p className="text-gray-600">
-                    Investors are responsible for conducting their own due diligence and seeking professional advice before investing.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Communication</h3>
-                  <p className="text-gray-600">
-                    All investment-related communications should occur through the platform for transparency and record-keeping.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Platform Standards */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <Shield className="h-6 w-6 mr-2 text-blue-600" />
-              Platform Standards
-            </h2>
+          {/* Platform Compliance */}
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-purple-100 rounded-xl">
+                <Shield className="h-6 w-6 text-purple-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">Platform Compliance</h2>
+            </div>
             <div className="space-y-4">
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Quality Control</h3>
-                  <p className="text-gray-600">
-                    We review all listings for completeness and clarity before they are published on the platform.
-                  </p>
+              {[
+                { title: "SEC Regulations", desc: "We design our platform with SEC regulations in mind, particularly Regulation D for private placements." },
+                { title: "Data Protection", desc: "User data is protected in compliance with applicable privacy laws and industry best practices." },
+                { title: "Regular Audits", desc: "We regularly review our practices to ensure continued compliance with applicable regulations." },
+              ].map((item, index) => (
+                <div key={index} className="flex items-start gap-4 p-4 bg-purple-50 rounded-xl">
+                  <CheckCircle className="h-5 w-5 text-emerald-500 mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
+                    <p className="text-gray-600 text-sm">{item.desc}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Fair Practices</h3>
-                  <p className="text-gray-600">
-                    We maintain equal access and visibility for all compliant listings without preferential treatment.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 mr-3" />
-                <div>
-                  <h3 className="font-bold mb-2">Data Security</h3>
-                  <p className="text-gray-600">
-                    We employ industry-standard security measures to protect user data and communications.
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Important Notice */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-12">
-            <div className="flex items-start">
-              <AlertTriangle className="h-5 w-5 text-yellow-600 mt-1 mr-3" />
+          {/* Warning */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 mb-8">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="h-6 w-6 text-amber-600" />
+              </div>
               <div>
-                <h3 className="font-bold text-yellow-800 mb-2">Marketplace Disclaimer</h3>
-                <p className="text-yellow-800">
-                  EquityMD is a listing platform where syndicators may post real estate investment opportunities. We do not make introductions, provide investment advice, 
-                  broker securities transactions, or hold investor funds. All communication and transactions occur independently outside this platform. 
-                  Please refer to our full legal disclaimer for important information about our services and limitations.
+                <h3 className="font-bold text-amber-900 mb-2">Investment Risk Warning</h3>
+                <p className="text-amber-800 text-sm">
+                  All investments involve risk. Past performance is not indicative of future results. Real estate investments are speculative and involve the risk of loss, including loss of principal. EquityMD does not guarantee any investment outcomes.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Contact Information */}
-          <div className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Questions?</h2>
-            <p className="text-gray-600 mb-4">
-              For questions about our marketplace guidelines or to report concerns, please contact our compliance team:
-            </p>
-            <ul className="space-y-2 text-gray-600">
-              <li>Email: hello@equitymd.com</li>
-            </ul>
+          {/* Contact */}
+          <div className="bg-gray-50 rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-4">Compliance Questions</h2>
+            <p className="text-gray-600 mb-4">For compliance-related inquiries:</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-gray-400" />
+                <a href="mailto:hello@equitymd.com" className="text-blue-600 hover:text-blue-700 font-medium">
+                  hello@equitymd.com
+                </a>
+              </div>
+              <p className="text-gray-500 text-sm">3525 Hyland Ave Suite 235, Costa Mesa, CA 92626</p>
+            </div>
           </div>
         </div>
       </div>
