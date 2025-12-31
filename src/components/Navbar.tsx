@@ -300,6 +300,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                   <Link
+                    to="/dashboard"
+                    className="block px-4 py-2 text-gray-800 hover:bg-blue-50 font-medium"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
                     to="/profile"
                     className="block px-4 py-2 text-gray-800 hover:bg-blue-50"
                     onClick={() => setIsDropdownOpen(false)}
@@ -447,6 +454,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   </div>
                 </div>
                 <div className="space-y-2">
+                  <Link
+                    to="/dashboard"
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
                   <Link
                     to="/profile"
                     className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
