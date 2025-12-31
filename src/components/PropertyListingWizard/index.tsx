@@ -264,6 +264,7 @@ export function PropertyListingWizard() {
   };
 
   const handlePublish = async (status: 'draft' | 'active' = 'draft') => {
+    // Validation
     if (!validateStep(5)) {
       setErrors({ submit: 'Please fill in all required fields before publishing.' });
       return;
@@ -282,7 +283,7 @@ export function PropertyListingWizard() {
         ? `${formData.address.city}, ${formData.address.state}`
         : formData.location;
       
-      // Create the deal
+      // Create the deal data object
       const dealData: any = {
         syndicator_id: formData.syndicatorId,
         title: formData.title,
@@ -298,7 +299,7 @@ export function PropertyListingWizard() {
         preferred_return: formData.preferredReturn ? parseFloat(formData.preferredReturn) : null,
         equity_multiple: formData.equityMultiple ? parseFloat(formData.equityMultiple) : null,
         status,
-        cover_image_url: null // Will update after image upload
+        cover_image_url: null
       };
       
       // Add video URL if provided
@@ -308,6 +309,7 @@ export function PropertyListingWizard() {
       
       console.log('Creating deal with data:', dealData);
       
+      // Insert deal into database
       const { data: deal, error: dealError } = await supabase
         .from('deals')
         .insert(dealData)
@@ -316,51 +318,41 @@ export function PropertyListingWizard() {
       
       if (dealError) {
         console.error('Deal insert error:', dealError);
-        throw new Error(`Failed to create deal: ${dealError.message}`);
+        throw new Error(`Database error: ${dealError.message}`);
       }
       
-      if (!deal) {
-        throw new Error('Deal was not created - no data returned');
+      if (!deal || !deal.slug) {
+        throw new Error('Deal was not created properly - missing data');
       }
       
-      console.log('Deal created successfully:', deal.id);
+      console.log('Deal created successfully:', deal.id, deal.slug);
       
-      // Upload images and get cover URL (skip if no images with files)
-      let coverImageUrl: string | null = null;
+      // Upload images (non-blocking)
       const imagesWithFiles = formData.images.filter(img => img.file);
-      
       if (imagesWithFiles.length > 0) {
         try {
-          coverImageUrl = await uploadImages(deal.id);
-          console.log('Images uploaded, cover URL:', coverImageUrl);
+          const coverImageUrl = await uploadImages(deal.id);
+          if (coverImageUrl) {
+            await supabase
+              .from('deals')
+              .update({ cover_image_url: coverImageUrl })
+              .eq('id', deal.id);
+          }
         } catch (uploadError) {
           console.error('Image upload error (non-fatal):', uploadError);
-          // Don't fail the whole publish if image upload fails
         }
       }
       
-      // Update cover image URL if we have one
-      if (coverImageUrl) {
-        const { error: updateError } = await supabase
-          .from('deals')
-          .update({ cover_image_url: coverImageUrl })
-          .eq('id', deal.id);
-        
-        if (updateError) {
-          console.error('Cover image update error (non-fatal):', updateError);
-        }
-      }
+      // Clear draft from localStorage
+      localStorage.removeItem(`deal_draft_${user.id}`);
       
-      // Clear draft
-      const draftKey = `deal_draft_${user.id}`;
-      localStorage.removeItem(draftKey);
+      // Success!
+      toast.success(status === 'active' ? 'Deal published successfully!' : 'Draft saved!');
       
-      console.log('Navigating to deal:', deal.slug);
+      // Stop spinner before navigating
+      setPublishing(false);
       
-      // Show success toast
-      toast.success(status === 'active' ? 'Deal published successfully!' : 'Draft saved successfully!');
-      
-      // Navigate to the deal
+      // Navigate to the new deal
       navigate(`/deals/${deal.slug}`);
       
     } catch (error: any) {
@@ -368,6 +360,8 @@ export function PropertyListingWizard() {
       const errorMessage = error.message || 'Failed to create listing. Please try again.';
       setErrors({ submit: errorMessage });
       toast.error(errorMessage);
+    } finally {
+      // Always stop the spinner
       setPublishing(false);
     }
   };
