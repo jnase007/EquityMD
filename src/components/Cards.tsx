@@ -52,7 +52,7 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
   return (
     <Link to={`/deals/${slug}`} className={`block h-full ${className}`} onClick={handleClick}>
       <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col overflow-hidden scrollable-card">
-        <div className="relative">
+        <div className="relative overflow-hidden">
           <OptimizedImage 
             src={image} 
             alt={title} 
@@ -61,9 +61,9 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
             height={192}
           />
           {!isAuthenticated && (
-            <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
-              <Lock className="h-4 w-4 mr-1" />
-              Sign in to view details
+            <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-xs flex items-center max-w-[90%]">
+              <Lock className="h-3 w-3 mr-1 flex-shrink-0" />
+              <span className="truncate">Sign in</span>
             </div>
           )}
         </div>
@@ -138,16 +138,16 @@ export function DealListItem({ slug, image, title, location, description, metric
     <Link to={`/deals/${slug}`} className="block" onClick={handleClick}>
       <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition scrollable-card">
         <div className="flex gap-6">
-          <div className="relative flex-shrink-0">
+          <div className="relative flex-shrink-0 overflow-hidden rounded-lg">
             <OptimizedImage 
               src={image} 
               alt={title} 
-              className="w-48 h-48 object-cover rounded-lg"
+              className="w-48 h-48 object-cover"
               width={192}
               height={192}
             />
             {!isAuthenticated && (
-              <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-sm flex items-center">
+              <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-full text-xs flex items-center">
                 <Lock className="h-4 w-4 mr-1" />
                 Sign in
               </div>

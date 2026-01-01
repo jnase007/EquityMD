@@ -5,6 +5,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent horizontal overflow on mobile */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Ensure all containers don't overflow */
+.max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+  overflow-x: hidden;
+}
+
 /* Mobile-optimized scrollbar hiding */
 .scrollbar-hide {
   -ms-overflow-style: none;
