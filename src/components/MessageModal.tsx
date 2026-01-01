@@ -62,6 +62,8 @@ export function MessageModal({
       // Get syndicator's email if not provided
       let recipientEmail = syndicatorEmail;
       
+      let isUnclaimedProfile = false;
+      
       if (!recipientEmail) {
         // First try to get from profiles table (if syndicator claimed their profile)
         const { data: recipientProfile } = await supabase
@@ -87,12 +89,13 @@ export function MessageModal({
           // Fallback: try to get contact_email from syndicators table
           const { data: syndicatorData } = await supabase
             .from('syndicators')
-            .select('contact_email')
+            .select('contact_email, company_name')
             .eq('id', receiverId)
             .maybeSingle();
           
           if (syndicatorData?.contact_email) {
             recipientEmail = syndicatorData.contact_email;
+            isUnclaimedProfile = true;
           }
         }
       }
@@ -144,6 +147,37 @@ export function MessageModal({
         console.error('Error sending email notification:', emailError);
       } else {
         console.log('Email notification sent successfully');
+        
+        // If this is an unclaimed profile, also notify admin
+        if (isUnclaimedProfile) {
+          const ADMIN_EMAIL = 'justin@brandastic.com';
+          try {
+            await supabase.functions.invoke('send-email', {
+              body: {
+                to: ADMIN_EMAIL,
+                type: 'new_message',
+                data: {
+                  senderName: 'EquityMD System',
+                  senderType: 'system',
+                  messagePreview: `📢 Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}\n${isInvestment ? `Investment Amount: ${formatCurrency(investmentAmount)}` : ''}\n\nConsider reaching out to encourage them to claim their profile.`,
+                  dealTitle: `Unclaimed Profile: ${syndicatorName}`,
+                  dealSlug: dealSlug,
+                  timestamp: new Date().toLocaleString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })
+                }
+              }
+            });
+            console.log('Admin notification sent for unclaimed profile');
+          } catch (adminEmailErr) {
+            console.error('Error notifying admin:', adminEmailErr);
+          }
+        }
       }
     } catch (error) {
       console.error('Error in sendEmailNotification:', error);
