@@ -354,18 +354,26 @@ export function DealDetails() {
               </div>
             )}
 
-            {/* Video Section (keep at top, if present) */}
-            {deal.syndicator?.company_name === "Sutera Properties" && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-2xl font-bold mb-6">Property Overview</h2>
-                <VideoEmbed
-                  url="https://www.youtube.com/watch?v=AZ7efSrtm44"
-                  title="Property Overview"
-                  className="mb-4"
-                />
-                <p className="text-sm text-gray-500">
-                  Take a virtual tour of this investment opportunity.
-                </p>
+            {/* Video Pitch Section - Shows if deal has video_url */}
+            {deal.video_url && (
+              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-xl p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl" />
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-red-500/20 rounded-lg">
+                      <Play className="h-5 w-5 text-red-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-white">Video Pitch</h2>
+                      <p className="text-slate-400 text-sm">Watch the syndicator present this opportunity</p>
+                    </div>
+                  </div>
+                  <VideoEmbed
+                    url={deal.video_url}
+                    title={`${deal.title} Video Pitch`}
+                    className="rounded-xl overflow-hidden"
+                  />
+                </div>
               </div>
             )}
 
