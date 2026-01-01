@@ -16,51 +16,8 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fix LinkedIn button text display using MutationObserver
-  useEffect(() => {
-    const fixLinkedInButton = () => {
-      // Find all buttons and fix linkedin_oidc text
-      document.querySelectorAll('button').forEach((btn) => {
-        // Walk through all text nodes and replace linkedin_oidc
-        const walker = document.createTreeWalker(btn, NodeFilter.SHOW_TEXT, null);
-        let node;
-        while ((node = walker.nextNode())) {
-          if (node.textContent?.includes('linkedin_oidc')) {
-            node.textContent = node.textContent.replace('linkedin_oidc', 'LinkedIn');
-          }
-        }
-      });
-    };
-    
-    // Run immediately
-    fixLinkedInButton();
-    
-    // Set up MutationObserver to watch for Supabase Auth UI rendering
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach(() => {
-        fixLinkedInButton();
-      });
-    });
-    
-    // Observe the modal content for changes
-    const modalContent = document.querySelector('.bg-white.rounded-xl');
-    if (modalContent) {
-      observer.observe(modalContent, { 
-        childList: true, 
-        subtree: true,
-        characterData: true 
-      });
-    }
-    
-    // Also run on intervals for safety
-    const intervals = [100, 300, 600, 1000, 2000];
-    const timers = intervals.map(ms => setTimeout(fixLinkedInButton, ms));
-    
-    return () => {
-      observer.disconnect();
-      timers.forEach(clearTimeout);
-    };
-  }, []);
+  // LinkedIn button styling is handled via CSS in index.css
+  // The CSS hides the original "linkedin_oidc" text and replaces it with proper text and icon
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
