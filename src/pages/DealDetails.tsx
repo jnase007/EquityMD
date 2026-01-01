@@ -607,9 +607,7 @@ export function DealDetails() {
                   <>
                     <button
                       onClick={() => handleAction("invest")}
-                      disabled={!deal.syndicator?.claimed_by}
-                      className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
+                      className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
                     >
                       <Wallet className="h-5 w-5 mr-2" />
                       Invest Now
@@ -617,9 +615,7 @@ export function DealDetails() {
 
                     <button
                       onClick={() => handleAction("contact")}
-                      disabled={!deal.syndicator?.claimed_by}
-                      className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                      title={!deal.syndicator?.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
+                      className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center"
                     >
                       <MessageCircle className="h-5 w-5 mr-2" />
                       Contact Syndicator
@@ -631,17 +627,6 @@ export function DealDetails() {
               </div>
             </div>
 
-            {/* Unclaimed Profile Warning - Only show to non-owners */}
-            {!deal.syndicator?.claimed_by && !(user && deal.syndicator?.claimed_by === user.id) && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <div className="flex">
-                  <AlertCircle className="h-5 w-5 text-blue-400 mr-2" />
-                  <div className="text-sm text-blue-700">
-                    This syndicator profile hasn't been claimed yet. Messaging will be available once the syndicator claims their profile.
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Accredited Status */}
             {isAccredited ? (
