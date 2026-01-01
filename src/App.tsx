@@ -4,6 +4,7 @@ import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
 import { authLogger } from './lib/logger';
+import { initGA, trackPageView } from './lib/gtag';
 
 // Force deployment refresh - production loading fix
 // Lazy load heavy components
@@ -92,10 +93,16 @@ export default function App() {
   // Enable keyboard shortcuts for power users
   useKeyboardShortcuts();
 
-  // Preload critical resources on app start
+  // Initialize Google Analytics and preload critical resources on app start
   useEffect(() => {
+    initGA();
     preloadCriticalResources();
   }, []);
+
+  // Track page views on route change
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   // Preload likely next routes based on current page
   useEffect(() => {

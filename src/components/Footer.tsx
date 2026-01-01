@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield } from 'lucide-react';
+import { Shield, Mail, ArrowRight, CheckCircle } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export function Footer() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setSubscribing(true);
+    try {
+      // Save to newsletter_subscribers table
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert([{ email, source: 'footer' }]);
+      
+      if (error && !error.message.includes('duplicate')) {
+        console.error('Newsletter error:', error);
+      }
+      
+      setSubscribed(true);
+      setEmail('');
+    } catch (err) {
+      console.error('Newsletter subscription error:', err);
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   const handleNavigation = (path: string) => {
     window.scrollTo(0, 0);
@@ -18,8 +46,8 @@ export function Footer() {
 
   return (
     <footer className="bg-gray-900 text-white py-12 px-6">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-4 gap-8">
-        <div>
+      <div className="max-w-6xl mx-auto grid md:grid-cols-5 gap-8">
+        <div className="md:col-span-2">
           <Link 
             to="/" 
             onClick={() => window.scrollTo(0, 0)}
@@ -34,12 +62,41 @@ export function Footer() {
           <p className="text-gray-400 mb-4">
             Unlocking Real Estate Profits for Investors
           </p>
-          <button 
-            onClick={() => handleNavigation('/contact')}
-            className="text-blue-400 hover:text-blue-300 transition"
-          >
-            Contact Us
-          </button>
+          
+          {/* Newsletter Signup */}
+          <div className="mt-6">
+            <h4 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+              <Mail className="h-4 w-4 text-emerald-400" />
+              Get Deal Alerts
+            </h4>
+            {subscribed ? (
+              <div className="flex items-center gap-2 text-emerald-400 text-sm">
+                <CheckCircle className="h-4 w-4" />
+                You're subscribed! Check your inbox.
+              </div>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={subscribing}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition disabled:opacity-50 flex items-center gap-1"
+                >
+                  {subscribing ? '...' : <ArrowRight className="h-4 w-4" />}
+                </button>
+              </form>
+            )}
+            <p className="text-xs text-gray-500 mt-2">
+              Weekly deals. No spam. Unsubscribe anytime.
+            </p>
+          </div>
         </div>
         
         <div>
