@@ -70,6 +70,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { AdminErrorBoundary } from './components/AdminErrorBoundary';
 import { ScrollToTop } from './components/ScrollToTop';
 import { CookieConsent } from './components/CookieConsent';
+import { ExitIntentPopup } from './components/ExitIntentPopup';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
 // Minimal loading fallback for Suspense boundaries
@@ -470,6 +471,7 @@ export default function App() {
       <PerformanceMonitor />
       <ScrollToTop />
       <CookieConsent />
+      <ExitIntentPopup />
     </div>
   );
 }
