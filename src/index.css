@@ -201,31 +201,23 @@ button, a, [role="button"] {
   letter-spacing: -0.02em;
 }
 
-/* Social auth button styling */
-.supabase-auth-ui_ui-button:nth-of-type(3)::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  background-image: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  filter: brightness(0) saturate(100%) invert(31%) sepia(69%) saturate(3700%) hue-rotate(174deg) brightness(100%) contrast(100%);
+/* Social auth button styling - Fix LinkedIn button text */
+/* Hide the default button content and replace with proper text */
+button[type="submit"]:has(svg[viewBox="0 0 24 24"]) {
+  position: relative;
 }
 
-.linkedin-btn::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  background-image: url('https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  filter: brightness(0) saturate(100%) invert(31%) sepia(69%) saturate(3700%) hue-rotate(174deg) brightness(100%) contrast(100%);
+/* Target LinkedIn button specifically by finding buttons with linkedin_oidc text */
+[data-testid="auth-ui-social-provider-button-linkedin_oidc"],
+button:has(> span:only-child):nth-of-type(3) {
+  font-size: 0 !important;
+}
+
+[data-testid="auth-ui-social-provider-button-linkedin_oidc"]::after,
+button:has(> span:only-child):nth-of-type(3)::after {
+  content: "Continue with LinkedIn";
+  font-size: 13px;
+  font-weight: 500;
 }
 
 /* Enhanced text clamping for mobile */

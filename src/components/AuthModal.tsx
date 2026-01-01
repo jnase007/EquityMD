@@ -16,37 +16,49 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fix LinkedIn button text display
+  // Fix LinkedIn button text display using MutationObserver
   useEffect(() => {
     const fixLinkedInButton = () => {
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach((btn) => {
-        if (btn.textContent?.includes('linkedin_oidc')) {
-          // Replace the text content while preserving the icon
-          const spans = btn.querySelectorAll('span');
-          spans.forEach(span => {
-            if (span.textContent?.includes('linkedin_oidc')) {
-              span.textContent = span.textContent.replace('linkedin_oidc', 'LinkedIn');
-            }
-          });
-          // Also check direct text nodes
-          btn.childNodes.forEach(node => {
-            if (node.nodeType === Node.TEXT_NODE && node.textContent?.includes('linkedin_oidc')) {
-              node.textContent = node.textContent.replace('linkedin_oidc', 'LinkedIn');
-            }
-          });
+      // Find all buttons and fix linkedin_oidc text
+      document.querySelectorAll('button').forEach((btn) => {
+        // Walk through all text nodes and replace linkedin_oidc
+        const walker = document.createTreeWalker(btn, NodeFilter.SHOW_TEXT, null);
+        let node;
+        while ((node = walker.nextNode())) {
+          if (node.textContent?.includes('linkedin_oidc')) {
+            node.textContent = node.textContent.replace('linkedin_oidc', 'LinkedIn');
+          }
         }
       });
     };
     
-    // Run immediately and after a short delay (for dynamic rendering)
+    // Run immediately
     fixLinkedInButton();
-    const timer = setTimeout(fixLinkedInButton, 100);
-    const timer2 = setTimeout(fixLinkedInButton, 500);
+    
+    // Set up MutationObserver to watch for Supabase Auth UI rendering
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(() => {
+        fixLinkedInButton();
+      });
+    });
+    
+    // Observe the modal content for changes
+    const modalContent = document.querySelector('.bg-white.rounded-xl');
+    if (modalContent) {
+      observer.observe(modalContent, { 
+        childList: true, 
+        subtree: true,
+        characterData: true 
+      });
+    }
+    
+    // Also run on intervals for safety
+    const intervals = [100, 300, 600, 1000, 2000];
+    const timers = intervals.map(ms => setTimeout(fixLinkedInButton, ms));
     
     return () => {
-      clearTimeout(timer);
-      clearTimeout(timer2);
+      observer.disconnect();
+      timers.forEach(clearTimeout);
     };
   }, []);
 
