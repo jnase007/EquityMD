@@ -114,7 +114,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               <h2 className="text-base font-bold">
-                {defaultView === 'sign_up' ? 'Join EquityMD' : 'Welcome Back'}
+                {defaultView === 'sign_up' ? 'Join EquityMD' : 'Welcome Back to EquityMD'}
               </h2>
             </div>
             <button
