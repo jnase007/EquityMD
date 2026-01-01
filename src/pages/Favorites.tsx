@@ -107,11 +107,6 @@ export function Favorites() {
     return <Navigate to="/" replace />;
   }
 
-  // Only allow investors and admins to view favorites
-  if (profile?.user_type !== 'investor' && !profile?.is_admin) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
   return (
     <>
       <SEO 

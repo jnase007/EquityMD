@@ -3,18 +3,22 @@ import { Heart } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 
+const LOCAL_STORAGE_KEY = 'equitymd_guest_favorites';
+
 interface FavoriteButtonProps {
   dealId: string;
   size?: 'sm' | 'md' | 'lg';
   showText?: boolean;
   className?: string;
+  onAuthRequired?: () => void;
 }
 
 export function FavoriteButton({ 
   dealId, 
   size = 'md', 
   showText = false,
-  className = '' 
+  className = '',
+  onAuthRequired
 }: FavoriteButtonProps) {
   const { user } = useAuthStore();
   const [isFavorited, setIsFavorited] = useState(false);
@@ -36,14 +40,42 @@ export function FavoriteButton({
   useEffect(() => {
     if (user) {
       checkFavoriteStatus();
+    } else {
+      // Check localStorage for guest favorites
+      checkGuestFavorite();
     }
   }, [user, dealId]);
+
+  function checkGuestFavorite() {
+    try {
+      const guestFavorites = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+      setIsFavorited(guestFavorites.includes(dealId));
+    } catch {
+      setIsFavorited(false);
+    }
+  }
+
+  function toggleGuestFavorite() {
+    try {
+      const guestFavorites = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+      if (guestFavorites.includes(dealId)) {
+        const updated = guestFavorites.filter((id: string) => id !== dealId);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+        setIsFavorited(false);
+      } else {
+        guestFavorites.push(dealId);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(guestFavorites));
+        setIsFavorited(true);
+      }
+    } catch (err) {
+      console.error('Error saving guest favorite:', err);
+    }
+  }
 
   async function checkFavoriteStatus() {
     if (!user) return;
 
     try {
-      console.log('Checking favorite status for user:', user.id, 'deal:', dealId);
       const { data, error } = await supabase
         .from('favorites')
         .select('id')
@@ -51,12 +83,11 @@ export function FavoriteButton({
         .eq('deal_id', dealId)
         .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+      if (error && error.code !== 'PGRST116') {
         console.error('Error checking favorite status:', error);
         return;
       }
 
-      console.log('Favorite status check result:', data);
       setIsFavorited(!!data);
     } catch (error) {
       console.error('Error checking favorite status:', error);
@@ -64,85 +95,48 @@ export function FavoriteButton({
   }
 
   async function toggleFavorite() {
+    // Guest user - save to localStorage and optionally prompt to sign in
     if (!user) {
-      console.log('No user - cannot favorite');
-      // Could trigger auth modal here
+      toggleGuestFavorite();
+      // Optionally show auth modal after favoriting
+      if (onAuthRequired && !isFavorited) {
+        setTimeout(() => {
+          onAuthRequired();
+        }, 500);
+      }
       return;
     }
 
-    console.log('Toggling favorite for deal:', dealId, 'Current state:', isFavorited);
-    console.log('User info:', { id: user.id, email: user.email });
     setIsLoading(true);
 
     try {
       if (isFavorited) {
         // Remove favorite
-        console.log('Removing favorite...');
         const { error } = await supabase
           .from('favorites')
           .delete()
           .eq('investor_id', user.id)
           .eq('deal_id', dealId);
 
-        if (error) {
-          console.error('Error removing favorite:', error);
-          console.error('Error details:', {
-            code: error.code,
-            message: error.message,
-            details: error.details,
-            hint: error.hint
-          });
-          throw error;
-        }
-        console.log('Favorite removed successfully');
+        if (error) throw error;
         setIsFavorited(false);
       } else {
         // Add favorite
-        console.log('Adding favorite...');
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('favorites')
           .insert({
             investor_id: user.id,
             deal_id: dealId
-          })
-          .select();
-
-        if (error) {
-          console.error('Error adding favorite:', error);
-          console.error('Error details:', {
-            code: error.code,
-            message: error.message,
-            details: error.details,
-            hint: error.hint
           });
-          
-          // Check if it's a permission error
-          if (error.code === '42501' || error.message?.includes('permission') || error.message?.includes('policy')) {
-            alert('Permission denied: Admin users may not have access to favorites feature yet. Please contact support.');
-          } else {
-            const errorMessage = error.message || 'Unknown error occurred';
-            alert(`Error adding favorite: ${errorMessage}. Please try again.`);
-          }
-          throw error;
-        }
-        console.log('Favorite added successfully:', data);
+
+        if (error) throw error;
         setIsFavorited(true);
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      // Don't show alert for permission errors as we already handled them above
-      if (error instanceof Error && !error.message?.includes('permission') && !error.message?.includes('policy')) {
-        const action = isFavorited ? 'removing' : 'adding';
-        const errorMessage = error.message || 'Unknown error occurred';
-        alert(`Error ${action} favorite: ${errorMessage}. Please try again.`);
-      }
     } finally {
       setIsLoading(false);
     }
-  }
-
-  if (!user) {
-    return null; // Don't show favorite button if not logged in
   }
 
   return (

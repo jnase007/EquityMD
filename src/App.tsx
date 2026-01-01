@@ -251,6 +251,8 @@ export default function App() {
             setUser(session?.user ?? null);
             if (session?.user) {
               await fetchProfile(session.user.id);
+              // Sync guest favorites to database
+              await syncGuestFavorites(session.user.id);
             }
           }
         });
@@ -267,7 +269,28 @@ export default function App() {
   
     initAuth();
   }, [clearAuth, setUser, fetchProfile]);
-  
+
+  // Sync guest favorites from localStorage to database when user logs in
+  async function syncGuestFavorites(userId: string) {
+    try {
+      const guestFavorites = JSON.parse(localStorage.getItem('equitymd_guest_favorites') || '[]');
+      if (guestFavorites.length === 0) return;
+
+      // Insert each favorite (ignore duplicates)
+      for (const dealId of guestFavorites) {
+        await supabase
+          .from('favorites')
+          .upsert({ investor_id: userId, deal_id: dealId }, { onConflict: 'investor_id,deal_id' })
+          .select();
+      }
+
+      // Clear localStorage after syncing
+      localStorage.removeItem('equitymd_guest_favorites');
+      authLogger.log('Synced', guestFavorites.length, 'guest favorites to database');
+    } catch (error) {
+      console.error('Error syncing guest favorites:', error);
+    }
+  }
 
   async function fetchSiteSettings() {
     try {
