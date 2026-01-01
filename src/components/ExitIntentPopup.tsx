@@ -121,7 +121,7 @@ export function ExitIntentPopup() {
                   <div className="p-1.5 bg-emerald-100 rounded-lg">
                     <TrendingUp className="h-4 w-4 text-emerald-600" />
                   </div>
-                  <span>Weekly curated investment opportunities</span>
+                  <span>Weekly investment opportunities</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-600">
                   <div className="p-1.5 bg-blue-100 rounded-lg">
