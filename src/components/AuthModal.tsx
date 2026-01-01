@@ -204,8 +204,8 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
                 },
               },
             }}
-            providers={['google', 'facebook', 'linkedin_oidc']}
-            onlyThirdPartyProviders={false}
+            providers={['google', 'linkedin_oidc']}
+            onlyThirdPartyProviders={true}
             redirectTo={`${window.location.origin}/dashboard`}
             view="sign_in"
             socialLayout="vertical"
