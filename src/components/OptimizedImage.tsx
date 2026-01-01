@@ -76,7 +76,7 @@ export function OptimizedImage({
           {placeholder ? (
             <img 
               src={placeholder} 
-              alt="" 
+              alt="Loading placeholder" 
               className="w-full h-full object-cover opacity-50"
             />
           ) : (

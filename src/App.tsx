@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
+import { authLogger } from './lib/logger';
 
 // Force deployment refresh - production loading fix
 // Lazy load heavy components
@@ -107,7 +108,7 @@ export default function App() {
 
   const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
     try {
-      console.log('Fetching profile for user:', userId);
+      authLogger.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -116,7 +117,7 @@ export default function App() {
 
       if (error) {
         if (error.message.includes('fetch') && retryCount < 3) {
-          console.log(`Retrying profile fetch... Attempt ${retryCount + 1}`);
+          authLogger.log(`Retrying profile fetch... Attempt ${retryCount + 1}`);
           await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
           return fetchProfile(userId, retryCount + 1);
         }
@@ -124,18 +125,18 @@ export default function App() {
       }
 
       if (!data) {
-        console.log('No profile found, creating profile automatically...');
+        authLogger.log('No profile found, creating profile automatically...');
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw new Error('User not found');
 
-        console.log('User metadata:', user.user_metadata);
-        console.log('App metadata:', user.app_metadata);
+        authLogger.log('User metadata:', user.user_metadata);
+        authLogger.log('App metadata:', user.app_metadata);
 
         // For social users, create profile automatically as investor (default)
         // For email users, also create profile automatically
         const userType = user.user_metadata?.user_type || 'investor';
         
-        console.log('Creating profile with user type:', userType);
+        authLogger.log('Creating profile with user type:', userType);
         
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
@@ -151,15 +152,15 @@ export default function App() {
           .single();
 
         if (createError) {
-          console.error('Error creating profile:', createError);
+          authLogger.error('Error creating profile:', createError);
           throw createError;
         }
 
-        console.log('Profile created successfully:', newProfile);
+        authLogger.log('Profile created successfully:', newProfile);
 
         // Create type-specific profile
         if (newProfile.user_type === 'investor') {
-          console.log('Creating investor profile...');
+          authLogger.log('Creating investor profile...');
           const { error: investorError } = await supabase
             .from('investor_profiles')
             .insert([{ 
@@ -171,12 +172,12 @@ export default function App() {
             }]);
           
           if (investorError) {
-            console.error('Error creating investor profile:', investorError);
+            authLogger.error('Error creating investor profile:', investorError);
           } else {
-            console.log('Investor profile created successfully');
+            authLogger.log('Investor profile created successfully');
           }
         } else {
-          console.log('Creating syndicator profile...');
+          authLogger.log('Creating syndicator profile...');
           const { error: syndicatorError } = await supabase
             .from('syndicator_profiles')
             .insert([{ 
@@ -186,9 +187,9 @@ export default function App() {
             }]);
           
           if (syndicatorError) {
-            console.error('Error creating syndicator profile:', syndicatorError);
+            authLogger.error('Error creating syndicator profile:', syndicatorError);
           } else {
-            console.log('Syndicator profile created successfully');
+            authLogger.log('Syndicator profile created successfully');
           }
         }
 
@@ -196,10 +197,10 @@ export default function App() {
         return;
       }
 
-      console.log('Profile found:', data);
+      authLogger.log('Profile found:', data);
       setProfile(data);
     } catch (error) {
-      console.error('Error in fetchProfile:', error);
+      authLogger.error('Error in fetchProfile:', error);
       clearAuth();
     }
   }, [clearAuth, setProfile]);
@@ -209,14 +210,14 @@ export default function App() {
       try {
         const { error: refreshError } = await supabase.auth.refreshSession();
         if (refreshError) {
-          console.warn('Refresh session error:', refreshError);
+          authLogger.log('Refresh session error:', refreshError);
         }
     
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
-          console.warn('Session retrieval error:', error);
+          authLogger.log('Session retrieval error:', error);
         }
-        console.log('Initial session check:', session?.user?.id);
+        authLogger.log('Initial session check:', session?.user?.id);
     
         setUser(session?.user ?? null);
         if (session?.user) {
@@ -228,8 +229,8 @@ export default function App() {
         
         const {
           data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event: string, session: any) => {
-          console.log('Auth state changed:', event, session?.user?.id);
+        } = supabase.auth.onAuthStateChange(async (event, session) => {
+          authLogger.log('State changed:', event, session?.user?.id);
           if (event === 'SIGNED_OUT') {
             clearAuth();
           } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
@@ -281,9 +282,9 @@ export default function App() {
     }
   }, [location.pathname, requireAuth, user, requiresAuth]);
 
-  // Debug authentication state
+  // Debug authentication state (only in development)
   useEffect(() => {
-    console.log('🔍 Auth Debug:', {
+    authLogger.log('State:', {
       user: user?.id,
       profile: profile?.id,
       requireAuth,

@@ -464,7 +464,7 @@ Best regards,\nThe EquityMD Team
                     <div className="flex items-center">
                       <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
                         {user.avatar_url ? (
-                          <img src={user.avatar_url} alt="" className="h-10 w-10 rounded-full" />
+                          <img src={user.avatar_url} alt={`${user.full_name || 'User'} avatar`} className="h-10 w-10 rounded-full" />
                         ) : (
                           <User className="h-5 w-5 text-gray-600" />
                         )}
@@ -564,7 +564,7 @@ Best regards,\nThe EquityMD Team
               <div className="flex items-center mb-4">
                 <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center">
                   {selectedUser.avatar_url ? (
-                    <img src={selectedUser.avatar_url} alt="" className="h-12 w-12 rounded-full" />
+                    <img src={selectedUser.avatar_url} alt={`${selectedUser.full_name || 'User'} avatar`} className="h-12 w-12 rounded-full" />
                   ) : (
                     <User className="h-6 w-6 text-gray-600" />
                   )}

@@ -691,7 +691,7 @@ export function SyndicatorDashboard() {
                           {request.investor?.avatar_url ? (
                             <img 
                               src={request.investor.avatar_url} 
-                              alt=""
+                              alt={`${request.investor.full_name}'s avatar`}
                               className="w-full h-full object-cover"
                             />
                           ) : (

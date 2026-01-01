@@ -207,7 +207,7 @@ export function SwipeDeals() {
             {deal.images?.[0] && (
               <img 
                 src={deal.images[0]} 
-                alt="" 
+                alt={`${deal.title} property`}
                 className="w-full h-64 object-cover rounded-t-3xl"
               />
             )}
@@ -377,7 +377,7 @@ export function DailyPickWidget() {
       </div>
       <div className="flex items-center gap-3">
         {deal.images?.[0] ? (
-          <img src={deal.images[0]} alt="" className="w-12 h-12 rounded-lg object-cover" />
+          <img src={deal.images[0]} alt={deal.title} className="w-12 h-12 rounded-lg object-cover" />
         ) : (
           <div className="w-12 h-12 rounded-lg bg-amber-200 flex items-center justify-center">
             <Building2 className="h-6 w-6 text-amber-600" />

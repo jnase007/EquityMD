@@ -229,7 +229,7 @@ export function DealComparison({ isOpen, onClose, initialDeals = [] }: DealCompa
                                   >
                                     <div className="w-10 h-8 rounded bg-gray-100 overflow-hidden flex-shrink-0">
                                       {deal.cover_image_url ? (
-                                        <img src={deal.cover_image_url} alt="" className="w-full h-full object-cover" />
+                                        <img src={deal.cover_image_url} alt={deal.title} className="w-full h-full object-cover" />
                                       ) : (
                                         <div className="w-full h-full flex items-center justify-center">
                                           <Building2 className="h-4 w-4 text-gray-300" />
