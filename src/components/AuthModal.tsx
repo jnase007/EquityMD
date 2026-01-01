@@ -16,28 +16,35 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fix LinkedIn button text - runs only in this modal context
+  // Fix LinkedIn button - completely replace content
   useEffect(() => {
     const fixLinkedIn = () => {
-      // Only target buttons within auth modal
-      const modalButtons = document.querySelectorAll('.auth-modal-content button');
-      modalButtons.forEach((btn) => {
+      const buttons = document.querySelectorAll('.auth-modal-content button');
+      buttons.forEach((btn) => {
         const text = btn.textContent || '';
         if (text.toLowerCase().includes('linkedin')) {
+          // Add class for CSS to hide original content
           btn.classList.add('linkedin-auth-btn');
-          // Replace text content
-          const spans = btn.querySelectorAll('span');
-          spans.forEach(span => {
-            if (span.textContent?.toLowerCase().includes('linkedin_oidc')) {
-              span.textContent = 'Continue with LinkedIn';
-            }
-          });
+          
+          // Also directly clear the inner HTML and set display flex
+          const htmlBtn = btn as HTMLButtonElement;
+          htmlBtn.style.display = 'flex';
+          htmlBtn.style.alignItems = 'center';
+          htmlBtn.style.justifyContent = 'center';
+          htmlBtn.style.gap = '10px';
+          
+          // Clear all children
+          while (htmlBtn.firstChild) {
+            htmlBtn.removeChild(htmlBtn.firstChild);
+          }
+          
+          // The ::before and ::after CSS pseudo-elements will show the icon and text
         }
       });
     };
     
-    // Run a few times to catch Supabase Auth UI rendering
-    const timers = [100, 300, 600].map(ms => setTimeout(fixLinkedIn, ms));
+    // Run multiple times to catch dynamic rendering
+    const timers = [50, 150, 350, 700].map(ms => setTimeout(fixLinkedIn, ms));
     
     return () => timers.forEach(clearTimeout);
   }, []);
