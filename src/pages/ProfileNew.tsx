@@ -154,42 +154,62 @@ export function ProfileNew() {
   }
 
   const handleSaveProfile = async () => {
+    if (!user?.id) {
+      toast.error('Please log in to save your profile');
+      return;
+    }
+    
     setSaving(true);
     try {
+      console.log('Saving profile for user:', user.id);
+      
       // Update main profile
-      const { error: profileError } = await supabase
+      const { data, error: profileError } = await supabase
         .from('profiles')
         .update({
           full_name: formData.fullName,
           phone_number: formData.phoneNumber,
           location: formData.location,
           bio: formData.bio,
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', user!.id);
+        .eq('id', user.id)
+        .select()
+        .single();
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
+
+      console.log('Profile saved successfully:', data);
 
       // Update local state
-      if (profile) {
+      if (profile && data) {
         setProfile({
           ...profile,
-          full_name: formData.fullName,
-          phone_number: formData.phoneNumber,
-          location: formData.location,
-          bio: formData.bio,
+          full_name: data.full_name,
+          phone_number: data.phone_number,
+          location: data.location,
+          bio: data.bio,
         });
       }
 
       toast.success('Profile saved! ✨');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving profile:', error);
-      toast.error('Failed to save profile');
+      toast.error(error?.message || 'Failed to save profile');
     } finally {
       setSaving(false);
     }
   };
 
   const handleSaveInvestment = async () => {
+    if (!user?.id) {
+      toast.error('Please log in to save your preferences');
+      return;
+    }
+    
     setSaving(true);
     try {
       // Parse investment range to get minimum investment
@@ -199,26 +219,41 @@ export function ProfileNew() {
         minInvestment = parseInt(rangeValue) || 25000;
       }
 
-      // Build update object with only valid columns
-      const updateData: any = {
-        id: user!.id,
+      console.log('Saving investment profile for user:', user.id);
+
+      // First, check if investor_profile exists
+      const { data: existingProfile } = await supabase
+        .from('investor_profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      const updateData = {
+        id: user.id,
         minimum_investment: minInvestment,
         accredited_status: formData.accreditedStatus,
+        preferred_property_types: formData.propertyTypes.length > 0 ? formData.propertyTypes : [],
+        preferred_locations: formData.markets.length > 0 ? formData.markets : [],
+        updated_at: new Date().toISOString(),
       };
 
-      // Only add arrays if they have values
-      if (formData.propertyTypes && formData.propertyTypes.length > 0) {
-        updateData.preferred_property_types = formData.propertyTypes;
-      }
-      if (formData.markets && formData.markets.length > 0) {
-        updateData.preferred_locations = formData.markets;
-      }
+      console.log('Investment update data:', updateData);
 
-      console.log('Saving investment profile:', updateData);
-
-      const { error } = await supabase
-        .from('investor_profiles')
-        .upsert(updateData);
+      let error;
+      if (existingProfile) {
+        // Update existing
+        const result = await supabase
+          .from('investor_profiles')
+          .update(updateData)
+          .eq('id', user.id);
+        error = result.error;
+      } else {
+        // Insert new
+        const result = await supabase
+          .from('investor_profiles')
+          .insert(updateData);
+        error = result.error;
+      }
 
       if (error) {
         console.error('Supabase error:', error);
@@ -229,7 +264,7 @@ export function ProfileNew() {
       fetchProfileData();
     } catch (error: any) {
       console.error('Error saving investment profile:', error);
-      toast.error(`Failed to save: ${error.message || 'Unknown error'}`);
+      toast.error(error?.message || 'Failed to save preferences');
     } finally {
       setSaving(false);
     }
