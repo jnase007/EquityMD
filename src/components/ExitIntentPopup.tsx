@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Gift, TrendingUp, Building2 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 const STORAGE_KEY = 'equitymd_exit_popup_shown';
 const SHOW_AFTER_DAYS = 7; // Don't show again for 7 days after dismissing
@@ -12,49 +11,34 @@ export function ExitIntentPopup() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    // Check if we should show the popup
-    const lastShown = localStorage.getItem(STORAGE_KEY);
-    if (lastShown) {
-      const daysSince = (Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24);
-      if (daysSince < SHOW_AFTER_DAYS) return;
-    }
-
-    // Exit intent detection
-    const handleMouseLeave = (e: MouseEvent) => {
-      // Only trigger when mouse leaves through top of page
-      if (e.clientY <= 0 && !isVisible) {
-        setIsVisible(true);
+    try {
+      // Check if we should show the popup
+      const lastShown = localStorage.getItem(STORAGE_KEY);
+      if (lastShown) {
+        const daysSince = (Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24);
+        if (daysSince < SHOW_AFTER_DAYS) return;
       }
-    };
 
-    // Mobile: detect when user scrolls up quickly (might be leaving)
-    let lastScrollY = window.scrollY;
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollingUp = currentScrollY < lastScrollY;
-      const nearTop = currentScrollY < 100;
-      
-      if (scrollingUp && nearTop && !isVisible) {
-        // User scrolled up near top - might be leaving
-        // Only show after they've been on page for 10+ seconds
-        if (document.visibilityState === 'visible') {
+      // Exit intent detection
+      const handleMouseLeave = (e: MouseEvent) => {
+        // Only trigger when mouse leaves through top of page
+        if (e.clientY <= 0 && !isVisible) {
           setIsVisible(true);
         }
-      }
-      lastScrollY = currentScrollY;
-    };
+      };
 
-    // Delay adding listeners to avoid showing immediately
-    const timer = setTimeout(() => {
-      document.addEventListener('mouseleave', handleMouseLeave);
-      window.addEventListener('scroll', handleScroll, { passive: true });
-    }, 10000); // Wait 10 seconds before enabling
+      // Delay adding listeners to avoid showing immediately
+      const timer = setTimeout(() => {
+        document.addEventListener('mouseleave', handleMouseLeave);
+      }, 15000); // Wait 15 seconds before enabling
 
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      window.removeEventListener('scroll', handleScroll);
-    };
+      return () => {
+        clearTimeout(timer);
+        document.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    } catch (err) {
+      console.error('ExitIntentPopup error:', err);
+    }
   }, [isVisible]);
 
   const handleClose = () => {
@@ -68,6 +52,8 @@ export function ExitIntentPopup() {
 
     setSubmitting(true);
     try {
+      // Lazy import to avoid blocking page load
+      const { supabase } = await import('../lib/supabase');
       await supabase
         .from('newsletter_subscribers')
         .insert([{ email, source: 'exit_popup' }]);
@@ -78,6 +64,11 @@ export function ExitIntentPopup() {
       }, 3000);
     } catch (err) {
       console.error('Exit popup subscription error:', err);
+      // Still show success to user even if save fails
+      setSubmitted(true);
+      setTimeout(() => {
+        handleClose();
+      }, 3000);
     } finally {
       setSubmitting(false);
     }
