@@ -78,19 +78,21 @@ export function SyndicatorDashboard() {
   async function fetchData() {
     try {
       // Fetch syndicator (just get the first one - single business model)
-      const { data: syndicatorData, error: syndicatorError } = await supabase
+      // Using maybeSingle() pattern without .single() to avoid errors with 0 or multiple rows
+      const { data: syndicatorsArray, error: syndicatorError } = await supabase
         .from('syndicators')
         .select('*')
         .eq('claimed_by', user!.id)
         .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+        .limit(1);
 
-      if (syndicatorError && syndicatorError.code !== 'PGRST116') {
+      if (syndicatorError) {
         console.error('Error fetching syndicator:', syndicatorError);
       }
 
-      setSyndicator(syndicatorData || null);
+      // Get first syndicator from array (or null if empty)
+      const syndicatorData = syndicatorsArray && syndicatorsArray.length > 0 ? syndicatorsArray[0] : null;
+      setSyndicator(syndicatorData);
 
       if (syndicatorData) {
         // Fetch deals for this syndicator
