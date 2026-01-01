@@ -1,234 +1,255 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Calculator, DollarSign, TrendingUp, Calendar, 
-  PieChart, ArrowRight, Info, ChevronDown, ChevronUp
+  Download, RefreshCw, Info, ChevronDown, ChevronUp,
+  BarChart3, PieChart, Target
 } from 'lucide-react';
 
-interface CalculatorProps {
-  minimumInvestment?: number;
-  targetIrr?: number;
+interface InvestmentCalculatorProps {
+  defaultInvestment?: number;
+  targetIRR?: number;
   investmentTerm?: number;
-  preferredReturn?: number;
   equityMultiple?: number;
+  preferredReturn?: number;
+}
+
+interface YearlyProjection {
+  year: number;
+  cashFlow: number;
+  cumulativeCashFlow: number;
+  equity: number;
 }
 
 export function InvestmentCalculator({
-  minimumInvestment = 50000,
-  targetIrr = 18,
+  defaultInvestment = 50000,
+  targetIRR = 18,
   investmentTerm = 5,
-  preferredReturn = 8,
   equityMultiple = 2.0,
-}: CalculatorProps) {
-  const [investmentAmount, setInvestmentAmount] = useState(minimumInvestment);
+  preferredReturn = 8,
+}: InvestmentCalculatorProps) {
+  const [investment, setInvestment] = useState(defaultInvestment);
+  const [scenario, setScenario] = useState<'conservative' | 'expected' | 'optimistic'>('expected');
   const [showDetails, setShowDetails] = useState(false);
 
-  const projections = useMemo(() => {
-    const principal = investmentAmount;
-    const annualReturn = (targetIrr || 18) / 100;
-    const term = investmentTerm || 5;
-    const prefReturn = (preferredReturn || 8) / 100;
-    const multiple = equityMultiple || 2.0;
+  const scenarioMultipliers = {
+    conservative: 0.7,
+    expected: 1.0,
+    optimistic: 1.3,
+  };
 
-    // Calculate yearly distributions (preferred return)
-    const yearlyDistribution = principal * prefReturn;
-    const totalDistributions = yearlyDistribution * term;
-
-    // Calculate final value using equity multiple
-    const finalValue = principal * multiple;
-
-    // Calculate total returns
-    const totalReturns = finalValue - principal + totalDistributions;
-
-    // Calculate IRR (simplified)
-    const actualIrr = ((finalValue / principal) ** (1 / term) - 1) * 100;
-
-    // Year by year breakdown
-    const yearlyBreakdown = [];
-    let cumulativeDistributions = 0;
-    for (let year = 1; year <= term; year++) {
-      cumulativeDistributions += yearlyDistribution;
-      yearlyBreakdown.push({
+  const calculations = useMemo(() => {
+    const multiplier = scenarioMultipliers[scenario];
+    const adjustedIRR = targetIRR * multiplier;
+    const adjustedMultiple = 1 + (equityMultiple - 1) * multiplier;
+    const annualCashFlow = (investment * (preferredReturn / 100)) * multiplier;
+    
+    // Calculate yearly projections
+    const projections: YearlyProjection[] = [];
+    let cumulativeCashFlow = 0;
+    
+    for (let year = 1; year <= investmentTerm; year++) {
+      const cashFlow = annualCashFlow;
+      cumulativeCashFlow += cashFlow;
+      
+      // Equity grows based on appreciation
+      const equityGrowthRate = (adjustedMultiple - 1) / investmentTerm;
+      const equity = investment * (1 + equityGrowthRate * year);
+      
+      projections.push({
         year,
-        distribution: yearlyDistribution,
-        cumulativeDistributions,
-        estimatedValue: principal * (1 + (annualReturn * year * 0.3)), // Simplified appreciation
+        cashFlow,
+        cumulativeCashFlow,
+        equity,
       });
     }
 
+    // Final return at exit
+    const totalCashFlow = annualCashFlow * investmentTerm;
+    const exitValue = investment * adjustedMultiple;
+    const totalReturn = totalCashFlow + exitValue;
+    const profit = totalReturn - investment;
+    const roi = ((totalReturn - investment) / investment) * 100;
+
     return {
-      principal,
-      yearlyDistribution,
-      totalDistributions,
-      finalValue,
-      totalReturns,
-      actualIrr: isNaN(actualIrr) ? targetIrr : actualIrr,
-      yearlyBreakdown,
+      adjustedIRR,
+      adjustedMultiple,
+      annualCashFlow,
+      totalCashFlow,
+      exitValue,
+      totalReturn,
+      profit,
+      roi,
+      projections,
     };
-  }, [investmentAmount, targetIrr, investmentTerm, preferredReturn, equityMultiple]);
+  }, [investment, scenario, targetIRR, equityMultiple, preferredReturn, investmentTerm]);
 
   const formatCurrency = (value: number) => {
-    if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
-    if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
-    return `$${value.toLocaleString()}`;
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(value);
   };
 
-  const formatWithCommas = (value: number) => {
-    return value.toLocaleString('en-US');
-  };
-
-  const handleAmountChange = (value: string) => {
-    const num = parseInt(value.replace(/[^\d]/g, ''), 10);
-    if (!isNaN(num)) {
-      setInvestmentAmount(Math.max(num, minimumInvestment));
-    }
-  };
+  const investmentPresets = [25000, 50000, 100000, 250000, 500000];
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+      <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-white/20 rounded-lg">
             <Calculator className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Investment Calculator</h3>
-            <p className="text-blue-100 text-sm">Estimate your potential returns</p>
+            <h3 className="text-lg font-bold text-white">Investment Calculator</h3>
+            <p className="text-white/80 text-sm">Model your potential returns</p>
           </div>
         </div>
       </div>
 
       <div className="p-6">
-        {/* Investment Amount Input */}
+        {/* Investment Amount */}
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Investment Amount
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <input
-              type="text"
-              value={formatWithCommas(investmentAmount)}
-              onChange={(e) => handleAmountChange(e.target.value)}
-              className="w-full pl-8 pr-4 py-4 text-2xl font-bold text-gray-900 border-2 border-blue-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors"
+              type="number"
+              value={investment}
+              onChange={(e) => setInvestment(Number(e.target.value))}
+              className="w-full pl-12 pr-4 py-3 text-2xl font-bold border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
-          <p className="mt-2 text-sm text-gray-500">
-            Minimum investment: {formatCurrency(minimumInvestment)}
-          </p>
           
-          {/* Quick Amount Buttons */}
+          {/* Presets */}
           <div className="flex flex-wrap gap-2 mt-3">
-            {[minimumInvestment, minimumInvestment * 2, minimumInvestment * 5, minimumInvestment * 10].map((amount) => (
+            {investmentPresets.map((preset) => (
               <button
-                key={amount}
-                onClick={() => setInvestmentAmount(amount)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-                  investmentAmount === amount
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                key={preset}
+                onClick={() => setInvestment(preset)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  investment === preset
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                {formatCurrency(amount)}
+                {formatCurrency(preset)}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Results Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 border border-blue-100">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-              <Calendar className="h-4 w-4" />
-              Annual Distribution
-            </div>
-            <p className="text-2xl font-bold text-blue-600">
-              {formatCurrency(projections.yearlyDistribution)}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              {preferredReturn}% preferred return
-            </p>
-          </div>
-          
-          <div className="bg-white rounded-xl p-4 border border-blue-100">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-              <DollarSign className="h-4 w-4" />
-              Total Distributions
-            </div>
-            <p className="text-2xl font-bold text-green-600">
-              {formatCurrency(projections.totalDistributions)}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              Over {investmentTerm} years
-            </p>
-          </div>
-          
-          <div className="bg-white rounded-xl p-4 border border-blue-100">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-              <TrendingUp className="h-4 w-4" />
-              Est. Final Value
-            </div>
-            <p className="text-2xl font-bold text-purple-600">
-              {formatCurrency(projections.finalValue)}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              {equityMultiple}x equity multiple
-            </p>
-          </div>
-          
-          <div className="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-200">
-            <div className="flex items-center gap-2 text-emerald-700 text-sm mb-1">
-              <PieChart className="h-4 w-4" />
-              Total Returns
-            </div>
-            <p className="text-2xl font-bold text-emerald-600">
-              {formatCurrency(projections.totalReturns)}
-            </p>
-            <p className="text-xs text-emerald-500 mt-1">
-              +{((projections.totalReturns / projections.principal) * 100).toFixed(0)}% return
-            </p>
+        {/* Scenario Selector */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Scenario
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            {(['conservative', 'expected', 'optimistic'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setScenario(s)}
+                className={`py-3 px-4 rounded-xl font-medium text-sm transition ${
+                  scenario === s
+                    ? s === 'conservative' ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-500' :
+                      s === 'expected' ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' :
+                      'bg-emerald-100 text-emerald-700 ring-2 ring-emerald-500'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Year by Year Breakdown */}
+        {/* Results */}
+        <div className="bg-gradient-to-br from-gray-50 to-emerald-50 rounded-xl p-6 mb-6">
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="text-center p-4 bg-white rounded-xl shadow-sm">
+              <div className="text-sm text-gray-500 mb-1">Total Return</div>
+              <div className="text-2xl font-bold text-emerald-600">
+                {formatCurrency(calculations.totalReturn)}
+              </div>
+            </div>
+            <div className="text-center p-4 bg-white rounded-xl shadow-sm">
+              <div className="text-sm text-gray-500 mb-1">Profit</div>
+              <div className="text-2xl font-bold text-emerald-600">
+                +{formatCurrency(calculations.profit)}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Est. IRR</div>
+              <div className="text-lg font-bold text-gray-900">
+                {calculations.adjustedIRR.toFixed(1)}%
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Equity Multiple</div>
+              <div className="text-lg font-bold text-gray-900">
+                {calculations.adjustedMultiple.toFixed(2)}x
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Annual Cash</div>
+              <div className="text-lg font-bold text-gray-900">
+                {formatCurrency(calculations.annualCashFlow)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Cash Flow Timeline */}
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="w-full flex items-center justify-between p-4 bg-white rounded-xl border border-blue-100 hover:bg-gray-50 transition-colors"
+          className="w-full flex items-center justify-between py-3 px-4 bg-gray-50 rounded-xl text-gray-700 font-medium hover:bg-gray-100 transition mb-4"
         >
-          <span className="font-medium text-gray-700">Year-by-Year Breakdown</span>
-          {showDetails ? (
-            <ChevronUp className="h-5 w-5 text-gray-400" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-gray-400" />
-          )}
+          <span className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Year-by-Year Projections
+          </span>
+          {showDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </button>
 
         {showDetails && (
-          <div className="mt-4 bg-white rounded-xl border border-blue-100 overflow-hidden">
-            <table className="w-full">
+          <div className="mb-6 overflow-x-auto">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Year</th>
-                  <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">Distribution</th>
-                  <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600">Cumulative</th>
+                  <th className="text-left py-2 px-3 font-medium text-gray-600">Year</th>
+                  <th className="text-right py-2 px-3 font-medium text-gray-600">Cash Flow</th>
+                  <th className="text-right py-2 px-3 font-medium text-gray-600">Cumulative</th>
+                  <th className="text-right py-2 px-3 font-medium text-gray-600">Equity Value</th>
                 </tr>
               </thead>
               <tbody>
-                {projections.yearlyBreakdown.map((row, idx) => (
-                  <tr key={row.year} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-4 py-3 text-gray-900 font-medium">Year {row.year}</td>
-                    <td className="px-4 py-3 text-right text-green-600 font-medium">
-                      +{formatCurrency(row.distribution)}
+                {calculations.projections.map((proj) => (
+                  <tr key={proj.year} className="border-b border-gray-100">
+                    <td className="py-2 px-3 font-medium">Year {proj.year}</td>
+                    <td className="py-2 px-3 text-right text-emerald-600">
+                      {formatCurrency(proj.cashFlow)}
                     </td>
-                    <td className="px-4 py-3 text-right text-gray-600">
-                      {formatCurrency(row.cumulativeDistributions)}
+                    <td className="py-2 px-3 text-right text-gray-600">
+                      {formatCurrency(proj.cumulativeCashFlow)}
+                    </td>
+                    <td className="py-2 px-3 text-right font-medium">
+                      {formatCurrency(proj.equity)}
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-emerald-50 font-semibold">
-                  <td className="px-4 py-3 text-emerald-800">Exit (Year {investmentTerm})</td>
-                  <td className="px-4 py-3 text-right text-emerald-600" colSpan={2}>
-                    +{formatCurrency(projections.finalValue - projections.principal)} capital gain
+                <tr className="bg-emerald-50 font-bold">
+                  <td className="py-2 px-3">Exit</td>
+                  <td className="py-2 px-3 text-right text-emerald-600">
+                    {formatCurrency(calculations.exitValue)}
+                  </td>
+                  <td className="py-2 px-3 text-right" colSpan={2}>
+                    Total: {formatCurrency(calculations.totalReturn)}
                   </td>
                 </tr>
               </tbody>
@@ -237,26 +258,14 @@ export function InvestmentCalculator({
         )}
 
         {/* Disclaimer */}
-        <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
-          <div className="flex items-start gap-2">
-            <Info className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
-            <p className="text-xs text-amber-700">
-              <strong>Disclaimer:</strong> These projections are estimates based on target returns and are not guaranteed. 
-              Actual returns may vary. Past performance is not indicative of future results.
-            </p>
-          </div>
+        <div className="flex items-start gap-2 p-3 bg-amber-50 rounded-lg">
+          <Info className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+          <p className="text-xs text-amber-700">
+            These projections are estimates only. Actual returns may vary. Past performance 
+            is not indicative of future results. Please review all offering documents carefully.
+          </p>
         </div>
       </div>
     </div>
   );
 }
-
-// Simpler version for embedding in deal pages
-export function ReturnsCalculator() {
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-      <InvestmentCalculator />
-    </div>
-  );
-}
-

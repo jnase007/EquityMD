@@ -23,6 +23,9 @@ const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ defau
 const Portfolio = lazy(() => import('./pages/Portfolio').then(module => ({ default: module.Portfolio })));
 const BrandingGuide = lazy(() => import('./pages/BrandingGuide').then(module => ({ default: module.BrandingGuide })));
 const Leaderboard = lazy(() => import('./pages/Leaderboard').then(module => ({ default: module.Leaderboard })));
+const Discover = lazy(() => import('./pages/Discover').then(module => ({ default: module.Discover })));
+const Calendar = lazy(() => import('./pages/Calendar').then(module => ({ default: module.Calendar })));
+const Goals = lazy(() => import('./pages/Goals').then(module => ({ default: module.Goals })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -401,6 +404,18 @@ export default function App() {
         <Route 
           path="/portfolio" 
           element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Portfolio />)} 
+        />
+        <Route 
+          path="/discover" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Discover />)} 
+        />
+        <Route 
+          path="/calendar" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Calendar />)} 
+        />
+        <Route 
+          path="/goals" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Goals />)} 
         />
 
         {/* Admin Routes */}
