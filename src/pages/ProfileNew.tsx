@@ -93,10 +93,16 @@ export function ProfileNew() {
 
   useEffect(() => {
     if (investorProfile) {
-      const rangeValue = investorProfile.investment_range_min && investorProfile.investment_range_max
-        ? `${investorProfile.investment_range_min}-${investorProfile.investment_range_max}`
-        : investorProfile.investment_range_min >= 1000000 ? '1000000+' : '';
-      
+      // Map minimum_investment to the range value
+      const minInv = investorProfile.minimum_investment || 0;
+      let rangeValue = '';
+      if (minInv >= 1000000) rangeValue = '1000000+';
+      else if (minInv >= 500000) rangeValue = '500000-1000000';
+      else if (minInv >= 250000) rangeValue = '250000-500000';
+      else if (minInv >= 100000) rangeValue = '100000-250000';
+      else if (minInv >= 50000) rangeValue = '50000-100000';
+      else if (minInv >= 25000) rangeValue = '25000-50000';
+
       setFormData(prev => ({
         ...prev,
         investmentRange: rangeValue,
@@ -186,29 +192,44 @@ export function ProfileNew() {
   const handleSaveInvestment = async () => {
     setSaving(true);
     try {
-      // Parse investment range
-      const [min, max] = formData.investmentRange.split('-').map(v => 
-        v.replace('+', '').replace('$', '').replace('K', '000').replace(',', '')
-      );
+      // Parse investment range to get minimum investment
+      let minInvestment = 25000;
+      if (formData.investmentRange) {
+        const rangeValue = formData.investmentRange.split('-')[0].replace('+', '');
+        minInvestment = parseInt(rangeValue) || 25000;
+      }
+
+      // Build update object with only valid columns
+      const updateData: any = {
+        id: user!.id,
+        minimum_investment: minInvestment,
+        accredited_status: formData.accreditedStatus,
+      };
+
+      // Only add arrays if they have values
+      if (formData.propertyTypes && formData.propertyTypes.length > 0) {
+        updateData.preferred_property_types = formData.propertyTypes;
+      }
+      if (formData.markets && formData.markets.length > 0) {
+        updateData.preferred_locations = formData.markets;
+      }
+
+      console.log('Saving investment profile:', updateData);
 
       const { error } = await supabase
         .from('investor_profiles')
-        .upsert({
-          id: user!.id,
-          investment_range_min: parseInt(min) || 25000,
-          investment_range_max: max ? parseInt(max) : 10000000,
-          preferred_property_types: formData.propertyTypes,
-          preferred_locations: formData.markets,
-          accredited_status: formData.accreditedStatus,
-        });
+        .upsert(updateData);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       toast.success('Investment preferences saved! 🎯');
       fetchProfileData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving investment profile:', error);
-      toast.error('Failed to save preferences');
+      toast.error(`Failed to save: ${error.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }
