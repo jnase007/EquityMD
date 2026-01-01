@@ -67,6 +67,9 @@ import { DashboardReview } from './pages/DashboardReview';
 import { TooltipDemo } from './pages/TooltipDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AdminErrorBoundary } from './components/AdminErrorBoundary';
+import { ScrollToTop } from './components/ScrollToTop';
+import { CookieConsent } from './components/CookieConsent';
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
 // Minimal loading fallback for Suspense boundaries
 const MinimalLoadingFallback = () => (
@@ -85,6 +88,9 @@ export default function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [requireAuth, setRequireAuth] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+
+  // Enable keyboard shortcuts for power users
+  useKeyboardShortcuts();
 
   // Preload critical resources on app start
   useEffect(() => {
@@ -455,6 +461,8 @@ export default function App() {
       )}
 
       <PerformanceMonitor />
+      <ScrollToTop />
+      <CookieConsent />
     </div>
   );
 }
