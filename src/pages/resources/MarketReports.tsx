@@ -67,7 +67,7 @@ export function MarketReports() {
           </div>
           
           {/* Stats */}
-          <div className="flex flex-wrap gap-4 mb-8">
+          <div className="flex flex-wrap gap-4 mb-6">
             <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
               <span className="text-white/70 text-sm">Markets Tracked</span>
               <p className="text-white font-bold text-xl">{MARKET_DATA.length}</p>
@@ -75,6 +75,20 @@ export function MarketReports() {
             <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
               <span className="text-white/70 text-sm">Last Updated</span>
               <p className="text-white font-bold text-xl">Q4 2024</p>
+            </div>
+          </div>
+          
+          {/* Data Sources Badge */}
+          <div className="bg-white/10 backdrop-blur border border-white/20 rounded-xl px-4 py-3 mb-8 max-w-3xl">
+            <div className="flex items-start gap-3">
+              <Info className="h-5 w-5 text-white/80 flex-shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <span className="text-white font-medium">Data Sources: </span>
+                <span className="text-white/80">
+                  U.S. Census Bureau, Bureau of Labor Statistics, HUD Fair Market Rents, 
+                  CBRE & Marcus & Millichap Q3-Q4 2024 Reports
+                </span>
+              </div>
             </div>
           </div>
 
@@ -265,24 +279,50 @@ export function MarketReports() {
 
         {/* Data Sources */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-6">
-          <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Info className="h-5 w-5 text-blue-600" />
             Data Sources & Methodology
           </h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
-            <div>
-              <p className="mb-2"><strong>Population & Demographics:</strong> {DATA_SOURCES.population}</p>
-              <p className="mb-2"><strong>Employment Data:</strong> {DATA_SOURCES.employment}</p>
+          <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-600 mb-4">
+            <div className="space-y-3">
+              <div>
+                <p className="font-semibold text-gray-800 mb-1">Population & Demographics</p>
+                <a href="https://www.census.gov/data/tables/time-series/demo/popest/2020s-total-cities-and-towns.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  U.S. Census Bureau, 2023 Population Estimates →
+                </a>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-800 mb-1">Employment Data</p>
+                <a href="https://www.bls.gov/eag/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  Bureau of Labor Statistics, Metro Area Employment →
+                </a>
+              </div>
             </div>
-            <div>
-              <p className="mb-2"><strong>Rent Data:</strong> {DATA_SOURCES.rent}</p>
-              <p className="mb-2"><strong>Cap Rates:</strong> {DATA_SOURCES.capRates}</p>
+            <div className="space-y-3">
+              <div>
+                <p className="font-semibold text-gray-800 mb-1">Rent Data</p>
+                <a href="https://www.huduser.gov/portal/datasets/fmr.html" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  HUD Fair Market Rents FY 2024 →
+                </a>
+              </div>
+              <div>
+                <p className="font-semibold text-gray-800 mb-1">Cap Rates & Market Reports</p>
+                <a href="https://www.cbre.com/insights/reports" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline mr-3">
+                  CBRE Research →
+                </a>
+                <a href="https://www.marcusmillichap.com/research" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  Marcus & Millichap →
+                </a>
+              </div>
             </div>
           </div>
-          <p className="text-xs text-gray-500 mt-4">
-            {DATA_SOURCES.general} Investment scores are a composite of growth, employment, and affordability metrics. 
-            This data is for informational purposes only and should not be relied upon for investment decisions.
-          </p>
+          <div className="border-t border-blue-200 pt-4">
+            <p className="text-xs text-gray-500">
+              <strong>Disclaimer:</strong> {DATA_SOURCES.general} Investment scores are a composite of growth, employment, and affordability metrics. 
+              This data is for informational purposes only and should not be relied upon for investment decisions. 
+              Always conduct your own due diligence before investing.
+            </p>
+          </div>
         </div>
       </div>
 
