@@ -62,10 +62,10 @@ export function SyndicatorDashboard() {
   const [showLogoUpload, setShowLogoUpload] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && profile) {
       fetchData();
     }
-  }, [user]);
+  }, [user, profile]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

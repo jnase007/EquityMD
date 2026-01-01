@@ -72,32 +72,39 @@ export function useGamification(): GamificationData {
   const [syndicator, setSyndicator] = useState<any>(null);
   const [investorProfile, setInvestorProfile] = useState<any>(null);
   
+  // Safe defaults when profile isn't loaded yet
   const userRole: UserRole = profile?.user_type === 'syndicator' ? 'syndicator' : 'investor';
   const baseAchievements = userRole === 'investor' ? INVESTOR_ACHIEVEMENTS : SYNDICATOR_ACHIEVEMENTS;
   const baseNextSteps = userRole === 'investor' ? INVESTOR_NEXT_STEPS : SYNDICATOR_NEXT_STEPS;
 
+  // Return early with safe defaults if user or profile isn't ready
+  const isReady = !!user?.id && !!profile;
+
   // Fetch syndicator or investor profile data
   useEffect(() => {
     async function fetchProfileData() {
-      if (!user?.id || !profile) return;
+      if (!isReady) {
+        setIsLoading(false);
+        return;
+      }
       
       try {
-        if (profile.user_type === 'syndicator') {
+        if (profile!.user_type === 'syndicator') {
           // Fetch syndicator profile
-          const { data } = await supabase
+          const { data, error } = await supabase
             .from('syndicators')
             .select('*')
-            .eq('claimed_by', user.id)
-            .single();
-          setSyndicator(data);
+            .eq('claimed_by', user!.id)
+            .maybeSingle();
+          if (!error) setSyndicator(data);
         } else {
           // Fetch investor profile
-          const { data } = await supabase
+          const { data, error } = await supabase
             .from('investor_profiles')
             .select('*')
-            .eq('id', user.id)
-            .single();
-          setInvestorProfile(data);
+            .eq('id', user!.id)
+            .maybeSingle();
+          if (!error) setInvestorProfile(data);
         }
       } catch (e) {
         console.error('Error fetching profile data for gamification:', e);
@@ -105,7 +112,7 @@ export function useGamification(): GamificationData {
     }
     
     fetchProfileData();
-  }, [user?.id, profile?.user_type]);
+  }, [isReady, user?.id, profile?.user_type]);
 
   // Calculate which achievements are unlocked based on profile data
   const calculateUnlockedAchievements = useCallback(async (): Promise<string[]> => {

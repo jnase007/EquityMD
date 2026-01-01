@@ -37,11 +37,11 @@ export function InvestorDashboard() {
   const [lastViewedDeal, setLastViewedDeal] = useState<{ title: string; slug: string } | null>(null);
 
   useEffect(() => {
-    if (user) {
+    if (user && profile) {
       fetchDashboardData();
       fetchProfileCompletion();
     }
-  }, [user]);
+  }, [user, profile]);
 
   async function fetchProfileCompletion() {
     try {
