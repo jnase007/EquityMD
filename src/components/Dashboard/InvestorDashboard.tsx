@@ -260,7 +260,7 @@ export function InvestorDashboard() {
         </Link>
 
         <Link 
-          to="/browse"
+          to="/find"
           className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all group"
         >
           <div className="flex items-center justify-between mb-3">
@@ -284,7 +284,7 @@ export function InvestorDashboard() {
               <p className="text-sm text-gray-500">Newly listed investment deals</p>
             </div>
             <Link 
-              to="/browse" 
+              to="/find" 
               className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
             >
               View All
@@ -298,7 +298,7 @@ export function InvestorDashboard() {
             <div className="p-8 text-center">
               <Building2 className="h-12 w-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500">No active deals at the moment</p>
-              <Link to="/browse" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
+              <Link to="/find" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
                 Browse all listings
               </Link>
             </div>
