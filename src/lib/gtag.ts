@@ -8,7 +8,7 @@ declare global {
   }
 }
 
-export const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-490630894';
+export const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-4DYEHD25TP';
 
 // Initialize GA4
 export const initGA = () => {
