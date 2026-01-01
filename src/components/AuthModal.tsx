@@ -113,7 +113,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
-              <h2 className="text-base font-bold">Welcome to EquityMD</h2>
+              <h2 className="text-base font-bold">
+                {defaultView === 'sign_up' ? 'Join EquityMD' : 'Welcome Back'}
+              </h2>
             </div>
             <button
               onClick={onClose}
@@ -133,7 +135,9 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
           )}
           
           <p className="text-center text-xs text-gray-500 mb-3">
-            Continue with your preferred account
+            {defaultView === 'sign_up' 
+              ? 'Create your free account' 
+              : 'Sign in to your account'}
           </p>
           
           <Auth
@@ -207,7 +211,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             providers={['google', 'facebook', 'linkedin_oidc']}
             onlyThirdPartyProviders={false}
             redirectTo={`${window.location.origin}/dashboard`}
-            view="sign_in"
+            view={defaultView}
             socialLayout="vertical"
             localization={{
               variables: {
