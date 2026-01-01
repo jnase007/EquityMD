@@ -74,10 +74,32 @@ export function DealDetails() {
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [showInvestModal, setShowInvestModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isAccredited, setIsAccredited] = useState(false);
   const [investmentRequests, setInvestmentRequests] = useState({
     count: 0,
     loading: true,
   });
+
+  // Check if user is accredited
+  useEffect(() => {
+    async function checkAccreditation() {
+      if (!user) {
+        setIsAccredited(false);
+        return;
+      }
+      try {
+        const { data } = await supabase
+          .from('investor_profiles')
+          .select('accredited_status')
+          .eq('id', user.id)
+          .maybeSingle();
+        setIsAccredited(data?.accredited_status || false);
+      } catch {
+        setIsAccredited(false);
+      }
+    }
+    checkAccreditation();
+  }, [user]);
 
   useEffect(() => {
     fetchDealDetails();
@@ -621,16 +643,35 @@ export function DealDetails() {
               </div>
             )}
 
-            {/* Accredited Warning */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <div className="flex">
-                <AlertCircle className="h-5 w-5 text-yellow-400 mr-2" />
-                <div className="text-sm text-yellow-700">
-                  This investment opportunity is only available to accredited
-                  investors.
+            {/* Accredited Status */}
+            {isAccredited ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex">
+                  <AlertCircle className="h-5 w-5 text-green-500 mr-2" />
+                  <div className="text-sm text-green-700">
+                    ✓ You're verified as an accredited investor and can invest in this opportunity.
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex">
+                  <AlertCircle className="h-5 w-5 text-yellow-400 mr-2" />
+                  <div className="text-sm text-yellow-700">
+                    This investment is for accredited investors.{' '}
+                    {user ? (
+                      <Link to="/profile" className="underline font-medium hover:text-yellow-800">
+                        Update your profile
+                      </Link>
+                    ) : (
+                      <button onClick={() => setShowAuthModal(true)} className="underline font-medium hover:text-yellow-800">
+                        Sign in to verify
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             
             {/* Platform Disclaimer */}
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
