@@ -236,7 +236,7 @@ export function SyndicatorProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-x-hidden">
       <Navbar />
 
       {/* Modern Header */}
@@ -383,10 +383,10 @@ export function SyndicatorProfile() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-6 sm:py-10 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
                 About {syndicator.company_name}
               </h2>
@@ -428,8 +428,8 @@ export function SyndicatorProfile() {
               )}
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold mb-6">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                 Active Investment Opportunities
               </h2>
               <div className="grid gap-6">
@@ -454,53 +454,53 @@ export function SyndicatorProfile() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-2xl font-bold mb-6">Past Projects</h2>
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Past Projects</h2>
               {pastProjects.length > 0 ? (
                 <div className="grid gap-6">
                   {pastProjects.map((project) => (
                     <div
                       key={project.id}
-                      className="flex gap-6 border-b pb-6 last:border-0 last:pb-0"
+                      className="flex flex-col sm:flex-row gap-4 sm:gap-6 border-b pb-6 last:border-0 last:pb-0"
                     >
                       <img
                         src={project.image_url}
                         alt={project.name}
-                        className="w-48 h-32 object-cover rounded-lg"
+                        className="w-full sm:w-32 md:w-48 h-40 sm:h-32 object-cover rounded-lg flex-shrink-0"
                       />
-                      <div>
-                        <h3 className="text-xl font-bold mb-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg sm:text-xl font-bold mb-2 truncate">
                           {project.name}
                         </h3>
-                        <div className="flex items-center text-gray-600 mb-2">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {project.location}
+                        <div className="flex items-center text-gray-600 mb-2 text-sm">
+                          <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                          <span className="truncate">{project.location}</span>
                         </div>
                         {project.description && (
-                          <p className="text-gray-600 text-sm mb-3">
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                             {project.description}
                           </p>
                         )}
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4">
                           <div>
-                            <div className="text-sm text-gray-500">IRR</div>
-                            <div className="font-semibold text-green-600">
+                            <div className="text-xs sm:text-sm text-gray-500">IRR</div>
+                            <div className="font-semibold text-green-600 text-sm sm:text-base">
                               {project.irr}
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-xs sm:text-sm text-gray-500">
                               Total Value
                             </div>
-                            <div className="font-semibold">
+                            <div className="font-semibold text-sm sm:text-base truncate">
                               {project.total_value}
                             </div>
                           </div>
                           <div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-xs sm:text-sm text-gray-500">
                               Exit Year
                             </div>
-                            <div className="font-semibold">
+                            <div className="font-semibold text-sm sm:text-base">
                               {project.exit_year}
                             </div>
                           </div>
