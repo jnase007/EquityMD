@@ -163,11 +163,14 @@ export function ProfileNew() {
     try {
       console.log('Saving profile for user:', user.id);
       
-      // Update main profile - only include columns that exist in the schema
+      // Update main profile with all fields
       const { data, error: profileError } = await supabase
         .from('profiles')
         .update({
           full_name: formData.fullName,
+          phone_number: formData.phoneNumber,
+          location: formData.location,
+          bio: formData.bio,
         })
         .eq('id', user.id)
         .select()
@@ -185,6 +188,9 @@ export function ProfileNew() {
         setProfile({
           ...profile,
           full_name: data.full_name,
+          phone_number: data.phone_number,
+          location: data.location,
+          bio: data.bio,
         });
       }
 
