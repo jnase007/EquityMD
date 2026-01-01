@@ -113,9 +113,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
-              <h2 className="text-base font-bold">
-                {defaultView === 'sign_up' ? 'Join EquityMD' : 'Welcome Back to EquityMD'}
-              </h2>
+              <h2 className="text-base font-bold">Join or Sign In</h2>
             </div>
             <button
               onClick={onClose}
@@ -135,9 +133,7 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
           )}
           
           <p className="text-center text-xs text-gray-500 mb-3">
-            {defaultView === 'sign_up' 
-              ? 'Create your free account' 
-              : 'Sign in to your account'}
+            Access exclusive real estate investments
           </p>
           
           <Auth
@@ -235,15 +231,14 @@ export function AuthModal({ onClose, defaultType, defaultView = 'sign_in' }: Aut
             }}
           />
 
-          {/* Compact Trust Badges */}
+          {/* Terms & Privacy */}
           <div className="mt-4 pt-3 border-t border-gray-100">
-            <div className="flex items-center justify-center gap-3 text-[10px] text-gray-400">
-              <span>🔒 Secure</span>
-              <span>•</span>
-              <span>✓ SEC Compliant</span>
-              <span>•</span>
-              <span>🏢 10K+ Investors</span>
-            </div>
+            <p className="text-center text-[10px] text-gray-400">
+              By signing in you agree to EquityMD's{' '}
+              <a href="/legal/terms" className="text-blue-500 hover:underline">Terms of Service</a>
+              {' '}and{' '}
+              <a href="/legal/privacy" className="text-blue-500 hover:underline">Privacy Policy</a>
+            </p>
           </div>
         </div>
       </div>
