@@ -676,23 +676,23 @@ export function DealDetails() {
         </div>
       </div>
 
-      {showMessageModal && deal && deal.syndicator?.claimed_by && (
+      {showMessageModal && deal && (
         <MessageModal
           dealId={deal.id}
           dealTitle={deal.title}
           dealSlug={deal.slug}
-          receiverId={deal.syndicator.claimed_by}
+          receiverId={deal.syndicator?.claimed_by || deal.syndicator_id}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
           onClose={() => setShowMessageModal(false)}
         />
       )}
 
-      {showInvestModal && deal && deal.syndicator?.claimed_by && (
+      {showInvestModal && deal && (
         <MessageModal
           dealId={deal.id}
           dealTitle={deal.title}
           dealSlug={deal.slug}
-          receiverId={deal.syndicator.claimed_by}
+          receiverId={deal.syndicator?.claimed_by || deal.syndicator_id}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
           onClose={() => setShowInvestModal(false)}
           isInvestment

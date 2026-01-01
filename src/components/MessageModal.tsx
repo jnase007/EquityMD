@@ -63,11 +63,12 @@ export function MessageModal({
       let recipientEmail = syndicatorEmail;
       
       if (!recipientEmail) {
+        // First try to get from profiles table (if syndicator claimed their profile)
         const { data: recipientProfile } = await supabase
           .from('profiles')
           .select('email, email_notifications')
           .eq('id', receiverId)
-          .single();
+          .maybeSingle();
         
         if (recipientProfile?.email) {
           recipientEmail = recipientProfile.email;
@@ -81,6 +82,17 @@ export function MessageModal({
           if (type === 'investment_interest' && notifications && !notifications.investment_status) {
             console.log('User has investment notifications disabled');
             return;
+          }
+        } else {
+          // Fallback: try to get contact_email from syndicators table
+          const { data: syndicatorData } = await supabase
+            .from('syndicators')
+            .select('contact_email')
+            .eq('id', receiverId)
+            .maybeSingle();
+          
+          if (syndicatorData?.contact_email) {
+            recipientEmail = syndicatorData.contact_email;
           }
         }
       }
@@ -151,68 +163,82 @@ export function MessageModal({
         ? `💰 Investment Interest: ${formatCurrency(investmentAmount)}\n\n${message || 'I am interested in this investment opportunity.'}`
         : message;
 
-      const messageData: any = {
-        sender_id: user.id,
-        receiver_id: receiverId,
-        content
-      };
+      // Check if receiverId is a valid user ID (not just a syndicator ID)
+      const { data: receiverProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', receiverId)
+        .maybeSingle();
 
-      if (dealId) {
-        messageData.deal_id = dealId;
-      }
+      const hasValidReceiver = !!receiverProfile;
 
-      // Create investor connection if needed
-      if (profile?.user_type === 'investor') {
-        const { data: existingConnection } = await supabase
-          .from('investor_connections')
-          .select('id')
-          .eq('investor_id', user.id)
-          .eq('syndicator_id', receiverId)
-          .single();
+      // Only create message and notification if receiver is a valid user
+      if (hasValidReceiver) {
+        const messageData: any = {
+          sender_id: user.id,
+          receiver_id: receiverId,
+          content
+        };
 
-        if (!existingConnection) {
-          await supabase
-            .from('investor_connections')
-            .insert({
-              investor_id: user.id,
-              syndicator_id: receiverId,
-              initiated_by: 'investor',
-              status: 'pending'
-            });
+        if (dealId) {
+          messageData.deal_id = dealId;
         }
-      }
 
-      // Send message
-      const { error: messageError } = await supabase
-        .from('messages')
-        .insert(messageData);
+        // Create investor connection if needed
+        if (profile?.user_type === 'investor') {
+          const { data: existingConnection } = await supabase
+            .from('investor_connections')
+            .select('id')
+            .eq('investor_id', user.id)
+            .eq('syndicator_id', receiverId)
+            .maybeSingle();
 
-      if (messageError) throw messageError;
+          if (!existingConnection) {
+            await supabase
+              .from('investor_connections')
+              .insert({
+                investor_id: user.id,
+                syndicator_id: receiverId,
+                initiated_by: 'investor',
+                status: 'pending'
+              });
+          }
+        }
 
-      // Create notification in database for syndicator
-      try {
-        await supabase
-          .from('notifications')
-          .insert({
-            user_id: receiverId,
-            type: isInvestment ? 'investment_status' : 'message',
-            title: isInvestment 
-              ? `💰 New Investment Interest - ${formatCurrency(investmentAmount)}`
-              : `New message from ${profile?.full_name || 'An Investor'}`,
-            content: isInvestment
-              ? `${profile?.full_name || 'An investor'} is interested in investing ${formatCurrency(investmentAmount)} in ${dealTitle || 'your deal'}.`
-              : message.substring(0, 200),
-            data: {
-              deal_id: dealId,
-              deal_slug: dealSlug,
-              sender_id: user.id,
-              sender_name: profile?.full_name,
-              investment_amount: isInvestment ? getRawNumber(investmentAmount) : undefined
-            },
-            read: false
-          });
-      } catch (notifError) {
-        console.log('Notification insert error (may not exist):', notifError);
+        // Send message
+        const { error: messageError } = await supabase
+          .from('messages')
+          .insert(messageData);
+
+        if (messageError) {
+          console.error('Message insert error:', messageError);
+        }
+
+        // Create notification in database for syndicator
+        try {
+          await supabase
+            .from('notifications')
+            .insert({
+              user_id: receiverId,
+              type: isInvestment ? 'investment_status' : 'message',
+              title: isInvestment 
+                ? `💰 New Investment Interest - ${formatCurrency(investmentAmount)}`
+                : `New message from ${profile?.full_name || 'An Investor'}`,
+              content: isInvestment
+                ? `${profile?.full_name || 'An investor'} is interested in investing ${formatCurrency(investmentAmount)} in ${dealTitle || 'your deal'}.`
+                : message.substring(0, 200),
+              data: {
+                deal_id: dealId,
+                deal_slug: dealSlug,
+                sender_id: user.id,
+                sender_name: profile?.full_name,
+                investment_amount: isInvestment ? getRawNumber(investmentAmount) : undefined
+              },
+              read: false
+            });
+        } catch (notifError) {
+          console.log('Notification insert error (may not exist):', notifError);
+        }
       }
 
       // Save to investment_requests table if this is an investment
