@@ -267,13 +267,13 @@ export function Home() {
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Matching Investors with<br />
+              Discover & Invest in<br />
               <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                Profitable Real Estate Deals
+                Real Estate Syndications
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Exclusive marketplace platform for accredited investors to discover and participate in vetted real estate syndication deals.
+              A marketplace where accredited investors browse syndication opportunities and syndicators list their offerings.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center px-2 mb-12">
