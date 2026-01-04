@@ -2,9 +2,14 @@ name: Daily Blog Generator
 
 on:
   schedule:
-    # Runs every day at 8:00 AM UTC (adjust timezone as needed)
-    - cron: '0 8 * * *'
-  workflow_dispatch: # Allow manual trigger
+    # Runs every day at 9:00 AM UTC (1 AM PST / 4 AM EST)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+    inputs:
+      count:
+        description: 'Number of blogs to generate'
+        required: false
+        default: '1'
 
 jobs:
   generate-blog:
@@ -28,8 +33,10 @@ jobs:
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run generate-blog:publish
+        run: |
+          COUNT=${{ github.event.inputs.count || '1' }}
+          npx tsx scripts/generate-blog.ts --publish --count $COUNT
 
-      - name: Log success
-        run: echo "✅ Daily blog post generated successfully!"
+      - name: Notify on success
+        run: echo "✅ Weekly blog post generated and published!"
 
