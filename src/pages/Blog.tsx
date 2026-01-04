@@ -127,13 +127,13 @@ export function Blog() {
             <div className="mb-16">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                 <div className="md:flex">
-                  <div className="md:w-1/2">
+                  <Link to={`/blog/${filteredPosts[0].slug}`} className="md:w-1/2 block overflow-hidden">
                     <img
                       src={filteredPosts[0].image}
                       alt={filteredPosts[0].title}
-                      className="w-full h-64 md:h-full object-cover"
+                      className="w-full h-64 md:h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
+                  </Link>
                   <div className="md:w-1/2 p-8">
                     <div className="flex items-center gap-2 mb-4">
                       <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -143,9 +143,11 @@ export function Blog() {
                         {filteredPosts[0].category}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-bold mb-4 text-gray-900">
-                      {filteredPosts[0].title}
-                    </h2>
+                    <Link to={`/blog/${filteredPosts[0].slug}`}>
+                      <h2 className="text-2xl font-bold mb-4 text-gray-900 hover:text-blue-600 transition-colors">
+                        {filteredPosts[0].title}
+                      </h2>
+                    </Link>
                     <p className="text-gray-600 mb-6">
                       {filteredPosts[0].excerpt}
                     </p>
@@ -176,21 +178,25 @@ export function Blog() {
             {/* Blog Posts Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.slice(1).map((post) => (
-                <article key={post.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-48 object-cover"
-                  />
+                <article key={post.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition group">
+                  <Link to={`/blog/${post.slug}`} className="block overflow-hidden">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </Link>
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-medium">
                         {post.category}
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2">
-                      {post.title}
-                    </h3>
+                    <Link to={`/blog/${post.slug}`}>
+                      <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2 hover:text-blue-600 transition-colors">
+                        {post.title}
+                      </h3>
+                    </Link>
                     <p className="text-gray-600 mb-4 line-clamp-3">
                       {post.excerpt}
                     </p>
