@@ -221,8 +221,8 @@ export function HowItWorksImproved() {
                 Understanding Real Estate Syndication
               </h2>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Real estate syndication allows multiple investors to pool their capital and invest in larger, 
-                more profitable properties that would be difficult to acquire individually.
+                Real estate syndication allows multiple investors to pool their capital and invest in larger 
+                commercial properties that would be difficult to acquire individually.
               </p>
               
               <div className="space-y-6">

@@ -326,7 +326,7 @@ export function MarketReportsHub() {
           <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 text-center text-white">
             <h2 className="text-2xl font-bold mb-4">Ready to Start Investing?</h2>
             <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Use our market data to identify the best investment opportunities in your target states. 
+              Use our market data to explore investment opportunities in your target states. 
               Browse available deals and connect with top syndicators.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

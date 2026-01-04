@@ -41,13 +41,13 @@ export function ReferralModal({ onClose }: ReferralModalProps) {
           content: `
             ${profile?.full_name} has invited you to join EquityMD!
 
-            Join now and you'll both receive a return multiplier credit worth up to 1% additional annual return on your next investment.
+            Join now and you'll both receive a $500 platform credit toward your next investment.
 
             Click here to get started: ${referralLink}
 
             What you'll get:
             • Access to institutional-quality real estate investments
-            • 1% return multiplier on your first investment
+            • $500 platform credit on your first investment
             • Professional investment tools and analytics
             • Direct communication with experienced syndicators
 
@@ -77,7 +77,7 @@ export function ReferralModal({ onClose }: ReferralModalProps) {
   };
 
   const shareViaEmail = () => {
-    window.location.href = `mailto:?subject=Join me on EquityMD&body=I'd like to invite you to join EquityMD, where you can access institutional-quality real estate investments. Use my referral link to sign up and we'll both get a 1% return multiplier: ${referralLink}`;
+    window.location.href = `mailto:?subject=Join me on EquityMD&body=I'd like to invite you to join EquityMD, where you can access institutional-quality real estate investments. Use my referral link to sign up and we'll both get a $500 platform credit: ${referralLink}`;
   };
 
   const shareViaFacebook = () => {
@@ -89,7 +89,7 @@ export function ReferralModal({ onClose }: ReferralModalProps) {
   };
 
   const shareViaTwitter = () => {
-    window.open(`https://twitter.com/intent/tweet?text=Join me on EquityMD and get access to institutional-quality real estate investments! Use my referral link for a 1% return multiplier: ${encodeURIComponent(referralLink)}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=Join me on EquityMD and get access to institutional-quality real estate investments! Use my referral link for a $500 platform credit: ${encodeURIComponent(referralLink)}`, '_blank');
   };
 
   return (
@@ -111,7 +111,7 @@ export function ReferralModal({ onClose }: ReferralModalProps) {
               <div>
                 <h3 className="font-medium text-blue-800 mb-2">Earn Better Returns</h3>
                 <p className="text-blue-600 text-sm">
-                  For each friend that signs up and invests, you'll both receive a Multiplier credit worth 1% additional annual return on your next investment.
+                  For each friend that signs up and invests, you'll both receive a $500 platform credit toward your next investment.
                 </p>
               </div>
             </div>

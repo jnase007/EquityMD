@@ -66,7 +66,7 @@ const tiers = [
       'Full database access with advanced filters',
       'Premium listings with virtual tours',
       'Unlimited photos per listing',
-      'Guaranteed "Deal Spotlight" monthly',
+      'Priority "Deal Spotlight" placement monthly',
       'Dedicated email blast to investors',
       'Real-time analytics',
       'Direct investor messaging',

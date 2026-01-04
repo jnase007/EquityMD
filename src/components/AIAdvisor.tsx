@@ -36,7 +36,7 @@ const generateResponse = (question: string, dealContext?: any): string => {
       return `Key risks to consider for ${dealContext.title}:\n\n• **Market Risk**: Property values can fluctuate\n• **Execution Risk**: Renovation/management challenges\n• **Liquidity Risk**: Investments are typically locked for the hold period\n• **Leverage Risk**: Debt amplifies both gains and losses\n\nAlways review the PPM for a complete risk discussion.`;
     }
     if (q.includes('location') || q.includes('where')) {
-      return `${dealContext.title} is located in ${dealContext.location}. This market has been chosen for factors like population growth, job creation, and rent growth potential. I'd recommend researching the specific submarket demographics.`;
+      return `${dealContext.title} is located in ${dealContext.location}. This market has been chosen for factors like population growth, job creation, and rent growth potential. You may want to research the specific submarket demographics.`;
     }
   }
   
@@ -74,7 +74,7 @@ const generateResponse = (question: string, dealContext?: any): string => {
   }
   
   // Default helpful response
-  return `Great question! Here are some resources that might help:\n\n• **Due Diligence Guide**: Step-by-step checklist\n• **Investment Calculator**: Model potential returns\n• **Glossary**: Investment term definitions\n• **Deal Comparison**: Compare opportunities side-by-side\n\nFor specific deal questions, I recommend reaching out to the syndicator directly. Is there something else I can help explain?`;
+  return `Great question! Here are some resources that might help:\n\n• **Due Diligence Guide**: Step-by-step checklist\n• **Investment Calculator**: Model potential returns\n• **Glossary**: Investment term definitions\n• **Deal Comparison**: Compare opportunities side-by-side\n\nFor specific deal questions, consider reaching out to the syndicator directly. Is there something else I can help explain?`;
 };
 
 interface AIAdvisorProps {

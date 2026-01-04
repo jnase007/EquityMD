@@ -142,8 +142,8 @@ export function NewPricing() {
     <div className="min-h-screen bg-gray-50">
       <SEO 
         title="Syndicator Pricing with Free Trials | EquityMD"
-        description="Explore EquityMD's syndicator pricing plans with free trials and guaranteed results for 10K+ accredited investors."
-        keywords="syndicator pricing, CRE deals, free trial, commercial real estate pricing, syndication platform, guaranteed results"
+        description="Explore EquityMD's syndicator pricing plans with free trials for 10K+ accredited investors."
+        keywords="syndicator pricing, CRE deals, free trial, commercial real estate pricing, syndication platform"
         canonical="https://equitymd.com/new-pricing"
       />
       <Navbar />
@@ -155,7 +155,7 @@ export function NewPricing() {
             Start Free, Grow with Results
           </h1>
           <p className="text-xl lg:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
-            Free Trials for All Plans, Results Guaranteed
+            Free Trials for All Plans, Risk-Free
           </p>
           <p className="text-lg text-blue-200 max-w-2xl mx-auto mb-12">
             Join thousands of syndicators who've raised capital faster with our proven platform. 

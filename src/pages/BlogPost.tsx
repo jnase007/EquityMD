@@ -572,7 +572,7 @@ export function BlogPost() {
               </h3>
               
               <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-8">
-                Get exclusive access to vetted multifamily deals with projected 15-20% annual returns. 
+                Get exclusive access to vetted multifamily syndication opportunities. 
                 No landlord headaches. Truly passive income.
               </p>
 

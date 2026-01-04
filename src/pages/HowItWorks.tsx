@@ -436,7 +436,7 @@ export function HowItWorks() {
                 Understanding Real Estate Syndication
               </h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                Real estate syndication allows multiple investors to pool their capital and invest in larger, more profitable properties.
+                Real estate syndication allows multiple investors to pool their capital and invest in larger commercial properties.
               </p>
               
               <div className="space-y-4">
@@ -464,7 +464,7 @@ export function HowItWorks() {
                 {[
                   { label: 'Minimum Investment', value: '$25,000', note: 'Lower minimums than traditional real estate' },
                   { label: 'Investment Term', value: '3-7 Years', note: 'Medium-term investment horizon' },
-                  { label: 'Expected Returns', value: '15-25% IRR', note: 'Cash flow + appreciation at sale' },
+                  { label: 'Typical Target Range*', value: '15-25% IRR', note: '*Varies by deal. Past performance not indicative of future results.' },
                 ].map((item, i) => (
                   <div key={i} className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl p-4 border border-gray-100">
                     <div className="flex justify-between items-center mb-1">

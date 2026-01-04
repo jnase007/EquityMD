@@ -201,7 +201,7 @@ export function ProfileNudge({ percentage, onClick }: { percentage: number; onCl
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <span className="text-emerald-500">✓</span>
-            Better deal recommendations
+            More relevant deal listings
           </div>
         </div>
 
