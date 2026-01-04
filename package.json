@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "check-logos": "node src/check-logos.js",
     "update-market-data": "tsx scripts/update-market-data.ts",
-    "schedule-market-updates": "tsx scripts/update-market-data.ts --schedule"
+    "schedule-market-updates": "tsx scripts/update-market-data.ts --schedule",
+    "generate-blog": "tsx scripts/generate-blog.ts",
+    "generate-blog:publish": "tsx scripts/generate-blog.ts --publish",
+    "generate-blogs:batch": "tsx scripts/generate-blog.ts --publish --count"
   },
   "dependencies": {
     "@stripe/stripe-js": "^3.0.7",

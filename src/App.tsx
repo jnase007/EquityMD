@@ -52,6 +52,7 @@ import { Compliance } from './pages/legal/Compliance';
 import { Contact } from './pages/Contact';
 import { About } from './pages/About';
 import { Blog } from './pages/Blog';
+import { BlogPost } from './pages/BlogPost';
 import { Pricing } from './pages/Pricing';
 import { NewPricing } from './pages/new-pricing';
 import { EmailPreview } from './pages/EmailPreview';
@@ -346,6 +347,7 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/pricing" element={<Navigate to="/" replace />} />
         <Route path="/new-pricing" element={<Navigate to="/" replace />} />
         <Route path="/email-preview" element={<EmailPreview />} />

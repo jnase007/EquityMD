@@ -9,16 +9,18 @@ import { CreditManagement } from '../../components/admin/CreditManagement';
 import { InvestorImport } from '../../components/admin/InvestorImport';
 import { SyndicatorImport } from '../../components/admin/SyndicatorImport';
 import { AnalyticsDashboard } from '../../components/admin/AnalyticsDashboard';
+import { CommandCenter } from '../../components/admin/CommandCenter';
+import { BlogManagement } from '../../components/admin/BlogManagement';
 import { ClaimRequests } from '../../components/admin/ClaimRequests';
 import { SyndicatorVerificationAdmin } from '../../components/SyndicatorVerificationAdmin';
 import { SystemManagement } from '../../components/admin/SystemManagement';
 import { DeactivatedAccountsManagement } from '../../components/admin/DeactivatedAccountsManagement';
 import { useAuthStore } from '../../lib/store';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool } from 'lucide-react';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'users' | 'deactivated' | 'properties' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('analytics');
+  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('command');
 
   if (!profile) return (
     <div style={{ padding: '24px', textAlign: 'center' }}>
@@ -49,6 +51,8 @@ export function AdminDashboard() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'command':
+        return <CommandCenter />;
       case 'analytics':
         return <AnalyticsDashboard />;
       case 'users':
@@ -57,6 +61,8 @@ export function AdminDashboard() {
         return <DeactivatedAccountsManagement />;
       case 'properties':
         return <PropertyManagement />;
+      case 'blog':
+        return <BlogManagement />;
       case 'credits':
         return <CreditManagement />;
       case 'import-investors':
@@ -98,6 +104,18 @@ export function AdminDashboard() {
         {/* Tab Navigation */}
         <div className="mb-8 border-b overflow-x-auto">
           <div className="flex space-x-6 min-w-max">
+            <button
+              onClick={() => setActiveTab('command')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'command'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Zap className="h-5 w-5 mr-2" />
+              Command Center
+            </button>
+
             <button
               onClick={() => setActiveTab('analytics')}
               className={`pb-4 flex items-center ${
@@ -204,6 +222,18 @@ export function AdminDashboard() {
             >
               <Shield className="h-5 w-5 mr-2" />
               Syndicator Verification
+            </button>
+
+            <button
+              onClick={() => setActiveTab('blog')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'blog'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <PenTool className="h-5 w-5 mr-2" />
+              Blog
             </button>
 
             <button

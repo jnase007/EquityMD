@@ -1,13 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
-import { Calendar, User, ArrowRight, TrendingUp, Building2, DollarSign } from 'lucide-react';
+import { Calendar, User, ArrowRight, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
-const blogPosts = [
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  author: string;
+  date: string;
+  category: string;
+  image: string;
+  slug: string;
+}
+
+// Static fallback posts (shown if database is empty or unavailable)
+const staticBlogPosts: BlogPost[] = [
   {
-    id: 1,
+    id: '1',
     title: "5 Key Metrics Every CRE Syndicator Should Track",
     excerpt: "Learn the essential performance indicators that successful syndicators monitor to maximize investor returns and build trust.",
     author: "EquityMD Team",
@@ -17,7 +30,7 @@ const blogPosts = [
     slug: "key-metrics-cre-syndicators"
   },
   {
-    id: 2,
+    id: '2',
     title: "How to Build Your Investor Network from Zero",
     excerpt: "Step-by-step guide to attracting and retaining accredited investors for your commercial real estate syndications.",
     author: "Sarah Chen",
@@ -27,7 +40,7 @@ const blogPosts = [
     slug: "build-investor-network-from-zero"
   },
   {
-    id: 3,
+    id: '3',
     title: "Multifamily vs. Industrial: Which Asset Class is Right for You?",
     excerpt: "Compare the pros and cons of multifamily and industrial real estate investments to make informed syndication decisions.",
     author: "Michael Rodriguez",
@@ -37,7 +50,7 @@ const blogPosts = [
     slug: "multifamily-vs-industrial-comparison"
   },
   {
-    id: 4,
+    id: '4',
     title: "SEC Compliance for Real Estate Syndications: A Complete Guide",
     excerpt: "Navigate the complex world of securities regulations with our comprehensive guide to staying compliant in your syndications.",
     author: "Jennifer Kim",
@@ -47,7 +60,7 @@ const blogPosts = [
     slug: "sec-compliance-syndications-guide"
   },
   {
-    id: 5,
+    id: '5',
     title: "Market Analysis: Top 10 CRE Markets for 2025",
     excerpt: "Discover the most promising commercial real estate markets for syndication opportunities in 2025 based on economic indicators.",
     author: "David Thompson",
@@ -57,7 +70,7 @@ const blogPosts = [
     slug: "top-cre-markets-2025"
   },
   {
-    id: 6,
+    id: '6',
     title: "Technology Tools Every Modern Syndicator Needs",
     excerpt: "Streamline your syndication process with these essential technology tools and platforms for deal management and investor relations.",
     author: "Lisa Patel",
@@ -68,18 +81,65 @@ const blogPosts = [
   }
 ];
 
-const categories = [
-  "All Posts",
-  "Syndication Tips",
-  "Investor Relations", 
-  "Asset Classes",
-  "Legal & Compliance",
-  "Market Analysis",
-  "Technology"
-];
-
 export function Blog() {
-  const [selectedCategory, setSelectedCategory] = React.useState("All Posts");
+  const [selectedCategory, setSelectedCategory] = useState("All Posts");
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(staticBlogPosts);
+  const [categories, setCategories] = useState<string[]>([
+    "All Posts",
+    "Syndication Tips",
+    "Investor Relations", 
+    "Asset Classes",
+    "Legal & Compliance",
+    "Market Analysis",
+    "Technology"
+  ]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBlogPosts() {
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('id, title, excerpt, author, published_at, category, image_url, slug')
+          .eq('is_published', true)
+          .order('published_at', { ascending: false });
+        
+        if (error) {
+          console.warn('Could not fetch blog posts from database:', error.message);
+          return; // Keep static posts
+        }
+        
+        if (data && data.length > 0) {
+          // Transform database format to component format
+          const dbPosts: BlogPost[] = data.map(post => ({
+            id: post.id,
+            title: post.title,
+            excerpt: post.excerpt,
+            author: post.author,
+            date: post.published_at || new Date().toISOString(),
+            category: post.category,
+            image: post.image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800&h=400',
+            slug: post.slug
+          }));
+          
+          // Combine database posts with static posts (DB first)
+          setBlogPosts([...dbPosts, ...staticBlogPosts]);
+          
+          // Extract unique categories from all posts
+          const allCategories = new Set(['All Posts']);
+          dbPosts.forEach(post => allCategories.add(post.category));
+          staticBlogPosts.forEach(post => allCategories.add(post.category));
+          setCategories(Array.from(allCategories));
+        }
+      } catch (err) {
+        console.warn('Error fetching blog posts:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchBlogPosts();
+  }, []);
 
   const filteredPosts = selectedCategory === "All Posts" 
     ? blogPosts 
@@ -127,101 +187,109 @@ export function Blog() {
           </div>
         </div>
 
-        {/* Featured Post */}
-        {filteredPosts.length > 0 && (
-          <div className="mb-16">
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="md:flex">
-                <div className="md:w-1/2">
-                  <img
-                    src={filteredPosts[0].image}
-                    alt={filteredPosts[0].title}
-                    className="w-full h-64 md:h-full object-cover"
-                  />
-                </div>
-                <div className="md:w-1/2 p-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                      Featured
-                    </span>
-                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">
-                      {filteredPosts[0].category}
-                    </span>
-                  </div>
-                  <h2 className="text-2xl font-bold mb-4 text-gray-900">
-                    {filteredPosts[0].title}
-                  </h2>
-                  <p className="text-gray-600 mb-6">
-                    {filteredPosts[0].excerpt}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <User className="h-4 w-4" />
-                        {filteredPosts[0].author}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(filteredPosts[0].date).toLocaleDateString()}
-                      </div>
-                    </div>
-                    <Link
-                      to={`/blog/${filteredPosts[0].slug}`}
-                      className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
-                    >
-                      Read More
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
           </div>
-        )}
-
-        {/* Blog Posts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.slice(1).map((post) => (
-            <article key={post.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition">
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-medium">
-                    {post.category}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2">
-                  {post.title}
-                </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-sm text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <User className="h-3 w-3" />
-                      {post.author}
+        ) : (
+          <>
+            {/* Featured Post */}
+            {filteredPosts.length > 0 && (
+              <div className="mb-16">
+                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                  <div className="md:flex">
+                    <div className="md:w-1/2">
+                      <img
+                        src={filteredPosts[0].image}
+                        alt={filteredPosts[0].title}
+                        className="w-full h-64 md:h-full object-cover"
+                      />
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(post.date).toLocaleDateString()}
+                    <div className="md:w-1/2 p-8">
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                          Featured
+                        </span>
+                        <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm">
+                          {filteredPosts[0].category}
+                        </span>
+                      </div>
+                      <h2 className="text-2xl font-bold mb-4 text-gray-900">
+                        {filteredPosts[0].title}
+                      </h2>
+                      <p className="text-gray-600 mb-6">
+                        {filteredPosts[0].excerpt}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <User className="h-4 w-4" />
+                            {filteredPosts[0].author}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {new Date(filteredPosts[0].date).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <Link
+                          to={`/blog/${filteredPosts[0].slug}`}
+                          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
+                        >
+                          Read More
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                  <Link
-                    to={`/blog/${post.slug}`}
-                    className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                  >
-                    Read More
-                  </Link>
                 </div>
               </div>
-            </article>
-          ))}
-        </div>
+            )}
+
+            {/* Blog Posts Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPosts.slice(1).map((post) => (
+                <article key={post.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-medium">
+                        {post.category}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-900 line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4 line-clamp-3">
+                      {post.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                          <User className="h-3 w-3" />
+                          {post.author}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(post.date).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                      >
+                        Read More
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Newsletter Signup */}
         <div className="mt-20 bg-blue-600 rounded-lg p-8 text-center text-white">
@@ -247,4 +315,4 @@ export function Blog() {
       <Footer />
     </div>
   );
-} 
+}
