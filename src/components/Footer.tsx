@@ -136,6 +136,14 @@ export function Footer() {
           <ul className="space-y-2 text-gray-400">
             <li>
               <button
+                onClick={() => handleNavigation('/blog')}
+                className="hover:text-white transition"
+              >
+                Blog
+              </button>
+            </li>
+            <li>
+              <button
                 onClick={() => handleNavigation('/resources/due-diligence')}
                 className="hover:text-white transition"
               >
