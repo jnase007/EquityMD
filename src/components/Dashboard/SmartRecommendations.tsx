@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, MapPin, Building2, CheckCircle, TrendingUp, Clock, ArrowRight, Filter } from 'lucide-react';
+import { SlidersHorizontal, MapPin, Building2, CheckCircle, TrendingUp, Clock, ArrowRight, Filter } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 interface Deal {
@@ -96,9 +96,9 @@ export function SmartRecommendations({
   };
 
   const filters = [
-    { id: 'matched', label: 'For You', icon: <Sparkles className="h-3.5 w-3.5" /> },
+    { id: 'matched', label: 'My Filters', icon: <Filter className="h-3.5 w-3.5" /> },
     { id: 'closing_soon', label: 'Closing Soon', icon: <Clock className="h-3.5 w-3.5" /> },
-    { id: 'popular', label: 'Popular', icon: <TrendingUp className="h-3.5 w-3.5" /> },
+    { id: 'popular', label: 'Most Viewed', icon: <TrendingUp className="h-3.5 w-3.5" /> },
   ];
 
   return (
@@ -107,14 +107,14 @@ export function SmartRecommendations({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
-            <Sparkles className="h-5 w-5 text-white" />
+            <SlidersHorizontal className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Recommended For You</h2>
+            <h2 className="text-xl font-bold text-gray-900">Deals Matching Your Filters</h2>
             <p className="text-sm text-gray-600">
               {preferredTypes.length > 0 
-                ? `Based on your ${preferredTypes.slice(0, 2).join(', ')} preferences`
-                : 'Curated deals you might like'}
+                ? `Filtered by: ${preferredTypes.slice(0, 2).join(', ')}`
+                : 'Set your investment filters in profile settings'}
             </p>
           </div>
         </div>
