@@ -274,6 +274,15 @@ export function InvestorDashboard() {
         </Link>
       </div>
 
+      {/* Deals Matching Your Filters - Moved to top */}
+      <SmartRecommendations
+        userId={user?.id || ''}
+        preferredTypes={investorPrefs?.preferred_property_types || []}
+        preferredLocations={investorPrefs?.preferred_locations || []}
+        investmentMin={investorPrefs?.investment_range_min}
+        investmentMax={investorPrefs?.investment_range_max}
+      />
+
       {/* Main Content Grid */}
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Recent Opportunities */}
@@ -439,15 +448,6 @@ export function InvestorDashboard() {
           </div>
         </div>
       </div>
-      
-      {/* Smart Recommendations with Filters */}
-      <SmartRecommendations
-        userId={user?.id || ''}
-        preferredTypes={investorPrefs?.preferred_property_types || []}
-        preferredLocations={investorPrefs?.preferred_locations || []}
-        investmentMin={investorPrefs?.investment_range_min}
-        investmentMax={investorPrefs?.investment_range_max}
-      />
 
       {/* Achievements Modal */}
       <AchievementsModal

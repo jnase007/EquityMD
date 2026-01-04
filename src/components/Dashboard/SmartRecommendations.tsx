@@ -36,7 +36,7 @@ export function SmartRecommendations({
 }: SmartRecommendationsProps) {
   const [recommendations, setRecommendations] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState<'matched' | 'closing_soon' | 'popular'>('matched');
+  const [activeFilter, setActiveFilter] = useState<'matched' | 'closing_soon' | 'popular'>('popular');
 
   useEffect(() => {
     fetchRecommendations();
