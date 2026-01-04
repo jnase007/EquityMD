@@ -267,9 +267,9 @@ export function Home() {
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Your Marketplace for<br />
+              Your Marketplace to Discover<br />
               <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                Real Estate Investing
+                Real Estate Investments
               </span>
             </h1>
             <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
