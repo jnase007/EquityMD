@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
-import { Calendar, User, ArrowLeft, Tag, Loader2, Clock, ExternalLink, BookOpen, CheckCircle2, Quote } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Tag, Loader2, Clock, ExternalLink, BookOpen, CheckCircle2, Quote, TrendingUp, Shield, DollarSign, Share2, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface FAQItem {
@@ -118,11 +118,27 @@ export function BlogPost() {
   const [post, setPost] = useState<BlogPostData | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const [relatedPosts, setRelatedPosts] = useState<{slug: string; title: string; category: string}[]>([]);
 
   // Scroll to top when component mounts or slug changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+
+  // Reading progress bar
+  useEffect(() => {
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setReadingProgress(Math.min(progress, 100));
+    };
+    
+    window.addEventListener('scroll', updateProgress);
+    return () => window.removeEventListener('scroll', updateProgress);
+  }, []);
 
   useEffect(() => {
     async function fetchPost() {
@@ -149,6 +165,17 @@ export function BlogPost() {
         setPost(data);
         // Track view (fire and forget)
         supabase.rpc('increment_blog_view', { post_slug: slug }).catch(() => {});
+        
+        // Fetch related posts from same category
+        const { data: related } = await supabase
+          .from('blog_posts')
+          .select('slug, title, category')
+          .eq('is_published', true)
+          .eq('category', data.category)
+          .neq('slug', slug)
+          .limit(3);
+        
+        if (related) setRelatedPosts(related);
       } catch (err) {
         console.warn('Error fetching blog post:', err);
         setNotFound(true);
@@ -315,6 +342,14 @@ export function BlogPost() {
       
       <Navbar />
 
+      {/* Reading Progress Bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+        <div 
+          className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-150"
+          style={{ width: `${readingProgress}%` }}
+        />
+      </div>
+
       {/* Hero Image */}
       <div className="relative h-[400px] bg-gray-900">
         <img
@@ -478,30 +513,130 @@ export function BlogPost() {
             </div>
           )}
 
-          {/* CTA */}
-          <div className="mt-12 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-8 text-center text-white">
-            <h3 className="text-2xl font-bold mb-2">
-              Ready to Start Investing in Multifamily?
-            </h3>
-            <p className="text-blue-100 mb-6">
-              Browse exclusive apartment syndication opportunities on EquityMD.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                to="/find"
-                className="inline-flex items-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition font-medium"
-              >
-                Browse Deals
-                <ArrowLeft className="h-4 w-4 rotate-180" />
-              </Link>
-              <Link
-                to="/how-it-works"
-                className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-400 transition font-medium"
-              >
-                Learn How It Works
-              </Link>
+          {/* Share This Article */}
+          <div className="mt-10 pt-6 border-t">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <span className="text-sm font-medium text-gray-500">Share this article:</span>
+              <div className="flex items-center gap-3">
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://equitymd.com/blog/${slug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gray-100 hover:bg-blue-100 hover:text-blue-600 rounded-full transition"
+                  title="Share on Twitter"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+                <a
+                  href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://equitymd.com/blog/${slug}`)}&title=${encodeURIComponent(post.title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 bg-gray-100 hover:bg-blue-100 hover:text-blue-600 rounded-full transition"
+                  title="Share on LinkedIn"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </a>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`https://equitymd.com/blog/${slug}`);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="p-2 bg-gray-100 hover:bg-green-100 hover:text-green-600 rounded-full transition"
+                  title="Copy link"
+                >
+                  {copied ? <Check className="h-5 w-5 text-green-600" /> : <Copy className="h-5 w-5" />}
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Enhanced CTA - Investor Signup */}
+          <div className="mt-12 relative overflow-hidden rounded-2xl">
+            {/* Background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900" />
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
+            
+            <div className="relative px-8 py-12 md:px-12 md:py-16 text-center">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-blue-200 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <TrendingUp className="h-4 w-4" />
+                Join 2,500+ Passive Investors
+              </div>
+
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Start Building Wealth Through<br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">
+                  Apartment Syndications
+                </span>
+              </h3>
+              
+              <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-8">
+                Get exclusive access to vetted multifamily deals with projected 15-20% annual returns. 
+                No landlord headaches. Truly passive income.
+              </p>
+
+              {/* Benefits */}
+              <div className="flex flex-wrap justify-center gap-6 mb-10">
+                <div className="flex items-center gap-2 text-blue-200">
+                  <Shield className="h-5 w-5 text-green-400" />
+                  <span>SEC-Compliant Deals</span>
+                </div>
+                <div className="flex items-center gap-2 text-blue-200">
+                  <DollarSign className="h-5 w-5 text-green-400" />
+                  <span>$50K Minimum</span>
+                </div>
+                <div className="flex items-center gap-2 text-blue-200">
+                  <CheckCircle2 className="h-5 w-5 text-green-400" />
+                  <span>Accredited Investors Only</span>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-blue-900 px-8 py-4 rounded-xl hover:bg-blue-50 transition font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  Create Free Account
+                  <ArrowLeft className="h-5 w-5 rotate-180" />
+                </Link>
+                <Link
+                  to="/find"
+                  className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white border border-white/20 px-8 py-4 rounded-xl hover:bg-white/20 transition font-medium text-lg"
+                >
+                  Browse Current Deals
+                </Link>
+              </div>
+
+              {/* Trust indicators */}
+              <p className="text-blue-300/70 text-sm mt-8">
+                Free to join • No obligation • View deals instantly
+              </p>
+            </div>
+          </div>
+
+          {/* Related Posts */}
+          {relatedPosts.length > 0 && (
+            <div className="mt-12 pt-8 border-t">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">More in {post.category}</h3>
+              <div className="grid gap-4">
+                {relatedPosts.map((related) => (
+                  <Link
+                    key={related.slug}
+                    to={`/blog/${related.slug}`}
+                    className="group flex items-center gap-4 p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition"
+                  >
+                    <div className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full group-hover:scale-150 transition" />
+                    <span className="text-gray-700 group-hover:text-blue-600 transition font-medium">
+                      {related.title}
+                    </span>
+                    <ArrowLeft className="h-4 w-4 rotate-180 text-gray-400 group-hover:text-blue-600 ml-auto transition" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </article>
 
