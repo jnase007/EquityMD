@@ -185,11 +185,27 @@ interface BlogContent {
 async function generateBlog(topic: string, category: string, targetKeyword: string): Promise<BlogContent> {
   const prompt = `You are an expert multifamily real estate analyst writing for EquityMD.com, connecting accredited investors with apartment syndication opportunities.
 
-CRITICAL: Write EVERGREEN content. Do NOT include:
-- Years (2024, 2025, 2026, etc.) in the title
-- Current events or time-sensitive references
-- Phrases like "this year" or "recently"
-- Any content that will become outdated
+=== CRITICAL CONTENT RULES ===
+1. EVERGREEN - Do NOT include years (2024, 2025, 2026) in titles or time-sensitive references
+2. ORIGINAL CONTENT - NEVER copy text word-for-word. Always paraphrase and synthesize information in your own words
+3. CITE SOURCES - When referencing data, statistics, or research, attribute it with "According to [Source Name]..."
+4. ACCESSIBLE WRITING - Write so anyone can understand, even complex financial topics. Explain jargon in simple terms
+5. PROFESSIONAL TONE - Maintain authority while being approachable and helpful
+
+=== SOURCE ATTRIBUTION (REQUIRED) ===
+When citing facts or data, use these trusted industry sources and include their URLs:
+- National Multifamily Housing Council (NMHC): https://www.nmhc.org
+- National Apartment Association (NAA): https://www.naahq.org
+- CBRE Research: https://www.cbre.com/insights
+- Marcus & Millichap: https://www.marcusmillichap.com/research
+- Freddie Mac Multifamily: https://mf.freddiemac.com
+- CoStar Group: https://www.costar.com
+- Yardi Matrix: https://www.yardimatrix.com
+- Urban Land Institute (ULI): https://uli.org
+- SEC (for accredited investor rules): https://www.sec.gov
+- IRS (for tax guidance): https://www.irs.gov
+
+Include at least 3-5 credible sources per article with actual URLs.
 
 TARGET AUDIENCE: Accredited passive investors ($100K-$1M+) interested in apartment syndications.
 
@@ -207,6 +223,13 @@ TARGET AUDIENCE: Accredited passive investors ($100K-$1M+) interested in apartme
 3. Numbered lists with specific data
 4. Key Takeaways box with 4-5 bullets
 
+=== WRITING STYLE ===
+- Use short paragraphs (2-3 sentences max)
+- Explain technical terms when first used
+- Use bullet points for complex lists
+- Include practical examples
+- Write like you're explaining to a smart friend who's new to real estate
+
 TOPIC: "${topic}"
 CATEGORY: ${category}
 TARGET KEYWORD: "${targetKeyword}"
@@ -221,11 +244,11 @@ Respond ONLY with valid JSON:
   "metaDescription": "SEO description with keyword (150-160 chars)",
   "metaKeywords": ["primary", "lsi1", "lsi2", "lsi3", "lsi4"],
   "faqSchema": [{"question": "Q?", "answer": "A"}],
-  "sources": [{"name": "Source", "url": "https://..."}],
+  "sources": [{"name": "Full Source Name", "url": "https://actual-url.com/page"}],
   "internalLinks": ["/find", "/how-it-works"],
   "readingTime": 7,
   "keyTakeaways": ["Takeaway 1", "Takeaway 2", "Takeaway 3", "Takeaway 4"],
-  "quotableStats": ["Stat 1", "Stat 2", "Stat 3"]
+  "quotableStats": ["According to [Source], statistic here", "Per [Source], data point"]
 }`;
 
   const response = await fetch(XAI_API_URL, {
