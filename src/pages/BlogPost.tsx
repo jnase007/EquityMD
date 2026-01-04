@@ -35,66 +35,6 @@ interface BlogPostData {
   quotable_stats?: string[];
 }
 
-// Static posts for backwards compatibility
-const staticPosts: Record<string, BlogPostData> = {
-  'key-metrics-cre-syndicators': {
-    id: '1',
-    title: '5 Key Metrics Every CRE Syndicator Should Track',
-    excerpt: 'Learn the essential performance indicators that successful syndicators monitor to maximize investor returns and build trust.',
-    content: `## Introduction
-
-Successful commercial real estate syndication requires more than just finding great deals—it demands meticulous tracking of key performance indicators (KPIs) that ensure your investments perform as expected and your investors remain confident in your management.
-
-## 1. Cash-on-Cash Return (CoC)
-
-Cash-on-cash return measures the annual pre-tax cash flow relative to the total cash invested. This metric gives investors a clear picture of how their capital is performing year over year.
-
-**Formula:** Annual Cash Flow / Total Cash Invested × 100
-
-A healthy CoC return for value-add multifamily typically ranges from 6-10% during the hold period.
-
-## 2. Internal Rate of Return (IRR)
-
-IRR considers the time value of money and provides a comprehensive view of the investment's total return, including cash flow and appreciation upon sale.
-
-Target IRRs vary by investment strategy:
-- Core deals: 8-12%
-- Core-plus: 10-14%
-- Value-add: 14-20%
-- Opportunistic: 18%+
-
-## 3. Equity Multiple
-
-The equity multiple tells investors how much they'll receive back compared to their initial investment. An equity multiple of 2.0x means investors double their money.
-
-**Formula:** Total Distributions / Total Equity Invested
-
-## 4. Debt Service Coverage Ratio (DSCR)
-
-DSCR measures your property's ability to cover debt payments from operating income. Lenders typically require a minimum DSCR of 1.20-1.25x.
-
-**Formula:** Net Operating Income / Total Debt Service
-
-## 5. Occupancy Rate
-
-Track both physical occupancy (occupied units) and economic occupancy (actual rent collected vs. potential rent). The gap between these numbers reveals collection issues or excessive concessions.
-
-## Conclusion
-
-Regularly monitoring these five metrics will help you identify issues early, communicate effectively with investors, and make data-driven decisions that maximize returns for everyone involved.`,
-    author: 'EquityMD Team',
-    published_at: '2025-01-25',
-    category: 'Syndication Tips',
-    image_url: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200&h=600',
-    meta_description: 'Learn the 5 essential metrics every CRE syndicator should track to maximize returns and build investor trust.',
-    meta_keywords: ['syndication metrics', 'CRE investing', 'IRR', 'cash on cash return'],
-    reading_time: 5,
-    faq_schema: [
-      { question: 'What is a good cash-on-cash return for multifamily?', answer: 'A healthy cash-on-cash return for value-add multifamily typically ranges from 6-10% during the hold period.' },
-      { question: 'What IRR should I expect from a syndication?', answer: 'Target IRRs vary by strategy: Core 8-12%, Core-plus 10-14%, Value-add 14-20%, Opportunistic 18%+.' }
-    ]
-  }
-};
 
 // Generate JSON-LD Schema for Article
 function generateArticleSchema(post: BlogPostData, slug: string) {
@@ -188,7 +128,6 @@ export function BlogPost() {
       }
 
       try {
-        // First try to fetch from database
         const { data, error } = await supabase
           .from('blog_posts')
           .select('*')
@@ -196,29 +135,18 @@ export function BlogPost() {
           .eq('is_published', true)
           .single();
 
-        if (data) {
-          setPost(data);
-          // Track view (fire and forget)
-          supabase.rpc('increment_blog_view', { post_slug: slug }).catch(() => {});
-          setLoading(false);
+        if (error || !data) {
+          console.warn('Blog post not found:', slug, error?.message);
+          setNotFound(true);
           return;
         }
 
-        // If not in database, check static posts
-        if (staticPosts[slug]) {
-          setPost(staticPosts[slug]);
-          setLoading(false);
-          return;
-        }
-
-        setNotFound(true);
+        setPost(data);
+        // Track view (fire and forget)
+        supabase.rpc('increment_blog_view', { post_slug: slug }).catch(() => {});
       } catch (err) {
         console.warn('Error fetching blog post:', err);
-        if (slug && staticPosts[slug]) {
-          setPost(staticPosts[slug]);
-        } else {
-          setNotFound(true);
-        }
+        setNotFound(true);
       } finally {
         setLoading(false);
       }
