@@ -3,7 +3,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const defaultYears = 5;
 const defaultInvestment = 100000;
-const defaultReturn = 10;
+const DEFAULT_RETURN_FALLBACK = 10;
+
+interface ReturnsCalculatorProps {
+  /** Target IRR from the deal - defaults to 10% if not provided */
+  targetIrr?: number;
+}
 
 function getProjectionData(investment: number, annualReturn: number, years: number) {
   const data = [];
@@ -24,7 +29,10 @@ function formatCurrency(val: number) {
   return val.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 }
 
-export function ReturnsCalculator() {
+export function ReturnsCalculator({ targetIrr }: ReturnsCalculatorProps) {
+  // Use the deal's target IRR if provided, otherwise fall back to 10%
+  const defaultReturn = targetIrr ?? DEFAULT_RETURN_FALLBACK;
+  
   const [investment, setInvestment] = useState(defaultInvestment);
   const [annualReturn, setAnnualReturn] = useState(defaultReturn);
   const years = defaultYears;

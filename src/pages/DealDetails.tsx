@@ -462,7 +462,7 @@ export function DealDetails() {
 
             {/* Returns Calculator directly after Documents */}
             <div className="max-w-2xl mx-auto px-4">
-              <ReturnsCalculator />
+              <ReturnsCalculator targetIrr={deal.target_irr} />
             </div>
           </div>
 
