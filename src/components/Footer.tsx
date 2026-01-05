@@ -72,7 +72,7 @@ export function Footer() {
             {subscribed ? (
               <div className="flex items-center gap-2 text-emerald-400 text-sm">
                 <CheckCircle className="h-4 w-4" />
-                You're subscribed! Check your inbox.
+                You're subscribed! We'll notify you of new deals.
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex gap-2">
