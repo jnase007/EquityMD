@@ -38,6 +38,8 @@ import { Tooltip } from "react-tooltip";
 import type { Deal, DealFile } from "../types/database";
 import { ReturnsCalculator } from "../components/ReturnsCalculator";
 import { CountdownTimer } from "../components/CountdownTimer";
+import { DealQA } from "../components/DealQA";
+import { SimilarDeals } from "../components/SimilarDeals";
 
 interface DealMedia {
   id: string;
@@ -464,6 +466,19 @@ export function DealDetails() {
             <div className="max-w-2xl mx-auto px-4">
               <ReturnsCalculator targetIrr={deal.target_irr} />
             </div>
+
+            {/* Q&A Section */}
+            <DealQA 
+              dealId={deal.id} 
+              syndicatorId={deal.syndicator?.claimed_by || undefined}
+            />
+
+            {/* Similar Deals */}
+            <SimilarDeals 
+              currentDealId={deal.id}
+              propertyType={deal.property_type}
+              location={deal.location}
+            />
           </div>
 
           {/* Sidebar */}
@@ -705,6 +720,34 @@ export function DealDetails() {
           defaultType="investor"
         />
       )}
+
+      {/* Sticky Mobile CTA - only shows on mobile */}
+      {user?.id !== deal.syndicator?.claimed_by && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 lg:hidden z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+          <div className="flex gap-3 max-w-lg mx-auto">
+            <button
+              onClick={() => handleAction("invest")}
+              className="flex-1 bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+            >
+              <Wallet className="h-5 w-5" />
+              Invest Now
+            </button>
+            <button
+              onClick={() => handleAction("contact")}
+              className="px-5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition"
+            >
+              <MessageCircle className="h-5 w-5" />
+            </button>
+            <FavoriteButton dealId={deal.id} className="px-5 bg-gray-100 rounded-xl" />
+          </div>
+          <div className="text-center mt-2 text-xs text-gray-500">
+            Min. ${deal.minimum_investment.toLocaleString()} • {deal.target_irr}% Target IRR
+          </div>
+        </div>
+      )}
+
+      {/* Add padding at bottom on mobile to account for sticky CTA */}
+      <div className="h-28 lg:hidden" />
 
       <Footer />
     </div>
