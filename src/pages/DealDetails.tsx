@@ -80,6 +80,17 @@ export function DealDetails() {
     count: 0,
     loading: true,
   });
+  const [showStickyInvest, setShowStickyInvest] = useState(false);
+
+  // Show sticky invest button after scrolling past hero
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show after scrolling 500px (past the hero section)
+      setShowStickyInvest(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Check if user is accredited
   useEffect(() => {
@@ -101,6 +112,11 @@ export function DealDetails() {
     }
     checkAccreditation();
   }, [user]);
+
+  // Scroll to top when navigating to a new deal
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   useEffect(() => {
     fetchDealDetails();
@@ -714,33 +730,54 @@ export function DealDetails() {
         />
       )}
 
-      {/* Sticky Mobile CTA - only shows on mobile */}
-      {user?.id !== deal.syndicator?.claimed_by && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 lg:hidden z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
-          <div className="flex gap-3 max-w-lg mx-auto">
+      {/* Sticky Invest CTA - appears after scrolling past hero */}
+      {user?.id !== deal.syndicator?.claimed_by && showStickyInvest && (
+        <div 
+          className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
+            showStickyInvest ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+          }`}
+        >
+          {/* Desktop: Floating button group */}
+          <div className="hidden lg:flex flex-col gap-3 items-end">
             <button
               onClick={() => handleAction("invest")}
-              className="flex-1 bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+              className="bg-blue-600 text-white px-6 py-4 rounded-full font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl flex items-center gap-2 group"
             >
               <Wallet className="h-5 w-5" />
-              Invest Now
+              <span>Invest Now</span>
+              <span className="text-blue-200 text-sm ml-1">
+                ${(deal.minimum_investment / 1000).toFixed(0)}K min
+              </span>
             </button>
-            <button
-              onClick={() => handleAction("contact")}
-              className="px-5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition"
-            >
-              <MessageCircle className="h-5 w-5" />
-            </button>
-            <FavoriteButton dealId={deal.id} className="px-5 bg-gray-100 rounded-xl" />
           </div>
-          <div className="text-center mt-2 text-xs text-gray-500">
-            Min. ${deal.minimum_investment.toLocaleString()} • {deal.target_irr}% Target IRR
+          
+          {/* Mobile: Bottom bar */}
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+            <div className="flex gap-3 max-w-lg mx-auto">
+              <button
+                onClick={() => handleAction("invest")}
+                className="flex-1 bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+              >
+                <Wallet className="h-5 w-5" />
+                Invest Now
+              </button>
+              <button
+                onClick={() => handleAction("contact")}
+                className="px-5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition"
+              >
+                <MessageCircle className="h-5 w-5" />
+              </button>
+              <FavoriteButton dealId={deal.id} className="px-5 bg-gray-100 rounded-xl" />
+            </div>
+            <div className="text-center mt-2 text-xs text-gray-500">
+              Min. ${deal.minimum_investment.toLocaleString()} • {deal.target_irr}% Target IRR
+            </div>
           </div>
         </div>
       )}
 
       {/* Add padding at bottom on mobile to account for sticky CTA */}
-      <div className="h-28 lg:hidden" />
+      {showStickyInvest && <div className="h-28 lg:hidden" />}
 
       <Footer />
     </div>
