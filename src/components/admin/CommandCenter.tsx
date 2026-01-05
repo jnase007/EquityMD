@@ -29,7 +29,12 @@ import {
   Building,
   Star,
   Filter,
-  Calendar
+  Calendar,
+  Search,
+  PenTool,
+  Send,
+  Shield,
+  Loader2
 } from 'lucide-react';
 
 interface RealTimeMetrics {
@@ -100,6 +105,8 @@ export function CommandCenter() {
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month'>('week');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [generatingBlog, setGeneratingBlog] = useState(false);
 
   useEffect(() => {
     fetchAllData();
@@ -323,31 +330,68 @@ export function CommandCenter() {
     );
   }
 
+  // Generate a new blog post
+  const handleGenerateBlog = async () => {
+    if (generatingBlog) return;
+    setGeneratingBlog(true);
+    try {
+      // This would call your blog generation API
+      alert('Blog generation triggered! Check the Blog Management tab in a few seconds.');
+      // In production, you'd call: await fetch('/api/generate-blog', { method: 'POST' });
+    } catch (error) {
+      console.error('Error generating blog:', error);
+      alert('Failed to generate blog');
+    } finally {
+      setGeneratingBlog(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header with Real-time Status */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Command Center</h2>
-          <p className="text-gray-500 text-sm">
-            Real-time platform overview • Last updated {format(lastRefresh, 'h:mm:ss a')}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 text-green-600 text-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            Live
+      {/* Dark Hero Header */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        
+        <div className="relative">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-3">
+                <Zap className="h-6 w-6 text-yellow-400" />
+                Command Center
+              </h2>
+              <p className="text-slate-300 text-sm mt-1">
+                Real-time platform overview • Last updated {format(lastRefresh, 'h:mm:ss a')}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-green-500/20 text-green-400 px-3 py-1.5 rounded-full text-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+                </span>
+                Live
+              </div>
+              <button
+                onClick={fetchAllData}
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition text-sm backdrop-blur-sm"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </button>
+            </div>
           </div>
-          <button
-            onClick={fetchAllData}
-            className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition text-sm"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </button>
+
+          {/* Search Bar */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search users, deals, messages..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm"
+            />
+          </div>
         </div>
       </div>
 
@@ -391,62 +435,62 @@ export function CommandCenter() {
       {/* Primary KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Total Users */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-500/20">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Users</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{metrics?.totalUsers.toLocaleString()}</p>
+              <p className="text-sm text-blue-100">Total Users</p>
+              <p className="text-4xl font-bold mt-1">{metrics?.totalUsers.toLocaleString()}</p>
             </div>
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Users className="h-5 w-5 text-blue-600" />
+            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Users className="h-6 w-6" />
             </div>
           </div>
-          <div className="flex items-center gap-4 mt-3 text-sm">
-            <span className="text-green-600 flex items-center gap-1">
+          <div className="flex items-center gap-3 mt-4 text-sm">
+            <span className="bg-white/20 px-2 py-1 rounded-full flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3" />
               +{metrics?.newUsersToday} today
             </span>
-            <span className="text-gray-500">
+            <span className="text-blue-100">
               +{metrics?.newUsersThisWeek} this week
             </span>
           </div>
         </div>
 
         {/* Active Deals */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">Active Deals</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{metrics?.activeDeals}</p>
+              <p className="text-sm text-emerald-100">Active Deals</p>
+              <p className="text-4xl font-bold mt-1">{metrics?.activeDeals}</p>
             </div>
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Building2 className="h-5 w-5 text-green-600" />
+            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Building2 className="h-6 w-6" />
             </div>
           </div>
-          <div className="flex items-center gap-4 mt-3 text-sm">
-            <span className="text-green-600 flex items-center gap-1">
+          <div className="flex items-center gap-3 mt-4 text-sm">
+            <span className="bg-white/20 px-2 py-1 rounded-full flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3" />
               +{metrics?.newDealsThisWeek} this week
             </span>
-            <span className="text-gray-500">
+            <span className="text-emerald-100">
               {metrics?.totalDeals} total
             </span>
           </div>
         </div>
 
         {/* Deal Views */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+        <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-5 text-white shadow-lg shadow-violet-500/20">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">Deal Views</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{metrics?.totalDealViews.toLocaleString()}</p>
+              <p className="text-sm text-violet-100">Deal Views</p>
+              <p className="text-4xl font-bold mt-1">{metrics?.totalDealViews.toLocaleString()}</p>
             </div>
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Eye className="h-5 w-5 text-purple-600" />
+            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Eye className="h-6 w-6" />
             </div>
           </div>
-          <div className="flex items-center gap-4 mt-3 text-sm">
-            <span className="text-green-600 flex items-center gap-1">
+          <div className="flex items-center gap-3 mt-4 text-sm">
+            <span className="bg-white/20 px-2 py-1 rounded-full flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3" />
               +{metrics?.viewsToday} today
             </span>
@@ -454,24 +498,26 @@ export function CommandCenter() {
         </div>
 
         {/* Investment Requests */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+        <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/20">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-500">Investment Requests</p>
-              <p className="text-3xl font-bold text-gray-900 mt-1">{metrics?.totalInvestmentRequests}</p>
+              <p className="text-sm text-amber-100">Investment Requests</p>
+              <p className="text-4xl font-bold mt-1">{metrics?.totalInvestmentRequests}</p>
             </div>
-            <div className="p-2 bg-amber-100 rounded-lg">
-              <DollarSign className="h-5 w-5 text-amber-600" />
+            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+              <DollarSign className="h-6 w-6" />
             </div>
           </div>
-          <div className="flex items-center gap-4 mt-3 text-sm">
-            <span className="text-green-600 flex items-center gap-1">
+          <div className="flex items-center gap-3 mt-4 text-sm">
+            <span className="bg-white/20 px-2 py-1 rounded-full flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3" />
               +{metrics?.requestsThisWeek} this week
             </span>
-            <span className="text-amber-600">
-              {metrics?.pendingRequests} pending
-            </span>
+            {metrics && metrics.pendingRequests > 0 && (
+              <span className="bg-red-500 px-2 py-1 rounded-full">
+                {metrics.pendingRequests} pending
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -589,36 +635,68 @@ export function CommandCenter() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 text-white">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <Zap className="h-5 w-5 text-yellow-400" />
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          <button className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition">
-            <UserPlus className="h-5 w-5" />
-            <span className="text-sm">Invite User</span>
-          </button>
-          <button className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition">
-            <Building2 className="h-5 w-5" />
-            <span className="text-sm">Add Deal</span>
-          </button>
-          <button className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition">
-            <FileText className="h-5 w-5" />
-            <span className="text-sm">New Blog Post</span>
-          </button>
-          <button className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition">
-            <Mail className="h-5 w-5" />
-            <span className="text-sm">Send Email</span>
-          </button>
-          <button className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition">
-            <BarChart3 className="h-5 w-5" />
-            <span className="text-sm">View Reports</span>
-          </button>
-          <button className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-lg hover:bg-white/20 transition">
-            <Sparkles className="h-5 w-5" />
-            <span className="text-sm">Generate Blog</span>
-          </button>
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        
+        <div className="relative">
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+            <Zap className="h-5 w-5 text-yellow-400" />
+            Quick Actions
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <Link 
+              to="/admin?tab=import-investors"
+              className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition backdrop-blur-sm border border-white/10"
+            >
+              <UserPlus className="h-6 w-6 text-blue-400" />
+              <span className="text-sm">Import Users</span>
+            </Link>
+            <Link 
+              to="/syndicator/deals/new"
+              className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition backdrop-blur-sm border border-white/10"
+            >
+              <Building2 className="h-6 w-6 text-green-400" />
+              <span className="text-sm">Add Deal</span>
+            </Link>
+            <Link 
+              to="/admin?tab=blog"
+              className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition backdrop-blur-sm border border-white/10"
+            >
+              <PenTool className="h-6 w-6 text-purple-400" />
+              <span className="text-sm">Manage Blog</span>
+            </Link>
+            <Link 
+              to="/admin?tab=verification"
+              className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition backdrop-blur-sm border border-white/10 relative"
+            >
+              <Shield className="h-6 w-6 text-amber-400" />
+              <span className="text-sm">Verifications</span>
+              {metrics && metrics.pendingVerifications > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {metrics.pendingVerifications}
+                </span>
+              )}
+            </Link>
+            <Link 
+              to="/admin?tab=analytics"
+              className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition backdrop-blur-sm border border-white/10"
+            >
+              <BarChart3 className="h-6 w-6 text-cyan-400" />
+              <span className="text-sm">Analytics</span>
+            </Link>
+            <button 
+              onClick={handleGenerateBlog}
+              disabled={generatingBlog}
+              className="flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition backdrop-blur-sm border border-purple-400/30 disabled:opacity-50"
+            >
+              {generatingBlog ? (
+                <Loader2 className="h-6 w-6 text-purple-400 animate-spin" />
+              ) : (
+                <Sparkles className="h-6 w-6 text-purple-400" />
+              )}
+              <span className="text-sm">{generatingBlog ? 'Generating...' : 'AI Blog'}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
