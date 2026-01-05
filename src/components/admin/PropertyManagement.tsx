@@ -139,20 +139,29 @@ export function PropertyManagement() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">Property Management</h2>
-        <div className="flex gap-4">
-          <Link
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-emerald-800 via-teal-800 to-emerald-900 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <div className="relative flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <Building2 className="h-6 w-6 text-emerald-300" />
+              Property Management
+            </h2>
+            <p className="text-emerald-200 text-sm mt-1">Manage deals and property listings • {deals.length} properties</p>
+          </div>
+        <Link
             to="/deals/new"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center"
+            className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition flex items-center gap-2"
           >
-            <Plus className="h-5 w-5 mr-2" />
+            <Plus className="h-5 w-5" />
             New Property
           </Link>
         </div>
       </div>
 
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       {/* Search and Filter Controls */}
       <div className="flex items-center gap-4 mb-6">
         <div className="relative flex-1 max-w-md">
@@ -403,6 +412,7 @@ export function PropertyManagement() {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

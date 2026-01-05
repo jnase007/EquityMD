@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
-import { CheckCircle, XCircle, AlertCircle, FileText, ExternalLink, User, UserCheck, Crown } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, FileText, ExternalLink, User, UserCheck, Crown, Building2 } from 'lucide-react';
 
 interface ClaimRequest {
   id: string;
@@ -163,8 +163,22 @@ export function ClaimRequests() {
   }, {} as Record<string, { syndicator: ClaimRequest['syndicator'], current_owner: ClaimRequest['current_owner'], requests: ClaimRequest[] }>);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <h2 className="text-xl font-bold mb-6">Syndicator Claim Requests</h2>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <div className="relative">
+          <h2 className="text-2xl font-bold flex items-center gap-3">
+            <Building2 className="h-6 w-6 text-amber-200" />
+            Claim Requests
+          </h2>
+          <p className="text-amber-100 text-sm mt-1">
+            Review and process syndicator profile claim requests
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 
       <div className="space-y-8">
         {Object.keys(groupedRequests).length > 0 ? (
@@ -317,6 +331,7 @@ export function ClaimRequests() {
             No claim requests found
           </div>
         )}
+      </div>
       </div>
     </div>
   );

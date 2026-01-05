@@ -358,26 +358,32 @@ Best regards,\nThe EquityMD Team
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
-          <p className="text-gray-600">Manage user accounts and permissions</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setShowInviteModal(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
-          >
-            <Mail className="h-4 w-4" />
-            Invite User
-          </button>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Create User
-          </button>
+      <div className="bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-800 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <div className="relative flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <User className="h-6 w-6 text-blue-300" />
+              User Management
+            </h2>
+            <p className="text-blue-200 text-sm mt-1">Manage user accounts and permissions • {users.length} total users</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowInviteModal(true)}
+              className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition border border-white/20"
+            >
+              <Mail className="h-4 w-4" />
+              Invite User
+            </button>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-2 rounded-lg hover:opacity-90 flex items-center gap-2 transition"
+            >
+              <Plus className="h-4 w-4" />
+              Create User
+            </button>
+          </div>
         </div>
       </div>
 

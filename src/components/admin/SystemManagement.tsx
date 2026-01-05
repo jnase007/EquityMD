@@ -152,15 +152,26 @@ export function SystemManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">System Management</h2>
-        <div className="text-sm text-gray-500">
-          Cache & Performance Tools
+      {/* Header */}
+      <div className="bg-gradient-to-br from-slate-800 via-gray-800 to-slate-900 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <div className="relative flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <HardDrive className="h-6 w-6 text-slate-300" />
+              System Management
+            </h2>
+            <p className="text-slate-300 text-sm mt-1">Cache & Performance Tools</p>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-2 bg-green-500/20 rounded-lg border border-green-400/30">
+            <CheckCircle className="h-4 w-4 text-green-400" />
+            <span className="text-green-100 text-sm font-medium">System Healthy</span>
+          </div>
         </div>
       </div>
 
       {/* Warning Banner */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
         <div className="flex items-start">
           <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 mr-3" />
           <div>

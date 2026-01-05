@@ -134,17 +134,25 @@ export function SyndicatorVerificationManager() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Syndicator Verification Management</h2>
-          <p className="text-gray-600">Review and manage syndicator verification statuses. Companies must claim their profile and complete background checks to be verified.</p>
-        </div>
-        {pendingCount > 0 && (
-          <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2">
-            <AlertCircle className="h-5 w-5 text-yellow-600" />
-            <span className="text-yellow-800 font-medium">{pendingCount} pending verification{pendingCount !== 1 ? 's' : ''}</span>
+      <div className="bg-gradient-to-br from-violet-900 via-purple-800 to-indigo-900 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <div className="relative flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <Shield className="h-6 w-6 text-purple-300" />
+              Syndicator Verification
+            </h2>
+            <p className="text-purple-200 text-sm mt-1 max-w-xl">
+              Review and manage syndicator verification statuses
+            </p>
           </div>
-        )}
+          {pendingCount > 0 && (
+            <div className="flex items-center gap-2 bg-amber-500/20 backdrop-blur-sm border border-amber-400/30 rounded-xl px-4 py-2">
+              <AlertCircle className="h-5 w-5 text-amber-300" />
+              <span className="text-amber-100 font-medium">{pendingCount} pending</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filters */}
