@@ -39,6 +39,8 @@ import type { Deal, DealFile } from "../types/database";
 import { ReturnsCalculator } from "../components/ReturnsCalculator";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { SimilarDeals } from "../components/SimilarDeals";
+import { DealComparisonTool, useComparisonTool } from "../components/DealComparisonTool";
+import { Scale } from "lucide-react";
 
 interface DealMedia {
   id: string;
@@ -81,6 +83,7 @@ export function DealDetails() {
     loading: true,
   });
   const [showStickyInvest, setShowStickyInvest] = useState(false);
+  const { isOpen: isComparisonOpen, openComparison, closeComparison } = useComparisonTool();
 
   // Show sticky invest button after scrolling past hero
   useEffect(() => {
@@ -648,6 +651,15 @@ export function DealDetails() {
                 )}
 
                 <FavoriteButton dealId={deal.id} className="w-full py-3" />
+
+                {/* Compare Deals Button */}
+                <button
+                  onClick={() => openComparison(deal.id)}
+                  className="w-full bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-200 py-3 rounded-lg hover:from-indigo-100 hover:to-purple-100 transition flex items-center justify-center font-medium"
+                >
+                  <Scale className="h-5 w-5 mr-2" />
+                  Compare with Other Deals
+                </button>
               </div>
             </div>
 
@@ -729,6 +741,13 @@ export function DealDetails() {
           defaultType="investor"
         />
       )}
+
+      {/* Deal Comparison Tool */}
+      <DealComparisonTool
+        isOpen={isComparisonOpen}
+        onClose={closeComparison}
+        initialDealId={deal.id}
+      />
 
       {/* Sticky Invest CTA - appears after scrolling past hero */}
       {user?.id !== deal.syndicator?.claimed_by && showStickyInvest && (
