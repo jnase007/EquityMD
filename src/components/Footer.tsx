@@ -24,6 +24,20 @@ export function Footer() {
         console.error('Newsletter error:', error);
       }
       
+      // Send welcome email via Supabase Edge Function
+      try {
+        await supabase.functions.invoke('send-email', {
+          body: {
+            to: email,
+            subject: '🏢 Welcome to EquityMD Deal Alerts!',
+            content: `Thanks for subscribing to EquityMD Deal Alerts!\n\nYou'll now receive notifications when new investment opportunities are listed on our platform.\n\nIn the meantime, you can:\n• Browse current deals at equitymd.com/find\n• Learn how syndication works at equitymd.com/how-it-works\n• Read our investor blog at equitymd.com/blog\n\nHappy investing!\n\nThe EquityMD Team`
+          }
+        });
+      } catch (emailErr) {
+        // Don't fail the subscription if email fails
+        console.warn('Welcome email failed:', emailErr);
+      }
+      
       setSubscribed(true);
       setEmail('');
     } catch (err) {
@@ -72,7 +86,7 @@ export function Footer() {
             {subscribed ? (
               <div className="flex items-center gap-2 text-emerald-400 text-sm">
                 <CheckCircle className="h-4 w-4" />
-                You're subscribed! We'll notify you of new deals.
+                You're subscribed! Check your inbox for a welcome email.
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="flex gap-2">
