@@ -207,7 +207,7 @@ export function BlogManagement() {
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:opacity-90 transition font-medium"
           >
             <Sparkles className="h-4 w-4" />
-            Generate with AI
+            Create AI Post
           </button>
         </div>
       </div>
@@ -335,7 +335,7 @@ export function BlogManagement() {
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:opacity-90 transition"
           >
             <Sparkles className="h-4 w-4" />
-            Generate with AI
+            Create AI Post
           </button>
         </div>
       </div>
