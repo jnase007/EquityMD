@@ -38,7 +38,6 @@ import { Tooltip } from "react-tooltip";
 import type { Deal, DealFile } from "../types/database";
 import { ReturnsCalculator } from "../components/ReturnsCalculator";
 import { CountdownTimer } from "../components/CountdownTimer";
-import { DealQA } from "../components/DealQA";
 import { SimilarDeals } from "../components/SimilarDeals";
 
 interface DealMedia {
@@ -466,12 +465,6 @@ export function DealDetails() {
             <div className="max-w-2xl mx-auto px-4">
               <ReturnsCalculator targetIrr={deal.target_irr} />
             </div>
-
-            {/* Q&A Section */}
-            <DealQA 
-              dealId={deal.id} 
-              syndicatorId={deal.syndicator?.claimed_by || undefined}
-            />
 
             {/* Similar Deals */}
             <SimilarDeals 
