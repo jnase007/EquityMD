@@ -187,49 +187,74 @@ export function BlogManagement() {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-800 rounded-2xl p-6 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <div className="relative flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <FileText className="h-6 w-6 text-purple-300" />
+              Blog Management
+            </h2>
+            <p className="text-purple-200 text-sm mt-1">
+              Create, edit, and manage your blog content
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              toast('Run: npm run generate-blog:publish', { icon: '💡' });
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg hover:opacity-90 transition font-medium"
+          >
+            <Sparkles className="h-4 w-4" />
+            Generate with AI
+          </button>
+        </div>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-500/20">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <FileText className="h-5 w-5 text-blue-600" />
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <FileText className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats?.totalPosts || 0}</p>
-              <p className="text-sm text-gray-500">Total Posts</p>
+              <p className="text-3xl font-bold">{stats?.totalPosts || 0}</p>
+              <p className="text-sm text-blue-100">Total Posts</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="h-5 w-5 text-green-600" />
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <CheckCircle className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats?.publishedPosts || 0}</p>
-              <p className="text-sm text-gray-500">Published</p>
+              <p className="text-3xl font-bold">{stats?.publishedPosts || 0}</p>
+              <p className="text-sm text-emerald-100">Published</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+        <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-5 text-white shadow-lg shadow-violet-500/20">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Eye className="h-5 w-5 text-purple-600" />
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Eye className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats?.totalViews.toLocaleString() || 0}</p>
-              <p className="text-sm text-gray-500">Total Views</p>
+              <p className="text-3xl font-bold">{stats?.totalViews.toLocaleString() || 0}</p>
+              <p className="text-sm text-violet-100">Total Views</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+        <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/20">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-100 rounded-lg">
-              <Sparkles className="h-5 w-5 text-amber-600" />
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats?.aiGenerated || 0}</p>
-              <p className="text-sm text-gray-500">AI Generated</p>
+              <p className="text-3xl font-bold">{stats?.aiGenerated || 0}</p>
+              <p className="text-sm text-amber-100">AI Generated</p>
             </div>
           </div>
         </div>
