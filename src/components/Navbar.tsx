@@ -5,7 +5,6 @@ import {
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
-import { AccountTypeBadge } from './AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 
@@ -273,18 +272,6 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 className="flex items-center space-x-3 focus:outline-none hover:scale-105 transition-transform"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                {/* Account Type Badge - shows dashboard preference */}
-                {profile && (
-                  <AccountTypeBadge
-                    userType={profile.user_type}
-                    dashboardPreference={profile.dashboard_preference}
-                    isAdmin={profile.is_admin}
-                    isVerified={profile.is_verified}
-                    size="sm"
-                    className={isTransparent ? 'bg-white/20 text-white border-white/30' : ''}
-                  />
-                )}
-                
                 {/* Avatar */}
                 <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center ring-2 ring-white/20">
                   {profile?.avatar_url ? (
@@ -445,17 +432,6 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                     <div className="flex-1 min-w-0">
                       <div className="font-bold text-gray-900 truncate">{profile?.full_name || 'User'}</div>
                       <div className="text-sm text-gray-500 truncate">{profile?.email}</div>
-                      {profile && (
-                        <div className="mt-1">
-                          <AccountTypeBadge
-                            userType={profile.user_type}
-                            dashboardPreference={profile.dashboard_preference}
-                            isAdmin={profile.is_admin}
-                            isVerified={profile.is_verified}
-                            size="sm"
-                          />
-                        </div>
-                      )}
                     </div>
                   </div>
                   
