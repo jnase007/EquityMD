@@ -40,6 +40,7 @@ import { ReturnsCalculator } from "../components/ReturnsCalculator";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { SimilarDeals } from "../components/SimilarDeals";
 import { DealComparisonTool, useComparisonTool } from "../components/DealComparisonTool";
+import { ContentGate } from "../components/ContentGate";
 import { Scale } from "lucide-react";
 
 interface DealMedia {
@@ -388,38 +389,7 @@ export function DealDetails() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Gallery Section (keep at top) */}
-            {media.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-2xl font-bold mb-6">Property Gallery</h2>
-                <DealMediaGallery media={media} />
-              </div>
-            )}
-
-            {/* Video Pitch Section - Shows if deal has video_url */}
-            {deal.video_url && (
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-xl p-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl" />
-                <div className="relative">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-red-500/20 rounded-lg">
-                      <Play className="h-5 w-5 text-red-400" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-white">Video Pitch</h2>
-                      <p className="text-slate-400 text-sm">Watch the syndicator present this opportunity</p>
-                    </div>
-                  </div>
-                  <VideoEmbed
-                    url={deal.video_url}
-                    title={`${deal.title} Video Pitch`}
-                    className="rounded-xl overflow-hidden"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Overview */}
+            {/* Overview - Always visible as teaser */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-2xl font-bold mb-4">Investment Overview</h2>
               <p className="text-gray-600 mb-6">{deal.description}</p>
@@ -455,37 +425,76 @@ export function DealDetails() {
               </div>
             </div>
 
-            {/* Investment Highlights */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Investment Highlights</h2>
-              <ul className="space-y-4">
-                {deal.investment_highlights?.map((highlight, index) => (
-                  <li key={index} className="flex items-start">
-                    <div className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
-                      <span className="text-blue-600 text-sm font-medium">
-                        {index + 1}
-                      </span>
+            {/* Gated Content - Requires login to view fully */}
+            <ContentGate 
+              teaserHeight={200} 
+              message="Sign up to see full deal details"
+            >
+              {/* Gallery Section */}
+              {media.length > 0 && (
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+                  <h2 className="text-2xl font-bold mb-6">Property Gallery</h2>
+                  <DealMediaGallery media={media} />
+                </div>
+              )}
+
+              {/* Video Pitch Section - Shows if deal has video_url */}
+              {deal.video_url && (
+                <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-xl p-6 relative overflow-hidden mb-8">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl" />
+                  <div className="relative">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-red-500/20 rounded-lg">
+                        <Play className="h-5 w-5 text-red-400" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-white">Video Pitch</h2>
+                        <p className="text-slate-400 text-sm">Watch the syndicator present this opportunity</p>
+                      </div>
                     </div>
-                    <span className="ml-3 text-gray-600">{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    <VideoEmbed
+                      url={deal.video_url}
+                      title={`${deal.title} Video Pitch`}
+                      className="rounded-xl overflow-hidden"
+                    />
+                  </div>
+                </div>
+              )}
 
-            {/* Document Room */}
-            <DocumentRoom 
-              dealId={deal.id}
-              dealTitle={deal.title}
-              isOwner={user?.id === deal.syndicator?.claimed_by}
-              syndicatorId={deal.syndicator_id}
-            />
+              {/* Investment Highlights */}
+              <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Investment Highlights</h2>
+                <ul className="space-y-4">
+                  {deal.investment_highlights?.map((highlight, index) => (
+                    <li key={index} className="flex items-start">
+                      <div className="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
+                        <span className="text-blue-600 text-sm font-medium">
+                          {index + 1}
+                        </span>
+                      </div>
+                      <span className="ml-3 text-gray-600">{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            {/* Returns Calculator directly after Documents */}
-            <div className="max-w-2xl mx-auto px-4">
-              <ReturnsCalculator targetIrr={deal.target_irr} />
-            </div>
+              {/* Document Room */}
+              <div className="mb-8">
+                <DocumentRoom 
+                  dealId={deal.id}
+                  dealTitle={deal.title}
+                  isOwner={user?.id === deal.syndicator?.claimed_by}
+                  syndicatorId={deal.syndicator_id}
+                />
+              </div>
 
-            {/* Similar Deals */}
+              {/* Returns Calculator directly after Documents */}
+              <div className="max-w-2xl mx-auto px-4">
+                <ReturnsCalculator targetIrr={deal.target_irr} />
+              </div>
+            </ContentGate>
+
+            {/* Similar Deals - Always visible to encourage exploration */}
             <SimilarDeals 
               currentDealId={deal.id}
               propertyType={deal.property_type}
