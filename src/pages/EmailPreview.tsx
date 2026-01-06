@@ -4,7 +4,7 @@ import { Footer } from '../components/Footer';
 import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
 
 export function EmailPreview() {
-  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch'>('investor');
+  const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch' | 'deal_alert' | 'weekly_digest' | 'profile_incomplete' | 'deal_closing_soon'>('investor');
   const [copied, setCopied] = useState(false);
 
   // Handle URL parameters for direct email access
@@ -17,8 +17,8 @@ export function EmailPreview() {
     }
   }, []);
 
-  const isValidEmailType = (type: string): type is 'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch' => {
-    return ['investor', 'syndicator', 'welcome_investor', 'welcome_syndicator', 'investment_opportunity', 'sms_deal_alert', 'sms_welcome', 'admin_new_investor', 'admin_new_syndicator', 'admin_user_message', 'investor_launch'].includes(type);
+  const isValidEmailType = (type: string): type is 'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch' | 'deal_alert' | 'weekly_digest' | 'profile_incomplete' | 'deal_closing_soon' => {
+    return ['investor', 'syndicator', 'welcome_investor', 'welcome_syndicator', 'investment_opportunity', 'sms_deal_alert', 'sms_welcome', 'admin_new_investor', 'admin_new_syndicator', 'admin_user_message', 'investor_launch', 'deal_alert', 'weekly_digest', 'profile_incomplete', 'deal_closing_soon'].includes(type);
   };
 
   const handleEmailTypeChange = (type: string) => {
@@ -1166,6 +1166,313 @@ export function EmailPreview() {
           </html>
         `;
 
+      case 'deal_alert':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                @media only screen and (max-width: 600px) {
+                  .container { padding: 16px !important; }
+                  .hero { padding: 24px !important; }
+                  .cta-button { display: block !important; width: 100% !important; }
+                }
+              </style>
+            </head>
+            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6;">
+              <div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 20px 32px; border-radius: 8px 8px 0 0; text-align: center;">
+                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/equitymd-logo-white.png" alt="EquityMD" style="height: 32px;">
+                </div>
+                
+                <!-- Main Content -->
+                <div style="background: white; padding: 32px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                  <div style="text-align: center; margin-bottom: 24px;">
+                    <span style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600;">🎯 New Deal Match!</span>
+                  </div>
+                  
+                  <h1 style="color: #111827; font-size: 24px; margin: 0 0 16px; text-align: center;">A Deal Matching Your Preferences Is Live</h1>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">Hi ${sampleData.name.split(' ')[0]},</p>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">Great news! A new investment opportunity matching your criteria is now available:</p>
+                  
+                  <!-- Deal Card -->
+                  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <h2 style="color: #111827; font-size: 20px; margin: 0 0 8px;">${sampleData.deal.title}</h2>
+                    <p style="color: #6b7280; font-size: 14px; margin: 0 0 16px;">📍 ${sampleData.deal.location}</p>
+                    
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                      <div style="flex: 1; min-width: 120px; background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: #6b7280; font-size: 12px; text-transform: uppercase;">Minimum</div>
+                        <div style="color: #111827; font-size: 18px; font-weight: 600;">${sampleData.deal.minInvestment}</div>
+                      </div>
+                      <div style="flex: 1; min-width: 120px; background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: #6b7280; font-size: 12px; text-transform: uppercase;">Target IRR</div>
+                        <div style="color: #059669; font-size: 18px; font-weight: 600;">${sampleData.deal.targetIRR}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/deals/${sampleData.deal.id}" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">View Deal Details →</a>
+                  </div>
+                  
+                  <p style="color: #9ca3af; font-size: 12px; text-align: center; margin: 24px 0 0;">This deal matches your preferences for Multifamily properties in Texas.</p>
+                </div>
+                
+                <!-- Footer -->
+                <div style="text-align: center; padding: 24px;">
+                  <p style="color: #6b7280; font-size: 12px; margin: 0;">
+                    <a href="https://equitymd.com/settings" style="color: #2563eb; text-decoration: none;">Manage Preferences</a> · 
+                    <a href="https://equitymd.com/unsubscribe" style="color: #2563eb; text-decoration: none;">Unsubscribe</a>
+                  </p>
+                  <p style="color: #9ca3af; font-size: 11px; margin: 8px 0 0;">© 2024 EquityMD. All rights reserved.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'weekly_digest':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6;">
+              <div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 20px 32px; border-radius: 8px 8px 0 0; text-align: center;">
+                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/equitymd-logo-white.png" alt="EquityMD" style="height: 32px;">
+                </div>
+                
+                <!-- Main Content -->
+                <div style="background: white; padding: 32px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                  <div style="text-align: center; margin-bottom: 24px;">
+                    <span style="background: #dbeafe; color: #1d4ed8; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600;">📊 Weekly Digest</span>
+                  </div>
+                  
+                  <h1 style="color: #111827; font-size: 24px; margin: 0 0 8px; text-align: center;">Your Weekly CRE Update</h1>
+                  <p style="color: #6b7280; font-size: 14px; text-align: center; margin: 0 0 24px;">Week of January 6, 2025</p>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">Hi ${sampleData.name.split(' ')[0]},</p>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">Here's what's happening on EquityMD this week:</p>
+                  
+                  <!-- Stats Row -->
+                  <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <div style="flex: 1; background: #f0fdf4; border-radius: 8px; padding: 16px; text-align: center;">
+                      <div style="color: #059669; font-size: 24px; font-weight: 700;">3</div>
+                      <div style="color: #6b7280; font-size: 12px;">New Deals</div>
+                    </div>
+                    <div style="flex: 1; background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
+                      <div style="color: #d97706; font-size: 24px; font-weight: 700;">$2.4M</div>
+                      <div style="color: #6b7280; font-size: 12px;">Invested</div>
+                    </div>
+                    <div style="flex: 1; background: #dbeafe; border-radius: 8px; padding: 16px; text-align: center;">
+                      <div style="color: #1d4ed8; font-size: 24px; font-weight: 700;">142</div>
+                      <div style="color: #6b7280; font-size: 12px;">New Investors</div>
+                    </div>
+                  </div>
+                  
+                  <h3 style="color: #111827; font-size: 16px; margin: 0 0 16px;">🔥 Featured Deals This Week</h3>
+                  
+                  <!-- Deal List -->
+                  <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 24px;">
+                    <div style="padding: 16px; border-bottom: 1px solid #e5e7eb;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <div style="color: #111827; font-weight: 600;">Greenville Apartment Complex</div>
+                          <div style="color: #6b7280; font-size: 14px;">📍 Dallas, TX · 17.19% Target IRR</div>
+                        </div>
+                        <a href="#" style="color: #2563eb; font-size: 14px; text-decoration: none;">View →</a>
+                      </div>
+                    </div>
+                    <div style="padding: 16px; border-bottom: 1px solid #e5e7eb;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <div style="color: #111827; font-weight: 600;">Industrial Park Portfolio</div>
+                          <div style="color: #6b7280; font-size: 14px;">📍 Houston, TX · 15.5% Target IRR</div>
+                        </div>
+                        <a href="#" style="color: #2563eb; font-size: 14px; text-decoration: none;">View →</a>
+                      </div>
+                    </div>
+                    <div style="padding: 16px;">
+                      <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                          <div style="color: #111827; font-weight: 600;">Medical Office Building</div>
+                          <div style="color: #6b7280; font-size: 14px;">📍 Austin, TX · 12.8% Target IRR</div>
+                        </div>
+                        <a href="#" style="color: #2563eb; font-size: 14px; text-decoration: none;">View →</a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/deals" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">Browse All Deals</a>
+                  </div>
+                </div>
+                
+                <!-- Footer -->
+                <div style="text-align: center; padding: 24px;">
+                  <p style="color: #9ca3af; font-size: 11px; margin: 0;">© 2024 EquityMD. All rights reserved.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'profile_incomplete':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6;">
+              <div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 20px 32px; border-radius: 8px 8px 0 0; text-align: center;">
+                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/equitymd-logo-white.png" alt="EquityMD" style="height: 32px;">
+                </div>
+                
+                <!-- Main Content -->
+                <div style="background: white; padding: 32px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                  <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 64px; height: 64px; background: #fef3c7; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 28px;">📝</div>
+                  </div>
+                  
+                  <h1 style="color: #111827; font-size: 24px; margin: 0 0 16px; text-align: center;">Complete Your Profile</h1>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px; text-align: center;">Hi ${sampleData.name.split(' ')[0]}, your profile is 40% complete. Complete it to unlock all features.</p>
+                  
+                  <!-- Progress Bar -->
+                  <div style="background: #e5e7eb; border-radius: 8px; height: 8px; margin-bottom: 24px; overflow: hidden;">
+                    <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); height: 100%; width: 40%; border-radius: 8px;"></div>
+                  </div>
+                  
+                  <h3 style="color: #111827; font-size: 16px; margin: 0 0 16px;">What you're missing:</h3>
+                  
+                  <div style="background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                      <span style="color: #ef4444;">✗</span>
+                      <span style="color: #4b5563;">Accreditation verification</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                      <span style="color: #ef4444;">✗</span>
+                      <span style="color: #4b5563;">Investment preferences</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      <span style="color: #ef4444;">✗</span>
+                      <span style="color: #4b5563;">Profile photo</span>
+                    </div>
+                  </div>
+                  
+                  <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                    <p style="color: #166534; margin: 0; font-size: 14px;"><strong>💡 Did you know?</strong> Complete profiles are 3x more likely to get approved for deals.</p>
+                  </div>
+                  
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/profile" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">Complete Profile Now</a>
+                  </div>
+                </div>
+                
+                <!-- Footer -->
+                <div style="text-align: center; padding: 24px;">
+                  <p style="color: #9ca3af; font-size: 11px; margin: 0;">© 2024 EquityMD. All rights reserved.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'deal_closing_soon':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6;">
+              <div style="max-width: 600px; margin: 0 auto; padding: 24px;">
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); padding: 20px 32px; border-radius: 8px 8px 0 0; text-align: center;">
+                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/equitymd-logo-white.png" alt="EquityMD" style="height: 32px;">
+                </div>
+                
+                <!-- Main Content -->
+                <div style="background: white; padding: 32px; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                  <div style="text-align: center; margin-bottom: 24px;">
+                    <span style="background: #fef2f2; color: #dc2626; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">⏰ CLOSING IN 48 HOURS</span>
+                  </div>
+                  
+                  <h1 style="color: #111827; font-size: 24px; margin: 0 0 16px; text-align: center;">Don't Miss This Opportunity!</h1>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">Hi ${sampleData.name.split(' ')[0]},</p>
+                  
+                  <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">A deal you saved is closing soon. This is your last chance to invest!</p>
+                  
+                  <!-- Deal Card -->
+                  <div style="background: #fef2f2; border: 2px solid #fca5a5; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                    <h2 style="color: #111827; font-size: 20px; margin: 0 0 8px;">${sampleData.deal.title}</h2>
+                    <p style="color: #6b7280; font-size: 14px; margin: 0 0 16px;">📍 ${sampleData.deal.location}</p>
+                    
+                    <!-- Countdown -->
+                    <div style="text-align: center; margin-bottom: 16px;">
+                      <div style="display: inline-flex; gap: 8px;">
+                        <div style="background: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+                          <div style="color: #dc2626; font-size: 24px; font-weight: 700;">01</div>
+                          <div style="color: #6b7280; font-size: 10px; text-transform: uppercase;">Days</div>
+                        </div>
+                        <div style="background: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+                          <div style="color: #dc2626; font-size: 24px; font-weight: 700;">23</div>
+                          <div style="color: #6b7280; font-size: 10px; text-transform: uppercase;">Hours</div>
+                        </div>
+                        <div style="background: white; padding: 12px 16px; border-radius: 8px; text-align: center;">
+                          <div style="color: #dc2626; font-size: 24px; font-weight: 700;">59</div>
+                          <div style="color: #6b7280; font-size: 10px; text-transform: uppercase;">Minutes</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 16px;">
+                      <div style="flex: 1; background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: #6b7280; font-size: 12px;">Minimum</div>
+                        <div style="color: #111827; font-size: 16px; font-weight: 600;">${sampleData.deal.minInvestment}</div>
+                      </div>
+                      <div style="flex: 1; background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: #6b7280; font-size: 12px;">Target IRR</div>
+                        <div style="color: #059669; font-size: 16px; font-weight: 600;">${sampleData.deal.targetIRR}</div>
+                      </div>
+                      <div style="flex: 1; background: white; padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: #6b7280; font-size: 12px;">Funded</div>
+                        <div style="color: #1d4ed8; font-size: 16px; font-weight: 600;">87%</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/deals/${sampleData.deal.id}" style="display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">Invest Before It Closes →</a>
+                  </div>
+                </div>
+                
+                <!-- Footer -->
+                <div style="text-align: center; padding: 24px;">
+                  <p style="color: #9ca3af; font-size: 11px; margin: 0;">© 2024 EquityMD. All rights reserved.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
       default:
         return '<p>Email type not found</p>';
     }
@@ -1220,6 +1527,10 @@ Msg & data rates may apply.`;
     { id: 'welcome_syndicator', label: 'Welcome Syndicator', icon: '🤝' },
     { id: 'investment_opportunity', label: 'New Investment Alert', icon: '🏢' },
     { id: 'investor_launch', label: '7,400+ Investor Launch', icon: '🚀' },
+    { id: 'deal_alert', label: 'Deal Alert (NEW)', icon: '🎯' },
+    { id: 'weekly_digest', label: 'Weekly Digest (NEW)', icon: '📊' },
+    { id: 'profile_incomplete', label: 'Profile Incomplete (NEW)', icon: '📝' },
+    { id: 'deal_closing_soon', label: 'Deal Closing Soon (NEW)', icon: '⏰' },
     { id: 'sms_deal_alert', label: 'SMS Deal Alert', icon: '📱' },
     { id: 'sms_welcome', label: 'SMS Welcome', icon: '📲' }
   ];
