@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Mail, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, ArrowRight, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export function Footer() {
@@ -52,11 +52,6 @@ export function Footer() {
     navigate(path);
   };
 
-  const handleAdminClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo(0, 0);
-    navigate('/admin');
-  };
 
   return (
     <footer className="bg-gray-900 text-white py-12 px-6">
@@ -269,17 +264,10 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
-        <div className="text-gray-500 text-sm">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-gray-500 text-sm text-center">
           © {new Date().getFullYear()} EquityMD. All rights reserved.
         </div>
-        <button 
-          onClick={handleAdminClick}
-          className="text-gray-500 hover:text-gray-400 transition flex items-center text-sm"
-        >
-          <Shield className="h-4 w-4 mr-1" />
-          Admin
-        </button>
       </div>
     </footer>
   );
