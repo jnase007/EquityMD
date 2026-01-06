@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
+import { AccountTypeBadge } from './AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 
@@ -272,6 +273,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 className="flex items-center space-x-3 focus:outline-none hover:scale-105 transition-transform"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
+                {/* User Name */}
+                {profile?.full_name && (
+                  <span className={`text-sm font-medium hidden sm:inline ${isTransparent ? 'text-white' : 'text-gray-700'}`}>
+                    {profile.full_name.split(' ')[0]}
+                  </span>
+                )}
+                
                 {/* Avatar */}
                 <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center ring-2 ring-white/20">
                   {profile?.avatar_url ? (
