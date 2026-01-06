@@ -156,12 +156,13 @@ export function Welcome() {
   const handleInvestorComplete = async () => {
     setSaving(true);
     try {
-      // Update profile
+      // Update profile with user_type and dashboard_preference
       await supabase
         .from('profiles')
         .update({
           full_name: investorData.fullName,
           user_type: 'investor',
+          dashboard_preference: 'investor',
         })
         .eq('id', user.id);
 
@@ -219,12 +220,13 @@ export function Welcome() {
   const handleSyndicatorComplete = async () => {
     setSaving(true);
     try {
-      // Update profile
+      // Update profile with user_type and dashboard_preference
       await supabase
         .from('profiles')
         .update({
           full_name: syndicatorData.fullName,
           user_type: 'syndicator',
+          dashboard_preference: 'syndicator',
         })
         .eq('id', user.id);
 

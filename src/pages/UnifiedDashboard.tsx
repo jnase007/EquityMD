@@ -5,12 +5,14 @@ import { Footer } from '../components/Footer';
 import { InvestorDashboard, SyndicatorDashboard } from '../components/Dashboard';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
+import { TrendingUp, Building2 } from 'lucide-react';
 
 export function UnifiedDashboard() {
-  const { user, profile } = useAuthStore();
+  const { user, profile, setProfile } = useAuthStore();
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<'investor' | 'syndicator'>('investor');
 
   useEffect(() => {
     if (user) {
@@ -19,6 +21,15 @@ export function UnifiedDashboard() {
       setLoading(false);
     }
   }, [user]);
+
+  // Set initial view based on profile preference
+  useEffect(() => {
+    if (profile) {
+      // Use saved preference, or default based on user type
+      const preference = profile.dashboard_preference || profile.user_type || 'investor';
+      setCurrentView(preference);
+    }
+  }, [profile]);
 
   async function checkUserSyndicators() {
     try {
@@ -40,6 +51,27 @@ export function UnifiedDashboard() {
       setHasSyndicators(false);
     } finally {
       setLoading(false);
+    }
+  }
+
+  // Save preference when user switches views
+  async function handleViewChange(view: 'investor' | 'syndicator') {
+    setCurrentView(view);
+    
+    // Save preference to database
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ dashboard_preference: view })
+          .eq('id', user.id);
+        
+        if (!error && profile) {
+          setProfile({ ...profile, dashboard_preference: view });
+        }
+      } catch (err) {
+        console.error('Error saving preference:', err);
+      }
     }
   }
 
@@ -83,16 +115,52 @@ export function UnifiedDashboard() {
     );
   }
 
-  // Determine which dashboard to show based on user type
-  // Syndicator users OR investors who have claimed syndicator profiles see syndicator dashboard
-  const showSyndicatorDashboard = profile?.user_type === 'syndicator' || hasSyndicators;
+  // Check if user can access syndicator view
+  const canAccessSyndicatorView = profile?.user_type === 'syndicator' || hasSyndicators;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        {showSyndicatorDashboard ? (
+        {/* Dashboard View Toggle */}
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-xl">
+            <button
+              onClick={() => handleViewChange('investor')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                currentView === 'investor'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <TrendingUp className="h-4 w-4" />
+              <span className="hidden sm:inline">Investor View</span>
+              <span className="sm:hidden">Investor</span>
+            </button>
+            <button
+              onClick={() => handleViewChange('syndicator')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                currentView === 'syndicator'
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              } ${!canAccessSyndicatorView ? 'opacity-50' : ''}`}
+              title={!canAccessSyndicatorView ? 'List a deal to access syndicator features' : ''}
+            >
+              <Building2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Syndicator View</span>
+              <span className="sm:hidden">Syndicator</span>
+            </button>
+          </div>
+          
+          {currentView === 'syndicator' && !canAccessSyndicatorView && (
+            <p className="text-sm text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">
+              List a deal to unlock syndicator features
+            </p>
+          )}
+        </div>
+
+        {currentView === 'syndicator' ? (
           <SyndicatorDashboard />
         ) : (
           <InvestorDashboard />

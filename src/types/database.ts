@@ -5,6 +5,7 @@ export interface Profile {
   avatar_url: string | null;
   phone_number: string | null;
   user_type?: "investor" | "syndicator"; // Now optional - profiles are user-centric
+  dashboard_preference?: "investor" | "syndicator"; // Preferred dashboard view
   is_verified: boolean;
   is_admin: boolean;
   sms_opt_in: boolean;
