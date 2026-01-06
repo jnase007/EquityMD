@@ -10,7 +10,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import { 
   User, Camera, MapPin, Phone, Mail, Building2, 
   Target, DollarSign, Settings, Shield, ChevronRight,
-  Check, AlertCircle, Sparkles, Trophy, Zap, LayoutDashboard
+  Check, AlertCircle, Sparkles, Trophy, Zap, LayoutDashboard,
+  TrendingUp
 } from 'lucide-react';
 
 // Investment ranges
@@ -684,6 +685,66 @@ export function ProfileNew() {
                           <p className="text-sm text-gray-500 capitalize">{profile?.user_type || 'Investor'}</p>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Dashboard View Preference */}
+                    <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+                      <div className="flex items-center gap-3 mb-3">
+                        <LayoutDashboard className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">Dashboard View</p>
+                          <p className="text-xs text-gray-500">Choose your default dashboard experience</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 p-1 bg-white rounded-lg border border-gray-200">
+                        <button
+                          onClick={async () => {
+                            try {
+                              await supabase
+                                .from('profiles')
+                                .update({ dashboard_preference: 'investor' })
+                                .eq('id', user.id);
+                              setProfile({ ...profile!, dashboard_preference: 'investor' });
+                              toast.success('Switched to Investor view');
+                            } catch (err) {
+                              console.error('Error updating preference:', err);
+                            }
+                          }}
+                          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md font-medium transition-all ${
+                            (profile?.dashboard_preference || 'investor') === 'investor'
+                              ? 'bg-green-100 text-green-700 shadow-sm'
+                              : 'text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <TrendingUp className="h-4 w-4" />
+                          Investor
+                        </button>
+                        <button
+                          onClick={async () => {
+                            try {
+                              await supabase
+                                .from('profiles')
+                                .update({ dashboard_preference: 'syndicator' })
+                                .eq('id', user.id);
+                              setProfile({ ...profile!, dashboard_preference: 'syndicator' });
+                              toast.success('Switched to Syndicator view');
+                            } catch (err) {
+                              console.error('Error updating preference:', err);
+                            }
+                          }}
+                          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md font-medium transition-all ${
+                            profile?.dashboard_preference === 'syndicator'
+                              ? 'bg-blue-100 text-blue-700 shadow-sm'
+                              : 'text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <Building2 className="h-4 w-4" />
+                          Syndicator
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2 text-center">
+                        This changes your dashboard layout and the badge shown on your profile
+                      </p>
                     </div>
                   </div>
                 </div>
