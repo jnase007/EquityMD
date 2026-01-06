@@ -273,10 +273,11 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 className="flex items-center space-x-3 focus:outline-none hover:scale-105 transition-transform"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                {/* Account Type Badge */}
+                {/* Account Type Badge - shows dashboard preference */}
                 {profile && (
                   <AccountTypeBadge
                     userType={profile.user_type}
+                    dashboardPreference={profile.dashboard_preference}
                     isAdmin={profile.is_admin}
                     isVerified={profile.is_verified}
                     size="sm"
@@ -448,6 +449,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                         <div className="mt-1">
                           <AccountTypeBadge
                             userType={profile.user_type}
+                            dashboardPreference={profile.dashboard_preference}
                             isAdmin={profile.is_admin}
                             isVerified={profile.is_verified}
                             size="sm"

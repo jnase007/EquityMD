@@ -3,7 +3,9 @@ import { User, Building2, Shield, Star } from 'lucide-react';
 import { SyndicatorVerifiedBadge } from './VerifiedBadge';
 
 interface AccountTypeBadgeProps {
-  userType: 'investor' | 'syndicator';
+  userType?: 'investor' | 'syndicator';
+  /** Dashboard preference overrides userType for display */
+  dashboardPreference?: 'investor' | 'syndicator';
   isAdmin?: boolean;
   isVerified?: boolean;
   isPremium?: boolean;
@@ -16,6 +18,7 @@ interface AccountTypeBadgeProps {
 
 export function AccountTypeBadge({ 
   userType, 
+  dashboardPreference,
   isAdmin = false, 
   isVerified = false,
   isPremium = false,
@@ -25,6 +28,9 @@ export function AccountTypeBadge({
   showText = true,
   className = '' 
 }: AccountTypeBadgeProps) {
+  
+  // Use dashboard preference if set, otherwise fall back to userType
+  const displayType = dashboardPreference || userType || 'investor';
   
   // Determine account type display
   const getAccountInfo = () => {
@@ -38,7 +44,7 @@ export function AccountTypeBadge({
       };
     }
     
-    if (userType === 'syndicator') {
+    if (displayType === 'syndicator') {
       return {
         label: 'Syndicator',
         icon: Building2,
@@ -85,7 +91,7 @@ export function AccountTypeBadge({
   const config = sizeConfig[size];
 
   // For verified syndicators, show the premium gradient badge instead
-  if (userType === 'syndicator' && (isVerified || isPremium || isFeatured)) {
+  if (displayType === 'syndicator' && (isVerified || isPremium || isFeatured)) {
     return (
       <SyndicatorVerifiedBadge 
         isPremium={isPremium}
@@ -117,7 +123,7 @@ export function AccountTypeBadge({
           {accountInfo.label}
         </span>
       )}
-      {isVerified && userType !== 'syndicator' && (
+      {isVerified && displayType !== 'syndicator' && (
         <Star className={`${config.icon} text-yellow-500`} fill="currentColor" />
       )}
     </div>
