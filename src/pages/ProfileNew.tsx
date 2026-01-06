@@ -10,7 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { 
   User, Camera, MapPin, Phone, Mail, Building2, 
   Target, DollarSign, Settings, Shield, ChevronRight,
-  Check, AlertCircle, Sparkles, Trophy, Zap
+  Check, AlertCircle, Sparkles, Trophy, Zap, LayoutDashboard
 } from 'lucide-react';
 
 // Investment ranges
@@ -328,12 +328,21 @@ export function ProfileNew() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Sparkles className="h-8 w-8 text-blue-600" />
-            Your Profile
-          </h1>
-          <p className="text-gray-600 mt-2">Customize your experience on EquityMD</p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <Sparkles className="h-8 w-8 text-blue-600" />
+              Your Profile
+            </h1>
+            <p className="text-gray-600 mt-2">Customize your experience on EquityMD</p>
+          </div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition shadow-md hover:shadow-lg"
+          >
+            <LayoutDashboard className="h-5 w-5" />
+            View My Dashboard
+          </button>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
