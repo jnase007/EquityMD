@@ -53,8 +53,8 @@ export function HowItWorks() {
     {
       icon: <Users className="h-8 w-8" />,
       title: "Proven Track Record",
-      description: "Partner with seasoned operators who have managed billions in assets.",
-      stats: "$2B+ Assets Managed",
+      description: "Partner with seasoned operators who have managed over a billion in assets.",
+      stats: "$1B+ Assets Managed",
       gradient: "from-purple-500 to-pink-600"
     }
   ];
