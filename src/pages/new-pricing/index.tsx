@@ -21,7 +21,7 @@ const pricingTiers = [
       '14-day free trial',
       '1 deal post per year',
       'Basic text-only profile',
-      'Exposure to 10K+ investors',
+      'Exposure to 7,400+ investors',
       'Basic analytics dashboard',
       'Standard support',
       '$25 refund if no views in 30 days'
@@ -142,7 +142,7 @@ export function NewPricing() {
     <div className="min-h-screen bg-gray-50">
       <SEO 
         title="Syndicator Pricing with Free Trials | EquityMD"
-        description="Explore EquityMD's syndicator pricing plans with free trials for 10K+ accredited investors."
+        description="Explore EquityMD's syndicator pricing plans with free trials for 7,400+ accredited investors."
         keywords="syndicator pricing, CRE deals, free trial, commercial real estate pricing, syndication platform"
         canonical="https://equitymd.com/new-pricing"
       />
@@ -330,7 +330,7 @@ export function NewPricing() {
               <div className="bg-purple-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Users className="h-8 w-8 text-purple-600" />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">10,000+</div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">7,400+</div>
               <div className="text-gray-600">Active Investors</div>
             </div>
             

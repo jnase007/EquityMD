@@ -13,7 +13,7 @@ export function About() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <SEO 
         title="About Equitymd.com | Premier CRE Syndication Hub"
-        description="Equitymd.com empowers CRE syndicators to reach 10K elite investors for $149/month. Discover our mission to simplify syndication—join free as an investor today!"
+        description="Equitymd.com empowers CRE syndicators to reach 7,400+ elite investors for $149/month. Discover our mission to simplify syndication—join free as an investor today!"
         keywords="about EquityMD, CRE syndication platform, commercial real estate marketplace, real estate investment platform"
         canonical="https://equitymd.com/about"
       />
@@ -67,7 +67,7 @@ export function About() {
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               EquityMD simplifies commercial real estate syndication by connecting verified syndicators 
-              with a curated network of 10,000+ accredited investors, creating opportunities for 
+              with a curated network of 7,400+ accredited investors, creating opportunities for 
               sustainable wealth building through institutional-quality real estate investments.
             </p>
           </div>
@@ -90,7 +90,7 @@ export function About() {
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-900">Elite Network</h3>
               <p className="text-gray-600">
-                Access to 10,000+ accredited investors actively seeking commercial real estate 
+                Access to 7,400+ accredited investors actively seeking commercial real estate 
                 investment opportunities.
               </p>
             </div>
@@ -127,7 +127,7 @@ export function About() {
               <div className="text-slate-400">Total Deal Volume</div>
             </div>
             <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 text-center">
-              <div className="text-4xl font-bold text-white mb-2">10K+</div>
+              <div className="text-4xl font-bold text-white mb-2">7,400+</div>
               <div className="text-slate-400">Accredited Investors</div>
             </div>
             <div className="bg-white/5 backdrop-blur rounded-2xl p-8 border border-white/10 text-center">

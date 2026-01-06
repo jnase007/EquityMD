@@ -112,11 +112,11 @@ export function HowItWorks() {
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20 hover:bg-white/15 transition-all">
-                <div className="text-2xl sm:text-3xl font-bold text-white">20+</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white">3+</div>
                 <div className="text-blue-200 text-sm">Syndicators</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20 hover:bg-white/15 transition-all">
-                <div className="text-2xl sm:text-3xl font-bold text-white">10K+</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white">7,400+</div>
                 <div className="text-blue-200 text-sm">Investors</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/20 hover:bg-white/15 transition-all">

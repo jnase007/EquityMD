@@ -75,7 +75,7 @@ export function OnboardingDemo() {
       description: 'Connect with qualified accredited investors ready to invest',
       icon: <Building2 className="h-8 w-8" />,
       benefits: [
-        'Access to 10,000+ accredited investors',
+        'Access to 7,400+ accredited investors',
         'Average deal size: $2.5M',
         'Faster capital raising cycles'
       ]
@@ -246,7 +246,7 @@ export function OnboardingDemo() {
                 <div className="space-y-2">
                   <div className="flex items-center text-sm text-gray-500">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                    Access 10,000+ investors
+                    Access 7,400+ investors
                   </div>
                   <div className="flex items-center text-sm text-gray-500">
                     <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
@@ -291,7 +291,7 @@ export function OnboardingDemo() {
                 <div className="text-gray-600 text-sm">Total Deals Funded</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-blue-600 mb-1">10,000+</div>
+                <div className="text-2xl font-bold text-blue-600 mb-1">7,400+</div>
                 <div className="text-gray-600 text-sm">Active Investors</div>
               </div>
               <div>

@@ -101,7 +101,7 @@ export function HowItWorksImproved() {
                 <div className="text-blue-100">Total Investments</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-                <div className="text-3xl font-bold text-blue-200">10,000+</div>
+                <div className="text-3xl font-bold text-blue-200">7,400+</div>
                 <div className="text-blue-100">Active Investors</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">

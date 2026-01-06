@@ -191,7 +191,7 @@ export function Directory() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
       <SEO 
         title="Top CRE Syndicator Directory | Deals on Equitymd.com"
-        description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 10K elite investors on Equitymd.com. Browse free—join today!"
+        description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 7,400+ elite investors on Equitymd.com. Browse free—join today!"
         keywords="CRE syndicator directory, real estate syndicators, multifamily syndicators, industrial real estate, commercial real estate directory"
         canonical="https://equitymd.com/directory"
       />

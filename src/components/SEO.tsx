@@ -13,8 +13,8 @@ interface SEOProps {
 }
 
 export function SEO({ 
-  title = 'Equitymd.com | Top CRE Syndication for 10K Investors',
-  description = 'Skyrocket your CRE deals with 10K elite investors! List for $149/month, start free. Join Equitymd.com\'s top platform now—no fees to browse deals!',
+  title = 'Equitymd.com | Top CRE Syndication for 7,400+ Investors',
+  description = 'Skyrocket your CRE deals with 7,400+ elite investors! List for $149/month, start free. Join Equitymd.com\'s top platform now—no fees to browse deals!',
   image = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//logo-black.png`,
   url = typeof window !== 'undefined' ? window.location.href : 'https://equitymd.com',
   type = 'website',
@@ -79,7 +79,7 @@ export function SEO({
               "https://twitter.com/equitymd",
               "https://linkedin.com/company/equitymd"
             ],
-            "description": "Premier CRE syndication platform connecting 10K+ elite investors with verified syndicators. List deals from $149/month, browse free. Multifamily, industrial, and medical office investments.",
+            "description": "Premier CRE syndication platform connecting 7,400+ elite investors with verified syndicators. List deals from $149/month, browse free. Multifamily, industrial, and medical office investments.",
             "serviceType": "Commercial Real Estate Investment Platform",
             "areaServed": "US",
             "hasOfferCatalog": {
@@ -91,7 +91,7 @@ export function SEO({
                   "itemOffered": {
                     "@type": "Service",
                     "name": "CRE Syndication Listings",
-                    "description": "List commercial real estate deals to reach 10K+ accredited investors"
+                    "description": "List commercial real estate deals to reach 7,400+ accredited investors"
                   }
                 },
                 {

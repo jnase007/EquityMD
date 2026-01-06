@@ -475,7 +475,7 @@ export function InvestorDashboard() {
             </div>
             <div className="text-white">
               <h3 className="font-bold text-lg">Are you a real estate syndicator?</h3>
-              <p className="text-white/80 text-sm">List your deals and reach 10,000+ accredited investors</p>
+              <p className="text-white/80 text-sm">List your deals and reach 7,400+ accredited investors</p>
             </div>
           </div>
           <Link

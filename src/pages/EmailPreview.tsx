@@ -990,11 +990,11 @@ export function EmailPreview() {
                        <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
                        <div class="stats-grid">
                          <div class="stat-item">
-                           <span class="stat-number">20+</span>
+                           <span class="stat-number">3+</span>
                            <span class="stat-label">Syndicators</span>
                          </div>
                          <div class="stat-item">
-                           <span class="stat-number">10,000+</span>
+                           <span class="stat-number">7,400+</span>
                            <span class="stat-label">Investors</span>
                          </div>
                          <div class="stat-item">
@@ -1219,7 +1219,7 @@ Msg & data rates may apply.`;
     { id: 'welcome_investor', label: 'Welcome Investor', icon: '👋' },
     { id: 'welcome_syndicator', label: 'Welcome Syndicator', icon: '🤝' },
     { id: 'investment_opportunity', label: 'New Investment Alert', icon: '🏢' },
-    { id: 'investor_launch', label: '10,000 Investor Launch', icon: '🚀' },
+    { id: 'investor_launch', label: '7,400+ Investor Launch', icon: '🚀' },
     { id: 'sms_deal_alert', label: 'SMS Deal Alert', icon: '📱' },
     { id: 'sms_welcome', label: 'SMS Welcome', icon: '📲' }
   ];

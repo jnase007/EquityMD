@@ -263,7 +263,7 @@ export function Home() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6">
               <Sparkles className="h-4 w-4 text-yellow-300" />
-              <span className="text-white/90 text-sm font-medium">Trusted by 10,000+ Accredited Investors</span>
+              <span className="text-white/90 text-sm font-medium">Trusted by 7,400+ Accredited Investors</span>
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
@@ -309,7 +309,7 @@ export function Home() {
               </div>
               <div className="hidden sm:block w-px h-12 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white">20+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white">3+</p>
                 <p className="text-white/60 text-sm">Syndicators</p>
               </div>
             </div>
@@ -512,7 +512,7 @@ export function Home() {
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Users className="h-8 w-8 text-white" />
               </div>
-              <p className="text-4xl font-bold text-white mb-2">10K+</p>
+              <p className="text-4xl font-bold text-white mb-2">7,400+</p>
               <p className="text-blue-100">Accredited Investors</p>
             </div>
             
@@ -520,7 +520,7 @@ export function Home() {
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="h-8 w-8 text-white" />
               </div>
-              <p className="text-4xl font-bold text-white mb-2">20+</p>
+              <p className="text-4xl font-bold text-white mb-2">3+</p>
               <p className="text-blue-100">Featured Syndicators</p>
             </div>
           </div>

@@ -17,7 +17,7 @@ const tiers = [
     creditsPerMonth: 60,
     extraCreditPrice: 2.50,
     features: [
-      'Access to browse 10K investor database (view-only)',
+      'Access to browse 7,400+ investor database (view-only)',
       'Basic listing features',
       'Standard search filters',
       'Text description',
@@ -39,7 +39,7 @@ const tiers = [
     extraCreditPrice: 2.00,
     popular: true,
     features: [
-      'Full access to 10K investor database',
+      'Full access to 7,400+ investor database',
       'Enhanced listings with video uploads',
       'Up to 5 photos per listing',
       'Priority placement in search',
@@ -111,7 +111,7 @@ export function Pricing() {
     <div className="min-h-screen bg-gray-50">
       <SEO 
         title="CRE Syndicator Pricing | List Deals on Equitymd.com"
-        description="List CRE deals for just $149–$699/month! Reach 10K elite investors instantly. Start with a free deal on Equitymd.com—sign up now, no success fees!"
+        description="List CRE deals for just $149–$699/month! Reach 7,400+ elite investors instantly. Start with a free deal on Equitymd.com—sign up now, no success fees!"
         keywords="CRE syndication pricing, real estate listing fees, syndicator plans, commercial real estate platform pricing"
         canonical="https://equitymd.com/pricing"
       />
@@ -123,7 +123,7 @@ export function Pricing() {
             Pricing for Syndicators
           </h1>
           <p className="text-xl text-blue-100">
-            Choose your plan to list CRE deals and tap into our exclusive network of 10,000+ accredited investors
+            Choose your plan to list CRE deals and tap into our exclusive network of 7,400+ accredited investors
           </p>
 
           {/* Billing Toggle */}

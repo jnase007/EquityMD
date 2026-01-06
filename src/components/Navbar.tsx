@@ -481,7 +481,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 /* Sign In/Up Buttons */
                 <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
                   <p className="text-center text-sm text-gray-600 mb-4">
-                    Join 10,000+ investors discovering deals
+                    Join 7,400+ investors discovering deals
                   </p>
                   <div className="flex flex-col gap-2">
                     <button
@@ -643,7 +643,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   <span>•</span>
                   <span>✓ SEC Compliant</span>
                   <span>•</span>
-                  <span>🏢 10K+</span>
+                  <span>🏢 7,400+</span>
                 </div>
               </div>
             </div>
