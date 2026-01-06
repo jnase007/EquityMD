@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { Mail, Eye, Send, Copy, Check } from 'lucide-react';
+import { Mail, Eye, Send, Copy, Check, Download } from 'lucide-react';
 
 export function EmailPreview() {
   const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch' | 'deal_alert' | 'weekly_digest' | 'profile_incomplete' | 'deal_closing_soon'>('investor');
@@ -1517,6 +1517,19 @@ Msg & data rates may apply.`;
     }
   };
 
+  const downloadHTML = () => {
+    const html = getEmailHTML(selectedEmail);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `equitymd-email-${selectedEmail}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const emailTypes = [
     { id: 'investor', label: 'New Investor (Admin)', icon: '🎉' },
     { id: 'syndicator', label: 'New Syndicator (Admin)', icon: '🏢' },
@@ -1590,6 +1603,13 @@ Msg & data rates may apply.`;
                         Copy HTML
                       </>
                     )}
+                  </button>
+                  <button
+                    onClick={downloadHTML}
+                    className="w-full flex items-center justify-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download for Mailchimp
                   </button>
                 </div>
               </div>
