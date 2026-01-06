@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { InvestorDashboard, SyndicatorDashboard } from '../components/Dashboard';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
-import { TrendingUp, Building2 } from 'lucide-react';
+import { TrendingUp, Building2, Plus } from 'lucide-react';
 
 export function UnifiedDashboard() {
   const { user, profile, setProfile } = useAuthStore();
+  const navigate = useNavigate();
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -139,13 +140,19 @@ export function UnifiedDashboard() {
               <span className="sm:hidden">Investor</span>
             </button>
             <button
-              onClick={() => handleViewChange('syndicator')}
+              onClick={() => {
+                if (!canAccessSyndicatorView) {
+                  // Redirect to syndicator setup if no profile exists
+                  navigate('/syndicator-setup');
+                } else {
+                  handleViewChange('syndicator');
+                }
+              }}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                 currentView === 'syndicator'
                   ? 'bg-white text-purple-600 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
-              } ${!canAccessSyndicatorView ? 'opacity-50' : ''}`}
-              title={!canAccessSyndicatorView ? 'List a deal to access syndicator features' : ''}
+              }`}
             >
               <Building2 className="h-4 w-4" />
               <span className="hidden sm:inline">Syndicator View</span>
@@ -153,10 +160,15 @@ export function UnifiedDashboard() {
             </button>
           </div>
           
-          {currentView === 'syndicator' && !canAccessSyndicatorView && (
-            <p className="text-sm text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">
-              List a deal to unlock syndicator features
-            </p>
+          {!canAccessSyndicatorView && (
+            <button
+              onClick={() => navigate('/syndicator-setup')}
+              className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Become a Syndicator</span>
+              <span className="sm:hidden">List Deals</span>
+            </button>
           )}
         </div>
 

@@ -1,0 +1,665 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Building2, ArrowRight, ArrowLeft, Check, Upload, Globe, Mail, 
+  Phone, MapPin, Briefcase, TrendingUp, Users, Sparkles, Camera,
+  CheckCircle, Star, Loader2
+} from 'lucide-react';
+import { useAuthStore } from '../lib/store';
+import { supabase } from '../lib/supabase';
+import { Navbar } from '../components/Navbar';
+import toast from 'react-hot-toast';
+
+// US States for dropdown
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+  'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+  'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+  'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+  'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+  'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
+  'Wisconsin', 'Wyoming'
+];
+
+type Step = 'welcome' | 'basics' | 'details' | 'preview' | 'success';
+
+export function SyndicatorSetup() {
+  const { user, profile, setProfile } = useAuthStore();
+  const navigate = useNavigate();
+  
+  const [step, setStep] = useState<Step>('welcome');
+  const [saving, setSaving] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  
+  const [formData, setFormData] = useState({
+    companyName: '',
+    companyDescription: '',
+    websiteUrl: '',
+    contactEmail: user?.email || '',
+    contactPhone: '',
+    city: '',
+    state: '',
+    yearsInBusiness: '',
+    totalDealVolume: '',
+    totalDeals: '',
+    linkedinUrl: '',
+  });
+
+  // Check if user already has a syndicator profile
+  useEffect(() => {
+    async function checkExistingSyndicator() {
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('syndicators')
+        .select('id')
+        .eq('claimed_by', user.id)
+        .single();
+      
+      if (data) {
+        // Already has a syndicator profile, redirect to dashboard or deal creation
+        navigate('/deals/new');
+      }
+    }
+    
+    checkExistingSyndicator();
+  }, [user, navigate]);
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!user) return;
+    
+    setSaving(true);
+    try {
+      let logoUrl = null;
+      
+      // Upload logo if provided
+      if (logoFile) {
+        const fileExt = logoFile.name.split('.').pop();
+        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+        const filePath = `syndicator-logos/${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(filePath, logoFile);
+        
+        if (uploadError) {
+          console.error('Logo upload error:', uploadError);
+        } else {
+          const { data: { publicUrl } } = supabase.storage
+            .from('images')
+            .getPublicUrl(filePath);
+          logoUrl = publicUrl;
+        }
+      }
+      
+      // Generate slug
+      const slug = formData.companyName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+      
+      // Create syndicator profile
+      const { data: newSyndicator, error: syndicatorError } = await supabase
+        .from('syndicators')
+        .insert([{
+          company_name: formData.companyName.trim(),
+          company_description: formData.companyDescription.trim() || null,
+          company_logo_url: logoUrl,
+          website_url: formData.websiteUrl ? normalizeUrl(formData.websiteUrl) : null,
+          linkedin_url: formData.linkedinUrl ? normalizeUrl(formData.linkedinUrl) : null,
+          city: formData.city.trim() || null,
+          state: formData.state || null,
+          years_in_business: formData.yearsInBusiness ? parseInt(formData.yearsInBusiness) : null,
+          total_deal_volume: formData.totalDealVolume ? parseFloat(formData.totalDealVolume.replace(/[^\d.]/g, '')) * 1000000 : null,
+          slug: `${slug}-${Date.now().toString(36)}`,
+          claimed_by: user.id,
+          claimed_at: new Date().toISOString(),
+          claimable: false,
+          verification_status: 'unverified',
+        }])
+        .select()
+        .single();
+      
+      if (syndicatorError) throw syndicatorError;
+      
+      // Update user profile
+      await supabase
+        .from('profiles')
+        .update({ 
+          user_type: 'syndicator',
+          dashboard_preference: 'syndicator'
+        })
+        .eq('id', user.id);
+      
+      // Update local profile state
+      if (profile) {
+        setProfile({ 
+          ...profile, 
+          user_type: 'syndicator',
+          dashboard_preference: 'syndicator'
+        });
+      }
+      
+      // Send admin notification
+      try {
+        await supabase.functions.invoke('send-email', {
+          body: {
+            type: 'admin_new_syndicator',
+            data: {
+              companyName: formData.companyName,
+              userEmail: user.email,
+              signupDate: new Date().toLocaleDateString()
+            }
+          }
+        });
+      } catch (emailErr) {
+        console.log('Admin notification failed (non-blocking):', emailErr);
+      }
+      
+      setStep('success');
+      
+    } catch (error: any) {
+      console.error('Error creating syndicator profile:', error);
+      toast.error(error.message || 'Failed to create profile. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const normalizeUrl = (url: string): string => {
+    if (!url) return '';
+    url = url.trim();
+    if (!url.match(/^https?:\/\//i)) {
+      url = 'https://' + url;
+    }
+    return url;
+  };
+
+  const canProceedFromBasics = formData.companyName.trim().length > 0;
+  const canProceedFromDetails = true; // Details are optional
+
+  if (!user) {
+    navigate('/');
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <Navbar />
+      
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        {/* Progress Indicator */}
+        {step !== 'welcome' && step !== 'success' && (
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {['basics', 'details', 'preview'].map((s, i) => (
+              <div key={s} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
+                  step === s 
+                    ? 'bg-white text-blue-600' 
+                    : ['basics', 'details', 'preview'].indexOf(step) > i
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white/20 text-white/60'
+                }`}>
+                  {['basics', 'details', 'preview'].indexOf(step) > i ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    i + 1
+                  )}
+                </div>
+                {i < 2 && (
+                  <div className={`w-16 h-1 mx-2 rounded ${
+                    ['basics', 'details', 'preview'].indexOf(step) > i 
+                      ? 'bg-green-500' 
+                      : 'bg-white/20'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Welcome Step */}
+        {step === 'welcome' && (
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-12 text-center text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Building2 className="h-10 w-10" />
+              </div>
+              <h1 className="text-3xl font-bold mb-3">Welcome, Syndicator! 🎉</h1>
+              <p className="text-xl text-blue-100">Let's set up your business profile</p>
+            </div>
+            
+            <div className="p-8">
+              <p className="text-gray-600 text-center mb-8 text-lg">
+                Before you list your first deal, let's create your business profile. 
+                This is what investors will see when they discover your opportunities.
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="text-center p-6 bg-blue-50 rounded-xl">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">7,400+ Investors</h3>
+                  <p className="text-sm text-gray-600">Ready to discover your deals</p>
+                </div>
+                <div className="text-center p-6 bg-green-50 rounded-xl">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <TrendingUp className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">$1B+ Connected</h3>
+                  <p className="text-sm text-gray-600">In investment capital</p>
+                </div>
+                <div className="text-center p-6 bg-purple-50 rounded-xl">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Star className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Featured Listings</h3>
+                  <p className="text-sm text-gray-600">Stand out from the crowd</p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setStep('basics')}
+                className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg flex items-center justify-center gap-2"
+              >
+                Create My Business Profile
+                <ArrowRight className="h-5 w-5" />
+              </button>
+              
+              <p className="text-center text-sm text-gray-500 mt-4">
+                Takes about 2 minutes to complete
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Basics Step */}
+        {step === 'basics' && (
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6 text-white">
+              <h2 className="text-2xl font-bold">Company Basics</h2>
+              <p className="text-blue-100">Tell us about your business</p>
+            </div>
+            
+            <div className="p-8 space-y-6">
+              {/* Logo Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Company Logo (Optional)
+                </label>
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    {logoPreview ? (
+                      <img 
+                        src={logoPreview} 
+                        alt="Logo preview" 
+                        className="w-20 h-20 rounded-xl object-cover border-2 border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
+                        <Camera className="h-8 w-8 text-gray-400" />
+                      </div>
+                    )}
+                    <label className="absolute -bottom-2 -right-2 p-1.5 bg-blue-600 text-white rounded-full cursor-pointer hover:bg-blue-700 transition">
+                      <Upload className="h-3.5 w-3.5" />
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleLogoChange}
+                        className="hidden" 
+                      />
+                    </label>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    <p>Upload your company logo</p>
+                    <p className="text-xs">PNG, JPG up to 2MB</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Company Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Company Name *
+                </label>
+                <input
+                  type="text"
+                  value={formData.companyName}
+                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  placeholder="e.g., Horizon Real Estate Partners"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors text-lg"
+                  autoFocus
+                />
+              </div>
+
+              {/* Company Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Company Description
+                </label>
+                <textarea
+                  value={formData.companyDescription}
+                  onChange={(e) => setFormData({ ...formData, companyDescription: e.target.value })}
+                  placeholder="Tell investors what makes your company unique. What's your investment strategy? What markets do you focus on?"
+                  rows={4}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">This will appear on your public profile</p>
+              </div>
+
+              {/* Location */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    placeholder="e.g., Dallas"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    State
+                  </label>
+                  <select
+                    value={formData.state}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                  >
+                    <option value="">Select state</option>
+                    {US_STATES.map(state => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <button
+                  onClick={() => setStep('welcome')}
+                  className="flex items-center gap-2 px-6 py-3 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </button>
+                <button
+                  onClick={() => setStep('details')}
+                  disabled={!canProceedFromBasics}
+                  className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Continue <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Details Step */}
+        {step === 'details' && (
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6 text-white">
+              <h2 className="text-2xl font-bold">Track Record & Contact</h2>
+              <p className="text-blue-100">Help investors understand your experience</p>
+            </div>
+            
+            <div className="p-8 space-y-6">
+              {/* Track Record */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Years in Business
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.yearsInBusiness}
+                    onChange={(e) => setFormData({ ...formData, yearsInBusiness: e.target.value })}
+                    placeholder="e.g., 10"
+                    min="0"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Total Deal Volume ($M)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.totalDealVolume}
+                    onChange={(e) => setFormData({ ...formData, totalDealVolume: e.target.value })}
+                    placeholder="e.g., 50 (for $50M)"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                  />
+                </div>
+              </div>
+
+              {/* Contact Info */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Globe className="h-4 w-4 inline mr-1" />
+                  Website
+                </label>
+                <input
+                  type="text"
+                  value={formData.websiteUrl}
+                  onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
+                  placeholder="yourcompany.com"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Mail className="h-4 w-4 inline mr-1" />
+                  Contact Email
+                </label>
+                <input
+                  type="email"
+                  value={formData.contactEmail}
+                  onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                  placeholder="contact@yourcompany.com"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Phone className="h-4 w-4 inline mr-1" />
+                  Phone Number (Optional)
+                </label>
+                <input
+                  type="tel"
+                  value={formData.contactPhone}
+                  onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                  placeholder="(555) 123-4567"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  LinkedIn Profile (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={formData.linkedinUrl}
+                  onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
+                  placeholder="linkedin.com/company/yourcompany"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0"
+                />
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <button
+                  onClick={() => setStep('basics')}
+                  className="flex items-center gap-2 px-6 py-3 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </button>
+                <button
+                  onClick={() => setStep('preview')}
+                  className="flex items-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all"
+                >
+                  Preview Profile <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Preview Step */}
+        {step === 'preview' && (
+          <div className="animate-fade-in">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-white mb-2">Preview Your Profile</h2>
+              <p className="text-blue-200">This is how investors will see your company</p>
+            </div>
+            
+            {/* Profile Card Preview */}
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden mb-6">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-24" />
+              <div className="px-8 pb-8">
+                <div className="flex items-end gap-4 -mt-10 mb-4">
+                  {logoPreview ? (
+                    <img 
+                      src={logoPreview} 
+                      alt={formData.companyName}
+                      className="w-20 h-20 rounded-xl border-4 border-white shadow-lg object-cover bg-white"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-xl border-4 border-white shadow-lg bg-blue-100 flex items-center justify-center">
+                      <Building2 className="h-10 w-10 text-blue-600" />
+                    </div>
+                  )}
+                  <div className="pb-1">
+                    <h3 className="text-2xl font-bold text-gray-900">{formData.companyName || 'Your Company'}</h3>
+                    {(formData.city || formData.state) && (
+                      <p className="text-gray-500 flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {[formData.city, formData.state].filter(Boolean).join(', ')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                
+                {formData.companyDescription && (
+                  <p className="text-gray-600 mb-4">{formData.companyDescription}</p>
+                )}
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {formData.yearsInBusiness && (
+                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-gray-900">{formData.yearsInBusiness}</p>
+                      <p className="text-xs text-gray-500">Years in Business</p>
+                    </div>
+                  )}
+                  {formData.totalDealVolume && (
+                    <div className="bg-gray-50 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-gray-900">${formData.totalDealVolume}M</p>
+                      <p className="text-xs text-gray-500">Deal Volume</p>
+                    </div>
+                  )}
+                  {formData.websiteUrl && (
+                    <div className="bg-gray-50 rounded-lg p-3 text-center col-span-2">
+                      <Globe className="h-5 w-5 mx-auto text-blue-600 mb-1" />
+                      <p className="text-xs text-gray-500 truncate">{formData.websiteUrl}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                onClick={() => setStep('details')}
+                className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" /> Edit Details
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={saving}
+                className="flex items-center gap-2 px-8 py-3 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 disabled:opacity-50 transition-all shadow-lg"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Creating Profile...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="h-5 w-5" />
+                    Create My Profile
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Success Step */}
+        {step === 'success' && (
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in text-center">
+            <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-12 text-white">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="h-10 w-10" />
+              </div>
+              <h1 className="text-3xl font-bold mb-3">Your Profile is Live! 🎉</h1>
+              <p className="text-xl text-green-100">Welcome to the EquityMD syndicator community</p>
+            </div>
+            
+            <div className="p-8">
+              <p className="text-gray-600 mb-8 text-lg">
+                Now let's list your first deal and start connecting with 7,400+ accredited investors!
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => navigate('/deals/new')}
+                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg flex items-center justify-center gap-2"
+                >
+                  <Sparkles className="h-5 w-5" />
+                  Post Your First Deal
+                </button>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="px-8 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                >
+                  Go to Dashboard
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+      `}</style>
+    </div>
+  );
+}
+

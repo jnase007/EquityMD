@@ -28,6 +28,7 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard').then(module => ({ d
 const Discover = lazy(() => import('./pages/Discover').then(module => ({ default: module.Discover })));
 const Calendar = lazy(() => import('./pages/Calendar').then(module => ({ default: module.Calendar })));
 const Goals = lazy(() => import('./pages/Goals').then(module => ({ default: module.Goals })));
+const SyndicatorSetup = lazy(() => import('./pages/SyndicatorSetup').then(module => ({ default: module.SyndicatorSetup })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -428,6 +429,10 @@ export default function App() {
         <Route 
           path="/deals/new" 
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <NewDeal />)} 
+        />
+        <Route 
+          path="/syndicator-setup" 
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <SyndicatorSetup />)} 
         />
         <Route 
           path="/deals/:slug/edit" 
