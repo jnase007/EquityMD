@@ -1,5 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { getBaseTemplate, getNewInvestorSignupTemplate, getNewSyndicatorSignupTemplate, getWelcomeEmailTemplate, getInvestorLaunchTemplate, getInvestmentInterestTemplate, getNewMessageTemplate, getNewDealListedTemplate } from './templates.ts';
+import { 
+  getBaseTemplate, 
+  getNewInvestorSignupTemplate, 
+  getNewSyndicatorSignupTemplate, 
+  getWelcomeEmailTemplate, 
+  getInvestorLaunchTemplate, 
+  getInvestmentInterestTemplate, 
+  getNewMessageTemplate, 
+  getNewDealListedTemplate,
+  getDealAlertTemplate,
+  getWeeklyDigestTemplate,
+  getProfileIncompleteTemplate,
+  getDealClosingSoonTemplate
+} from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 const FROM_EMAIL = 'hello@equitymd.com';
@@ -176,6 +189,83 @@ serve(async (req) => {
         });
         emailTo = ADMIN_EMAIL;
         emailSubject = `🏢 New Deal Listed: ${data.dealTitle}`;
+        break;
+
+      case 'deal_alert':
+        if (!data?.investorName || !data?.dealTitle || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for deal alert' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getDealAlertTemplate({
+          investorName: data.investorName,
+          dealTitle: data.dealTitle,
+          dealSlug: data.dealSlug || '',
+          propertyType: data.propertyType || 'Real Estate',
+          location: data.location || 'Not specified',
+          targetIrr: data.targetIrr || 'N/A',
+          minimumInvestment: data.minimumInvestment || 'N/A',
+          investmentTerm: data.investmentTerm || 'N/A',
+          syndicatorName: data.syndicatorName || 'EquityMD Partner',
+          coverImageUrl: data.coverImageUrl,
+          matchReasons: data.matchReasons || ['Matches your investment preferences']
+        });
+        emailTo = to;
+        emailSubject = `🏢 New Deal Alert: ${data.dealTitle}`;
+        break;
+
+      case 'weekly_digest':
+        if (!data?.investorName || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for weekly digest' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getWeeklyDigestTemplate({
+          investorName: data.investorName,
+          newDealsCount: data.newDealsCount || 0,
+          deals: data.deals || [],
+          savedDealsReminder: data.savedDealsReminder,
+          unreadMessages: data.unreadMessages
+        });
+        emailTo = to;
+        emailSubject = `📊 Your Weekly Investment Digest - ${data.newDealsCount || 0} New Deals`;
+        break;
+
+      case 'profile_incomplete':
+        if (!data?.userName || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for profile incomplete reminder' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getProfileIncompleteTemplate({
+          userName: data.userName,
+          completionPercentage: data.completionPercentage || 50,
+          missingItems: data.missingItems || ['Complete your profile']
+        });
+        emailTo = to;
+        emailSubject = `Complete Your Profile to Unlock More Deals`;
+        break;
+
+      case 'deal_closing_soon':
+        if (!data?.investorName || !data?.dealTitle || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for deal closing reminder' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getDealClosingSoonTemplate({
+          investorName: data.investorName,
+          dealTitle: data.dealTitle,
+          dealSlug: data.dealSlug || '',
+          daysRemaining: data.daysRemaining || 7,
+          targetIrr: data.targetIrr || 'N/A',
+          minimumInvestment: data.minimumInvestment || 'N/A'
+        });
+        emailTo = to;
+        emailSubject = `⏰ ${data.dealTitle} Closes in ${data.daysRemaining || 7} Days`;
         break;
 
       default:

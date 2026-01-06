@@ -288,11 +288,11 @@ export default `<!DOCTYPE html>
             </h3>
             <div class="stats-grid">
               <div class="stat-item">
-                <span class="stat-number">20+</span>
+                <span class="stat-number">3+</span>
                 <span class="stat-label">Syndicators</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">10,000+</span>
+                <span class="stat-number">7,400+</span>
                 <span class="stat-label">Investors</span>
               </div>
               <div class="stat-item">

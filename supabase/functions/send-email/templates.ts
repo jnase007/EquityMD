@@ -44,104 +44,263 @@ export function getBaseTemplate({
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
+    <!--[if mso]>
+    <noscript>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+      </xml>
+    </noscript>
+    <![endif]-->
     <style>
+      /* Reset */
+      body, table, td, p, a, li { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+      img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+      
       body { 
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         line-height: 1.6;
         margin: 0;
         padding: 0;
-        background-color: #f9fafb;
+        background-color: #f1f5f9;
+        -webkit-font-smoothing: antialiased;
       }
-      .container {
+      .email-wrapper {
+        width: 100%;
+        background-color: #f1f5f9;
+        padding: 40px 0;
+      }
+      .email-container {
         max-width: 600px;
         margin: 0 auto;
-        padding: 40px 20px;
-      }
-      .card {
         background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        padding: 32px;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
-      .logo {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 24px;
+      .header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+        padding: 32px 40px;
         text-align: center;
       }
-      .logo span {
-        color: #2563eb;
+      .logo {
+        font-size: 28px;
+        font-weight: 800;
+        color: white;
+        text-decoration: none;
+        letter-spacing: -0.5px;
+      }
+      .logo-md {
+        color: #fbbf24;
+      }
+      .header-tagline {
+        color: rgba(255,255,255,0.8);
+        font-size: 13px;
+        margin-top: 8px;
+        letter-spacing: 0.5px;
+      }
+      .body-content {
+        padding: 40px;
       }
       .title {
-        font-size: 20px;
-        font-weight: 600;
+        font-size: 24px;
+        font-weight: 700;
         color: #1e293b;
-        margin-bottom: 16px;
+        margin: 0 0 24px 0;
+        line-height: 1.3;
       }
       .content {
-        color: #4b5563;
-        margin-bottom: 24px;
+        color: #475569;
+        font-size: 16px;
+        line-height: 1.7;
+      }
+      .content p {
+        margin: 0 0 16px 0;
+      }
+      .content ul, .content ol {
+        margin: 16px 0;
+        padding-left: 24px;
+      }
+      .content li {
+        margin-bottom: 8px;
+      }
+      .button-container {
+        text-align: center;
+        margin: 32px 0;
       }
       .button {
         display: inline-block;
-        background-color: #2563eb;
-        color: white;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white !important;
         text-decoration: none;
-        padding: 12px 24px;
-        border-radius: 6px;
-        margin-top: 24px;
-        font-weight: 500;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.4);
+        transition: all 0.2s ease;
       }
-      .footer {
-        margin-top: 32px;
-        text-align: center;
-        font-size: 14px;
-        color: #6b7280;
+      .button:hover {
+        box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.5);
       }
       .info-box {
-        background-color: #f3f4f6;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         border-left: 4px solid #2563eb;
-        padding: 16px;
-        margin: 16px 0;
+        border-radius: 0 12px 12px 0;
+        padding: 20px 24px;
+        margin: 24px 0;
       }
       .info-box h4 {
-        margin: 0 0 8px 0;
+        margin: 0 0 12px 0;
         color: #1e293b;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 15px;
       }
       .info-box p {
-        margin: 0;
-        color: #4b5563;
+        margin: 0 0 8px 0;
+        color: #475569;
         font-size: 14px;
+        line-height: 1.5;
+      }
+      .info-box p:last-child {
+        margin-bottom: 0;
+      }
+      .divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+        margin: 32px 0;
+      }
+      .footer {
+        background: #f8fafc;
+        padding: 32px 40px;
+        text-align: center;
+        border-top: 1px solid #e2e8f0;
+      }
+      .footer-logo {
+        font-size: 20px;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 16px;
+      }
+      .footer-logo span {
+        color: #2563eb;
+      }
+      .social-links {
+        margin: 20px 0;
+      }
+      .social-link {
+        display: inline-block;
+        margin: 0 8px;
+        color: #64748b;
+        text-decoration: none;
+      }
+      .footer-text {
+        font-size: 13px;
+        color: #94a3b8;
+        margin: 8px 0;
+        line-height: 1.5;
+      }
+      .footer-links {
+        margin-top: 16px;
+      }
+      .footer-links a {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+        margin: 0 12px;
+      }
+      .footer-links a:hover {
+        color: #2563eb;
+      }
+      
+      /* Mobile Responsive */
+      @media only screen and (max-width: 600px) {
+        .email-wrapper {
+          padding: 16px !important;
+        }
+        .email-container {
+          border-radius: 12px !important;
+        }
+        .header {
+          padding: 24px 20px !important;
+        }
+        .body-content {
+          padding: 24px 20px !important;
+        }
+        .footer {
+          padding: 24px 20px !important;
+        }
+        .title {
+          font-size: 20px !important;
+        }
+        .button {
+          display: block !important;
+          text-align: center !important;
+          padding: 14px 24px !important;
+        }
+        .info-box {
+          padding: 16px !important;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="card">
-        <div class="logo">
-          Equity<span>MD</span>
+    <div class="email-wrapper">
+      <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+          <a href="https://equitymd.com" class="logo">
+            Equity<span class="logo-md">MD</span>
+          </a>
+          <div class="header-tagline">Your Marketplace for Real Estate Investments</div>
         </div>
         
-        <div class="title">${title}</div>
-        
-        <div class="content">
-          ${content}
-        </div>
-
-        ${buttonText && buttonUrl ? `
-          <div style="text-align: center;">
-            <a href="${buttonUrl}" class="button">
-              ${buttonText}
-            </a>
+        <!-- Body -->
+        <div class="body-content">
+          <h1 class="title">${title}</h1>
+          
+          <div class="content">
+            ${content}
           </div>
-        ` : ''}
-      </div>
 
-      <div class="footer">
-        <p>You received this email because you have notifications enabled.</p>
-        <p>To update your preferences, visit your profile settings.</p>
+          ${buttonText && buttonUrl ? `
+            <div class="button-container">
+              <a href="${buttonUrl}" class="button">
+                ${buttonText} →
+              </a>
+            </div>
+          ` : ''}
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+          <div class="footer-logo">
+            Equity<span>MD</span>
+          </div>
+          
+          <div class="social-links">
+            <a href="https://linkedin.com/company/equitymd" class="social-link">LinkedIn</a>
+            <span style="color: #cbd5e1;">•</span>
+            <a href="https://equitymd.com" class="social-link">Website</a>
+          </div>
+          
+          <p class="footer-text">
+            You received this email because you have an account on EquityMD.
+          </p>
+          
+          <div class="footer-links">
+            <a href="https://equitymd.com/profile">Manage Preferences</a>
+            <a href="https://equitymd.com/legal/privacy">Privacy Policy</a>
+            <a href="mailto:hello@equitymd.com">Contact Us</a>
+          </div>
+          
+          <p class="footer-text" style="margin-top: 20px;">
+            © ${new Date().getFullYear()} EquityMD. All rights reserved.<br>
+            Connecting accredited investors with premium real estate opportunities.
+          </p>
+        </div>
       </div>
     </div>
   </body>
@@ -616,11 +775,11 @@ export function getInvestorLaunchTemplate(firstName: string): string {
                 <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
                 <div class="stats-grid">
                   <div class="stat-item">
-                    <span class="stat-number">20+</span>
+                    <span class="stat-number">3+</span>
                     <span class="stat-label">Syndicators</span>
                   </div>
                   <div class="stat-item">
-                    <span class="stat-number">10,000+</span>
+                    <span class="stat-number">7,400+</span>
                     <span class="stat-label">Investors</span>
                   </div>
                   <div class="stat-item">
@@ -772,4 +931,293 @@ export function getInvestorLaunchTemplate(firstName: string): string {
       </body>
     </html>
   `;
+}
+
+// Deal Alert Template - New deal matching preferences
+export interface DealAlertProps {
+  investorName: string;
+  dealTitle: string;
+  dealSlug: string;
+  propertyType: string;
+  location: string;
+  targetIrr: string;
+  minimumInvestment: string;
+  investmentTerm: string;
+  syndicatorName: string;
+  coverImageUrl?: string;
+  matchReasons: string[];
+}
+
+export function getDealAlertTemplate({
+  investorName,
+  dealTitle,
+  dealSlug,
+  propertyType,
+  location,
+  targetIrr,
+  minimumInvestment,
+  investmentTerm,
+  syndicatorName,
+  coverImageUrl,
+  matchReasons,
+}: DealAlertProps): string {
+  const content = `
+    <p>Hi ${investorName},</p>
+    
+    <p>🎯 <strong>A new investment opportunity just hit the market that matches your preferences!</strong></p>
+    
+    <div style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; overflow: hidden; margin: 24px 0;">
+      ${coverImageUrl ? `
+        <div style="height: 200px; overflow: hidden;">
+          <img src="${coverImageUrl}" alt="${dealTitle}" style="width: 100%; height: 100%; object-fit: cover;" />
+        </div>
+      ` : ''}
+      
+      <div style="padding: 24px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">NEW DEAL</span>
+          <span style="background: #f1f5f9; color: #64748b; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${propertyType}</span>
+        </div>
+        
+        <h2 style="margin: 0 0 8px 0; font-size: 22px; color: #1e293b;">${dealTitle}</h2>
+        <p style="margin: 0 0 16px 0; color: #64748b; font-size: 14px;">📍 ${location} • by ${syndicatorName}</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px;">
+          <div style="text-align: center;">
+            <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Target IRR</div>
+            <div style="font-size: 20px; font-weight: 700; color: #10b981;">${targetIrr}%</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+            <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Minimum</div>
+            <div style="font-size: 20px; font-weight: 700; color: #1e293b;">${minimumInvestment}</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Term</div>
+            <div style="font-size: 20px; font-weight: 700; color: #1e293b;">${investmentTerm}</div>
+          </div>
+        </div>
+        
+        <a href="https://equitymd.com/deals/${dealSlug}" style="display: block; text-align: center; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; text-decoration: none; padding: 14px 24px; border-radius: 10px; font-weight: 600; font-size: 15px;">
+          View Deal Details →
+        </a>
+      </div>
+    </div>
+    
+    <div class="info-box" style="background: #fffbeb; border-left-color: #f59e0b;">
+      <h4 style="color: #b45309;">🎯 Why this deal matches you:</h4>
+      <ul style="margin: 8px 0; padding-left: 20px;">
+        ${matchReasons.map(reason => `<li style="color: #92400e; margin-bottom: 4px;">${reason}</li>`).join('')}
+      </ul>
+    </div>
+    
+    <p style="color: #64748b; font-size: 14px; margin-top: 24px;">
+      <strong>Pro tip:</strong> Investors who express interest early often get priority access to the best deals. Don't wait too long!
+    </p>
+  `;
+
+  return getBaseTemplate({
+    title: `🏢 New Deal Alert: ${dealTitle}`,
+    content,
+    buttonText: 'View All Deals',
+    buttonUrl: 'https://equitymd.com/find'
+  });
+}
+
+// Weekly Digest Template
+export interface WeeklyDigestProps {
+  investorName: string;
+  newDealsCount: number;
+  deals: Array<{
+    title: string;
+    slug: string;
+    location: string;
+    targetIrr: string;
+    minimumInvestment: string;
+    propertyType: string;
+  }>;
+  savedDealsReminder?: number;
+  unreadMessages?: number;
+}
+
+export function getWeeklyDigestTemplate({
+  investorName,
+  newDealsCount,
+  deals,
+  savedDealsReminder,
+  unreadMessages,
+}: WeeklyDigestProps): string {
+  const dealCards = deals.slice(0, 3).map(deal => `
+    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; background: white;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="flex: 1;">
+          <span style="background: #eff6ff; color: #2563eb; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase;">${deal.propertyType}</span>
+          <h3 style="margin: 12px 0 4px 0; font-size: 17px; color: #1e293b;">${deal.title}</h3>
+          <p style="margin: 0; color: #64748b; font-size: 13px;">📍 ${deal.location}</p>
+        </div>
+        <div style="text-align: right; margin-left: 20px;">
+          <div style="font-size: 20px; font-weight: 700; color: #10b981;">${deal.targetIrr}%</div>
+          <div style="font-size: 11px; color: #64748b;">Target IRR</div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: #64748b; font-size: 13px;">${deal.minimumInvestment} minimum</span>
+        <a href="https://equitymd.com/deals/${deal.slug}" style="color: #2563eb; text-decoration: none; font-weight: 600; font-size: 14px;">View Deal →</a>
+      </div>
+    </div>
+  `).join('');
+
+  const alertsSection = (savedDealsReminder || unreadMessages) ? `
+    <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <h4 style="margin: 0 0 12px 0; color: #92400e;">📌 Your Activity Reminders</h4>
+      ${savedDealsReminder ? `<p style="margin: 0 0 8px 0; color: #78350f;">• You have <strong>${savedDealsReminder} saved deals</strong> waiting for your review</p>` : ''}
+      ${unreadMessages ? `<p style="margin: 0; color: #78350f;">• You have <strong>${unreadMessages} unread messages</strong> from syndicators</p>` : ''}
+    </div>
+  ` : '';
+
+  const content = `
+    <p>Hi ${investorName},</p>
+    
+    <p>Here's what's new on EquityMD this week! 🎉</p>
+    
+    <div style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0;">
+      <div style="font-size: 40px; font-weight: 800; color: white;">${newDealsCount}</div>
+      <div style="color: rgba(255,255,255,0.9); font-size: 16px;">New Deals This Week</div>
+    </div>
+    
+    <h3 style="color: #1e293b; margin: 28px 0 16px 0;">🔥 Featured Opportunities</h3>
+    
+    ${dealCards}
+    
+    ${alertsSection}
+    
+    <div style="text-align: center; margin-top: 32px; padding: 24px; background: #f8fafc; border-radius: 12px;">
+      <p style="margin: 0 0 16px 0; color: #475569; font-size: 15px;">
+        Don't miss out on the best investment opportunities.
+      </p>
+      <a href="https://equitymd.com/find" style="display: inline-block; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 15px;">
+        Explore All Deals →
+      </a>
+    </div>
+    
+    <p style="color: #94a3b8; font-size: 13px; margin-top: 24px; text-align: center;">
+      This is your weekly digest. You can adjust your email preferences in your <a href="https://equitymd.com/profile" style="color: #2563eb;">profile settings</a>.
+    </p>
+  `;
+
+  return getBaseTemplate({
+    title: `📊 Your Weekly Investment Digest`,
+    content
+  });
+}
+
+// Profile Incomplete Reminder
+export interface ProfileIncompleteProps {
+  userName: string;
+  completionPercentage: number;
+  missingItems: string[];
+}
+
+export function getProfileIncompleteTemplate({
+  userName,
+  completionPercentage,
+  missingItems,
+}: ProfileIncompleteProps): string {
+  const content = `
+    <p>Hi ${userName},</p>
+    
+    <p>We noticed your EquityMD profile is <strong>${completionPercentage}% complete</strong>. Completing your profile helps syndicators understand your investment preferences and ensures you see the most relevant deals!</p>
+    
+    <div style="background: #f8fafc; border-radius: 16px; padding: 24px; margin: 24px 0;">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+        <div style="flex: 1; background: #e2e8f0; border-radius: 8px; height: 12px; overflow: hidden;">
+          <div style="background: linear-gradient(90deg, #2563eb, #10b981); width: ${completionPercentage}%; height: 100%; border-radius: 8px;"></div>
+        </div>
+        <span style="font-weight: 700; color: #2563eb; font-size: 18px;">${completionPercentage}%</span>
+      </div>
+      
+      <h4 style="margin: 0 0 12px 0; color: #1e293b;">Complete these items to unlock full access:</h4>
+      <ul style="margin: 0; padding-left: 20px;">
+        ${missingItems.map(item => `
+          <li style="color: #475569; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: #f59e0b;">○</span> ${item}
+          </li>
+        `).join('')}
+      </ul>
+    </div>
+    
+    <div class="info-box" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-left-color: #10b981;">
+      <h4 style="color: #059669;">✨ Benefits of a Complete Profile:</h4>
+      <ul style="margin: 8px 0; padding-left: 20px; color: #065f46;">
+        <li>Get matched with deals that fit your preferences</li>
+        <li>Stand out to syndicators looking for serious investors</li>
+        <li>Access exclusive deals and early opportunities</li>
+        <li>Receive personalized investment recommendations</li>
+      </ul>
+    </div>
+  `;
+
+  return getBaseTemplate({
+    title: `Complete Your Profile to Unlock More Deals`,
+    content,
+    buttonText: 'Complete My Profile',
+    buttonUrl: 'https://equitymd.com/profile'
+  });
+}
+
+// Deal Closing Soon Reminder
+export interface DealClosingSoonProps {
+  investorName: string;
+  dealTitle: string;
+  dealSlug: string;
+  daysRemaining: number;
+  targetIrr: string;
+  minimumInvestment: string;
+}
+
+export function getDealClosingSoonTemplate({
+  investorName,
+  dealTitle,
+  dealSlug,
+  daysRemaining,
+  targetIrr,
+  minimumInvestment,
+}: DealClosingSoonProps): string {
+  const urgencyColor = daysRemaining <= 3 ? '#dc2626' : daysRemaining <= 7 ? '#f59e0b' : '#2563eb';
+  
+  const content = `
+    <p>Hi ${investorName},</p>
+    
+    <div style="background: linear-gradient(135deg, ${daysRemaining <= 3 ? '#fef2f2' : '#fefce8'}, ${daysRemaining <= 3 ? '#fee2e2' : '#fef9c3'}); border: 2px solid ${urgencyColor}; border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 8px;">⏰</div>
+      <div style="font-size: 14px; color: ${urgencyColor}; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Time Sensitive</div>
+      <h2 style="margin: 12px 0; color: #1e293b; font-size: 20px;">This deal closes in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}!</h2>
+    </div>
+    
+    <p>You saved <strong>${dealTitle}</strong> to your watchlist. This opportunity is closing soon - don't miss your chance to invest!</p>
+    
+    <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin: 24px 0;">
+      <h3 style="margin: 0 0 16px 0; color: #1e293b;">${dealTitle}</h3>
+      <div style="display: flex; gap: 32px;">
+        <div>
+          <div style="font-size: 12px; color: #64748b;">Target IRR</div>
+          <div style="font-size: 20px; font-weight: 700; color: #10b981;">${targetIrr}%</div>
+        </div>
+        <div>
+          <div style="font-size: 12px; color: #64748b;">Minimum Investment</div>
+          <div style="font-size: 20px; font-weight: 700; color: #1e293b;">${minimumInvestment}</div>
+        </div>
+      </div>
+    </div>
+    
+    <p style="color: #64748b; font-size: 14px;">
+      <strong>Why act now?</strong> Once the funding round closes, you'll need to wait for the next opportunity from this syndicator.
+    </p>
+  `;
+
+  return getBaseTemplate({
+    title: `⏰ ${dealTitle} Closes in ${daysRemaining} Days`,
+    content,
+    buttonText: 'View Deal & Invest Now',
+    buttonUrl: `https://equitymd.com/deals/${dealSlug}`
+  });
 }
