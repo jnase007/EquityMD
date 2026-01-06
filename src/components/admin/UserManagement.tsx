@@ -289,13 +289,20 @@ The EquityMD Team
     setInviteLoading(true);
     setInviteError(null);
     setInviteSuccess(false);
+    
+    // Create a timeout promise
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Request timed out after 15 seconds')), 15000);
+    });
+    
     try {
-      // Call your email service or Supabase function to send invite
-      const { error } = await supabase.functions.invoke('send-email', {
-        body: {
-          to: inviteEmail,
-          subject: 'You are invited to join EquityMD',
-          content: `
+      // Race between the actual request and timeout
+      const result = await Promise.race([
+        supabase.functions.invoke('send-email', {
+          body: {
+            to: inviteEmail,
+            subject: 'You are invited to join EquityMD',
+            content: `
 Hello,
 
 You have been invited to join EquityMD as a ${inviteUserType === 'investor' ? 'Investor' : 'Syndicator'}.
@@ -307,18 +314,34 @@ https://equitymd.com/signup/start?email=${encodeURIComponent(inviteEmail)}&type=
 
 If you have any questions, contact us at hello@equitymd.com.
 
-Best regards,\nThe EquityMD Team
-          `,
-          type: 'invitation'
-        }
-      });
-      if (error) throw error;
+Best regards,
+The EquityMD Team
+            `,
+            type: 'invitation'
+          }
+        }),
+        timeoutPromise
+      ]) as { data?: any; error?: any };
+      
+      if (result.error) {
+        console.error('Invite email error:', result.error);
+        throw new Error(result.error.message || 'Failed to send invitation');
+      }
+      
       setInviteSuccess(true);
       setInviteEmail('');
       setInviteUserType('investor');
       setInviteMessage('');
+      
+      // Auto-close modal after success
+      setTimeout(() => {
+        setShowInviteModal(false);
+        setInviteSuccess(false);
+      }, 2000);
     } catch (err) {
-      setInviteError('Failed to send invitation. Please try again.');
+      console.error('Invite error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send invitation. Please try again.';
+      setInviteError(errorMessage);
     } finally {
       setInviteLoading(false);
     }
