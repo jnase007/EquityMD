@@ -287,41 +287,54 @@ export function PropertyListingWizard() {
         .from('syndicators')
         .insert([{
           company_name: businessName.trim(),
-          description: businessDescription.trim() || null,
+          company_description: businessDescription.trim() || null,
           slug: `${slug}-${Date.now().toString(36)}`,
           claimed_by: user!.id,
-          verification_status: 'pending',
-          years_experience: 0,
+          claimed_at: new Date().toISOString(),
+          claimable: false,
+          verification_status: 'unverified',
+          years_in_business: 0,
           total_deal_volume: 0,
-          contact_email: user!.email,
         }])
         .select()
         .single();
       
       if (syndicatorError) throw syndicatorError;
       
-      // Update user profile to syndicator type
+      // Update user profile to syndicator type and dashboard preference
       await supabase
         .from('profiles')
-        .update({ user_type: 'syndicator' })
+        .update({ 
+          user_type: 'syndicator',
+          dashboard_preference: 'syndicator'
+        })
         .eq('id', user!.id);
       
-      // Create syndicator_profiles entry
-      await supabase
-        .from('syndicator_profiles')
-        .upsert([{
-          id: user!.id,
-          company_name: businessName.trim(),
-        }]);
-      
-      // Update local state
+      // Update local state - set syndicator ID in form data
       setUserSyndicators([newSyndicator]);
       setFormData(prev => ({ ...prev, syndicatorId: newSyndicator.id }));
+      
+      // Clear any previous syndicator error
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.syndicatorId;
+        return newErrors;
+      });
+      
       setShowBusinessCreation(false);
       setBusinessName('');
       setBusinessDescription('');
       
-      toast.success('Business profile created! You can now list deals.');
+      toast.success('Business profile created! Continue to list your deal.');
+      
+      // Small delay to ensure state updates, then auto-advance if on step 0 and has title
+      setTimeout(() => {
+        if (currentStep === 0 && formData.title.trim() && formData.propertyType) {
+          setCurrentStep(1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 100);
+      
     } catch (error: any) {
       console.error('Error creating business:', error);
       toast.error(error.message || 'Failed to create business profile');
@@ -594,7 +607,15 @@ export function PropertyListingWizard() {
                                   To list a deal, you'll need to set up your syndicator profile first. This only takes a minute!
                                 </p>
                                 <button
-                                  onClick={() => setShowBusinessCreation(true)}
+                                  onClick={() => {
+                                    setShowBusinessCreation(true);
+                                    // Clear syndicator error when opening the form
+                                    setErrors(prev => {
+                                      const newErrors = { ...prev };
+                                      delete newErrors.syndicatorId;
+                                      return newErrors;
+                                    });
+                                  }}
                                   className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg"
                                 >
                                   Get Started
@@ -695,7 +716,7 @@ export function PropertyListingWizard() {
                           ))}
                         </div>
                       )}
-                      {errors.syndicatorId && (
+                      {errors.syndicatorId && !showBusinessCreation && (
                         <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
                           <AlertCircle className="h-4 w-4" />
                           {errors.syndicatorId}
