@@ -304,7 +304,7 @@ export function Home() {
               </div>
               <div className="hidden sm:block w-px h-12 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white">10K+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white">7,400+</p>
                 <p className="text-white/60 text-sm">Investors</p>
               </div>
               <div className="hidden sm:block w-px h-12 bg-white/20"></div>
