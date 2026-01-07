@@ -5,7 +5,57 @@ import { Footer } from '../components/Footer';
 import { InvestorDashboard, SyndicatorDashboard } from '../components/Dashboard';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
-import { TrendingUp, Building2, Plus, X, Sparkles } from 'lucide-react';
+import { 
+  TrendingUp, 
+  Building2, 
+  Plus, 
+  X, 
+  Sparkles, 
+  ChevronRight,
+  BarChart3,
+  FileText,
+  Users,
+  DollarSign,
+  CheckCircle2,
+  ArrowRight
+} from 'lucide-react';
+
+// Confetti component for celebration
+function Confetti() {
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      {[...Array(50)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute animate-confetti"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: '-10px',
+            animationDelay: `${Math.random() * 3}s`,
+            animationDuration: `${3 + Math.random() * 2}s`,
+          }}
+        >
+          <div
+            className="w-3 h-3 rounded-sm"
+            style={{
+              backgroundColor: ['#3B82F6', '#8B5CF6', '#10B981', '#F59E0B', '#EF4444'][Math.floor(Math.random() * 5)],
+              transform: `rotate(${Math.random() * 360}deg)`,
+            }}
+          />
+        </div>
+      ))}
+      <style>{`
+        @keyframes confetti {
+          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .animate-confetti {
+          animation: confetti 4s ease-out forwards;
+        }
+      `}</style>
+    </div>
+  );
+}
 
 export function UnifiedDashboard() {
   const { user, profile, setProfile } = useAuthStore();
@@ -14,21 +64,41 @@ export function UnifiedDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<'investor' | 'syndicator'>('investor');
-  const [showViewTip, setShowViewTip] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [hoveredView, setHoveredView] = useState<'investor' | 'syndicator' | null>(null);
 
-  // Check if user has seen the view tip before
+  // Get time-based greeting
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const firstName = profile?.full_name?.split(' ')[0] || 'there';
+
+  // Check if user has seen the welcome modal before
   useEffect(() => {
-    const hasSeenTip = localStorage.getItem('equitymd_seen_view_tip');
-    if (!hasSeenTip && profile) {
-      // Show tip after a short delay for better UX
-      const timer = setTimeout(() => setShowViewTip(true), 1000);
+    const hasSeenWelcome = localStorage.getItem('equitymd_seen_dashboard_welcome');
+    if (!hasSeenWelcome && profile && !loading) {
+      const timer = setTimeout(() => setShowWelcomeModal(true), 500);
       return () => clearTimeout(timer);
     }
-  }, [profile]);
+  }, [profile, loading]);
 
-  const dismissViewTip = () => {
-    setShowViewTip(false);
-    localStorage.setItem('equitymd_seen_view_tip', 'true');
+  const handleWelcomeChoice = (view: 'investor' | 'syndicator') => {
+    localStorage.setItem('equitymd_seen_dashboard_welcome', 'true');
+    setShowWelcomeModal(false);
+    setShowConfetti(true);
+    handleViewChange(view);
+    setTimeout(() => setShowConfetti(false), 4000);
+  };
+
+  const dismissWelcome = () => {
+    localStorage.setItem('equitymd_seen_dashboard_welcome', 'true');
+    setShowWelcomeModal(false);
   };
 
   useEffect(() => {
@@ -42,7 +112,6 @@ export function UnifiedDashboard() {
   // Set initial view based on profile preference
   useEffect(() => {
     if (profile) {
-      // Use saved preference, or default based on user type
       const preference = profile.dashboard_preference || profile.user_type || 'investor';
       setCurrentView(preference);
     }
@@ -58,7 +127,6 @@ export function UnifiedDashboard() {
       
       if (queryError) {
         console.error('Syndicator query error:', queryError);
-        // Don't fail completely, just default to investor view
       }
       
       setHasSyndicators((count || 0) > 0);
@@ -71,14 +139,17 @@ export function UnifiedDashboard() {
     }
   }
 
-  // Save preference when user switches views
+  // Save preference when user switches views with smooth transition
   async function handleViewChange(view: 'investor' | 'syndicator') {
-    setCurrentView(view);
+    if (view === currentView) return;
     
-    // Dismiss the view tip if shown
-    if (showViewTip) {
-      dismissViewTip();
-    }
+    setIsTransitioning(true);
+    
+    // Brief delay for transition effect
+    setTimeout(() => {
+      setCurrentView(view);
+      setTimeout(() => setIsTransitioning(false), 150);
+    }, 150);
     
     // Save preference to database
     if (user) {
@@ -101,15 +172,17 @@ export function UnifiedDashboard() {
     return <Navigate to="/" replace />;
   }
 
-  // Wait for both user and profile to be ready
   if (loading || !profile) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4" />
-            <p className="text-gray-500 text-sm">Loading your dashboard...</p>
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600" />
+              <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-blue-600 animate-pulse" />
+            </div>
+            <p className="text-gray-600 mt-6 font-medium">Preparing your dashboard...</p>
           </div>
         </div>
         <Footer />
@@ -119,14 +192,17 @@ export function UnifiedDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex flex-col items-center justify-center py-20">
-            <p className="text-red-600 mb-4">{error}</p>
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <X className="h-8 w-8 text-red-600" />
+            </div>
+            <p className="text-red-600 mb-4 text-lg">{error}</p>
             <button 
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all hover:shadow-lg font-medium"
             >
               Try Again
             </button>
@@ -137,89 +213,256 @@ export function UnifiedDashboard() {
     );
   }
 
-  // Check if user can access syndicator view
   const canAccessSyndicatorView = profile?.user_type === 'syndicator' || hasSyndicators;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
       <Navbar />
       
+      {showConfetti && <Confetti />}
+      
+      {/* Welcome Modal for First-time Users */}
+      {showWelcomeModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden animate-scale-up">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-white text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
+              <button
+                onClick={dismissWelcome}
+                className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                  <Sparkles className="h-4 w-4" />
+                  Welcome to EquityMD
+                </div>
+                <h2 className="text-3xl font-bold mb-2">
+                  {getGreeting()}, {firstName}! 👋
+                </h2>
+                <p className="text-blue-100 text-lg">
+                  Choose your dashboard experience
+                </p>
+              </div>
+            </div>
+            
+            {/* Options */}
+            <div className="p-8">
+              <div className="grid sm:grid-cols-2 gap-4">
+                {/* Investor Option */}
+                <button
+                  onClick={() => handleWelcomeChoice('investor')}
+                  className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-blue-500 hover:bg-blue-50/50 transition-all text-left relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-100 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative">
+                    <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <TrendingUp className="h-7 w-7 text-blue-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Investor View</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Browse deals, track investments, and grow your portfolio
+                    </p>
+                    <ul className="space-y-2">
+                      {[
+                        'Browse active deals',
+                        'Track your investments',
+                        'View returns & distributions',
+                        'Access due diligence docs'
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                          <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-4 flex items-center gap-2 text-blue-600 font-medium group-hover:gap-3 transition-all">
+                      Select Investor <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </button>
+
+                {/* Syndicator Option */}
+                <button
+                  onClick={() => canAccessSyndicatorView ? handleWelcomeChoice('syndicator') : navigate('/syndicator-setup')}
+                  className="group p-6 border-2 border-gray-200 rounded-2xl hover:border-purple-500 hover:bg-purple-50/50 transition-all text-left relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-100 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative">
+                    <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <Building2 className="h-7 w-7 text-purple-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Syndicator View</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      List deals, manage investors, and grow your syndication business
+                    </p>
+                    <ul className="space-y-2">
+                      {[
+                        'List new investment deals',
+                        'Manage investor relations',
+                        'Track fundraising progress',
+                        'Send updates & documents'
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                          <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-4 flex items-center gap-2 text-purple-600 font-medium group-hover:gap-3 transition-all">
+                      {canAccessSyndicatorView ? 'Select Syndicator' : 'Set Up Profile'} <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              <p className="text-center text-gray-500 text-sm mt-6">
+                💡 Don't worry — you can switch views anytime using the toggle above your dashboard
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        {/* Dashboard View Toggle */}
-        <div className="mb-6 flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-xl">
-            <button
-              onClick={() => handleViewChange('investor')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                currentView === 'investor'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <TrendingUp className="h-4 w-4" />
-              <span className="hidden sm:inline">Investor View</span>
-              <span className="sm:hidden">Investor</span>
-            </button>
-            <button
-              onClick={() => {
-                if (!canAccessSyndicatorView) {
-                  // Redirect to syndicator setup if no profile exists
-                  navigate('/syndicator-setup');
-                } else {
-                  handleViewChange('syndicator');
+        {/* Welcome Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                {getGreeting()}, {firstName}
+              </h1>
+              <p className="text-gray-600 mt-1">
+                {currentView === 'investor' 
+                  ? 'Track your investments and discover new opportunities'
+                  : 'Manage your deals and connect with investors'
                 }
-              }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                currentView === 'syndicator'
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <Building2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Syndicator View</span>
-              <span className="sm:hidden">Syndicator</span>
-            </button>
+              </p>
+            </div>
+            
+            {/* Dashboard View Toggle - Premium Design */}
+            <div className="relative">
+              <div className="flex items-center gap-1 p-1.5 bg-white rounded-2xl shadow-lg border border-gray-200/80">
+                {/* Investor Toggle */}
+                <button
+                  onClick={() => handleViewChange('investor')}
+                  onMouseEnter={() => setHoveredView('investor')}
+                  onMouseLeave={() => setHoveredView(null)}
+                  className={`relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-medium transition-all duration-300 ${
+                    currentView === 'investor'
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md shadow-blue-500/30'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <TrendingUp className={`h-4 w-4 transition-transform ${currentView === 'investor' ? 'scale-110' : ''}`} />
+                  <span className="hidden sm:inline">Investor</span>
+                  <span className="sm:hidden">Invest</span>
+                </button>
+
+                {/* Syndicator Toggle */}
+                <button
+                  onClick={() => {
+                    if (!canAccessSyndicatorView) {
+                      navigate('/syndicator-setup');
+                    } else {
+                      handleViewChange('syndicator');
+                    }
+                  }}
+                  onMouseEnter={() => setHoveredView('syndicator')}
+                  onMouseLeave={() => setHoveredView(null)}
+                  className={`relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-medium transition-all duration-300 ${
+                    currentView === 'syndicator'
+                      ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-md shadow-purple-500/30'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <Building2 className={`h-4 w-4 transition-transform ${currentView === 'syndicator' ? 'scale-110' : ''}`} />
+                  <span className="hidden sm:inline">Syndicator</span>
+                  <span className="sm:hidden">List</span>
+                  {!canAccessSyndicatorView && (
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-purple-500"></span>
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Hover Tooltips */}
+              {hoveredView === 'investor' && currentView !== 'investor' && (
+                <div className="absolute top-full left-0 mt-2 p-3 bg-white rounded-xl shadow-xl border border-gray-100 w-56 z-10 animate-fade-in">
+                  <div className="flex items-center gap-2 text-blue-600 font-medium mb-2">
+                    <TrendingUp className="h-4 w-4" />
+                    Investor View
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li className="flex items-center gap-1.5"><BarChart3 className="h-3 w-3" /> Browse active deals</li>
+                    <li className="flex items-center gap-1.5"><DollarSign className="h-3 w-3" /> Track investments</li>
+                    <li className="flex items-center gap-1.5"><FileText className="h-3 w-3" /> Access documents</li>
+                  </ul>
+                </div>
+              )}
+
+              {hoveredView === 'syndicator' && currentView !== 'syndicator' && canAccessSyndicatorView && (
+                <div className="absolute top-full right-0 mt-2 p-3 bg-white rounded-xl shadow-xl border border-gray-100 w-56 z-10 animate-fade-in">
+                  <div className="flex items-center gap-2 text-purple-600 font-medium mb-2">
+                    <Building2 className="h-4 w-4" />
+                    Syndicator View
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-gray-600">
+                    <li className="flex items-center gap-1.5"><Plus className="h-3 w-3" /> List new deals</li>
+                    <li className="flex items-center gap-1.5"><Users className="h-3 w-3" /> Manage investors</li>
+                    <li className="flex items-center gap-1.5"><BarChart3 className="h-3 w-3" /> Track fundraising</li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* First-time View Selection Tip - inline */}
-          {showViewTip && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm animate-pulse">
-              <Sparkles className="h-4 w-4 text-blue-600 flex-shrink-0" />
-              <span className="text-blue-700">
-                <span className="hidden sm:inline">Choose your view — it'll be saved for next time!</span>
-                <span className="sm:hidden">Pick your default view</span>
-              </span>
-              <button
-                onClick={dismissViewTip}
-                className="p-0.5 hover:bg-blue-100 rounded transition ml-1 flex-shrink-0"
-                aria-label="Dismiss"
-              >
-                <X className="h-4 w-4 text-blue-400 hover:text-blue-600" />
-              </button>
-            </div>
-          )}
-          
-          {!canAccessSyndicatorView && !showViewTip && (
+          {/* Quick CTA for non-syndicators */}
+          {!canAccessSyndicatorView && (
             <button
               onClick={() => navigate('/syndicator-setup')}
-              className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium"
+              className="mt-4 inline-flex items-center gap-2 text-sm text-purple-600 bg-purple-50 px-4 py-2 rounded-xl hover:bg-purple-100 transition font-medium group"
             >
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Become a Syndicator</span>
-              <span className="sm:hidden">List Deals</span>
+              <span>Have a deal to list? Become a Syndicator</span>
+              <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </button>
           )}
         </div>
 
-        {currentView === 'syndicator' ? (
-          <SyndicatorDashboard />
-        ) : (
-          <InvestorDashboard />
-        )}
+        {/* Dashboard Content with Transition */}
+        <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
+          {currentView === 'syndicator' ? (
+            <SyndicatorDashboard />
+          ) : (
+            <InvestorDashboard />
+          )}
+        </div>
       </div>
       
       <Footer />
+
+      {/* Add required animations */}
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scale-up {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.2s ease-out;
+        }
+        .animate-scale-up {
+          animation: scale-up 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
-
