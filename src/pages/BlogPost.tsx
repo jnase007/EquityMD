@@ -698,6 +698,8 @@ export function BlogPost() {
       }
 
       try {
+        console.log('Fetching blog post with slug:', slug);
+        
         const { data, error } = await supabase
           .from('blog_posts')
           .select('*')
@@ -705,8 +707,11 @@ export function BlogPost() {
           .eq('is_published', true)
           .single();
 
+        console.log('Blog post query result:', { data, error });
+
         if (error || !data) {
           console.warn('Blog post not found in database, checking fallback:', slug);
+          console.warn('Error details:', error);
           
           // Check fallback posts
           const fallbackPost = fallbackPosts[slug];
