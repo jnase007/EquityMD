@@ -125,7 +125,7 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
   const hasItems = notifications.length > 0;
 
   return (
-    <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg z-50">
+    <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl z-[9999]">
       <div className="p-4 border-b">
         <div className="flex justify-between items-center">
           <h3 className="font-bold">Notifications</h3>

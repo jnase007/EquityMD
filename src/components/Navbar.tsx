@@ -292,7 +292,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   </button>
                   
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border py-1 z-[9999]">
                       <div className="px-4 py-3 border-b">
                         <p className="font-medium text-gray-900">{profile?.full_name || 'User'}</p>
                         <p className="text-sm text-gray-500 truncate">{profile?.email}</p>
