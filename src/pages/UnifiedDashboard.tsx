@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer';
 import { InvestorDashboard, SyndicatorDashboard } from '../components/Dashboard';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
-import { TrendingUp, Building2, Plus } from 'lucide-react';
+import { TrendingUp, Building2, Plus, X, Sparkles } from 'lucide-react';
 
 export function UnifiedDashboard() {
   const { user, profile, setProfile } = useAuthStore();
@@ -14,6 +14,22 @@ export function UnifiedDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<'investor' | 'syndicator'>('investor');
+  const [showViewTip, setShowViewTip] = useState(false);
+
+  // Check if user has seen the view tip before
+  useEffect(() => {
+    const hasSeenTip = localStorage.getItem('equitymd_seen_view_tip');
+    if (!hasSeenTip && profile) {
+      // Show tip after a short delay for better UX
+      const timer = setTimeout(() => setShowViewTip(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [profile]);
+
+  const dismissViewTip = () => {
+    setShowViewTip(false);
+    localStorage.setItem('equitymd_seen_view_tip', 'true');
+  };
 
   useEffect(() => {
     if (user) {
@@ -58,6 +74,11 @@ export function UnifiedDashboard() {
   // Save preference when user switches views
   async function handleViewChange(view: 'investor' | 'syndicator') {
     setCurrentView(view);
+    
+    // Dismiss the view tip if shown
+    if (showViewTip) {
+      dismissViewTip();
+    }
     
     // Save preference to database
     if (user) {
@@ -124,6 +145,30 @@ export function UnifiedDashboard() {
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
+        {/* First-time View Selection Tip */}
+        {showViewTip && (
+          <div className="mb-4 animate-fade-in">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4 flex items-center justify-between shadow-lg">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-lg">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-medium">Choose your default dashboard view</p>
+                  <p className="text-sm text-blue-100">Your preference will be saved and remembered next time you log in.</p>
+                </div>
+              </div>
+              <button
+                onClick={dismissViewTip}
+                className="p-1 hover:bg-white/20 rounded-lg transition ml-4"
+                aria-label="Dismiss"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Dashboard View Toggle */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-xl">
