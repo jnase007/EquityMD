@@ -744,7 +744,7 @@ export function BlogPost() {
 
         setPost(data);
         // Track view (fire and forget)
-        supabase.rpc('increment_blog_view', { post_slug: slug }).catch(() => {});
+        supabase.rpc('increment_blog_view', { post_slug: slug })
         
         // Fetch related posts from same category
         const { data: related } = await supabase
@@ -768,9 +768,7 @@ export function BlogPost() {
             .slice(0, 3)
             .map(([key, post]) => ({ slug: key, title: post.title, category: post.category }));
           setRelatedPosts(otherPosts);
-        } else {
-          setNotFound(true);
-        }
+        } 
       } finally {
         setLoading(false);
       }
