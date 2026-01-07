@@ -35,6 +35,555 @@ interface BlogPostData {
   quotable_stats?: string[];
 }
 
+// Fallback posts with full content when database is empty
+const fallbackPosts: Record<string, BlogPostData> = {
+  'beginners-guide-real-estate-syndication-2026': {
+    id: '1',
+    title: "The Complete Beginner's Guide to Real Estate Syndication in 2026",
+    excerpt: 'Learn everything you need to know about real estate syndication, from how it works to finding your first deal.',
+    content: `## What is Real Estate Syndication?
+
+Real estate syndication is a partnership between multiple investors who pool their capital to purchase properties larger than they could afford individually. Think of it as crowdfunding for commercial real estate—but with a structured legal framework and professional management.
+
+### How Syndication Works
+
+In a typical syndication deal:
+
+1. **General Partners (GPs)** - Also called syndicators or sponsors, these are the experienced operators who find deals, manage properties, and execute the business plan
+2. **Limited Partners (LPs)** - Passive investors who contribute capital and receive returns without day-to-day management responsibilities
+
+### The Benefits of Syndication Investing
+
+**Passive Income**: Unlike managing rental properties yourself, syndication allows you to earn returns without landlord headaches.
+
+**Larger Deals**: Access institutional-quality assets like apartment complexes, office buildings, and retail centers.
+
+**Diversification**: Spread your capital across multiple properties and markets.
+
+**Tax Advantages**: Benefit from depreciation, 1031 exchanges, and other real estate tax benefits.
+
+### Understanding the Numbers
+
+When evaluating a syndication deal, focus on these key metrics:
+
+- **Cash-on-Cash Return**: Annual cash flow divided by your initial investment
+- **Internal Rate of Return (IRR)**: Total return accounting for the time value of money
+- **Equity Multiple**: Total distributions divided by initial investment
+- **Preferred Return**: The minimum return LPs receive before GPs get their share
+
+### Getting Started
+
+1. **Get Educated**: Read books, attend webinars, and learn the fundamentals
+2. **Verify Accreditation**: Most syndications require accredited investor status
+3. **Build Relationships**: Connect with syndicators and other investors
+4. **Start Small**: Begin with a smaller investment to learn the process
+5. **Due Diligence**: Always thoroughly vet sponsors and deals
+
+### Common Mistakes to Avoid
+
+- Investing based on projected returns alone
+- Skipping background checks on sponsors
+- Not reading the Private Placement Memorandum (PPM)
+- Putting all capital into one deal
+- Ignoring market fundamentals
+
+Real estate syndication offers an incredible opportunity to build wealth through commercial real estate. By understanding the basics and approaching each investment with diligence, you can build a portfolio that generates passive income for years to come.`,
+    author: 'Dr. Sarah Chen',
+    published_at: new Date().toISOString(),
+    category: 'Education',
+    image_url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=600',
+    meta_description: 'Learn real estate syndication basics: how it works, key metrics like IRR and cash-on-cash returns, and steps to start investing passively.',
+    meta_keywords: ['real estate syndication', 'passive investing', 'commercial real estate', 'syndication for beginners'],
+    reading_time: 12,
+    key_takeaways: [
+      'Syndication allows passive investment in large commercial properties',
+      'Key metrics include IRR, Cash-on-Cash, and Equity Multiple',
+      'Always perform due diligence on sponsors before investing'
+    ],
+    quotable_stats: [
+      'Average syndication deals target 15-20% IRR',
+      'Typical hold periods are 3-7 years',
+      'Most syndications require $50,000-$100,000 minimum investment'
+    ],
+    faq_schema: [
+      { question: 'What is real estate syndication?', answer: 'Real estate syndication is a partnership where multiple investors pool capital to purchase larger commercial properties together.' },
+      { question: 'Do I need to be an accredited investor?', answer: 'Most syndications require accredited investor status, though some 506(b) offerings allow sophisticated non-accredited investors.' },
+      { question: 'What is a typical minimum investment?', answer: 'Most syndications have minimums between $50,000 and $100,000, though some start at $25,000.' }
+    ]
+  },
+  'multifamily-market-outlook-2026': {
+    id: '2',
+    title: '2026 Multifamily Market Outlook: Where to Invest This Year',
+    excerpt: 'Discover the top markets for multifamily investment in 2026. Our analysis covers rent growth, cap rates, and emerging opportunities.',
+    content: `## The State of Multifamily in 2026
+
+The multifamily sector continues to show resilience heading into 2026, though investors need to be more selective about markets and deal structures than in previous years.
+
+### Top Markets for 2026
+
+**Sun Belt Dominance Continues**
+
+The Sun Belt region remains the primary destination for both population and capital flows:
+
+- **Austin, TX** - Despite cooling from pandemic highs, still shows strong fundamentals
+- **Phoenix, AZ** - Continued in-migration and job growth support demand
+- **Nashville, TN** - Healthcare and entertainment sectors driving growth
+- **Tampa, FL** - Affordable relative to other Florida markets
+- **Charlotte, NC** - Banking hub with diverse economy
+
+### Key Trends Shaping the Market
+
+**1. Interest Rate Normalization**
+After years of volatility, rates are stabilizing, giving investors more certainty for underwriting.
+
+**2. Supply Pipeline Moderating**
+New construction starts have slowed, which should help occupancy rates recover in previously oversupplied markets.
+
+**3. Affordability Focus**
+Workforce housing (Class B and C properties) continues to outperform luxury Class A developments.
+
+**4. Technology Integration**
+Properties with smart home features and enhanced amenities command premium rents.
+
+### Investment Strategies for 2026
+
+**Value-Add Remains King**
+Properties with renovation upside continue to offer the best risk-adjusted returns.
+
+**Focus on Fundamentals**
+Job growth, population trends, and supply/demand balance matter more than ever.
+
+**Conservative Underwriting**
+Use realistic rent growth assumptions (2-3% vs. historical 5%+).
+
+### Markets to Watch
+
+Several emerging markets deserve attention for their growth potential:
+
+- Huntsville, AL - Tech and defense sector expansion
+- Boise, ID - Quality of life driving continued in-migration
+- Salt Lake City, UT - Strong job market and population growth
+
+The multifamily market in 2026 rewards disciplined investors who focus on fundamentals over speculation.`,
+    author: 'Marcus Johnson, CFA',
+    published_at: new Date(Date.now() - 86400000 * 3).toISOString(),
+    category: 'Market Analysis',
+    image_url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200&h=600',
+    meta_description: 'Discover top multifamily markets for 2026 investment. Analysis of rent growth, cap rates, and emerging Sun Belt opportunities.',
+    meta_keywords: ['multifamily investing', '2026 market outlook', 'Sun Belt real estate', 'apartment investing'],
+    reading_time: 10,
+    key_takeaways: [
+      'Sun Belt markets continue to lead in population and job growth',
+      'Value-add strategies offer best risk-adjusted returns',
+      'Conservative underwriting is essential in the current environment'
+    ],
+    quotable_stats: [
+      'Sun Belt markets saw 15% population growth since 2020',
+      'Workforce housing outperformed Class A by 200 basis points',
+      'New construction starts down 25% from 2023 peak'
+    ]
+  },
+  'evaluate-syndication-deal-due-diligence': {
+    id: '3',
+    title: 'How to Evaluate a Real Estate Syndication Deal: Due Diligence Checklist',
+    excerpt: 'Before investing in any syndication, thorough due diligence is essential. Use this comprehensive checklist.',
+    content: `## The Due Diligence Process
+
+Investing in real estate syndications requires careful evaluation of multiple factors. This checklist will help you make informed decisions.
+
+### Sponsor Evaluation
+
+**Track Record**
+- How many deals has the sponsor completed?
+- What were the actual returns vs. projected?
+- Have they experienced market downturns? How did they perform?
+
+**Team Composition**
+- Who are the key team members?
+- What is their relevant experience?
+- Do they have local market expertise?
+
+**Alignment of Interests**
+- How much capital is the sponsor investing?
+- What is the fee structure?
+- When does the sponsor get paid?
+
+### Property Analysis
+
+**Location Fundamentals**
+- Job growth in the area
+- Population trends
+- Crime statistics
+- School ratings
+- Proximity to employment centers
+
+**Physical Condition**
+- Age of major systems (roof, HVAC, plumbing)
+- Recent capital expenditures
+- Deferred maintenance
+- Environmental concerns
+
+**Financial Performance**
+- Current occupancy rates
+- Rent roll analysis
+- Operating expenses
+- Historical financial statements
+
+### Deal Structure
+
+**Legal Documents Review**
+- Private Placement Memorandum (PPM)
+- Operating Agreement
+- Subscription Agreement
+
+**Return Structure**
+- Preferred return rate
+- Profit split (waterfall structure)
+- Fees (acquisition, asset management, disposition)
+
+**Exit Strategy**
+- Projected hold period
+- Refinance vs. sale options
+- Market conditions for exit
+
+### Red Flags to Watch For
+
+- Unrealistic return projections
+- Lack of sponsor co-investment
+- Poor communication history
+- No track record verification
+- Pressure to invest quickly
+
+### Final Steps
+
+1. Verify all claims independently
+2. Speak with previous investors
+3. Consult with your CPA and attorney
+4. Never invest more than you can afford to lose
+5. Trust your instincts
+
+Thorough due diligence takes time but protects your capital and gives you confidence in your investment decisions.`,
+    author: 'Jennifer Walsh, JD',
+    published_at: new Date(Date.now() - 86400000 * 7).toISOString(),
+    category: 'Due Diligence',
+    image_url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200&h=600',
+    meta_description: 'Complete due diligence checklist for real estate syndication investments. Learn to evaluate sponsors, properties, and deal structures.',
+    meta_keywords: ['syndication due diligence', 'real estate investing checklist', 'sponsor evaluation', 'deal analysis'],
+    reading_time: 15,
+    key_takeaways: [
+      'Always verify sponsor track record with actual investors',
+      'Review all legal documents with qualified professionals',
+      'Red flags include unrealistic projections and pressure tactics'
+    ],
+    quotable_stats: [
+      '80% of syndication success depends on sponsor quality',
+      'Top sponsors typically co-invest 5-10% of equity',
+      'Average due diligence should take 2-4 weeks minimum'
+    ],
+    faq_schema: [
+      { question: 'What documents should I review?', answer: 'Review the PPM (Private Placement Memorandum), Operating Agreement, and Subscription Agreement carefully with legal counsel.' },
+      { question: 'How do I verify sponsor track record?', answer: 'Ask for references from previous investors, review completed deal summaries, and check for any legal or regulatory issues.' }
+    ]
+  },
+  'tax-benefits-real-estate-syndication': {
+    id: '4',
+    title: 'Tax Benefits of Real Estate Syndication: What Investors Need to Know',
+    excerpt: 'Real estate syndication offers powerful tax advantages. Learn about depreciation, cost segregation, and more.',
+    content: `## Understanding Real Estate Tax Benefits
+
+One of the most compelling reasons to invest in real estate syndications is the significant tax advantages they offer. This guide explains the key benefits.
+
+### Depreciation: The Paper Loss
+
+**How It Works**
+The IRS allows property owners to deduct the cost of buildings over 27.5 years (residential) or 39 years (commercial). This "paper loss" can offset your passive income.
+
+**Pass-Through Benefits**
+As a limited partner, you receive your share of depreciation deductions on your K-1, which can reduce or eliminate the taxes on your distributions.
+
+### Cost Segregation Studies
+
+**Accelerating Depreciation**
+Cost segregation identifies components that can be depreciated faster:
+- 5-year property: Appliances, carpeting, certain fixtures
+- 15-year property: Landscaping, parking lots, sidewalks
+
+**Tax Impact**
+A cost segregation study can move 20-40% of a building's value into shorter depreciation schedules, creating substantial first-year deductions.
+
+### Bonus Depreciation
+
+Current tax law allows 60% bonus depreciation on qualifying property improvements (decreasing 20% annually through 2026).
+
+### 1031 Exchanges
+
+While individual LPs can't directly 1031 exchange syndication interests, some sponsors structure deals to allow:
+- Drop and swap arrangements
+- Delaware Statutory Trusts (DSTs)
+- Opportunity Zone investments
+
+### Passive Loss Rules
+
+**Understanding Limitations**
+Passive losses can only offset passive income. However, real estate professionals may qualify for active treatment.
+
+**Carryforward Benefits**
+Unused passive losses carry forward to future years or can offset gains at sale.
+
+### Capital Gains Treatment
+
+Long-term capital gains on property sales (held over 1 year) receive preferential tax rates:
+- 0%, 15%, or 20% depending on income level
+- Plus potential 3.8% Net Investment Income Tax
+
+### Working with Professionals
+
+Always consult with:
+- A CPA experienced in real estate investments
+- A tax attorney for complex situations
+- Your financial advisor for portfolio planning
+
+The tax benefits of real estate syndication can significantly enhance your after-tax returns, making it a powerful wealth-building tool.`,
+    author: 'Robert Kim, CPA',
+    published_at: new Date(Date.now() - 86400000 * 10).toISOString(),
+    category: 'Tax Strategy',
+    image_url: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200&h=600',
+    meta_description: 'Learn the tax benefits of real estate syndication: depreciation, cost segregation, 1031 exchanges, and strategies to maximize after-tax returns.',
+    meta_keywords: ['real estate tax benefits', 'depreciation', 'cost segregation', '1031 exchange', 'passive income taxes'],
+    reading_time: 11,
+    key_takeaways: [
+      'Depreciation creates "paper losses" that offset taxable income',
+      'Cost segregation can accelerate deductions significantly',
+      'Long-term capital gains receive preferential tax treatment'
+    ],
+    quotable_stats: [
+      'Cost segregation can move 20-40% of value to faster depreciation',
+      'Long-term capital gains taxed at 0-20% vs. ordinary income rates up to 37%',
+      'Bonus depreciation at 60% in 2024, decreasing 20% annually'
+    ],
+    faq_schema: [
+      { question: 'Can I use syndication losses against my W-2 income?', answer: 'Generally no. Passive losses can only offset passive income unless you qualify as a real estate professional.' },
+      { question: 'What is a K-1?', answer: 'A K-1 is a tax form that reports your share of the partnership\'s income, deductions, and credits.' }
+    ]
+  },
+  'multifamily-industrial-self-storage-comparison': {
+    id: '5',
+    title: 'Multifamily vs. Industrial vs. Self-Storage: Comparing CRE Asset Classes',
+    excerpt: 'Which commercial real estate asset class is right for you? Compare across risk, returns, and market dynamics.',
+    content: `## Choosing the Right Asset Class
+
+Each commercial real estate sector offers distinct advantages and considerations. Understanding these differences helps you build a diversified portfolio.
+
+### Multifamily Properties
+
+**Pros**
+- Essential housing provides recession resistance
+- Steady cash flow from monthly rents
+- Large, liquid market with ample data
+- Multiple financing options available
+
+**Cons**
+- Lower yields compared to other asset classes
+- Management intensive
+- Rent control risks in some markets
+- Higher per-unit renovation costs
+
+**Typical Returns**
+- Cash-on-Cash: 6-10%
+- IRR: 13-18%
+
+### Industrial Properties
+
+**Pros**
+- E-commerce tailwinds driving demand
+- Long lease terms (5-10 years)
+- Triple net leases reduce management burden
+- Lower tenant turnover costs
+
+**Cons**
+- Tenant concentration risk
+- Specialized buildings may limit tenant pool
+- Location critical for logistics properties
+- Higher upfront capital requirements
+
+**Typical Returns**
+- Cash-on-Cash: 5-8%
+- IRR: 12-16%
+
+### Self-Storage Facilities
+
+**Pros**
+- Recession resistant (people need storage in good and bad times)
+- Low operating costs
+- Month-to-month leases allow rent flexibility
+- Minimal tenant improvements needed
+
+**Cons**
+- Highly fragmented market
+- Location dependent
+- Technology disruption potential
+- Oversupply in some markets
+
+**Typical Returns**
+- Cash-on-Cash: 7-12%
+- IRR: 14-20%
+
+### Comparison Matrix
+
+| Factor | Multifamily | Industrial | Self-Storage |
+|--------|-------------|------------|--------------|
+| Management Intensity | High | Low | Medium |
+| Lease Length | 12 months | 5-10 years | Month-to-month |
+| Recession Resistance | Strong | Moderate | Strong |
+| Entry Capital | Medium | High | Low-Medium |
+| Appreciation Potential | Moderate | High | High |
+
+### Building Your Portfolio
+
+**Diversification Strategy**
+Consider allocating across multiple asset classes:
+- 50% Multifamily (stability)
+- 30% Industrial (growth)
+- 20% Self-Storage (yield)
+
+**Risk Tolerance Considerations**
+- Conservative: Weight toward multifamily
+- Growth-oriented: Emphasize industrial
+- Yield-focused: Consider self-storage
+
+Each asset class has a role in a well-constructed portfolio. The right mix depends on your goals, risk tolerance, and investment timeline.`,
+    author: 'Amanda Torres',
+    published_at: new Date(Date.now() - 86400000 * 14).toISOString(),
+    category: 'Investment Strategy',
+    image_url: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&q=80&w=1200&h=600',
+    meta_description: 'Compare multifamily, industrial, and self-storage investments. Analyze returns, risks, and which CRE asset class fits your portfolio.',
+    meta_keywords: ['commercial real estate comparison', 'multifamily investing', 'industrial real estate', 'self-storage investing'],
+    reading_time: 9,
+    key_takeaways: [
+      'Each asset class offers distinct risk/return profiles',
+      'Diversification across sectors reduces portfolio risk',
+      'Match asset class selection to your investment goals'
+    ],
+    quotable_stats: [
+      'Industrial vacancy at historic lows near 4%',
+      'Self-storage demand grew 8% annually since 2020',
+      'Multifamily remains the most liquid CRE sector'
+    ]
+  },
+  'build-passive-income-real-estate-syndication': {
+    id: '6',
+    title: 'How to Build $10,000/Month in Passive Income Through Real Estate Syndication',
+    excerpt: 'A step-by-step guide to building a $10,000 monthly passive income stream through strategic syndication investments.',
+    content: `## The Path to $10,000/Month Passive Income
+
+Building significant passive income through real estate syndication is achievable with a strategic approach and patience. Here's a realistic roadmap.
+
+### Understanding the Math
+
+To generate $10,000/month ($120,000/year) in distributions:
+
+**At 8% Cash-on-Cash Return**
+Required Investment: $1,500,000
+
+**At 10% Cash-on-Cash Return**
+Required Investment: $1,200,000
+
+### The Accumulation Strategy
+
+**Phase 1: Foundation (Years 1-3)**
+- Invest $100,000-$200,000 across 2-4 deals
+- Focus on learning and building relationships
+- Reinvest all distributions
+- Target: $10,000-$20,000 annual passive income
+
+**Phase 2: Acceleration (Years 3-6)**
+- Increase annual investments to $150,000-$250,000
+- Diversify across asset classes and sponsors
+- Consider refinance proceeds for reinvestment
+- Target: $40,000-$60,000 annual passive income
+
+**Phase 3: Optimization (Years 6-10)**
+- Deploy capital from exits into new deals
+- Focus on consistent cash-flowing properties
+- Fine-tune sponsor and asset class allocation
+- Target: $100,000+ annual passive income
+
+### Portfolio Construction
+
+**Diversification Principles**
+- No more than 20% with any single sponsor
+- Mix asset classes (multifamily, industrial, storage)
+- Geographic diversification across markets
+- Blend of cash flow and appreciation deals
+
+**Sample $1.5M Portfolio**
+| Investment | Amount | Est. Annual Cash Flow |
+|------------|--------|----------------------|
+| Multifamily Deal A | $250,000 | $20,000 |
+| Multifamily Deal B | $250,000 | $22,500 |
+| Industrial Fund | $300,000 | $21,000 |
+| Self-Storage A | $200,000 | $18,000 |
+| Self-Storage B | $200,000 | $20,000 |
+| Value-Add MF | $300,000 | $18,500 |
+| **TOTAL** | **$1,500,000** | **$120,000** |
+
+### Maximizing Your Returns
+
+**1. Reinvest Distributions Initially**
+In the early years, reinvesting distributions accelerates wealth building through compounding.
+
+**2. Focus on Tax Efficiency**
+Depreciation benefits reduce your tax burden, effectively increasing your net returns.
+
+**3. Build Sponsor Relationships**
+Top sponsors often offer better terms to repeat investors.
+
+**4. Stay Liquid**
+Keep 10-15% of your portfolio in liquid assets for opportunities.
+
+### Common Pitfalls to Avoid
+
+- Chasing yield over quality
+- Over-concentrating in one market or sponsor
+- Not accounting for capital call reserves
+- Ignoring the power of compounding
+- Becoming impatient with the timeline
+
+### The Long Game
+
+Building $10,000/month in passive income typically takes 7-12 years of consistent investing. The key is:
+
+1. Start as early as possible
+2. Invest consistently
+3. Reinvest returns in the early years
+4. Gradually shift to cash flow as you approach your goal
+5. Maintain discipline through market cycles
+
+Real estate syndication is a proven path to financial freedom. With patience and smart execution, you can build the passive income stream you're working toward.`,
+    author: 'EquityMD Team',
+    published_at: new Date(Date.now() - 86400000 * 1).toISOString(),
+    category: 'Passive Income',
+    image_url: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=1200&h=600',
+    meta_description: 'Learn to build $10,000/month passive income through real estate syndication. Step-by-step guide with portfolio strategies and timelines.',
+    meta_keywords: ['passive income real estate', 'syndication investing', 'financial freedom', 'real estate portfolio'],
+    reading_time: 13,
+    key_takeaways: [
+      '$1.2-1.5M invested can generate $10K/month at typical yields',
+      'Building this income typically takes 7-12 years',
+      'Diversification and reinvestment are key to success'
+    ],
+    quotable_stats: [
+      '8-10% cash-on-cash returns are typical for stabilized deals',
+      'Reinvesting for first 5 years can double your timeline acceleration',
+      'Top investors limit single-sponsor exposure to 20%'
+    ],
+    faq_schema: [
+      { question: 'How much do I need to start?', answer: 'Most syndications have $50,000-$100,000 minimums, but you can start with smaller amounts through some platforms.' },
+      { question: 'How long does it take to reach $10K/month?', answer: 'With consistent investing and reinvestment, most investors can reach this goal in 7-12 years.' }
+    ]
+  }
+};
+
 
 // Generate JSON-LD Schema for Article
 function generateArticleSchema(post: BlogPostData, slug: string) {
@@ -157,7 +706,33 @@ export function BlogPost() {
           .single();
 
         if (error || !data) {
-          console.warn('Blog post not found:', slug, error?.message);
+          console.warn('Blog post not found in database, checking fallback:', slug);
+          
+          // Check fallback posts
+          const fallbackPost = fallbackPosts[slug];
+          if (fallbackPost) {
+            setPost(fallbackPost);
+            
+            // Set related posts from fallback data
+            const relatedFallback = Object.entries(fallbackPosts)
+              .filter(([key, post]) => key !== slug && post.category === fallbackPost.category)
+              .slice(0, 3)
+              .map(([key, post]) => ({ slug: key, title: post.title, category: post.category }));
+            
+            if (relatedFallback.length === 0) {
+              // If no same-category posts, get any other posts
+              const otherPosts = Object.entries(fallbackPosts)
+                .filter(([key]) => key !== slug)
+                .slice(0, 3)
+                .map(([key, post]) => ({ slug: key, title: post.title, category: post.category }));
+              setRelatedPosts(otherPosts);
+            } else {
+              setRelatedPosts(relatedFallback);
+            }
+            setLoading(false);
+            return;
+          }
+          
           setNotFound(true);
           return;
         }
@@ -178,7 +753,19 @@ export function BlogPost() {
         if (related) setRelatedPosts(related);
       } catch (err) {
         console.warn('Error fetching blog post:', err);
-        setNotFound(true);
+        
+        // Try fallback on error too
+        const fallbackPost = fallbackPosts[slug];
+        if (fallbackPost) {
+          setPost(fallbackPost);
+          const otherPosts = Object.entries(fallbackPosts)
+            .filter(([key]) => key !== slug)
+            .slice(0, 3)
+            .map(([key, post]) => ({ slug: key, title: post.title, category: post.category }));
+          setRelatedPosts(otherPosts);
+        } else {
+          setNotFound(true);
+        }
       } finally {
         setLoading(false);
       }
