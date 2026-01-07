@@ -145,32 +145,8 @@ export function UnifiedDashboard() {
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 py-6 lg:py-8">
-        {/* First-time View Selection Tip */}
-        {showViewTip && (
-          <div className="mb-4 animate-fade-in">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-4 flex items-center justify-between shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white/20 rounded-lg">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="font-medium">Choose your default dashboard view</p>
-                  <p className="text-sm text-blue-100">Your preference will be saved and remembered next time you log in.</p>
-                </div>
-              </div>
-              <button
-                onClick={dismissViewTip}
-                className="p-1 hover:bg-white/20 rounded-lg transition ml-4"
-                aria-label="Dismiss"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Dashboard View Toggle */}
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-xl">
             <button
               onClick={() => handleViewChange('investor')}
@@ -204,8 +180,26 @@ export function UnifiedDashboard() {
               <span className="sm:hidden">Syndicator</span>
             </button>
           </div>
+
+          {/* First-time View Selection Tip - inline */}
+          {showViewTip && (
+            <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm animate-pulse">
+              <Sparkles className="h-4 w-4 text-blue-600 flex-shrink-0" />
+              <span className="text-blue-700">
+                <span className="hidden sm:inline">Choose your view — it'll be saved for next time!</span>
+                <span className="sm:hidden">Pick your default view</span>
+              </span>
+              <button
+                onClick={dismissViewTip}
+                className="p-0.5 hover:bg-blue-100 rounded transition ml-1 flex-shrink-0"
+                aria-label="Dismiss"
+              >
+                <X className="h-4 w-4 text-blue-400 hover:text-blue-600" />
+              </button>
+            </div>
+          )}
           
-          {!canAccessSyndicatorView && (
+          {!canAccessSyndicatorView && !showViewTip && (
             <button
               onClick={() => navigate('/syndicator-setup')}
               className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-medium"
