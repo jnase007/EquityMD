@@ -22,6 +22,76 @@ interface BlogPost {
   reading_time?: number;
 }
 
+// Fallback posts when database is empty
+const samplePosts: BlogPost[] = [
+  {
+    id: '1',
+    title: 'The Complete Beginner\'s Guide to Real Estate Syndication in 2026',
+    excerpt: 'Learn everything you need to know about real estate syndication, from how it works to finding your first deal. This comprehensive guide covers the basics for new investors.',
+    author: 'Dr. Sarah Chen',
+    date: new Date().toISOString(),
+    category: 'Education',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=600',
+    slug: 'beginners-guide-real-estate-syndication-2026',
+    reading_time: 12
+  },
+  {
+    id: '2',
+    title: '2026 Multifamily Market Outlook: Where to Invest This Year',
+    excerpt: 'Discover the top markets for multifamily investment in 2026. Our analysis covers rent growth, cap rates, and emerging opportunities across the Sun Belt and beyond.',
+    author: 'Marcus Johnson, CFA',
+    date: new Date(Date.now() - 86400000 * 3).toISOString(),
+    category: 'Market Analysis',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200&h=600',
+    slug: 'multifamily-market-outlook-2026',
+    reading_time: 10
+  },
+  {
+    id: '3',
+    title: 'How to Evaluate a Real Estate Syndication Deal: Due Diligence Checklist',
+    excerpt: 'Before investing in any syndication, thorough due diligence is essential. Use this comprehensive checklist to evaluate sponsors, properties, and deal structures.',
+    author: 'Jennifer Walsh, JD',
+    date: new Date(Date.now() - 86400000 * 7).toISOString(),
+    category: 'Due Diligence',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1200&h=600',
+    slug: 'evaluate-syndication-deal-due-diligence',
+    reading_time: 15
+  },
+  {
+    id: '4',
+    title: 'Tax Benefits of Real Estate Syndication: What Investors Need to Know',
+    excerpt: 'Real estate syndication offers powerful tax advantages. Learn about depreciation, cost segregation, 1031 exchanges, and how to maximize your after-tax returns.',
+    author: 'Robert Kim, CPA',
+    date: new Date(Date.now() - 86400000 * 10).toISOString(),
+    category: 'Tax Strategy',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200&h=600',
+    slug: 'tax-benefits-real-estate-syndication',
+    reading_time: 11
+  },
+  {
+    id: '5',
+    title: 'Multifamily vs. Industrial vs. Self-Storage: Comparing CRE Asset Classes',
+    excerpt: 'Which commercial real estate asset class is right for you? Compare multifamily, industrial, and self-storage investments across risk, returns, and market dynamics.',
+    author: 'Amanda Torres',
+    date: new Date(Date.now() - 86400000 * 14).toISOString(),
+    category: 'Investment Strategy',
+    image: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&q=80&w=1200&h=600',
+    slug: 'multifamily-industrial-self-storage-comparison',
+    reading_time: 9
+  },
+  {
+    id: '6',
+    title: 'How to Build $10,000/Month in Passive Income Through Real Estate Syndication',
+    excerpt: 'A step-by-step guide to building a $10,000 monthly passive income stream through strategic real estate syndication investments.',
+    author: 'EquityMD Team',
+    date: new Date(Date.now() - 86400000 * 1).toISOString(),
+    category: 'Passive Income',
+    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=1200&h=600',
+    slug: 'build-passive-income-real-estate-syndication',
+    reading_time: 13
+  }
+];
+
 const categoryIcons: Record<string, React.ElementType> = {
   'Education': BookOpen,
   'Market Analysis': BarChart3,
@@ -79,9 +149,20 @@ export function Blog() {
           const allCategories = new Set(['All Posts']);
           dbPosts.forEach(post => allCategories.add(post.category));
           setCategories(Array.from(allCategories));
+        } else {
+          // Use sample posts as fallback
+          setBlogPosts(samplePosts);
+          const allCategories = new Set(['All Posts']);
+          samplePosts.forEach(post => allCategories.add(post.category));
+          setCategories(Array.from(allCategories));
         }
       } catch (err) {
         console.warn('Error fetching blog posts:', err);
+        // Use sample posts on error too
+        setBlogPosts(samplePosts);
+        const allCategories = new Set(['All Posts']);
+        samplePosts.forEach(post => allCategories.add(post.category));
+        setCategories(Array.from(allCategories));
       } finally {
         setLoading(false);
       }
