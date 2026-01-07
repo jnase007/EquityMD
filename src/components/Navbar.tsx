@@ -173,14 +173,14 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
 
   return (
     <>
-      <nav className={`sticky top-0 z-50 transition-all duration-300 ${
+      <nav className={`sticky top-0 z-50 transition-all duration-300 overflow-visible ${
         useTransparentStyle 
           ? 'bg-transparent' 
           : isScrolled 
             ? 'bg-white/95 backdrop-blur-md shadow-sm' 
             : 'bg-white shadow-sm'
       }`}>
-        <div className={`max-w-6xl mx-auto flex justify-between items-center px-4 transition-all ${
+        <div className={`max-w-6xl mx-auto flex justify-between items-center px-4 transition-all overflow-visible ${
           isScrolled ? 'py-3' : 'py-4'
         }`}>
           {/* Logo */}
@@ -272,7 +272,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 </div>
 
                 {/* User Menu */}
-                <div className="relative" ref={dropdownRef}>
+                <div className="relative z-[9999]" ref={dropdownRef}>
                   <button 
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className={`flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full transition ${
@@ -292,7 +292,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                   </button>
                   
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border py-1 z-[9999]">
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border py-1 z-[9999]" style={{ position: 'fixed', top: '60px', right: '16px' }}>
                       <div className="px-4 py-3 border-b">
                         <p className="font-medium text-gray-900">{profile?.full_name || 'User'}</p>
                         <p className="text-sm text-gray-500 truncate">{profile?.email}</p>

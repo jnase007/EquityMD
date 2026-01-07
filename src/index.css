@@ -11,9 +11,21 @@ html, body {
   max-width: 100vw;
 }
 
-/* Ensure all containers don't overflow */
-.max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl, .max-w-3xl {
+/* Ensure all containers don't overflow - except navbar containers */
+.max-w-7xl:not(.navbar-container), 
+.max-w-6xl:not(.navbar-container), 
+.max-w-5xl:not(.navbar-container), 
+.max-w-4xl:not(.navbar-container), 
+.max-w-3xl:not(.navbar-container) {
   overflow-x: hidden;
+}
+
+/* Navbar dropdown fix - must be visible above everything */
+nav.sticky {
+  overflow: visible !important;
+}
+nav.sticky > div {
+  overflow: visible !important;
 }
 
 /* Mobile-optimized scrollbar hiding */

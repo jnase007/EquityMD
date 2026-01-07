@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Building2, Star, MapPin, Search, Filter, TrendingUp, Globe, LayoutGrid, List, ChevronRight, Users, Award, Sparkles, ArrowRight, Briefcase } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { AuthModal } from '../components/AuthModal';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { isProfileCompleteForDirectory } from '../lib/syndicator-completion';
 import { supabase } from '../lib/supabase';
+import { useAuthStore } from '../lib/store';
 
 interface Syndicator {
   id: string;
@@ -61,6 +63,8 @@ const dealVolumeRanges = [
 ];
 
 export function Directory() {
+  const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [syndicators, setSyndicators] = useState<Syndicator[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -70,10 +74,39 @@ export function Directory() {
   const [sortBy, setSortBy] = useState<'rating' | 'deals' | 'volume'>('rating');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [totalActiveDeals, setTotalActiveDeals] = useState(0);
+
+  // Handle "Join Directory" / "List Your Deal" button click
+  const handleJoinDirectoryClick = () => {
+    if (user) {
+      // User is logged in, go to syndicator setup
+      navigate('/syndicator-setup');
+    } else {
+      // User is not logged in, show auth modal with sign up
+      setShowAuthModal(true);
+    }
+  };
 
   useEffect(() => {
     fetchSyndicators();
+    fetchTotalActiveDeals();
   }, []);
+
+  async function fetchTotalActiveDeals() {
+    try {
+      const { count, error } = await supabase
+        .from('deals')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'active');
+      
+      if (!error && count !== null) {
+        setTotalActiveDeals(count);
+      }
+    } catch (error) {
+      console.error('Error fetching total active deals:', error);
+    }
+  }
 
   async function fetchSyndicators() {
     try {
@@ -242,7 +275,7 @@ export function Directory() {
             </div>
             <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
               <span className="text-white/70 text-sm">Total Active Deals</span>
-              <p className="text-white font-bold text-xl">{syndicators.reduce((sum, s) => sum + (s.active_deals || 0), 0)}</p>
+              <p className="text-white font-bold text-xl">{totalActiveDeals}</p>
             </div>
           </div>
           
@@ -669,16 +702,24 @@ export function Directory() {
                 Get your firm in front of thousands of accredited investors.
               </p>
             </div>
-            <Link
-              to="/contact"
+            <button
+              onClick={handleJoinDirectoryClick}
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-emerald-600 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Join Directory
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      {showAuthModal && (
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          defaultView="sign_up"
+          redirectPath="/syndicator-setup"
+        />
+      )}
 
       <Footer />
     </div>

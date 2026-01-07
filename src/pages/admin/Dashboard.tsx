@@ -200,7 +200,7 @@ export function AdminDashboard() {
               Import Investors
             </button> */}
 
-            {/* <button
+            <button
               onClick={() => setActiveTab('import-syndicators')}
               className={`pb-4 flex items-center ${
                 activeTab === 'import-syndicators'
@@ -210,7 +210,7 @@ export function AdminDashboard() {
             >
               <Upload className="h-5 w-5 mr-2" />
               Import Syndicators
-            </button> */}
+            </button>
 
             <button
               onClick={() => setActiveTab('verification')}

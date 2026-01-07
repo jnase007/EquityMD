@@ -11,9 +11,10 @@ interface AuthModalProps {
   onClose: () => void;
   defaultType?: 'investor' | 'syndicator';
   defaultView?: 'sign_in' | 'sign_up';
+  redirectPath?: string; // Optional path to redirect after successful auth
 }
 
-export function AuthModal({ onClose, defaultView = 'sign_up' }: AuthModalProps) {
+export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: AuthModalProps) {
   const [mode, setMode] = useState<'sign_in' | 'sign_up' | 'magic_link' | 'forgot' | 'check_email'>(defaultView);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
@@ -70,7 +71,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up' }: AuthModalProps) 
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}/dashboard` },
+        options: { redirectTo: `${window.location.origin}${redirectPath || '/dashboard'}` },
       });
       if (error) throw error;
     } catch (err) {
@@ -88,7 +89,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up' }: AuthModalProps) 
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: { 
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: `${window.location.origin}${redirectPath || '/dashboard'}`,
           data: firstName ? { full_name: firstName } : undefined
         },
       });
@@ -150,7 +151,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up' }: AuthModalProps) 
           if (data.session) {
             trackUserLogin('investor', data.user.id);
             onClose();
-            navigate('/welcome');
+            navigate(redirectPath || '/welcome');
           } else {
             setMode('check_email');
           }
@@ -167,7 +168,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up' }: AuthModalProps) 
             .single();
           trackUserLogin(profile?.user_type || 'investor', data.user.id);
           onClose();
-          navigate('/dashboard');
+          navigate(redirectPath || '/dashboard');
         }
       }
     } catch (err: any) {

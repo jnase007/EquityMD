@@ -99,11 +99,11 @@ export function SyndicatorProfile() {
 
   async function fetchSyndicatorData() {
     try {
+      // Include unverified syndicators so directory listings work
       let { data: syndicatorData, error: slugError } = await supabase
         .from("syndicators")
         .select()
         .eq("slug", slug)
-        .in("verification_status", ["verified", "premier"])
         .single();
 
       if (slugError) {

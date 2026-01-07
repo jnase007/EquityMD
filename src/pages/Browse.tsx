@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, MapPin, LayoutGrid, List, Lock, ChevronRight, TrendingUp, DollarSign, Clock, Sparkles, Building2, ArrowRight, Target, Gem } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { DealCard, DealListItem } from '../components/Cards';
 import { Footer } from '../components/Footer';
@@ -48,6 +48,7 @@ const syndicatorVerificationStatus: Record<string, VerificationStatus> = {
 
 export function Browse() {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
@@ -55,8 +56,30 @@ export function Browse() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
+  const [authRedirectPath, setAuthRedirectPath] = useState<string | undefined>(undefined);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortBy, setSortBy] = useState('recent');
+
+  // Handle "List Your Deal" button click
+  const handleListDealClick = () => {
+    if (user) {
+      // User is logged in, go to syndicator setup
+      navigate('/syndicator-setup');
+    } else {
+      // User is not logged in, show auth modal with sign up, redirect to syndicator setup
+      setAuthModalView('sign_up');
+      setAuthRedirectPath('/syndicator-setup');
+      setShowAuthModal(true);
+    }
+  };
+
+  // Handle "Sign in for details" click
+  const handleSignInForDetails = () => {
+    setAuthModalView('sign_in');
+    setAuthRedirectPath(undefined); // Default redirect (dashboard)
+    setShowAuthModal(true);
+  };
 
   useEffect(() => {
     fetchDeals();
@@ -256,7 +279,7 @@ export function Browse() {
             <div className="flex items-center gap-4">
               {!user && (
                 <button
-                  onClick={() => setShowAuthModal(true)}
+                  onClick={handleSignInForDetails}
                   className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
                 >
                   <Lock className="h-4 w-4" />
@@ -476,19 +499,23 @@ export function Browse() {
                 List your investment opportunities and connect with accredited investors.
               </p>
             </div>
-            <Link
-              to="/directory"
+            <button
+              onClick={handleListDealClick}
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-2xl hover:bg-gray-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               List Your Deal
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
 
       {showAuthModal && (
-        <AuthModal onClose={() => setShowAuthModal(false)} />
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          defaultView={authModalView}
+          redirectPath={authRedirectPath}
+        />
       )}
 
       <Footer />
