@@ -652,7 +652,7 @@ export function CommandCenter() {
               <span className="text-sm">Import Users</span>
             </Link>
             <Link 
-              to="/syndicator/deals/new"
+              to="/deals/new"
               className="flex flex-col items-center gap-2 p-4 bg-white/10 rounded-xl hover:bg-white/20 transition backdrop-blur-sm border border-white/10"
             >
               <Building2 className="h-6 w-6 text-green-400" />

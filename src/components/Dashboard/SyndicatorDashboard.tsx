@@ -546,7 +546,7 @@ export function SyndicatorDashboard() {
               <div className="flex flex-wrap gap-2">
                 {syndicator.slug && (
                   <a
-                    href={`/syndicator/${syndicator.slug}`}
+                    href={`/syndicators/${syndicator.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"

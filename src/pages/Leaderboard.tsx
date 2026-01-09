@@ -205,7 +205,7 @@ export function Leaderboard() {
               {rankings.map((syndicator, index) => (
                 <Link
                   key={syndicator.id}
-                  to={`/syndicator/${syndicator.slug}`}
+                  to={`/syndicators/${syndicator.slug}`}
                   className="flex items-center gap-4 p-4 hover:bg-gray-50 transition group"
                 >
                   {/* Rank */}
@@ -285,7 +285,7 @@ export function Leaderboard() {
             {rankings.slice(-3).reverse().map((syndicator) => (
               <Link
                 key={syndicator.id}
-                to={`/syndicator/${syndicator.slug}`}
+                to={`/syndicators/${syndicator.slug}`}
                 className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition border border-orange-100"
               >
                 <div className="flex items-center gap-3 mb-3">

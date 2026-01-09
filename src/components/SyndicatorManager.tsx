@@ -426,7 +426,7 @@ export function SyndicatorManager({
                   </Link>
                   {primarySyndicator.slug && (
                     <a
-                      href={`/syndicator/${primarySyndicator.slug}`}
+                      href={`/syndicators/${primarySyndicator.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center px-3 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition font-medium"
