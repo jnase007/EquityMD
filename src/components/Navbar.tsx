@@ -180,20 +180,18 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             ? 'bg-white/95 backdrop-blur-md shadow-sm' 
             : 'bg-white shadow-sm'
       }`}>
-        <div className={`max-w-6xl mx-auto flex justify-between items-center px-4 transition-all overflow-visible ${
-          isScrolled ? 'py-3' : 'py-4'
-        }`}>
+        <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3 overflow-visible">
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <img 
               src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-black.png`}
               alt="EquityMD"
-              className={`transition-all ${isScrolled ? 'h-7' : 'h-8'} ${useTransparentStyle ? 'hidden' : 'block'}`}
+              className={`h-8 ${useTransparentStyle ? 'hidden' : 'block'}`}
             />
             <img 
               src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-white.png`}
               alt="EquityMD"
-              className={`transition-all ${isScrolled ? 'h-7' : 'h-8'} ${useTransparentStyle ? 'block' : 'hidden'}`}
+              className={`h-8 ${useTransparentStyle ? 'block' : 'hidden'}`}
             />
           </Link>
 
