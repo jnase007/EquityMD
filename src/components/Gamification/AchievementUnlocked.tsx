@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Sparkles, Star, Trophy, Zap } from 'lucide-react';
 import { Achievement, getRarityColor } from './types';
 
@@ -44,8 +45,9 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
 
   const colors = rarityColors[achievement.rarity];
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+  // Use portal to render directly to body, ensuring it's always on top
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
@@ -223,7 +225,8 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
           animation: spin-slow 3s linear infinite;
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -242,8 +245,8 @@ export function LevelUpCelebration({ newLevel, onClose }: LevelUpProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       
       <div 
@@ -277,7 +280,8 @@ export function LevelUpCelebration({ newLevel, onClose }: LevelUpProps) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
