@@ -110,7 +110,6 @@ export function EditDeal() {
   const [deal, setDeal] = useState<any>(null);
   const [existingMedia, setExistingMedia] = useState<ExistingMedia[]>([]);
   const [newImages, setNewImages] = useState<NewImage[]>([]);
-  const [uploadingImages, setUploadingImages] = useState(false);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [formData, setFormData] = useState<DealFormData>({
@@ -256,25 +255,101 @@ export function EditDeal() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Process files (shared by click upload and drag & drop)
-  const processFiles = (files: FileList | File[]) => {
-    const newImgs: NewImage[] = [];
-    const fileArray = Array.from(files);
+  // Auto-upload a single image immediately
+  const uploadImageImmediately = async (file: File) => {
+    if (!deal) return;
     
-    for (const file of fileArray) {
-      if (file.type.startsWith('image/')) {
-        newImgs.push({
-          id: uuidv4(),
-          file,
-          preview: URL.createObjectURL(file),
-          title: file.name.replace(/\.[^/.]+$/, ''),
-        });
+    const tempId = uuidv4();
+    const preview = URL.createObjectURL(file);
+    
+    // Add to UI immediately with loading state
+    setNewImages(prev => [...prev, {
+      id: tempId,
+      file,
+      preview,
+      title: file.name.replace(/\.[^/.]+$/, ''),
+    }]);
+    
+    try {
+      const fileExt = file.name.split('.').pop() || 'jpg';
+      const fileName = `${uuidv4()}.${fileExt}`;
+      const filePath = `deals/${deal.id}/${fileName}`;
+      
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('deal-media')
+        .upload(filePath, file);
+      
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        toast.error(`Failed to upload ${file.name}`);
+        setNewImages(prev => prev.filter(img => img.id !== tempId));
+        URL.revokeObjectURL(preview);
+        return;
       }
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('deal-media')
+        .getPublicUrl(filePath);
+      
+      // Save to database
+      const { data: mediaRecord, error: dbError } = await supabase
+        .from('deal_media')
+        .insert({
+          deal_id: deal.id,
+          type: 'image',
+          url: publicUrl,
+          title: file.name.replace(/\.[^/.]+$/, ''),
+          order: existingMedia.length
+        })
+        .select()
+        .single();
+      
+      if (dbError) {
+        console.error('Database error:', dbError);
+        toast.error(`Failed to save ${file.name}`);
+        setNewImages(prev => prev.filter(img => img.id !== tempId));
+        URL.revokeObjectURL(preview);
+        return;
+      }
+      
+      // Remove from newImages and add to existingMedia
+      setNewImages(prev => prev.filter(img => img.id !== tempId));
+      URL.revokeObjectURL(preview);
+      
+      setExistingMedia(prev => [...prev, {
+        id: mediaRecord.id,
+        url: mediaRecord.url,
+        title: mediaRecord.title || '',
+        order: mediaRecord.order || 0
+      }]);
+      
+      // Set as cover if it's the first image
+      if (existingMedia.length === 0 && !deal.cover_image_url) {
+        await supabase.from('deals').update({ cover_image_url: publicUrl }).eq('id', deal.id);
+        setDeal((prev: any) => ({ ...prev, cover_image_url: publicUrl }));
+      }
+      
+      toast.success(`Uploaded ${file.name}`);
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(`Failed to upload ${file.name}`);
+      setNewImages(prev => prev.filter(img => img.id !== tempId));
+      URL.revokeObjectURL(preview);
     }
-    if (newImgs.length > 0) {
-      setNewImages(prev => [...prev, ...newImgs]);
-      toast.success(`${newImgs.length} image(s) added`);
+  };
+
+  // Process files - auto-upload each one immediately
+  const processFiles = async (files: FileList | File[]) => {
+    const fileArray = Array.from(files).filter(f => f.type.startsWith('image/'));
+    
+    if (fileArray.length === 0) {
+      toast.error('Please select image files');
+      return;
     }
+    
+    // Upload all files in parallel
+    await Promise.all(fileArray.map(file => uploadImageImmediately(file)));
   };
 
   // Handle new image selection via click
@@ -282,6 +357,8 @@ export function EditDeal() {
     const files = e.target.files;
     if (!files) return;
     processFiles(files);
+    // Reset input so same file can be selected again
+    e.target.value = '';
   };
 
   // Drag and drop handlers
@@ -313,86 +390,6 @@ export function EditDeal() {
     }
   };
 
-  // Remove a new image before upload
-  const removeNewImage = (id: string) => {
-    setNewImages(prev => {
-      const img = prev.find(i => i.id === id);
-      if (img) URL.revokeObjectURL(img.preview);
-      return prev.filter(i => i.id !== id);
-    });
-  };
-
-  // Upload new images to storage and database
-  const uploadNewImages = async () => {
-    if (newImages.length === 0 || !deal) return;
-    
-    setUploadingImages(true);
-    let uploadedCount = 0;
-    
-    try {
-      for (let i = 0; i < newImages.length; i++) {
-        const image = newImages[i];
-        const fileExt = image.file.name.split('.').pop() || 'jpg';
-        const fileName = `${uuidv4()}.${fileExt}`;
-        const filePath = `deals/${deal.id}/${fileName}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('deal-media')
-          .upload(filePath, image.file);
-        
-        if (uploadError) {
-          console.error('Upload error:', uploadError);
-          continue;
-        }
-        
-        const { data: { publicUrl } } = supabase.storage
-          .from('deal-media')
-          .getPublicUrl(filePath);
-        
-        // Save to deal_media table
-        const { data: mediaRecord, error: dbError } = await supabase
-          .from('deal_media')
-          .insert({
-            deal_id: deal.id,
-            type: 'image',
-            url: publicUrl,
-            title: image.title,
-            order: existingMedia.length + i
-          })
-          .select()
-          .single();
-        
-        if (!dbError && mediaRecord) {
-          setExistingMedia(prev => [...prev, {
-            id: mediaRecord.id,
-            url: mediaRecord.url,
-            title: mediaRecord.title || '',
-            order: mediaRecord.order || 0
-          }]);
-          uploadedCount++;
-        }
-      }
-      
-      // Set cover image if this is the first image
-      if (uploadedCount > 0 && !deal.cover_image_url) {
-        const firstImage = existingMedia[0] || newImages[0];
-        if (firstImage) {
-          await supabase
-            .from('deals')
-            .update({ cover_image_url: existingMedia[0]?.url })
-            .eq('id', deal.id);
-        }
-      }
-      
-      setNewImages([]);
-      toast.success(`${uploadedCount} image(s) uploaded successfully!`);
-    } catch (error) {
-      console.error('Error uploading images:', error);
-      toast.error('Failed to upload some images');
-    } finally {
-      setUploadingImages(false);
-    }
-  };
 
   // Delete an existing image
   const deleteExistingImage = async (mediaId: string, imageUrl: string) => {
@@ -1051,46 +1048,32 @@ export function EditDeal() {
                     </div>
                   )}
 
-                  {/* New Images Preview */}
+                  {/* Images Being Uploaded (show with loading spinner) */}
                   {newImages.length > 0 && (
                     <div className="space-y-3">
-                      <p className="text-sm font-medium text-amber-600">New images to upload:</p>
+                      <p className="text-sm font-medium text-blue-600 flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Uploading {newImages.length} image(s)...
+                      </p>
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {newImages.map((img) => (
-                          <div key={img.id} className="relative group">
-                            <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-amber-300 border-dashed">
+                          <div key={img.id} className="relative">
+                            <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-blue-300 border-dashed">
                               <img
                                 src={img.preview}
                                 alt={img.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover opacity-60"
                               />
+                              {/* Loading overlay */}
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <div className="p-2 bg-white rounded-full shadow-lg">
+                                  <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                                </div>
+                              </div>
                             </div>
-                            <button
-                              onClick={() => removeNewImage(img.id)}
-                              className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
                           </div>
                         ))}
                       </div>
-                      <button
-                        onClick={uploadNewImages}
-                        disabled={uploadingImages}
-                        className="mt-3 px-4 py-2 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition-colors flex items-center gap-2"
-                      >
-                        {uploadingImages ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Uploading...
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className="h-4 w-4" />
-                            Upload {newImages.length} Image(s)
-                          </>
-                        )}
-                      </button>
                     </div>
                   )}
 
