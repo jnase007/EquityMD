@@ -112,6 +112,7 @@ export function EditDeal() {
   const [newImages, setNewImages] = useState<NewImage[]>([]);
   const [uploadingImages, setUploadingImages] = useState(false);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [formData, setFormData] = useState<DealFormData>({
     title: '',
     propertyType: '',
@@ -255,14 +256,12 @@ export function EditDeal() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle new image selection
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
+  // Process files (shared by click upload and drag & drop)
+  const processFiles = (files: FileList | File[]) => {
     const newImgs: NewImage[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    const fileArray = Array.from(files);
+    
+    for (const file of fileArray) {
       if (file.type.startsWith('image/')) {
         newImgs.push({
           id: uuidv4(),
@@ -272,7 +271,46 @@ export function EditDeal() {
         });
       }
     }
-    setNewImages(prev => [...prev, ...newImgs]);
+    if (newImgs.length > 0) {
+      setNewImages(prev => [...prev, ...newImgs]);
+      toast.success(`${newImgs.length} image(s) added`);
+    }
+  };
+
+  // Handle new image selection via click
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    processFiles(files);
+  };
+
+  // Drag and drop handlers
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      processFiles(files);
+    }
   };
 
   // Remove a new image before upload
@@ -1056,8 +1094,19 @@ export function EditDeal() {
                     </div>
                   )}
 
-                  {/* Upload Button */}
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-400 hover:bg-emerald-50/50 transition-colors">
+                  {/* Upload Button with Drag & Drop */}
+                  <div 
+                    className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
+                      isDragging 
+                        ? 'border-emerald-500 bg-emerald-50 scale-[1.02]' 
+                        : 'border-gray-300 hover:border-emerald-400 hover:bg-emerald-50/50'
+                    }`}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById('image-upload')?.click()}
+                  >
                     <input
                       type="file"
                       accept="image/*"
@@ -1066,17 +1115,21 @@ export function EditDeal() {
                       className="hidden"
                       id="image-upload"
                     />
-                    <label htmlFor="image-upload" className="cursor-pointer">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="p-4 bg-gray-100 rounded-full">
-                          <Plus className="h-8 w-8 text-gray-400" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-700">Click to upload photos</p>
-                          <p className="text-sm text-gray-500">PNG, JPG up to 10MB each</p>
-                        </div>
+                    <div className="flex flex-col items-center gap-3 pointer-events-none">
+                      <div className={`p-4 rounded-full transition-colors ${
+                        isDragging ? 'bg-emerald-100' : 'bg-gray-100'
+                      }`}>
+                        <Plus className={`h-8 w-8 transition-colors ${
+                          isDragging ? 'text-emerald-500' : 'text-gray-400'
+                        }`} />
                       </div>
-                    </label>
+                      <div>
+                        <p className="font-semibold text-gray-700">
+                          {isDragging ? 'Drop images here!' : 'Drag & drop or click to upload'}
+                        </p>
+                        <p className="text-sm text-gray-500">PNG, JPG up to 10MB each</p>
+                      </div>
+                    </div>
                   </div>
 
                   {existingMedia.length === 0 && newImages.length === 0 && (
