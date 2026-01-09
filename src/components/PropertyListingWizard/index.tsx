@@ -1176,7 +1176,7 @@ export function PropertyListingWizard() {
                             type="url"
                             value={formData.videoUrl}
                             onChange={(e) => updateFormData({ videoUrl: e.target.value })}
-                            placeholder="https://www.youtube.com/watch?v=..."
+                            placeholder="YouTube or Vimeo URL..."
                             className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-red-400 transition-colors"
                           />
                         </div>

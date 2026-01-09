@@ -1145,7 +1145,7 @@ export function EditDeal() {
                 <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-6 border border-red-100">
                   <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                     <Video className="h-4 w-4 text-red-500" />
-                    Property Video URL
+                    YouTube or Vimeo URL
                   </label>
                   <div className="relative">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -1155,7 +1155,7 @@ export function EditDeal() {
                       type="url"
                       value={formData.videoUrl}
                       onChange={(e) => updateFormData({ videoUrl: e.target.value })}
-                      placeholder="https://www.youtube.com/watch?v=..."
+                      placeholder="YouTube or Vimeo URL..."
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-red-400"
                     />
                   </div>
