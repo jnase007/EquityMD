@@ -1157,12 +1157,12 @@ export function BlogPost() {
               <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Start Building Wealth Through<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">
-                  Apartment Syndications
+                  Real Estate Syndications
                 </span>
               </h3>
               
               <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-8">
-                Get exclusive access to vetted multifamily syndication opportunities. 
+                Get exclusive access to vetted real estate syndication opportunities. 
                 No landlord headaches. Truly passive income.
               </p>
 

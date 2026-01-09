@@ -128,6 +128,11 @@ export function Blog() {
         
         if (error) {
           console.warn('Could not fetch blog posts from database:', error.message);
+          // Use sample posts as fallback on database error
+          setBlogPosts(samplePosts);
+          const allCategories = new Set(['All Posts']);
+          samplePosts.forEach(post => allCategories.add(post.category));
+          setCategories(Array.from(allCategories));
           return;
         }
         

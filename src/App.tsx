@@ -107,6 +107,14 @@ export default function App() {
     trackPageView(location.pathname);
   }, [location.pathname]);
 
+  // Scroll to top on route change (but not for hash-only changes)
+  useEffect(() => {
+    // Only scroll to top if there's no hash (hash navigation is handled by individual pages)
+    if (!location.hash) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [location.pathname]);
+
   // Preload likely next routes based on current page
   useEffect(() => {
     const currentPath = location.pathname;

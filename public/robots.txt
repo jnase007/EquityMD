@@ -1,55 +1,26 @@
-# EquityMD Robots.txt
+# robots.txt for EquityMD
 # https://equitymd.com
 
 User-agent: *
 Allow: /
 
-# Crawl-delay for politeness
-Crawl-delay: 1
-
-# Disallow admin and private areas
-Disallow: /admin
-Disallow: /inbox
-Disallow: /profile
-Disallow: /dashboard
-Disallow: /favorites
-Disallow: /portfolio
-Disallow: /goals
-Disallow: /welcome
-Disallow: /deals/new
-Disallow: /deals/*/edit
-
-# Disallow test pages
-Disallow: /test-*
-Disallow: /email-preview
-Disallow: /email-test
-Disallow: /loader-demo
-Disallow: /tooltip-demo
-Disallow: /onboarding-demo
-Disallow: /dashboard-review
-
-# Allow important pages
-Allow: /find
-Allow: /directory
-Allow: /deals/*
-Allow: /syndicators/*
-Allow: /how-it-works
-Allow: /about
-Allow: /contact
-Allow: /blog
-Allow: /resources/*
-Allow: /legal/*
-Allow: /cities/*
-
-# Sitemap
+# Sitemap location
 Sitemap: https://equitymd.com/sitemap.xml
 
-# Google specific
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0
+# Disallow private/admin areas
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /settings
+Disallow: /messages
+Disallow: /deals/new
+Disallow: /deals/*/edit
+Disallow: /admin
+Disallow: /api/
 
-# Bing specific
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
+# Allow search engines to crawl public content
+Allow: /blog/
+Allow: /syndicators/
+Allow: /deals/
+Allow: /find
+Allow: /directory
+Allow: /how-it-works

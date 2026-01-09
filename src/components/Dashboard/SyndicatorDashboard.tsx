@@ -374,6 +374,29 @@ export function SyndicatorDashboard() {
                 <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Investor Connections</span>
               </div>
             </div>
+            
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <p className="text-purple-200 text-sm">
+                Just want to browse deals?{' '}
+                <button
+                  onClick={() => {
+                    // Reset to investor view
+                    if (user) {
+                      supabase
+                        .from('profiles')
+                        .update({ dashboard_preference: 'investor' })
+                        .eq('id', user.id)
+                        .then(() => {
+                          window.location.reload();
+                        });
+                    }
+                  }}
+                  className="text-white underline hover:no-underline font-medium"
+                >
+                  Switch to Investor View
+                </button>
+              </p>
+            </div>
           </div>
         ) : (
           <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
@@ -942,11 +965,18 @@ export function SyndicatorDashboard() {
       {/* Achievements Modal */}
       <AchievementsModal 
         isOpen={showAchievements} 
-        onClose={() => setShowAchievements(false)} 
+        onClose={() => setShowAchievements(false)}
+        achievements={gamification.achievements}
+        totalPoints={gamification.totalPoints}
       />
       
       {/* Achievement Unlocked Animation */}
-      <AchievementUnlocked />
+      {gamification.newAchievement && (
+        <AchievementUnlocked
+          achievement={gamification.newAchievement}
+          onClose={gamification.clearNewAchievement}
+        />
+      )}
 
       {/* Edit Business Modal */}
       {showEditBusiness && syndicator && (

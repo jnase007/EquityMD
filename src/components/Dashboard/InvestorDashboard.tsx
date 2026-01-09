@@ -210,6 +210,7 @@ export function InvestorDashboard() {
         levelTitle={gamification.level.title}
         profileCompletion={profileCompletion}
         lastViewedDeal={lastViewedDeal}
+        onViewAchievements={() => setShowAchievements(true)}
       />
 
       {/* Stats Cards */}

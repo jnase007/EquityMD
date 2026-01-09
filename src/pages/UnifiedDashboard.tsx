@@ -80,20 +80,46 @@ export function UnifiedDashboard() {
   const firstName = profile?.full_name?.split(' ')[0] || 'there';
 
   // Check if user has seen the welcome modal before
+  // Also check database preference - if they have one saved, they've already chosen
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('equitymd_seen_dashboard_welcome');
-    if (!hasSeenWelcome && profile && !loading) {
+    const hasPreferenceSaved = profile?.dashboard_preference != null;
+    
+    // If they have a saved preference in DB, mark as seen in localStorage too
+    if (hasPreferenceSaved && !hasSeenWelcome) {
+      localStorage.setItem('equitymd_seen_dashboard_welcome', 'true');
+    }
+    
+    // Only show modal if they haven't seen it AND have no saved preference
+    if (!hasSeenWelcome && !hasPreferenceSaved && profile && !loading) {
       const timer = setTimeout(() => setShowWelcomeModal(true), 500);
       return () => clearTimeout(timer);
     }
   }, [profile, loading]);
 
-  const handleWelcomeChoice = (view: 'investor' | 'syndicator') => {
+  const handleWelcomeChoice = async (view: 'investor' | 'syndicator') => {
     localStorage.setItem('equitymd_seen_dashboard_welcome', 'true');
     setShowWelcomeModal(false);
     setShowConfetti(true);
-    handleViewChange(view);
+    setCurrentView(view);
     setTimeout(() => setShowConfetti(false), 4000);
+    
+    // Always save preference to database when user makes initial choice
+    if (user) {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ dashboard_preference: view })
+          .eq('id', user.id);
+        
+        if (!error && profile) {
+          setProfile({ ...profile, dashboard_preference: view });
+        }
+        console.log('Dashboard preference saved:', view);
+      } catch (err) {
+        console.error('Error saving initial preference:', err);
+      }
+    }
   };
 
   const dismissWelcome = () => {
@@ -109,13 +135,28 @@ export function UnifiedDashboard() {
     }
   }, [user]);
 
-  // Set initial view based on profile preference
+  // Set initial view based on profile preference - but only after checking syndicators
   useEffect(() => {
-    if (profile) {
+    if (profile && hasSyndicators !== null) {
       const preference = profile.dashboard_preference || profile.user_type || 'investor';
-      setCurrentView(preference);
+      // Only allow syndicator view if user actually has syndicators
+      if (preference === 'syndicator' && !hasSyndicators) {
+        // User preference is syndicator but they don't have any syndicators
+        // Fall back to investor view and update their preference
+        setCurrentView('investor');
+        // Update their preference in the database to avoid this next time
+        supabase
+          .from('profiles')
+          .update({ dashboard_preference: 'investor' })
+          .eq('id', profile.id)
+          .then(() => {
+            console.log('Reset dashboard preference to investor (no syndicators found)');
+          });
+      } else {
+        setCurrentView(preference);
+      }
     }
-  }, [profile]);
+  }, [profile, hasSyndicators]);
 
   async function checkUserSyndicators() {
     try {

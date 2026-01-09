@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { useAuthStore } from '../lib/store';
@@ -53,6 +53,7 @@ type Section = 'profile' | 'investment' | 'settings';
 export function ProfileNew() {
   const { user, profile, setProfile } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeSection, setActiveSection] = useState<Section>('profile');
   const [saving, setSaving] = useState(false);
   const [investorProfile, setInvestorProfile] = useState<any>(null);
@@ -73,6 +74,29 @@ export function ProfileNew() {
     companyName: '',
     companyDescription: '',
   });
+
+  // Handle URL hash navigation - e.g., /profile#investment or /profile#accreditation
+  useEffect(() => {
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      // Map hash values to sections
+      const hashToSection: Record<string, Section> = {
+        'profile': 'profile',
+        'investment': 'investment',
+        'accreditation': 'investment', // Accreditation is in Investment Profile section
+        'preferences': 'investment',
+        'settings': 'settings',
+        'verification': 'settings', // Verification request is in Settings section
+      };
+      
+      const targetSection = hashToSection[hash];
+      if (targetSection) {
+        setActiveSection(targetSection);
+        // Scroll to top of page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  }, [location.hash]);
 
   useEffect(() => {
     if (user) {

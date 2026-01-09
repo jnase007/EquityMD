@@ -84,6 +84,20 @@ interface DealFormData {
   status: string;
 }
 
+interface ExistingMedia {
+  id: string;
+  url: string;
+  title: string;
+  order: number;
+}
+
+interface NewImage {
+  id: string;
+  file: File;
+  preview: string;
+  title: string;
+}
+
 export function EditDeal() {
   const { slug } = useParams();
   const { user } = useAuthStore();
@@ -91,7 +105,13 @@ export function EditDeal() {
   
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deal, setDeal] = useState<any>(null);
+  const [existingMedia, setExistingMedia] = useState<ExistingMedia[]>([]);
+  const [newImages, setNewImages] = useState<NewImage[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [formData, setFormData] = useState<DealFormData>({
     title: '',
     propertyType: '',
@@ -187,6 +207,22 @@ export function EditDeal() {
         videoUrl: data.video_url || '',
         status: data.status || 'draft',
       });
+
+      // Fetch existing media for this deal
+      const { data: mediaData, error: mediaError } = await supabase
+        .from('deal_media')
+        .select('*')
+        .eq('deal_id', data.id)
+        .order('order', { ascending: true });
+
+      if (!mediaError && mediaData) {
+        setExistingMedia(mediaData.map(m => ({
+          id: m.id,
+          url: m.url,
+          title: m.title || '',
+          order: m.order || 0
+        })));
+      }
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
@@ -217,6 +253,197 @@ export function EditDeal() {
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle new image selection
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newImgs: NewImage[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.type.startsWith('image/')) {
+        newImgs.push({
+          id: uuidv4(),
+          file,
+          preview: URL.createObjectURL(file),
+          title: file.name.replace(/\.[^/.]+$/, ''),
+        });
+      }
+    }
+    setNewImages(prev => [...prev, ...newImgs]);
+  };
+
+  // Remove a new image before upload
+  const removeNewImage = (id: string) => {
+    setNewImages(prev => {
+      const img = prev.find(i => i.id === id);
+      if (img) URL.revokeObjectURL(img.preview);
+      return prev.filter(i => i.id !== id);
+    });
+  };
+
+  // Upload new images to storage and database
+  const uploadNewImages = async () => {
+    if (newImages.length === 0 || !deal) return;
+    
+    setUploadingImages(true);
+    let uploadedCount = 0;
+    
+    try {
+      for (let i = 0; i < newImages.length; i++) {
+        const image = newImages[i];
+        const fileExt = image.file.name.split('.').pop() || 'jpg';
+        const fileName = `${uuidv4()}.${fileExt}`;
+        const filePath = `deals/${deal.id}/${fileName}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('deal-media')
+          .upload(filePath, image.file);
+        
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          continue;
+        }
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from('deal-media')
+          .getPublicUrl(filePath);
+        
+        // Save to deal_media table
+        const { data: mediaRecord, error: dbError } = await supabase
+          .from('deal_media')
+          .insert({
+            deal_id: deal.id,
+            type: 'image',
+            url: publicUrl,
+            title: image.title,
+            order: existingMedia.length + i
+          })
+          .select()
+          .single();
+        
+        if (!dbError && mediaRecord) {
+          setExistingMedia(prev => [...prev, {
+            id: mediaRecord.id,
+            url: mediaRecord.url,
+            title: mediaRecord.title || '',
+            order: mediaRecord.order || 0
+          }]);
+          uploadedCount++;
+        }
+      }
+      
+      // Set cover image if this is the first image
+      if (uploadedCount > 0 && !deal.cover_image_url) {
+        const firstImage = existingMedia[0] || newImages[0];
+        if (firstImage) {
+          await supabase
+            .from('deals')
+            .update({ cover_image_url: existingMedia[0]?.url })
+            .eq('id', deal.id);
+        }
+      }
+      
+      setNewImages([]);
+      toast.success(`${uploadedCount} image(s) uploaded successfully!`);
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      toast.error('Failed to upload some images');
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  // Delete an existing image
+  const deleteExistingImage = async (mediaId: string, imageUrl: string) => {
+    setDeletingImageId(mediaId);
+    try {
+      // Delete from deal_media table
+      const { error: dbError } = await supabase
+        .from('deal_media')
+        .delete()
+        .eq('id', mediaId);
+      
+      if (dbError) throw dbError;
+      
+      // Try to delete from storage (extract path from URL)
+      try {
+        const urlParts = imageUrl.split('/deal-media/');
+        if (urlParts[1]) {
+          await supabase.storage.from('deal-media').remove([urlParts[1]]);
+        }
+      } catch (storageError) {
+        console.warn('Could not delete from storage:', storageError);
+      }
+      
+      setExistingMedia(prev => prev.filter(m => m.id !== mediaId));
+      
+      // If this was the cover image, set a new one
+      if (deal.cover_image_url === imageUrl) {
+        const remaining = existingMedia.filter(m => m.id !== mediaId);
+        const newCoverUrl = remaining[0]?.url || null;
+        await supabase.from('deals').update({ cover_image_url: newCoverUrl }).eq('id', deal.id);
+      }
+      
+      toast.success('Image deleted');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error('Failed to delete image');
+    } finally {
+      setDeletingImageId(null);
+    }
+  };
+
+  // Set image as cover
+  const setAsCoverImage = async (imageUrl: string) => {
+    if (!deal) return;
+    try {
+      await supabase.from('deals').update({ cover_image_url: imageUrl }).eq('id', deal.id);
+      setDeal((prev: any) => ({ ...prev, cover_image_url: imageUrl }));
+      toast.success('Cover image updated');
+    } catch (error) {
+      console.error('Error setting cover image:', error);
+      toast.error('Failed to update cover image');
+    }
+  };
+
+  // Delete the entire deal
+  const handleDeleteDeal = async () => {
+    if (!deal) return;
+    
+    setDeleting(true);
+    try {
+      // Delete associated media from storage
+      for (const media of existingMedia) {
+        try {
+          const urlParts = media.url.split('/deal-media/');
+          if (urlParts[1]) {
+            await supabase.storage.from('deal-media').remove([urlParts[1]]);
+          }
+        } catch (e) {
+          console.warn('Could not delete media file:', e);
+        }
+      }
+
+      // Delete the deal (cascades to deal_media due to foreign key)
+      const { error } = await supabase
+        .from('deals')
+        .delete()
+        .eq('id', deal.id);
+
+      if (error) throw error;
+
+      toast.success('Deal deleted successfully');
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error deleting deal:', error);
+      toast.error('Failed to delete deal. Please try again.');
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
   };
 
   const handleSave = async (newStatus?: string) => {
@@ -722,8 +949,143 @@ export function EditDeal() {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900">Media</h2>
-                    <p className="text-gray-500">Videos and additional content</p>
+                    <p className="text-gray-500">Property photos and videos</p>
                   </div>
+                </div>
+
+                {/* Property Photos Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-semibold text-gray-700">
+                      Property Photos
+                    </label>
+                    <span className="text-sm text-gray-500">
+                      {existingMedia.length + newImages.length} photo(s)
+                    </span>
+                  </div>
+
+                  {/* Existing Images Grid */}
+                  {existingMedia.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {existingMedia.map((media) => (
+                        <div key={media.id} className="relative group">
+                          <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-gray-200">
+                            <img
+                              src={media.url}
+                              alt={media.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          
+                          {/* Cover badge */}
+                          {deal?.cover_image_url === media.url && (
+                            <div className="absolute top-2 left-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-lg">
+                              Cover
+                            </div>
+                          )}
+                          
+                          {/* Overlay actions */}
+                          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
+                            {deal?.cover_image_url !== media.url && (
+                              <button
+                                onClick={() => setAsCoverImage(media.url)}
+                                className="p-2 bg-white text-gray-700 rounded-lg hover:bg-emerald-500 hover:text-white transition-colors text-xs font-medium"
+                                title="Set as cover"
+                              >
+                                Set Cover
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteExistingImage(media.id, media.url)}
+                              disabled={deletingImageId === media.id}
+                              className="p-2 bg-white text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+                              title="Delete image"
+                            >
+                              {deletingImageId === media.id ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* New Images Preview */}
+                  {newImages.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium text-amber-600">New images to upload:</p>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {newImages.map((img) => (
+                          <div key={img.id} className="relative group">
+                            <div className="aspect-square rounded-xl overflow-hidden bg-gray-100 border-2 border-amber-300 border-dashed">
+                              <img
+                                src={img.preview}
+                                alt={img.title}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <button
+                              onClick={() => removeNewImage(img.id)}
+                              className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={uploadNewImages}
+                        disabled={uploadingImages}
+                        className="mt-3 px-4 py-2 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition-colors flex items-center gap-2"
+                      >
+                        {uploadingImages ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="h-4 w-4" />
+                            Upload {newImages.length} Image(s)
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Upload Button */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-400 hover:bg-emerald-50/50 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageSelect}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="p-4 bg-gray-100 rounded-full">
+                          <Plus className="h-8 w-8 text-gray-400" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-700">Click to upload photos</p>
+                          <p className="text-sm text-gray-500">PNG, JPG up to 10MB each</p>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+
+                  {existingMedia.length === 0 && newImages.length === 0 && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                      <p className="text-sm text-amber-700">
+                        <strong>Tip:</strong> Deals with photos get 3x more investor interest. Add at least 3-5 high-quality property images.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Video Section */}
@@ -779,12 +1141,6 @@ export function EditDeal() {
                     </div>
                   )}
                 </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <p className="text-sm text-blue-700">
-                    <strong>Note:</strong> To update property photos, please contact support or use the deal management page.
-                  </p>
-                </div>
               </div>
             )}
           </div>
@@ -811,6 +1167,15 @@ export function EditDeal() {
                   Unpublish
                 </button>
               )}
+              
+              {/* Delete Button */}
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="px-4 py-2.5 text-red-600 hover:bg-red-50 font-medium rounded-xl transition-colors flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Delete Deal</span>
+              </button>
             </div>
             
             <div className="flex gap-3">
@@ -832,6 +1197,55 @@ export function EditDeal() {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-red-100 rounded-full">
+                <AlertCircle className="h-6 w-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">Delete Deal?</h3>
+                <p className="text-gray-500">This action cannot be undone</p>
+              </div>
+            </div>
+            
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to permanently delete <strong>"{formData.title}"</strong>? 
+              All associated images and data will be removed.
+            </p>
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteDeal}
+                disabled={deleting}
+                className="px-4 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors flex items-center gap-2"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    Delete Deal
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,120 +1,209 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Home, Search, ArrowRight } from 'lucide-react';
+import { Home, Search, ArrowRight, Building2, MapPin, TrendingUp, RefreshCw } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
-import { Footer } from '../components/Footer';
+
+const funnyMessages = [
+  { title: "This Deal Got Away! 🏃‍♂️", subtitle: "Looks like someone beat you to it. Investors move fast around here!" },
+  { title: "Property Not Found 🔍", subtitle: "Either this listing walked off, or you typed the wrong address. Happens to the best of us." },
+  { title: "Oops! Wrong Floor 🛗", subtitle: "You got off on floor 404. The good stuff is elsewhere!" },
+  { title: "This Unit is Ghost-ed 👻", subtitle: "This property has vanished into thin air. Spooky, right?" },
+  { title: "Market Correction! 📉", subtitle: "This page depreciated to zero. Time to find a better investment." },
+  { title: "Lost in the Lobby 🏢", subtitle: "Even our best investors get lost sometimes. Let's get you back on track." },
+];
+
+const realEstateJokes = [
+  "Why did the house go to the doctor? It had window panes! 🏥",
+  "I'm reading a book about anti-gravity apartments. It's impossible to put down! 📚",
+  "What do you call a fish that owns real estate? A loan shark! 🦈",
+  "Why don't apartments ever win races? They're always in a complex! 🏃",
+  "What did the real estate agent say to the ghost? I've got a property you'll just die for! 👻",
+  "Why was the math book sad about real estate? Too many problems, not enough solutions! 📐",
+];
 
 export function NotFound() {
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [jokeIndex, setJokeIndex] = useState(0);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [buildingOffset, setBuildingOffset] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    // Random initial message
+    setMessageIndex(Math.floor(Math.random() * funnyMessages.length));
+    setJokeIndex(Math.floor(Math.random() * realEstateJokes.length));
+
+    // Floating animation for buildings
+    const interval = setInterval(() => {
+      setBuildingOffset({
+        x: Math.sin(Date.now() / 1000) * 10,
+        y: Math.cos(Date.now() / 1500) * 8,
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const shuffleMessage = () => {
+    setIsFlipping(true);
+    setTimeout(() => {
+      setMessageIndex((prev) => (prev + 1) % funnyMessages.length);
+      setJokeIndex((prev) => (prev + 1) % realEstateJokes.length);
+      setIsFlipping(false);
+    }, 300);
+  };
+
+  const currentMessage = funnyMessages[messageIndex];
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
       <Navbar />
       
-      <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <div className="mb-8">
-          <div className="relative inline-block">
-            <div className="text-9xl font-bold text-blue-600">404</div>
-            <div className="absolute -top-6 -right-6 bg-amber-500 text-white text-lg px-4 py-2 rounded-lg transform rotate-12">
-              SOLD OUT!
-            </div>
-          </div>
+      {/* Animated background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating buildings */}
+        <div 
+          className="absolute left-[10%] top-[20%] opacity-10 transition-transform duration-100"
+          style={{ transform: `translate(${buildingOffset.x}px, ${buildingOffset.y}px)` }}
+        >
+          <Building2 className="h-32 w-32 text-blue-400" />
         </div>
-
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          This Property is Off the Market!
-        </h1>
+        <div 
+          className="absolute right-[15%] top-[30%] opacity-10 transition-transform duration-100"
+          style={{ transform: `translate(${-buildingOffset.x}px, ${buildingOffset.y * 1.5}px)` }}
+        >
+          <Building2 className="h-24 w-24 text-purple-400" />
+        </div>
+        <div 
+          className="absolute left-[20%] bottom-[20%] opacity-10 transition-transform duration-100"
+          style={{ transform: `translate(${buildingOffset.x * 0.5}px, ${-buildingOffset.y}px)` }}
+        >
+          <Building2 className="h-20 w-20 text-emerald-400" />
+        </div>
+        <div 
+          className="absolute right-[25%] bottom-[15%] opacity-10 transition-transform duration-100"
+          style={{ transform: `translate(${-buildingOffset.x * 1.2}px, ${-buildingOffset.y * 0.8}px)` }}
+        >
+          <Building2 className="h-28 w-28 text-amber-400" />
+        </div>
         
-        <p className="text-xl text-gray-600 mb-8">
-          Looks like this investment opportunity has already been snatched up.
-          But don't worry, we have plenty of other prime locations in our portfolio!
-        </p>
+        {/* Grid pattern */}
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)`,
+          backgroundSize: '40px 40px',
+        }} />
+        
+        {/* Gradient orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl" />
+      </div>
 
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="bg-white p-6 rounded-xl shadow-lg">
-            <div className="flex items-center justify-center space-x-4 text-gray-500 mb-4">
-              <span>404 Not Found Street</span>
-              <span>•</span>
-              <span>Missing Property, 404</span>
-            </div>
-            <div className="relative">
-              <img
-                src="https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&q=80"
-                alt="Luxury apartment complex"
-                className="w-full h-64 object-cover rounded-lg brightness-50"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-amber-500 text-white px-6 py-3 rounded-lg transform -rotate-12 text-xl font-bold shadow-lg">
-                  UNDER CONTRACT
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 flex justify-between text-sm text-amber-600">
-              <span>Status: Off Market</span>
-              <span>Units: 404</span>
-              <span>Views: ∞</span>
+      <div className="relative max-w-4xl mx-auto px-4 py-16 text-center">
+        {/* Giant 404 with glow effect */}
+        <div className="relative mb-8">
+          <div className="text-[12rem] md:text-[16rem] font-black leading-none tracking-tighter">
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-2xl">
+              404
+            </span>
+          </div>
+          
+          {/* Animated tag */}
+          <div className="absolute top-4 right-4 md:top-8 md:right-8 animate-bounce">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm md:text-lg px-4 py-2 rounded-full font-bold shadow-lg transform rotate-12 flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              OFF MARKET
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition group">
-            <div className="relative overflow-hidden rounded-lg mb-4">
-              <img
-                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
-                alt="Modern apartment building"
-                className="w-full h-48 object-cover transition duration-300 group-hover:scale-105"
-              />
-              <div className="absolute top-2 right-2 bg-amber-500 text-white px-3 py-1 rounded-full text-sm">
-                Available Now
-              </div>
-            </div>
-            <div className="text-left">
-              <h3 className="font-semibold text-gray-800">Similar Properties</h3>
-              <p className="text-gray-600 text-sm">
-                Check out our available luxury apartment complexes
+        {/* Message card with flip animation */}
+        <div 
+          className={`transition-all duration-300 transform ${isFlipping ? 'scale-95 opacity-50 rotate-y-180' : 'scale-100 opacity-100'}`}
+        >
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            {currentMessage.title}
+          </h1>
+          <p className="text-lg md:text-xl text-blue-200 mb-6 max-w-2xl mx-auto">
+            {currentMessage.subtitle}
+          </p>
+        </div>
+
+        {/* Joke card */}
+        <div className="max-w-xl mx-auto mb-8">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
+            <div className="relative">
+              <p className="text-blue-100 text-lg italic">
+                "{realEstateJokes[jokeIndex]}"
               </p>
             </div>
           </div>
           
-          <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition group">
-            <div className="relative overflow-hidden rounded-lg mb-4">
-              <img
-                src="https://images.unsplash.com/photo-1594484208280-efa00f96fc21?auto=format&fit=crop&q=80"
-                alt="Luxury residential complex"
-                className="w-full h-48 object-cover transition duration-300 group-hover:scale-105"
-              />
-              <div className="absolute top-2 right-2 bg-amber-500 text-white px-3 py-1 rounded-full text-sm">
-                Coming Soon
-              </div>
-            </div>
-            <div className="text-left">
-              <h3 className="font-semibold text-gray-800">New Opportunities</h3>
-              <p className="text-gray-600 text-sm">
-                Discover recently listed investment properties
-              </p>
-            </div>
+          {/* Shuffle button */}
+          <button
+            onClick={shuffleMessage}
+            className="mt-4 inline-flex items-center gap-2 text-blue-300 hover:text-white transition-colors text-sm group"
+          >
+            <RefreshCw className={`h-4 w-4 transition-transform ${isFlipping ? 'animate-spin' : 'group-hover:rotate-180'}`} />
+            Show me another
+          </button>
+        </div>
+
+        {/* Quick stats - fun version */}
+        <div className="grid grid-cols-3 gap-4 max-w-md mx-auto mb-12">
+          <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+            <div className="text-2xl font-bold text-white">404</div>
+            <div className="text-xs text-blue-300">Error Code</div>
+          </div>
+          <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+            <div className="text-2xl font-bold text-white">0%</div>
+            <div className="text-xs text-blue-300">Page Found</div>
+          </div>
+          <div className="bg-white/5 backdrop-blur rounded-xl p-4 border border-white/10">
+            <div className="text-2xl font-bold text-white">∞</div>
+            <div className="text-xs text-blue-300">Other Deals</div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Link
             to="/"
-            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="group flex items-center px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:scale-105"
           >
-            <Home className="h-5 w-5 mr-2" />
-            Back to Homepage
+            <Home className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+            Back to Safety
           </Link>
           <Link
             to="/find"
-            className="flex items-center px-6 py-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition"
+            className="group flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-bold hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg hover:shadow-xl hover:scale-105"
           >
-            <Search className="h-5 w-5 mr-2" />
-            Browse Available Properties
-            <ArrowRight className="h-5 w-5 ml-2" />
+            <TrendingUp className="h-5 w-5 mr-2 group-hover:scale-110 transition-transform" />
+            Find Real Deals
+            <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
+
+        {/* Bottom message */}
+        <p className="text-blue-300/60 text-sm">
+          Pro tip: The best deals don't have 404 errors. They're on our{' '}
+          <Link to="/find" className="text-blue-400 hover:text-blue-300 underline">
+            Browse Deals
+          </Link>{' '}
+          page. Just saying. 😉
+        </p>
       </div>
 
-      <Footer />
+      {/* CSS for animations */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

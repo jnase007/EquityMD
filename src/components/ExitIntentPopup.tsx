@@ -92,7 +92,7 @@ export function ExitIntentPopup() {
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-1 text-gray-400 hover:text-gray-600 z-10"
+          className="absolute top-4 right-4 p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-full transition-colors z-10"
         >
           <X className="h-5 w-5" />
         </button>

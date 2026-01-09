@@ -39,7 +39,7 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints }
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
@@ -47,8 +47,7 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints }
       />
       
       {/* Modal */}
-      <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col z-10">
           {/* Header */}
           <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-5 text-white">
             <div className="flex items-center justify-between">
@@ -190,7 +189,6 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints }
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }

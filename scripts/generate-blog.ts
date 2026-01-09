@@ -5,9 +5,11 @@
  * SEO + GEO optimized | Evergreen content (no dates in titles)
  * 
  * Usage:
- *   npx tsx scripts/generate-blog.ts              # Generate one blog (draft)
- *   npx tsx scripts/generate-blog.ts --publish    # Generate and publish
- *   npx tsx scripts/generate-blog.ts --count 5    # Generate 5 blogs
+ *   npx tsx scripts/generate-blog.ts                      # Generate one blog (draft)
+ *   npx tsx scripts/generate-blog.ts --publish            # Generate and publish
+ *   npx tsx scripts/generate-blog.ts --count 5            # Generate 5 blogs
+ *   npx tsx scripts/generate-blog.ts --ai-images          # Use AI-generated images (xAI Grok)
+ *   npx tsx scripts/generate-blog.ts --count 5 --publish --ai-images  # All options
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -17,6 +19,7 @@ dotenv.config();
 
 const XAI_API_KEY = process.env.XAI_API_KEY;
 const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
+const XAI_IMAGE_URL = 'https://api.x.ai/v1/images/generations';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -160,6 +163,85 @@ function getRandomImage(category: string): string {
   return images[Math.floor(Math.random() * images.length)];
 }
 
+// Generate AI image using xAI's Grok image model
+async function generateAIImage(title: string, category: string): Promise<string | null> {
+  try {
+    // Create a visual prompt based on the blog title and category
+    const imagePrompt = `Professional real estate photography style image for a blog article titled "${title}". 
+    Category: ${category}. 
+    Style: Modern, clean, professional business/investment aesthetic. 
+    Subject: Luxury apartment buildings, modern office spaces, or professional real estate investors in a business setting.
+    Mood: Confident, successful, trustworthy.
+    NO text, logos, or watermarks in the image.
+    Photorealistic, high quality, suitable for a professional investment platform blog header.`;
+
+    const response = await fetch(XAI_IMAGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${XAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'grok-2-image',
+        prompt: imagePrompt,
+        n: 1,
+        response_format: 'url',
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log(`   ⚠️ Image API error: ${response.status} - ${errorText.substring(0, 100)}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const imageUrl = data?.data?.[0]?.url;
+    
+    if (!imageUrl) {
+      console.log('   ⚠️ No image URL in response');
+      return null;
+    }
+
+    // Download the image and upload to Supabase storage for permanence
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      console.log('   ⚠️ Failed to download generated image');
+      return null;
+    }
+
+    const imageBlob = await imageResponse.blob();
+    const arrayBuffer = await imageBlob.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    const fileName = `blog-${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+    const filePath = `blog-images/${fileName}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(filePath, buffer, {
+        contentType: 'image/png',
+        upsert: false,
+      });
+    
+    if (uploadError) {
+      console.log(`   ⚠️ Upload error: ${uploadError.message}`);
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath);
+    
+    console.log('   🎨 AI image generated');
+    return publicUrl;
+
+  } catch (error: any) {
+    console.log(`   ⚠️ Image generation failed: ${error.message}`);
+    return null;
+  }
+}
+
 function generateSlug(title: string): string {
   return title
     .toLowerCase()
@@ -297,9 +379,18 @@ async function getUnusedTopic(): Promise<{ category: string; topic: string; targ
   return available[Math.floor(Math.random() * available.length)];
 }
 
-async function saveBlogPost(content: BlogContent, category: string, topic: string, publish: boolean): Promise<string> {
+async function saveBlogPost(content: BlogContent, category: string, topic: string, publish: boolean, useAIImages: boolean = true): Promise<string> {
   const slug = generateSlug(content.title);
-  const imageUrl = getRandomImage(category);
+  
+  // Try AI image generation first, fall back to stock images
+  let imageUrl: string;
+  if (useAIImages) {
+    const aiImage = await generateAIImage(content.title, category);
+    imageUrl = aiImage || getRandomImage(category);
+  } else {
+    imageUrl = getRandomImage(category);
+  }
+  
   const now = new Date().toISOString();
 
   const { data, error } = await supabase
@@ -335,11 +426,15 @@ async function saveBlogPost(content: BlogContent, category: string, topic: strin
 async function main() {
   const args = process.argv.slice(2);
   const publish = args.includes('--publish');
+  const useAIImages = args.includes('--ai-images');
   const countIdx = args.indexOf('--count');
   const count = countIdx !== -1 ? parseInt(args[countIdx + 1]) || 1 : 1;
 
   console.log('🚀 EquityMD Blog Generator (Evergreen)');
   console.log(`   Generating ${count} blog(s)...`);
+  if (useAIImages) {
+    console.log('   🎨 AI Image Generation: ENABLED');
+  }
   console.log('=====================================\n');
 
   for (let i = 0; i < count; i++) {
@@ -350,12 +445,14 @@ async function main() {
       console.log(`[${i + 1}/${count}] "${topic.topic}"`);
       
       const content = await generateBlog(topic.topic, topic.category, topic.targetKeyword);
-      const slug = await saveBlogPost(content, topic.category, topic.topic, publish);
+      const slug = await saveBlogPost(content, topic.category, topic.topic, publish, useAIImages);
       
       console.log(`   ✅ ${publish ? 'Published' : 'Draft'}: ${content.title}`);
       console.log(`   📍 /blog/${slug}\n`);
       
-      if (i < count - 1) await new Promise(r => setTimeout(r, 2000));
+      // Longer delay when generating AI images to avoid rate limits
+      const delay = useAIImages ? 15000 : 10000;
+      if (i < count - 1) await new Promise(r => setTimeout(r, delay));
       
     } catch (err: any) {
       console.log(`   ❌ Error: ${err.message}\n`);

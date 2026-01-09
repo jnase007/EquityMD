@@ -12,6 +12,7 @@ import { useAuthStore } from '../../lib/store';
 import { Navbar } from '../Navbar';
 import { ImageGalleryUpload } from './ImageGalleryUpload';
 import { LivePreview } from './LivePreview';
+import { AIContentAssistant } from '../AIContentAssistant';
 import { 
   PropertyFormData, UploadedImage, PROPERTY_TYPES, US_STATES, 
   WIZARD_STEPS, initialFormData, extractYouTubeId, extractVimeoId, getVideoThumbnail, getVideoEmbedUrl
@@ -1038,9 +1039,18 @@ export function PropertyListingWizard() {
                     
                     {/* Description */}
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Investment Description <span className="text-red-500">*</span>
-                      </label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Investment Description <span className="text-red-500">*</span>
+                        </label>
+                        <AIContentAssistant
+                          onInsert={(content) => updateFormData({ description: content })}
+                          contentType="property_description"
+                          placeholder="Describe what you want: e.g., 'Write a compelling description for a 200-unit value-add apartment in Dallas with 15% projected IRR'"
+                          context={`Property: ${formData.title || 'Untitled'}, Type: ${formData.propertyType}, Location: ${formData.city}, ${formData.state}, Units: ${formData.units || 'Not specified'}, Investment: $${formData.minInvestment?.toLocaleString() || 'TBD'} minimum`}
+                          buttonLabel="Generate with AI"
+                        />
+                      </div>
                       <textarea
                         value={formData.description}
                         onChange={(e) => updateFormData({ description: e.target.value })}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sun, Moon, Sunrise, Sparkles, TrendingUp, Target, Flame, ChevronRight, Zap } from 'lucide-react';
+import { Sun, Moon, Sunrise, Sparkles, TrendingUp, Target, Flame, ChevronRight, Zap, Trophy } from 'lucide-react';
 
 interface PersonalizedGreetingProps {
   userName: string;
@@ -10,6 +10,7 @@ interface PersonalizedGreetingProps {
   levelTitle?: string;
   profileCompletion?: number;
   lastViewedDeal?: { title: string; slug: string } | null;
+  onViewAchievements?: () => void;
 }
 
 export function PersonalizedGreeting({
@@ -19,7 +20,8 @@ export function PersonalizedGreeting({
   level = 1,
   levelTitle = 'Newcomer',
   profileCompletion = 0,
-  lastViewedDeal
+  lastViewedDeal,
+  onViewAchievements
 }: PersonalizedGreetingProps) {
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
@@ -70,6 +72,15 @@ export function PersonalizedGreeting({
                 <Sparkles className="h-4 w-4 text-purple-400" />
                 <span className="text-sm font-medium text-purple-300">Level {level}: {levelTitle}</span>
               </div>
+              {onViewAchievements && (
+                <button
+                  onClick={onViewAchievements}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/20 rounded-full hover:bg-blue-500/30 transition-colors cursor-pointer"
+                >
+                  <Trophy className="h-4 w-4 text-blue-400" />
+                  <span className="text-sm font-medium text-blue-300">View Achievements</span>
+                </button>
+              )}
             </div>
           </div>
           
