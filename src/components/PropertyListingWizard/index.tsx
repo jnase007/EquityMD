@@ -15,7 +15,7 @@ import { LivePreview } from './LivePreview';
 import { AIContentAssistant } from '../AIContentAssistant';
 import { 
   PropertyFormData, UploadedImage, PROPERTY_TYPES, US_STATES, 
-  WIZARD_STEPS, initialFormData, extractYouTubeId, extractVimeoId, getVideoThumbnail, getVideoEmbedUrl
+  WIZARD_STEPS, initialFormData, extractYouTubeId, extractVimeoId, getVideoThumbnail, getVideoEmbedUrl, isValidVideoUrl
 } from './types';
 
 export function PropertyListingWizard() {
@@ -384,9 +384,10 @@ export function PropertyListingWizard() {
         cover_image_url: null
       };
       
-      // Add video URL if provided
-      if (formData.videoUrl && getVideoEmbedUrl(formData.videoUrl)) {
-        dealData.video_url = formData.videoUrl;
+      // Add video URL if provided - be lenient with validation
+      if (formData.videoUrl && isValidVideoUrl(formData.videoUrl)) {
+        dealData.video_url = formData.videoUrl.trim();
+        console.log('Saving video URL:', formData.videoUrl);
       }
       
       console.log('Creating deal with data:', dealData);

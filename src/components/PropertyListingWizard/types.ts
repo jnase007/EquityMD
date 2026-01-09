@@ -150,18 +150,33 @@ export const initialFormData: PropertyFormData = {
   videoUrl: '',
 };
 
-// Helper to extract YouTube video ID
+// Helper to extract YouTube video ID - handles various URL formats
 export function extractYouTubeId(url: string): string | null {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-  const match = url.match(regExp);
-  return (match && match[7].length === 11) ? match[7] : null;
+  if (!url) return null;
+  // Handle various YouTube URL formats
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtu\.be\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/ // Just the video ID
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match && match[1]) return match[1];
+  }
+  return null;
 }
 
 // Helper to extract Vimeo video ID
 export function extractVimeoId(url: string): string | null {
+  if (!url) return null;
   const regExp = /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/;
   const match = url.match(regExp);
   return match ? match[1] : null;
+}
+
+// Check if URL looks like a valid video URL
+export function isValidVideoUrl(url: string): boolean {
+  if (!url) return false;
+  return url.includes('youtube.com') || url.includes('youtu.be') || url.includes('vimeo.com');
 }
 
 // Get video thumbnail URL
@@ -176,6 +191,7 @@ export function getVideoThumbnail(url: string): string | null {
 
 // Get embed URL for video
 export function getVideoEmbedUrl(url: string): string | null {
+  if (!url) return null;
   const youtubeId = extractYouTubeId(url);
   if (youtubeId) {
     return `https://www.youtube.com/embed/${youtubeId}`;
