@@ -9,9 +9,22 @@ interface AchievementUnlockedProps {
   onContinue?: () => void;
 }
 
+// Varied button texts for more engagement
+const CELEBRATION_BUTTONS = [
+  "Awesome! 🎉",
+  "Let's Go! 🚀",
+  "Nice! 💪",
+  "Sweet! ✨",
+  "Woohoo! 🙌",
+  "Keep Going! 🔥",
+  "Crushing It! 💥",
+  "Amazing! ⭐",
+];
+
 export function AchievementUnlocked({ achievement, onClose, onContinue }: AchievementUnlockedProps) {
   const [confetti, setConfetti] = useState<Array<{ id: number; left: number; delay: number; color: string }>>([]);
   const [showContent, setShowContent] = useState(false);
+  const [buttonText] = useState(() => CELEBRATION_BUTTONS[Math.floor(Math.random() * CELEBRATION_BUTTONS.length)]);
   
   useEffect(() => {
     // Generate confetti particles
@@ -27,10 +40,10 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
     // Trigger content animation
     setTimeout(() => setShowContent(true), 100);
     
-    // Auto-close after 5 seconds
+    // Auto-close after 6 seconds (slightly longer to read)
     const timer = setTimeout(() => {
       onClose();
-    }, 5000);
+    }, 6000);
     
     return () => clearTimeout(timer);
   }, []);
@@ -113,7 +126,7 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
         {/* Content */}
         <div className="text-center mt-4">
           <p className={`text-sm font-medium ${colors.text} mb-2 uppercase tracking-wider`}>
-            Achievement Unlocked!
+            🎊 Achievement Unlocked! 🎊
           </p>
           
           {/* Achievement icon */}
@@ -121,19 +134,19 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
             <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur flex items-center justify-center text-5xl shadow-lg animate-bounce-slow">
               {achievement.icon}
             </div>
-            {achievement.rarity === 'legendary' && (
+            {(achievement.rarity === 'legendary' || achievement.rarity === 'epic') && (
               <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-300 animate-spin-slow" />
             )}
           </div>
           
-          {/* Title */}
+          {/* Title - use celebration title if available */}
           <h2 className="text-2xl font-bold text-white mb-2">
-            {achievement.title}
+            {achievement.celebrationTitle || achievement.title}
           </h2>
           
-          {/* Description */}
-          <p className={`${colors.text} mb-4`}>
-            {achievement.description}
+          {/* Message - use celebration message if available */}
+          <p className={`${colors.text} mb-4 text-sm leading-relaxed`}>
+            {achievement.celebrationMessage || achievement.description}
           </p>
           
           {/* Points and rarity */}
@@ -153,12 +166,12 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
             </div>
           </div>
           
-          {/* Continue button */}
+          {/* Continue button - varied text */}
           <button
             onClick={onContinue || onClose}
-            className="w-full py-3 bg-white text-gray-900 font-semibold rounded-xl hover:bg-gray-100 transition-colors shadow-lg"
+            className="w-full py-3.5 bg-white text-gray-900 font-bold rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:scale-105 active:scale-95"
           >
-            Awesome!
+            {buttonText}
           </button>
         </div>
       </div>
