@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Building2, HardHat, Wrench, RefreshCw, Home } from 'lucide-react';
+import { RefreshCw, Home } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -99,13 +99,12 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
             
             {/* Logo */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <Building2 className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold">
-                Equity<span className="text-emerald-600">MD</span>
-              </span>
+            <div className="flex items-center justify-center mb-6">
+              <img 
+                src="/logo-black.png" 
+                alt="EquityMD" 
+                className="h-10"
+              />
             </div>
 
             {/* Message */}
