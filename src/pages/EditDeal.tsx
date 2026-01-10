@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { Navbar } from '../components/Navbar';
+import { DealQualityChecker } from '../components/DealQualityChecker';
 import toast from 'react-hot-toast';
 
 interface DealFile {
@@ -869,6 +870,20 @@ export function EditDeal() {
               ✅ <strong className="text-emerald-800">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-700">Find Deals</a> page.
             </p>
           )}
+        </div>
+
+        {/* Deal Quality Checker */}
+        <div className="mb-6">
+          <DealQualityChecker
+            formData={formData}
+            media={{
+              existingMedia: existingMedia,
+              newImages: newImages,
+            }}
+            files={{
+              files: dealFiles.map(f => ({ category: f.category || 'Other', file_name: f.file_name })),
+            }}
+          />
         </div>
 
         {/* Section Navigation */}
