@@ -61,6 +61,10 @@ export function SyndicatorDashboard() {
   const [editForm, setEditForm] = useState({ companyName: '', companyDescription: '' });
   const [savingBusiness, setSavingBusiness] = useState(false);
   const [showLogoUpload, setShowLogoUpload] = useState(false);
+  const [integrationsNotify, setIntegrationsNotify] = useState(() => {
+    // Check localStorage for saved preference
+    return localStorage.getItem('integrations_notify') === 'true';
+  });
 
   useEffect(() => {
     if (user && profile) {
@@ -1086,15 +1090,33 @@ export function SyndicatorDashboard() {
           <div className="mt-6 p-4 bg-purple-50 rounded-xl border border-purple-100">
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
-                <p className="font-medium text-purple-900">Want to be notified when integrations launch?</p>
-                <p className="text-sm text-purple-700">We'll let you know as soon as these become available.</p>
+                <p className="font-medium text-purple-900">
+                  {integrationsNotify ? "You're on the list! 🎉" : "Want to be notified when integrations launch?"}
+                </p>
+                <p className="text-sm text-purple-700">
+                  {integrationsNotify 
+                    ? "We'll email you as soon as these integrations become available."
+                    : "We'll let you know as soon as these become available."
+                  }
+                </p>
               </div>
-              <button 
-                onClick={() => toast.success('Thanks! We\'ll notify you when integrations are ready.')}
-                className="px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                Notify Me
-              </button>
+              {integrationsNotify ? (
+                <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 font-medium rounded-lg">
+                  <CheckCircle className="h-5 w-5" />
+                  Subscribed
+                </div>
+              ) : (
+                <button 
+                  onClick={() => {
+                    setIntegrationsNotify(true);
+                    localStorage.setItem('integrations_notify', 'true');
+                    toast.success("You're on the list! We'll notify you when integrations launch.");
+                  }}
+                  className="px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  Notify Me
+                </button>
+              )}
             </div>
           </div>
         </div>
