@@ -255,23 +255,36 @@ function getImagePromptForCategory(title: string, category: string): string {
   // Replace {city} placeholder with a random US city
   randomStyle = randomStyle.replace(/\{city\}/g, getRandomCity());
   
-  // CRITICAL: Emphatic instructions for photorealism and NO TEXT
+  // CRITICAL: Emphatic instructions for photorealism, NO TEXT, and avoiding AI artifacts
   return `${randomStyle}
 
 ABSOLUTELY CRITICAL REQUIREMENTS:
-1. DO NOT include ANY text, words, letters, numbers, titles, captions, watermarks, logos, or writing of ANY kind in this image. The image must be completely text-free.
-2. This MUST look like a real photograph from a professional stock photo agency like Getty Images or Shutterstock.
-3. Use a high-end DSLR camera look: Canon 5D Mark IV or Sony A7R IV quality.
-4. Natural lighting only - soft window light, golden hour sunlight, or professional studio lighting.
-5. Real textures: actual fabric, real skin with natural imperfections, genuine materials.
-6. Authentic depth of field with realistic bokeh.
-7. Real people with natural expressions, not posed or artificial looking.
 
-Photography style: Editorial real estate photography for Forbes, Bloomberg, or Wall Street Journal.
-Quality: Award-winning architectural and lifestyle photography.
-Mood: Professional, trustworthy, aspirational.
+NO TEXT ALLOWED:
+- DO NOT include ANY text, words, letters, numbers, titles, captions, watermarks, logos, or writing of ANY kind.
+- No signs, labels, or text on screens, documents, or anywhere in the image.
 
-REMINDER: NO TEXT OR WRITING ANYWHERE IN THE IMAGE.`;
+ANATOMICAL AND OBJECT ACCURACY (VERY IMPORTANT):
+- All people must have correct human anatomy: proper number of fingers (5 per hand), correct facial features, natural body proportions.
+- Laptops and computers must face the CORRECT direction - screens face toward the user, not away.
+- All objects must be oriented correctly and realistically.
+- Hands must look natural and hold objects properly.
+
+NO DUPLICATE PEOPLE:
+- Every person in the image must be UNIQUE and DIFFERENT from each other.
+- No repeated faces, no cloned people, no twins unless specifically requested.
+- Each person should have distinct features: different hair, different face, different body type, different clothing.
+
+PHOTOREALISM REQUIREMENTS:
+- Must look like a real photograph from Getty Images or Shutterstock.
+- Canon 5D Mark IV or Sony A7R IV quality.
+- Natural lighting: window light, golden hour, or professional studio lighting.
+- Real textures, authentic depth of field with realistic bokeh.
+- Real people with natural, genuine expressions.
+
+Photography style: Editorial photography for Forbes, Bloomberg, or Wall Street Journal.
+Quality: Award-winning professional photography.
+Mood: Professional, trustworthy, aspirational.`;
 }
 
 // Generate AI image using OpenAI's DALL-E 3
