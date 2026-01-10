@@ -524,17 +524,24 @@ export function DealDetails() {
 
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    {deal.syndicator.company_logo_url ? (
-                      <img
-                        src={deal.syndicator.company_logo_url}
-                        alt={deal.syndicator.company_name}
-                        className="w-20 h-20 rounded-lg object-cover bg-white border border-gray-200"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 rounded-lg bg-blue-100 flex items-center justify-center border border-gray-200">
-                        <Briefcase className="h-10 w-10 text-blue-600" />
-                      </div>
-                    )}
+                    {(() => {
+                      const logoUrl = getSyndicatorLogo(deal.syndicator.company_name, deal.syndicator.company_logo_url);
+                      return logoUrl ? (
+                        <img
+                          src={logoUrl}
+                          alt={deal.syndicator.company_name}
+                          className="w-20 h-20 rounded-lg object-cover bg-white border border-gray-200"
+                          onError={(e) => {
+                            // Hide broken image and show fallback
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                          }}
+                        />
+                      ) : null;
+                    })()}
+                    <div className={`w-20 h-20 rounded-lg bg-blue-100 flex items-center justify-center border border-gray-200 ${getSyndicatorLogo(deal.syndicator.company_name, deal.syndicator.company_logo_url) ? 'hidden' : ''}`}>
+                      <Briefcase className="h-10 w-10 text-blue-600" />
+                    </div>
                   </div>
 
                   <div className="flex-1 min-w-0">

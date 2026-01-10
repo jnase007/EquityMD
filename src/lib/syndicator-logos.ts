@@ -41,7 +41,12 @@ improve operational efficiency and maximize revenue.`,
 };
 
 export function getSyndicatorLogo(companyName: string, currentLogoUrl?: string | null): string | null {
-  // If there's already a logo URL set, use it
+  // FIRST check if we have a hardcoded logo for this syndicator (these are verified working)
+  if (SYNDICATOR_LOGO_MAP[companyName]) {
+    return SYNDICATOR_LOGO_MAP[companyName];
+  }
+  
+  // If there's a logo URL set in database, use it
   if (currentLogoUrl) {
     // If it's a relative path, construct the full URL
     if (!currentLogoUrl.startsWith('http')) {
@@ -50,8 +55,7 @@ export function getSyndicatorLogo(companyName: string, currentLogoUrl?: string |
     return currentLogoUrl;
   }
 
-  // Check if we have a hardcoded logo for this syndicator
-  return SYNDICATOR_LOGO_MAP[companyName] || null;
+  return null;
 }
 
 export function getSyndicatorLocation(companyName: string, currentCity?: string, currentState?: string): { city: string; state: string } {
