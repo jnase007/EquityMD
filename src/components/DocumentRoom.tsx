@@ -28,6 +28,14 @@ interface DocumentRoomProps {
 }
 
 const DOCUMENT_CATEGORIES = [
+  { value: 'PPM', label: 'PPM', icon: FileText },
+  { value: 'Subscription Agreement', label: 'Subscription Agreement', icon: FileText },
+  { value: 'Operating Agreement', label: 'Operating Agreement', icon: FileText },
+  { value: 'Financial Projections', label: 'Financial Projections', icon: FileSpreadsheet },
+  { value: 'Property Report', label: 'Property Report', icon: Folder },
+  { value: 'Market Analysis', label: 'Market Analysis', icon: FileSpreadsheet },
+  { value: 'Other Documents', label: 'Other Documents', icon: File },
+  // Legacy categories for backward compatibility
   { value: 'overview', label: 'Investment Overview', icon: FileText },
   { value: 'financials', label: 'Financial Projections', icon: FileSpreadsheet },
   { value: 'property_info', label: 'Property Information', icon: Folder },
@@ -165,10 +173,20 @@ export function DocumentRoom({ dealId, dealTitle, isOwner, syndicatorId }: Docum
     return <File className="h-5 w-5 text-gray-500" />;
   };
 
-  const groupedDocuments = DOCUMENT_CATEGORIES.map(cat => ({
+  // Group documents by category, with fallback for uncategorized
+  const categorizedDocs = DOCUMENT_CATEGORIES.map(cat => ({
     ...cat,
     docs: documents.filter(d => d.category === cat.value)
   })).filter(cat => cat.docs.length > 0);
+
+  // Find any documents that don't match known categories
+  const knownCategories = DOCUMENT_CATEGORIES.map(c => c.value);
+  const uncategorizedDocs = documents.filter(d => !knownCategories.includes(d.category || ''));
+  
+  // Add uncategorized docs to the list if any exist
+  const groupedDocuments = uncategorizedDocs.length > 0
+    ? [...categorizedDocs, { value: 'uncategorized', label: 'Documents', icon: File, docs: uncategorizedDocs }]
+    : categorizedDocs;
 
   if (loading) {
     return (
