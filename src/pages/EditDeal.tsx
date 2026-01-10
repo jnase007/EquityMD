@@ -1417,131 +1417,159 @@ export function EditDeal() {
 
                 {/* Documents Section */}
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <FileUp className="h-5 w-5 text-blue-600" />
-                      <h3 className="font-semibold text-gray-900">Deal Documents</h3>
-                      <span className="text-sm text-gray-500">({dealFiles.length})</span>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="p-2.5 bg-blue-600 rounded-xl">
+                      <FileUp className="h-5 w-5 text-white" />
                     </div>
-                    <button
-                      onClick={() => setShowDocUpload(true)}
-                      className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                    >
-                      <Upload className="h-4 w-4" />
-                      Upload Document
-                    </button>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Deal Documents</h3>
+                      <p className="text-sm text-gray-500">Upload PPMs, agreements, and investor materials</p>
+                    </div>
                   </div>
 
-                  {/* Document Upload Modal */}
-                  {showDocUpload && (
-                    <div className="mb-4 p-4 bg-white rounded-xl border border-blue-200 shadow-sm">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-semibold text-gray-900">Upload Document</h4>
-                        <button onClick={() => setShowDocUpload(false)} className="text-gray-400 hover:text-gray-600">
-                          <X className="h-5 w-5" />
+                  {/* Drag & Drop Upload Zone */}
+                  <div 
+                    className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer mb-5 ${
+                      uploadingDoc 
+                        ? 'border-blue-400 bg-blue-50' 
+                        : 'border-blue-300 bg-white hover:border-blue-500 hover:bg-blue-50/50'
+                    }`}
+                    onClick={() => !uploadingDoc && document.getElementById('doc-upload-input')?.click()}
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const file = e.dataTransfer.files?.[0];
+                      if (file && !uploadingDoc) uploadDocument(file);
+                    }}
+                  >
+                    <input
+                      id="doc-upload-input"
+                      type="file"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx,.csv,.rtf"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadDocument(file);
+                        e.target.value = '';
+                      }}
+                      className="hidden"
+                      disabled={uploadingDoc}
+                    />
+                    
+                    {uploadingDoc ? (
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="p-4 bg-blue-100 rounded-full">
+                          <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-blue-700">Uploading document...</p>
+                          <p className="text-sm text-blue-500">Please wait</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="p-4 bg-blue-100 rounded-full">
+                          <Upload className="h-8 w-8 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-700">Drag & drop or click to upload</p>
+                          <p className="text-sm text-gray-500">PDF, Word, Excel, PowerPoint up to 50MB</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Category Quick Select */}
+                  <div className="mb-5">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Document Category</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { value: 'PPM', label: 'PPM', icon: '📋' },
+                        { value: 'Subscription Agreement', label: 'Subscription', icon: '✍️' },
+                        { value: 'Operating Agreement', label: 'Operating', icon: '📝' },
+                        { value: 'Financial Projections', label: 'Financials', icon: '📊' },
+                        { value: 'Property Report', label: 'Property', icon: '🏢' },
+                        { value: 'Market Analysis', label: 'Market', icon: '📈' },
+                        { value: 'Other Documents', label: 'Other', icon: '📁' },
+                      ].map((cat) => (
+                        <button
+                          key={cat.value}
+                          onClick={() => setDocCategory(cat.value)}
+                          className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                            docCategory === cat.value
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                          }`}
+                        >
+                          {cat.icon} {cat.label}
                         </button>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">File</label>
-                          <input
-                            type="file"
-                            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) uploadDocument(file);
-                            }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                            disabled={uploadingDoc}
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                          <select
-                            value={docCategory}
-                            onChange={(e) => setDocCategory(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                          >
-                            <option value="PPM">Private Placement Memorandum (PPM)</option>
-                            <option value="Subscription Agreement">Subscription Agreement</option>
-                            <option value="Operating Agreement">Operating Agreement</option>
-                            <option value="Financial Projections">Financial Projections</option>
-                            <option value="Property Report">Property Report</option>
-                            <option value="Market Analysis">Market Analysis</option>
-                            <option value="Other Documents">Other Documents</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
-                          <input
-                            type="text"
-                            value={docDescription}
-                            onChange={(e) => setDocDescription(e.target.value)}
-                            placeholder="Brief description of the document..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                          />
-                        </div>
-                      </div>
-
-                      {uploadingDoc && (
-                        <div className="mt-4 flex items-center gap-2 text-blue-600">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>Uploading...</span>
-                        </div>
-                      )}
+                      ))}
                     </div>
-                  )}
+                  </div>
 
                   {/* Documents List */}
                   {dealFiles.length > 0 ? (
-                    <div className="space-y-2">
-                      {dealFiles.map((file) => (
-                        <div key={file.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
-                          <div className="flex items-center gap-3">
-                            <FileText className="h-8 w-8 text-blue-600" />
-                            <div>
-                              <p className="font-medium text-gray-900 text-sm">{file.file_name}</p>
-                              <p className="text-xs text-gray-500">
-                                {file.category || 'Document'} • {(file.file_size / 1024 / 1024).toFixed(2)} MB
-                                <span className={`ml-2 px-1.5 py-0.5 rounded text-xs ${file.is_private ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
-                                  {file.is_private ? 'Private' : 'Public'}
-                                </span>
-                              </p>
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium text-gray-700">Uploaded Documents ({dealFiles.length})</p>
+                      {dealFiles.map((file) => {
+                        const fileIcon = file.file_type?.includes('pdf') ? '📄' : 
+                                        file.file_type?.includes('word') || file.file_type?.includes('document') ? '📝' :
+                                        file.file_type?.includes('excel') || file.file_type?.includes('spreadsheet') ? '📊' :
+                                        file.file_type?.includes('powerpoint') || file.file_type?.includes('presentation') ? '📽️' : '📁';
+                        return (
+                          <div key={file.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-center gap-4">
+                              <div className="text-3xl">{fileIcon}</div>
+                              <div>
+                                <p className="font-medium text-gray-900">{file.file_name}</p>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-xs text-gray-500">{file.category || 'Document'}</span>
+                                  <span className="text-gray-300">•</span>
+                                  <span className="text-xs text-gray-500">{(file.file_size / 1024 / 1024).toFixed(2)} MB</span>
+                                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                    file.is_private ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+                                  }`}>
+                                    {file.is_private ? '🔒 Private' : '🌐 Public'}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <a
+                                href={file.file_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                title="View document"
+                              >
+                                <Eye className="h-5 w-5" />
+                              </a>
+                              <button
+                                onClick={() => toggleDocVisibility(file.id, file.is_private)}
+                                className={`p-2 rounded-lg transition-colors ${
+                                  file.is_private ? 'text-emerald-600 hover:bg-emerald-50' : 'text-amber-600 hover:bg-amber-50'
+                                }`}
+                                title={file.is_private ? 'Make public' : 'Make private'}
+                              >
+                                {file.is_private ? '🌐' : '🔒'}
+                              </button>
+                              <button
+                                onClick={() => deleteDocument(file.id, file.file_url)}
+                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete document"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </button>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <a
-                              href={file.file_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg"
-                            >
-                              View
-                            </a>
-                            <button
-                              onClick={() => toggleDocVisibility(file.id, file.is_private)}
-                              className={`px-3 py-1 text-sm rounded-lg ${file.is_private ? 'text-green-600 hover:bg-green-50' : 'text-orange-600 hover:bg-orange-50'}`}
-                            >
-                              {file.is_private ? 'Make Public' : 'Make Private'}
-                            </button>
-                            <button
-                              onClick={() => deleteDocument(file.id, file.file_url)}
-                              className="p-1 text-red-500 hover:bg-red-50 rounded-lg"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   ) : (
-                    <div className="text-center py-6 text-gray-500">
-                      <FileText className="h-12 w-12 mx-auto mb-2 text-gray-300" />
-                      <p>No documents uploaded yet</p>
-                      <p className="text-sm">Upload PPM, subscription agreements, or other deal documents</p>
+                    <div className="text-center py-8 bg-white/50 rounded-xl border border-dashed border-blue-200">
+                      <div className="text-4xl mb-2">📂</div>
+                      <p className="font-medium text-gray-700">No documents uploaded yet</p>
+                      <p className="text-sm text-gray-500">Drag & drop or click above to upload your first document</p>
                     </div>
                   )}
                 </div>
