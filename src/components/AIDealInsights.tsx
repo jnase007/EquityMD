@@ -97,6 +97,10 @@ Remember: Be helpful and educational, but NEVER tell them what to do. End with a
 
 ${dealContext}`;
 
+      if (!XAI_API_KEY) {
+        throw new Error('AI service not configured. Please contact support.');
+      }
+
       const response = await fetch(XAI_API_URL, {
         method: 'POST',
         headers: {
@@ -115,7 +119,9 @@ ${dealContext}`;
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get AI insights');
+        const errorText = await response.text();
+        console.error('Grok API error:', response.status, errorText);
+        throw new Error(`AI service error (${response.status})`);
       }
 
       const data = await response.json();

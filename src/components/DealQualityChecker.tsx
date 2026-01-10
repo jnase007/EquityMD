@@ -265,6 +265,10 @@ Missing/Incomplete Items:
 ${failedChecks.map(c => `- ${c.label} (${c.importance})`).join('\n')}
       `;
 
+      if (!XAI_API_KEY) {
+        throw new Error('AI service not configured');
+      }
+
       const response = await fetch(XAI_API_URL, {
         method: 'POST',
         headers: {
@@ -292,7 +296,10 @@ Format each suggestion as a brief tip (1-2 sentences). Start each with an emoji.
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to get suggestions');
+      if (!response.ok) {
+        console.error('Grok API error:', response.status);
+        throw new Error('Failed to get suggestions');
+      }
 
       const data = await response.json();
       setAiSuggestions(data.choices?.[0]?.message?.content || 'Unable to generate suggestions');
