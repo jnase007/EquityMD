@@ -110,7 +110,23 @@ function getImagePromptForCategory(title: string, category: string): string {
   let randomStyle = styles[Math.floor(Math.random() * styles.length)];
   randomStyle = randomStyle.replace(/\{city\}/g, getRandomCity());
   
-  return `${randomStyle}. This image is for an article titled "${title}". CRITICAL: Make this look like a real photograph taken by a professional photographer, NOT computer generated. Use natural lighting, authentic settings, real-looking people with genuine expressions. Documentary or editorial photography style. NO artificial or CGI look. NO text or watermarks.`;
+  // CRITICAL: Emphatic instructions for photorealism and NO TEXT
+  return `${randomStyle}
+
+ABSOLUTELY CRITICAL REQUIREMENTS:
+1. DO NOT include ANY text, words, letters, numbers, titles, captions, watermarks, logos, or writing of ANY kind in this image. The image must be completely text-free.
+2. This MUST look like a real photograph from a professional stock photo agency like Getty Images or Shutterstock.
+3. Use a high-end DSLR camera look: Canon 5D Mark IV or Sony A7R IV quality.
+4. Natural lighting only - soft window light, golden hour sunlight, or professional studio lighting.
+5. Real textures: actual fabric, real skin with natural imperfections, genuine materials.
+6. Authentic depth of field with realistic bokeh.
+7. Real people with natural expressions, not posed or artificial looking.
+
+Photography style: Editorial real estate photography for Forbes, Bloomberg, or Wall Street Journal.
+Quality: Award-winning architectural and lifestyle photography.
+Mood: Professional, trustworthy, aspirational.
+
+REMINDER: NO TEXT OR WRITING ANYWHERE IN THE IMAGE.`;
 }
 
 async function generateNewImage(title: string, category: string): Promise<string | null> {
