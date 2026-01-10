@@ -48,6 +48,9 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
       console.log('File type:', file.type, 'Size:', file.size);
 
       // Upload to Supabase Storage
+      console.log('🔄 Starting upload to deal-media bucket...');
+      console.log('File details:', { name: file.name, type: file.type, size: file.size });
+      
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('deal-media')
         .upload(filePath, file, {
@@ -56,10 +59,22 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
         });
 
       if (uploadError) {
-        console.error('Storage upload error:', uploadError);
-        console.error('Error details:', JSON.stringify(uploadError, null, 2));
-        throw new Error(`Storage upload failed: ${uploadError.message}`);
+        console.error('❌ Storage upload error:', uploadError);
+        console.error('Error code:', uploadError.message);
+        console.error('Full error:', JSON.stringify(uploadError, null, 2));
+        
+        // Show specific error to user
+        if (uploadError.message.includes('mime')) {
+          throw new Error('File type not allowed. Try PDF, DOC, or TXT files.');
+        } else if (uploadError.message.includes('size')) {
+          throw new Error('File is too large. Maximum size is 50MB.');
+        } else if (uploadError.message.includes('policy')) {
+          throw new Error('Permission denied. Please try logging out and back in.');
+        }
+        throw new Error(`Upload failed: ${uploadError.message}`);
       }
+      
+      console.log('✅ Storage upload successful:', uploadData);
 
       console.log('Upload successful:', uploadData);
 
@@ -71,6 +86,7 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
       console.log('Public URL:', publicUrl);
 
       // Save to database and let it generate the ID
+      console.log('🔄 Saving to database...');
       const { data: insertedFile, error: dbError } = await supabase
         .from('deal_files')
         .insert([{
@@ -85,12 +101,19 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
         .single();
 
       if (dbError) {
-        console.error('Database insert error:', dbError);
-        console.error('Error details:', JSON.stringify(dbError, null, 2));
+        console.error('❌ Database insert error:', dbError);
+        console.error('Error code:', dbError.code);
+        console.error('Full error:', JSON.stringify(dbError, null, 2));
         // Try to clean up the uploaded file
         await supabase.storage.from('deal-media').remove([filePath]);
+        
+        if (dbError.code === '42501' || dbError.message.includes('policy')) {
+          throw new Error('Permission denied. The database policy may need updating.');
+        }
         throw new Error(`Database error: ${dbError.message}`);
       }
+      
+      console.log('✅ Database record created:', insertedFile);
 
       console.log('Database record created:', insertedFile);
 
