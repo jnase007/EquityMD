@@ -474,9 +474,9 @@ export function EditDeal() {
 
       console.log('Uploading document to path:', filePath);
 
-      // Upload to storage
+      // Upload to storage (using deal-documents bucket for document files)
       const { error: uploadError } = await supabase.storage
-        .from('deal-media')
+        .from('deal-documents')
         .upload(filePath, file, { cacheControl: '3600', upsert: false });
 
       if (uploadError) {
@@ -485,7 +485,7 @@ export function EditDeal() {
       }
 
       const { data: { publicUrl } } = supabase.storage
-        .from('deal-media')
+        .from('deal-documents')
         .getPublicUrl(filePath);
 
       // Save to database
@@ -506,7 +506,7 @@ export function EditDeal() {
 
       if (dbError) {
         console.error('Database error:', dbError);
-        await supabase.storage.from('deal-media').remove([filePath]);
+        await supabase.storage.from('deal-documents').remove([filePath]);
         throw new Error(`Database error: ${dbError.message}`);
       }
 
@@ -533,11 +533,18 @@ export function EditDeal() {
 
       if (dbError) throw dbError;
 
-      // Try to delete from storage
+      // Try to delete from storage (check both buckets for backwards compatibility)
       try {
-        const urlParts = fileUrl.split('/deal-media/');
-        if (urlParts[1]) {
-          await supabase.storage.from('deal-media').remove([urlParts[1]]);
+        if (fileUrl.includes('/deal-documents/')) {
+          const urlParts = fileUrl.split('/deal-documents/');
+          if (urlParts[1]) {
+            await supabase.storage.from('deal-documents').remove([urlParts[1]]);
+          }
+        } else if (fileUrl.includes('/deal-media/')) {
+          const urlParts = fileUrl.split('/deal-media/');
+          if (urlParts[1]) {
+            await supabase.storage.from('deal-media').remove([urlParts[1]]);
+          }
         }
       } catch (e) {
         console.warn('Could not delete from storage:', e);
