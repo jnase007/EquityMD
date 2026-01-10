@@ -8,17 +8,17 @@ import {
 
 interface DealData {
   title: string;
-  property_type: string;
+  propertyType: string;  // camelCase from EditDeal
   location: string;
   address?: { street?: string; city?: string; state?: string; zip?: string };
-  minimum_investment: string;
-  target_irr: string;
-  investment_term: string;
-  total_equity: string;
-  preferred_return: string;
-  equity_multiple: string;
+  minimumInvestment: string;
+  targetIrr: string;
+  investmentTerm: string;
+  totalEquity: string;
+  preferredReturn: string;
+  equityMultiple: string;
   description: string;
-  investment_highlights: string[];
+  investmentHighlights: string[];
   videoUrl: string;
   status: string;
 }
@@ -72,7 +72,7 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
     {
       id: 'property_type',
       label: 'Property type selected',
-      passed: !!formData.property_type,
+      passed: !!formData.propertyType,
       importance: 'required',
       category: 'basics',
     },
@@ -86,7 +86,7 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
     {
       id: 'description',
       label: 'Description (100+ characters)',
-      passed: formData.description.length >= 100,
+      passed: (formData.description?.length || 0) >= 100,
       importance: 'required',
       category: 'basics',
       tip: 'Detailed descriptions get 3x more investor interest'
@@ -96,42 +96,42 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
     {
       id: 'min_investment',
       label: 'Minimum investment',
-      passed: !!formData.minimum_investment && parseFloat(formData.minimum_investment) > 0,
+      passed: !!formData.minimumInvestment && parseFloat(formData.minimumInvestment) > 0,
       importance: 'required',
       category: 'financials',
     },
     {
       id: 'target_irr',
       label: 'Target IRR',
-      passed: !!formData.target_irr,
+      passed: !!formData.targetIrr,
       importance: 'required',
       category: 'financials',
     },
     {
       id: 'investment_term',
       label: 'Investment term',
-      passed: !!formData.investment_term,
+      passed: !!formData.investmentTerm,
       importance: 'required',
       category: 'financials',
     },
     {
       id: 'total_equity',
       label: 'Total equity raise',
-      passed: !!formData.total_equity && parseFloat(formData.total_equity) > 0,
+      passed: !!formData.totalEquity && parseFloat(formData.totalEquity) > 0,
       importance: 'recommended',
       category: 'financials',
     },
     {
       id: 'preferred_return',
       label: 'Preferred return',
-      passed: !!formData.preferred_return,
+      passed: !!formData.preferredReturn,
       importance: 'recommended',
       category: 'financials',
     },
     {
       id: 'equity_multiple',
       label: 'Equity multiple',
-      passed: !!formData.equity_multiple,
+      passed: !!formData.equityMultiple,
       importance: 'recommended',
       category: 'financials',
     },
@@ -197,7 +197,7 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
     {
       id: 'highlights',
       label: 'Investment highlights (2+)',
-      passed: formData.investment_highlights.filter(h => h.trim()).length >= 2,
+      passed: (formData.investmentHighlights || []).filter(h => h.trim()).length >= 2,
       importance: 'recommended',
       category: 'details',
       tip: 'Highlights help investors quickly understand the value'
@@ -205,7 +205,7 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
     {
       id: 'many_highlights',
       label: 'Investment highlights (4+)',
-      passed: formData.investment_highlights.filter(h => h.trim()).length >= 4,
+      passed: (formData.investmentHighlights || []).filter(h => h.trim()).length >= 4,
       importance: 'bonus',
       category: 'details',
     },
@@ -253,12 +253,12 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
       const failedChecks = checks.filter(c => !c.passed);
       const dealSummary = `
 Deal Title: ${formData.title || 'Not set'}
-Property Type: ${formData.property_type || 'Not set'}
+Property Type: ${formData.propertyType || 'Not set'}
 Location: ${formData.location || 'Not set'}
-Description Length: ${formData.description.length} characters
+Description Length: ${formData.description?.length || 0} characters
 Images: ${media.existingMedia.length + media.newImages.length}
 Documents: ${files.files.length} (${files.files.map(f => f.category).join(', ') || 'None'})
-Investment Highlights: ${formData.investment_highlights.filter(h => h.trim()).length}
+Investment Highlights: ${(formData.investmentHighlights || []).filter(h => h.trim()).length}
 Has Video: ${formData.videoUrl ? 'Yes' : 'No'}
 
 Missing/Incomplete Items:
