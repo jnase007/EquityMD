@@ -7,7 +7,7 @@ export * from './NextSteps';
 export * from './AchievementsModal';
 export * from './useGamification';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useGamification } from './useGamification';
 import { ProgressCard } from './ProgressCard';
 import { NextStepsCard, WelcomeBackCard } from './NextSteps';
@@ -20,6 +20,7 @@ export function GamificationDashboard() {
   const { profile } = useAuthStore();
   const gamification = useGamification();
   const [showAchievements, setShowAchievements] = useState(false);
+  const achievementsButtonRef = useRef<HTMLButtonElement>(null);
   
   const firstName = profile?.full_name?.split(' ')[0] || 'there';
   const nextIncomplete = gamification.nextSteps.find(s => !s.completed);
@@ -42,6 +43,7 @@ export function GamificationDashboard() {
         achievementCount={gamification.achievementCount}
         totalAchievements={gamification.totalAchievements}
         onViewAchievements={() => setShowAchievements(true)}
+        achievementsButtonRef={achievementsButtonRef}
       />
       
       {/* Next steps */}
@@ -57,6 +59,7 @@ export function GamificationDashboard() {
         onClose={() => setShowAchievements(false)}
         achievements={gamification.achievements}
         totalPoints={gamification.totalPoints}
+        anchorRef={achievementsButtonRef}
       />
       
       {/* Achievement unlock celebration */}
@@ -80,6 +83,7 @@ export function GamificationWidget({ showNextSteps = true, compact = false }: Ga
   const { profile } = useAuthStore();
   const gamification = useGamification();
   const [showAchievements, setShowAchievements] = useState(false);
+  const achievementsButtonRef = useRef<HTMLButtonElement>(null);
   
   if (gamification.isLoading) {
     return (
@@ -98,6 +102,7 @@ export function GamificationWidget({ showNextSteps = true, compact = false }: Ga
         achievementCount={gamification.achievementCount}
         totalAchievements={gamification.totalAchievements}
         onViewAchievements={() => setShowAchievements(true)}
+        achievementsButtonRef={achievementsButtonRef}
       />
       
       {showNextSteps && gamification.nextSteps.some(s => !s.completed) && (
@@ -115,6 +120,7 @@ export function GamificationWidget({ showNextSteps = true, compact = false }: Ga
         onClose={() => setShowAchievements(false)}
         achievements={gamification.achievements}
         totalPoints={gamification.totalPoints}
+        anchorRef={achievementsButtonRef}
       />
       
       {gamification.newAchievement && (

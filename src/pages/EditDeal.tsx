@@ -3,13 +3,26 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { 
   ChevronLeft, Save, AlertCircle, Sparkles, Building, MapPin, 
   DollarSign, FileText, Camera, CheckCircle, Loader2, Plus, 
-  Trash2, Video, Youtube, X, Eye, ArrowLeft
+  Trash2, Video, Youtube, X, Eye, ArrowLeft, Upload, FileUp
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { Navbar } from '../components/Navbar';
 import toast from 'react-hot-toast';
+
+interface DealFile {
+  id: string;
+  deal_id: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  file_url: string;
+  is_private: boolean;
+  category?: string;
+  description?: string;
+  created_at: string;
+}
 
 const PROPERTY_TYPES = [
   { value: 'Multi-Family', label: 'Multi-Family', icon: '🏢', description: 'Apartment buildings, duplexes, condos' },
@@ -145,6 +158,11 @@ export function EditDeal() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [activeSection, setActiveSection] = useState('basics');
+  const [dealFiles, setDealFiles] = useState<DealFile[]>([]);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [showDocUpload, setShowDocUpload] = useState(false);
+  const [docCategory, setDocCategory] = useState('Other Documents');
+  const [docDescription, setDocDescription] = useState('');
 
   useEffect(() => {
     if (slug && user) {
@@ -238,6 +256,17 @@ export function EditDeal() {
           order: m.order || 0
         })));
       }
+
+      // Fetch existing documents for this deal
+      const { data: filesData, error: filesError } = await supabase
+        .from('deal_files')
+        .select('*')
+        .eq('deal_id', data.id)
+        .order('created_at', { ascending: false });
+
+      if (!filesError && filesData) {
+        setDealFiles(filesData);
+      }
     } catch (error) {
       console.error('Error fetching deal:', error);
       toast.error('Failed to load deal');
@@ -272,7 +301,10 @@ export function EditDeal() {
 
   // Auto-upload a single image immediately
   const uploadImageImmediately = async (file: File) => {
-    if (!deal) return;
+    if (!deal) {
+      toast.error('Deal not loaded yet');
+      return;
+    }
     
     const tempId = uuidv4();
     const preview = URL.createObjectURL(file);
@@ -286,26 +318,37 @@ export function EditDeal() {
     }]);
     
     try {
-      const fileExt = file.name.split('.').pop() || 'jpg';
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
       const fileName = `${uuidv4()}.${fileExt}`;
       const filePath = `deals/${deal.id}/${fileName}`;
       
+      console.log('Uploading to path:', filePath);
+      console.log('File type:', file.type, 'Size:', file.size);
+      
       // Upload to storage
-      const { error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('deal-media')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
       
       if (uploadError) {
-        console.error('Upload error:', uploadError);
-        toast.error(`Failed to upload ${file.name}`);
+        console.error('Storage upload error:', uploadError);
+        console.error('Error details:', JSON.stringify(uploadError, null, 2));
+        toast.error(`Upload failed: ${uploadError.message}`);
         setNewImages(prev => prev.filter(img => img.id !== tempId));
         URL.revokeObjectURL(preview);
         return;
       }
       
+      console.log('Upload successful:', uploadData);
+      
       const { data: { publicUrl } } = supabase.storage
         .from('deal-media')
         .getPublicUrl(filePath);
+      
+      console.log('Public URL:', publicUrl);
       
       // Save to database
       const { data: mediaRecord, error: dbError } = await supabase
@@ -321,12 +364,17 @@ export function EditDeal() {
         .single();
       
       if (dbError) {
-        console.error('Database error:', dbError);
-        toast.error(`Failed to save ${file.name}`);
+        console.error('Database insert error:', dbError);
+        console.error('Error details:', JSON.stringify(dbError, null, 2));
+        toast.error(`Database error: ${dbError.message}`);
+        // Try to clean up the uploaded file
+        await supabase.storage.from('deal-media').remove([filePath]);
         setNewImages(prev => prev.filter(img => img.id !== tempId));
         URL.revokeObjectURL(preview);
         return;
       }
+      
+      console.log('Database record created:', mediaRecord);
       
       // Remove from newImages and add to existingMedia
       setNewImages(prev => prev.filter(img => img.id !== tempId));
@@ -346,9 +394,9 @@ export function EditDeal() {
       }
       
       toast.success(`Uploaded ${file.name}`);
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast.error(`Failed to upload ${file.name}`);
+    } catch (error: any) {
+      console.error('Unexpected upload error:', error);
+      toast.error(`Failed to upload: ${error.message || 'Unknown error'}`);
       setNewImages(prev => prev.filter(img => img.id !== tempId));
       URL.revokeObjectURL(preview);
     }
@@ -405,6 +453,122 @@ export function EditDeal() {
     }
   };
 
+  // Document upload functions
+  const uploadDocument = async (file: File) => {
+    if (!deal) {
+      toast.error('Deal not loaded');
+      return;
+    }
+
+    setUploadingDoc(true);
+    try {
+      // Validate file size (max 50MB)
+      if (file.size > 50 * 1024 * 1024) {
+        throw new Error('File size must be less than 50MB');
+      }
+
+      const timestamp = Date.now();
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const fileName = `${timestamp}.${fileExt}`;
+      const filePath = `deals/${deal.id}/documents/${fileName}`;
+
+      console.log('Uploading document to path:', filePath);
+
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('deal-media')
+        .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        throw new Error(`Upload failed: ${uploadError.message}`);
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('deal-media')
+        .getPublicUrl(filePath);
+
+      // Save to database
+      const { data: insertedFile, error: dbError } = await supabase
+        .from('deal_files')
+        .insert([{
+          deal_id: deal.id,
+          file_name: file.name,
+          file_type: file.type,
+          file_size: file.size,
+          file_url: publicUrl,
+          is_private: true,
+          category: docCategory,
+          description: docDescription
+        }])
+        .select()
+        .single();
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        await supabase.storage.from('deal-media').remove([filePath]);
+        throw new Error(`Database error: ${dbError.message}`);
+      }
+
+      setDealFiles(prev => [insertedFile, ...prev]);
+      setShowDocUpload(false);
+      setDocCategory('Other Documents');
+      setDocDescription('');
+      toast.success(`Uploaded ${file.name}`);
+    } catch (error: any) {
+      console.error('Document upload error:', error);
+      toast.error(error.message || 'Failed to upload document');
+    } finally {
+      setUploadingDoc(false);
+    }
+  };
+
+  const deleteDocument = async (fileId: string, fileUrl: string) => {
+    try {
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('deal_files')
+        .delete()
+        .eq('id', fileId);
+
+      if (dbError) throw dbError;
+
+      // Try to delete from storage
+      try {
+        const urlParts = fileUrl.split('/deal-media/');
+        if (urlParts[1]) {
+          await supabase.storage.from('deal-media').remove([urlParts[1]]);
+        }
+      } catch (e) {
+        console.warn('Could not delete from storage:', e);
+      }
+
+      setDealFiles(prev => prev.filter(f => f.id !== fileId));
+      toast.success('Document deleted');
+    } catch (error: any) {
+      console.error('Error deleting document:', error);
+      toast.error('Failed to delete document');
+    }
+  };
+
+  const toggleDocVisibility = async (fileId: string, currentPrivate: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('deal_files')
+        .update({ is_private: !currentPrivate })
+        .eq('id', fileId);
+
+      if (error) throw error;
+
+      setDealFiles(prev => prev.map(f => 
+        f.id === fileId ? { ...f, is_private: !currentPrivate } : f
+      ));
+      toast.success(`Document is now ${!currentPrivate ? 'private' : 'public'}`);
+    } catch (error: any) {
+      console.error('Error updating visibility:', error);
+      toast.error('Failed to update visibility');
+    }
+  };
 
   // Delete an existing image
   const deleteExistingImage = async (mediaId: string, imageUrl: string) => {
@@ -631,24 +795,73 @@ export function EditDeal() {
           </div>
         </div>
 
-        {/* Status Badge */}
-        <div className="mb-6">
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
-            formData.status === 'active' 
-              ? 'bg-emerald-100 text-emerald-700' 
-              : formData.status === 'draft'
-              ? 'bg-amber-100 text-amber-700'
-              : 'bg-gray-100 text-gray-700'
-          }`}>
-            <div className={`w-2 h-2 rounded-full ${
-              formData.status === 'active' 
-                ? 'bg-emerald-500' 
-                : formData.status === 'draft'
-                ? 'bg-amber-500'
-                : 'bg-gray-500'
-            }`} />
-            {formData.status === 'active' ? 'Published' : formData.status === 'draft' ? 'Draft' : formData.status}
+        {/* Status & Actions Panel - Always visible */}
+        <div className="mb-6 bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {/* Status Badge */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500">Status:</span>
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
+                formData.status === 'active' 
+                  ? 'bg-emerald-100 text-emerald-700' 
+                  : formData.status === 'draft'
+                  ? 'bg-amber-100 text-amber-700'
+                  : 'bg-gray-100 text-gray-700'
+              }`}>
+                <div className={`w-2 h-2 rounded-full ${
+                  formData.status === 'active' 
+                    ? 'bg-emerald-500' 
+                    : formData.status === 'draft'
+                    ? 'bg-amber-500'
+                    : 'bg-gray-500'
+                }`} />
+                {formData.status === 'active' ? 'Published' : formData.status === 'draft' ? 'Draft' : formData.status}
+              </div>
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {formData.status === 'draft' ? (
+                <button
+                  onClick={() => handleSave('active')}
+                  disabled={saving}
+                  className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-lg shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all flex items-center gap-2"
+                >
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                  Publish Deal
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleSave('draft')}
+                  disabled={saving}
+                  className="px-4 py-2 bg-amber-100 text-amber-700 font-semibold rounded-lg hover:bg-amber-200 transition-colors flex items-center gap-2"
+                >
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertCircle className="h-4 w-4" />}
+                  Unpublish
+                </button>
+              )}
+              
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100 font-medium rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete
+              </button>
+            </div>
           </div>
+          
+          {/* Helpful hint */}
+          {formData.status === 'draft' && (
+            <p className="mt-3 text-sm text-gray-500 border-t border-gray-100 pt-3">
+              💡 <strong>Draft deals</strong> are only visible to you. Click "Publish Deal" to make it visible to investors on the Find Deals page.
+            </p>
+          )}
+          {formData.status === 'active' && (
+            <p className="mt-3 text-sm text-emerald-600 border-t border-gray-100 pt-3">
+              ✅ <strong>This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline">Find Deals</a> page.
+            </p>
+          )}
         </div>
 
         {/* Section Navigation */}
@@ -1194,44 +1407,143 @@ export function EditDeal() {
                     </div>
                   )}
                 </div>
+
+                {/* Documents Section */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <FileUp className="h-5 w-5 text-blue-600" />
+                      <h3 className="font-semibold text-gray-900">Deal Documents</h3>
+                      <span className="text-sm text-gray-500">({dealFiles.length})</span>
+                    </div>
+                    <button
+                      onClick={() => setShowDocUpload(true)}
+                      className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                    >
+                      <Upload className="h-4 w-4" />
+                      Upload Document
+                    </button>
+                  </div>
+
+                  {/* Document Upload Modal */}
+                  {showDocUpload && (
+                    <div className="mb-4 p-4 bg-white rounded-xl border border-blue-200 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-semibold text-gray-900">Upload Document</h4>
+                        <button onClick={() => setShowDocUpload(false)} className="text-gray-400 hover:text-gray-600">
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">File</label>
+                          <input
+                            type="file"
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) uploadDocument(file);
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                            disabled={uploadingDoc}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                          <select
+                            value={docCategory}
+                            onChange={(e) => setDocCategory(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                          >
+                            <option value="PPM">Private Placement Memorandum (PPM)</option>
+                            <option value="Subscription Agreement">Subscription Agreement</option>
+                            <option value="Operating Agreement">Operating Agreement</option>
+                            <option value="Financial Projections">Financial Projections</option>
+                            <option value="Property Report">Property Report</option>
+                            <option value="Market Analysis">Market Analysis</option>
+                            <option value="Other Documents">Other Documents</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
+                          <input
+                            type="text"
+                            value={docDescription}
+                            onChange={(e) => setDocDescription(e.target.value)}
+                            placeholder="Brief description of the document..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+                      </div>
+
+                      {uploadingDoc && (
+                        <div className="mt-4 flex items-center gap-2 text-blue-600">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Uploading...</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Documents List */}
+                  {dealFiles.length > 0 ? (
+                    <div className="space-y-2">
+                      {dealFiles.map((file) => (
+                        <div key={file.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                          <div className="flex items-center gap-3">
+                            <FileText className="h-8 w-8 text-blue-600" />
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">{file.file_name}</p>
+                              <p className="text-xs text-gray-500">
+                                {file.category || 'Document'} • {(file.file_size / 1024 / 1024).toFixed(2)} MB
+                                <span className={`ml-2 px-1.5 py-0.5 rounded text-xs ${file.is_private ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'}`}>
+                                  {file.is_private ? 'Private' : 'Public'}
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <a
+                              href={file.file_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded-lg"
+                            >
+                              View
+                            </a>
+                            <button
+                              onClick={() => toggleDocVisibility(file.id, file.is_private)}
+                              className={`px-3 py-1 text-sm rounded-lg ${file.is_private ? 'text-green-600 hover:bg-green-50' : 'text-orange-600 hover:bg-orange-50'}`}
+                            >
+                              {file.is_private ? 'Make Public' : 'Make Private'}
+                            </button>
+                            <button
+                              onClick={() => deleteDocument(file.id, file.file_url)}
+                              className="p-1 text-red-500 hover:bg-red-50 rounded-lg"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 text-gray-500">
+                      <FileText className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                      <p>No documents uploaded yet</p>
+                      <p className="text-sm">Upload PPM, subscription agreements, or other deal documents</p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
 
-          {/* Action Bar */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 lg:px-8 py-4 flex flex-col sm:flex-row gap-3 justify-between">
-            <div className="flex items-center gap-2">
-              {formData.status === 'draft' && (
-                <button
-                  onClick={() => handleSave('active')}
-                  disabled={saving}
-                  className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all flex items-center gap-2"
-                >
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
-                  Publish Deal
-                </button>
-              )}
-              {formData.status === 'active' && (
-                <button
-                  onClick={() => handleSave('draft')}
-                  disabled={saving}
-                  className="px-4 py-2.5 bg-amber-100 text-amber-700 font-semibold rounded-xl hover:bg-amber-200 transition-colors"
-                >
-                  Unpublish
-                </button>
-              )}
-              
-              {/* Delete Button */}
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="px-4 py-2.5 text-red-600 hover:bg-red-50 font-medium rounded-xl transition-colors flex items-center gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Delete Deal</span>
-              </button>
-            </div>
-            
-            <div className="flex gap-3">
+          {/* Action Bar - Simplified, main actions are at top */}
+          <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 lg:px-8 py-4 flex justify-end gap-3">
               <Link
                 to={`/deals/${slug}`}
                 className="px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
@@ -1246,7 +1558,6 @@ export function EditDeal() {
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 Save Changes
               </button>
-            </div>
           </div>
         </div>
       </div>

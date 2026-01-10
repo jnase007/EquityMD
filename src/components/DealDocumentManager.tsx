@@ -40,21 +40,35 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
       }
 
       const timestamp = Date.now();
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
       const fileName = `${timestamp}.${fileExt}`;
       const filePath = `deals/${dealId}/documents/${fileName}`;
 
-      // Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('deal-media')
-        .upload(filePath, file);
+      console.log('Uploading document to path:', filePath);
+      console.log('File type:', file.type, 'Size:', file.size);
 
-      if (uploadError) throw uploadError;
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('deal-media')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        console.error('Error details:', JSON.stringify(uploadError, null, 2));
+        throw new Error(`Storage upload failed: ${uploadError.message}`);
+      }
+
+      console.log('Upload successful:', uploadData);
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('deal-media')
         .getPublicUrl(filePath);
+
+      console.log('Public URL:', publicUrl);
 
       // Save to database and let it generate the ID
       const { data: insertedFile, error: dbError } = await supabase
@@ -70,14 +84,22 @@ export function DealDocumentManager({ dealId, existingFiles, onFilesChange }: De
         .select()
         .single();
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Database insert error:', dbError);
+        console.error('Error details:', JSON.stringify(dbError, null, 2));
+        // Try to clean up the uploaded file
+        await supabase.storage.from('deal-media').remove([filePath]);
+        throw new Error(`Database error: ${dbError.message}`);
+      }
+
+      console.log('Database record created:', insertedFile);
 
       // Use the database-generated file record
       const updatedFiles = [...files, insertedFile];
       setFiles(updatedFiles);
       onFilesChange(updatedFiles);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file:', error);
       setError(error instanceof Error ? error.message : 'Error uploading file');
     } finally {

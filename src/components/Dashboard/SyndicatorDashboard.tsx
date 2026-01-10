@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Plus, Building2, Users, TrendingUp, 
@@ -42,6 +42,7 @@ export function SyndicatorDashboard() {
   const navigate = useNavigate();
   const gamification = useGamification();
   const [showAchievements, setShowAchievements] = useState(false);
+  const achievementsButtonRef = useRef<HTMLButtonElement>(null);
   const [syndicator, setSyndicator] = useState<any>(null);
   const [deals, setDeals] = useState<any[]>([]);
   const [investmentRequests, setInvestmentRequests] = useState<InvestmentRequest[]>([]);
@@ -573,6 +574,7 @@ export function SyndicatorDashboard() {
             {/* Gamification */}
             <div className="hidden lg:flex flex-col items-end gap-2">
               <button
+                ref={achievementsButtonRef}
                 onClick={() => setShowAchievements(true)}
                 className="flex items-center gap-2 px-3 py-1.5 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
               >
@@ -968,6 +970,7 @@ export function SyndicatorDashboard() {
         onClose={() => setShowAchievements(false)}
         achievements={gamification.achievements}
         totalPoints={gamification.totalPoints}
+        anchorRef={achievementsButtonRef}
       />
       
       {/* Achievement Unlocked Animation */}

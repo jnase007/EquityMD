@@ -9,7 +9,14 @@
  *   npx tsx scripts/generate-blog.ts --publish            # Generate and publish
  *   npx tsx scripts/generate-blog.ts --count 5            # Generate 5 blogs
  *   npx tsx scripts/generate-blog.ts --ai-images          # Use AI-generated images (xAI Grok)
- *   npx tsx scripts/generate-blog.ts --count 5 --publish --ai-images  # All options
+ *   npx tsx scripts/generate-blog.ts --openai-images      # Use OpenAI DALL-E 3 for images (better quality)
+ *   npx tsx scripts/generate-blog.ts --count 5 --publish --openai-images  # All options with OpenAI
+ * 
+ * Environment variables:
+ *   XAI_API_KEY          - Required for blog content generation (Grok)
+ *   OPENAI_API_KEY       - Optional for DALL-E 3 image generation
+ *   SUPABASE_URL         - Supabase project URL
+ *   SUPABASE_SERVICE_KEY - Supabase service role key
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -18,8 +25,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const XAI_API_KEY = process.env.XAI_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
 const XAI_IMAGE_URL = 'https://api.x.ai/v1/images/generations';
+const OPENAI_IMAGE_URL = 'https://api.openai.com/v1/images/generations';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -163,8 +172,176 @@ function getRandomImage(category: string): string {
   return images[Math.floor(Math.random() * images.length)];
 }
 
+// US cities to reference for realistic imagery
+const US_CITIES = [
+  'Austin, Texas', 'Phoenix, Arizona', 'Nashville, Tennessee', 'Charlotte, North Carolina',
+  'Denver, Colorado', 'Atlanta, Georgia', 'Dallas, Texas', 'Tampa, Florida',
+  'Raleigh, North Carolina', 'Salt Lake City, Utah', 'Seattle, Washington', 'Miami, Florida',
+  'San Diego, California', 'Orlando, Florida', 'Las Vegas, Nevada', 'Houston, Texas',
+];
+
+function getRandomCity(): string {
+  return US_CITIES[Math.floor(Math.random() * US_CITIES.length)];
+}
+
+// Category-specific image styles for variety - realistic, editorial photography style
+const IMAGE_STYLES: Record<string, string[]> = {
+  'Investor Education': [
+    'Editorial photograph of a confident business professional in a tailored suit reviewing property documents in a high-rise office, downtown {city} visible through windows, natural daylight, Canon EOS R5 photography style',
+    'Documentary-style photo of a diverse group of investors in business casual attire having a meeting in a modern conference room, genuine expressions, warm office lighting',
+    'Real estate agent showing apartment floor plans to a young professional couple, authentic moment, natural lighting, lifestyle photography',
+    'Business professional working on laptop at a coffee shop with real estate listings visible on screen, candid street photography style in {city}',
+  ],
+  'Deal Analysis': [
+    'Authentic aerial photograph of a real apartment complex in {city} suburbs, swimming pool, parking lot with cars, genuine real estate listing style',
+    'Business analyst pointing at financial charts on a whiteboard during a team meeting, documentary office photography, natural expressions',
+    'Real photograph of an investor touring an apartment property with a property manager, clipboard in hand, authentic inspection moment',
+    'Overhead flat lay of actual property documents, calculator, laptop showing spreadsheets, coffee cup, realistic desk scene',
+  ],
+  'Syndication': [
+    'Genuine photograph of two business professionals shaking hands in front of an apartment building in {city}, deal closing moment, editorial style',
+    'Documentary photo of a real estate investment meeting with diverse professionals around a table with laptops and documents',
+    'Authentic photograph of a business presentation in a modern office, speaker at podium with audience of investors',
+    'Real photograph of professionals signing documents at a closing table, fountain pens, genuine business moment',
+  ],
+  'Due Diligence': [
+    'Authentic photograph of a building inspector with hard hat and clipboard examining an apartment exterior in {city}',
+    'Documentary-style photo of a professional reviewing property documents with magnifying glass, genuine research moment',
+    'Real photograph of an engineer inspecting HVAC systems on an apartment rooftop, professional equipment visible',
+    'Candid photo of investors walking through an apartment complex courtyard during a property tour, genuine expressions',
+  ],
+  'Tax Strategy': [
+    'Authentic photograph of a CPA meeting with clients in a professional accounting office, tax documents on desk',
+    'Real photograph of a business professional working with tax forms and calculator at a home office desk',
+    'Documentary-style photo of a tax planning meeting with accountant explaining documents to investors',
+    'Genuine photograph of organized tax documents and financial statements on a professional desk with laptop',
+  ],
+  'Market Insights': [
+    'Stunning real photograph of the {city} downtown skyline at golden hour, apartment towers prominent, editorial cityscape',
+    'Authentic aerial photograph of a growing suburban neighborhood in {city} with new apartment construction',
+    'Real street-level photograph of a thriving mixed-use development in {city}, people walking, urban vitality',
+    'Documentary photograph of a busy downtown {city} street with apartment buildings and urban life',
+  ],
+  'Investment Strategy': [
+    'Authentic photograph of a financial advisor meeting with clients, discussing investment charts on a screen',
+    'Real photograph of a business professional analyzing multiple property listings on a computer with dual monitors',
+    'Documentary-style photo of an investment committee meeting in a boardroom, genuine discussion moment',
+    'Candid photograph of a real estate investor reviewing property portfolios on a tablet in a modern office',
+  ],
+  'Financing': [
+    'Authentic photograph of a bank meeting room with loan officer and clients discussing mortgage documents',
+    'Real photograph of a commercial lending office with professionals reviewing financing terms',
+    'Documentary-style photo of business professionals reviewing loan documents at a conference table',
+    'Genuine photograph of keys and closing documents on a table at a real estate closing, authentic moment',
+  ],
+  'Property Management': [
+    'Authentic photograph of a property manager greeting residents in a modern apartment lobby in {city}',
+    'Real photograph of maintenance professionals performing repairs in an apartment unit, genuine work moment',
+    'Documentary-style photo of a leasing office with agent showing apartment features to prospective tenants',
+    'Genuine photograph of residents enjoying a well-maintained apartment pool area, community atmosphere',
+  ],
+  'Exit Strategy': [
+    'Authentic photograph of a "SOLD" sign in front of a real apartment complex, celebration moment',
+    'Documentary-style photo of business professionals celebrating a successful deal with handshakes in an office',
+    'Real photograph of keys being exchanged at a property closing, genuine transaction moment',
+    'Authentic photograph of investors reviewing successful returns on laptops, satisfied expressions',
+  ],
+};
+
+function getImagePromptForCategory(title: string, category: string): string {
+  const styles = IMAGE_STYLES[category] || IMAGE_STYLES['Market Insights'];
+  let randomStyle = styles[Math.floor(Math.random() * styles.length)];
+  
+  // Replace {city} placeholder with a random US city
+  randomStyle = randomStyle.replace(/\{city\}/g, getRandomCity());
+  
+  return `${randomStyle}. This image is for an article titled "${title}". CRITICAL: Make this look like a real photograph taken by a professional photographer, NOT computer generated. Use natural lighting, authentic settings, real-looking people with genuine expressions. Documentary or editorial photography style. NO artificial or CGI look. NO text or watermarks.`;
+}
+
+// Generate AI image using OpenAI's DALL-E 3
+async function generateOpenAIImage(title: string, category: string): Promise<string | null> {
+  if (!OPENAI_API_KEY) {
+    console.log('   ⚠️ OPENAI_API_KEY not set, falling back to Grok');
+    return null;
+  }
+
+  try {
+    // Create a varied visual prompt based on category
+    const imagePrompt = getImagePromptForCategory(title, category);
+
+    console.log('   🖼️ Generating image with OpenAI DALL-E 3...');
+    
+    const response = await fetch(OPENAI_IMAGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'dall-e-3',
+        prompt: imagePrompt,
+        n: 1,
+        size: '1792x1024', // Wide format for blog headers
+        quality: 'standard',
+        response_format: 'url',
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log(`   ⚠️ OpenAI Image API error: ${response.status} - ${errorText.substring(0, 200)}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const imageUrl = data?.data?.[0]?.url;
+    
+    if (!imageUrl) {
+      console.log('   ⚠️ No image URL in OpenAI response');
+      return null;
+    }
+
+    // Download and upload to Supabase for permanence (OpenAI URLs expire)
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      console.log('   ⚠️ Failed to download generated image');
+      return null;
+    }
+
+    const imageBlob = await imageResponse.blob();
+    const arrayBuffer = await imageBlob.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    const fileName = `blog-${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+    const filePath = `blog-images/${fileName}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(filePath, buffer, {
+        contentType: 'image/png',
+        upsert: false,
+      });
+    
+    if (uploadError) {
+      console.log(`   ⚠️ Upload error: ${uploadError.message}`);
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath);
+    
+    console.log('   🎨 OpenAI DALL-E 3 image generated successfully');
+    return publicUrl;
+
+  } catch (error: any) {
+    console.log(`   ⚠️ OpenAI image generation failed: ${error.message}`);
+    return null;
+  }
+}
+
 // Generate AI image using xAI's Grok image model
-async function generateAIImage(title: string, category: string): Promise<string | null> {
+async function generateGrokImage(title: string, category: string): Promise<string | null> {
   try {
     // Create a visual prompt based on the blog title and category
     const imagePrompt = `Professional real estate photography style image for a blog article titled "${title}". 
@@ -174,6 +351,8 @@ async function generateAIImage(title: string, category: string): Promise<string 
     Mood: Confident, successful, trustworthy.
     NO text, logos, or watermarks in the image.
     Photorealistic, high quality, suitable for a professional investment platform blog header.`;
+
+    console.log('   🖼️ Generating image with xAI Grok...');
 
     const response = await fetch(XAI_IMAGE_URL, {
       method: 'POST',
@@ -233,7 +412,7 @@ async function generateAIImage(title: string, category: string): Promise<string 
       .from('images')
       .getPublicUrl(filePath);
     
-    console.log('   🎨 AI image generated');
+    console.log('   🎨 Grok AI image generated');
     return publicUrl;
 
   } catch (error: any) {
@@ -242,12 +421,32 @@ async function generateAIImage(title: string, category: string): Promise<string 
   }
 }
 
-function generateSlug(title: string): string {
-  return title
+// Unified image generation with provider selection
+async function generateAIImage(title: string, category: string, useOpenAI: boolean = false): Promise<string | null> {
+  if (useOpenAI) {
+    // Try OpenAI first, fall back to Grok if it fails
+    const openAIImage = await generateOpenAIImage(title, category);
+    if (openAIImage) return openAIImage;
+    console.log('   ↪️ Falling back to Grok for image generation...');
+    return generateGrokImage(title, category);
+  } else {
+    return generateGrokImage(title, category);
+  }
+}
+
+function generateSlug(title: string, addSuffix: boolean = false): string {
+  let slug = title
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .substring(0, 60);
+  
+  // Add a short random suffix to ensure uniqueness when topics are reused
+  if (addSuffix) {
+    slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+  }
+  
+  return slug;
 }
 
 interface BlogContent {
@@ -363,7 +562,7 @@ Respond ONLY with valid JSON:
   return JSON.parse(cleaned);
 }
 
-async function getUnusedTopic(): Promise<{ category: string; topic: string; targetKeyword: string } | null> {
+async function getUnusedTopic(): Promise<{ category: string; topic: string; targetKeyword: string; isReused: boolean } | null> {
   const { data: existingPosts } = await supabase
     .from('blog_posts')
     .select('generation_prompt');
@@ -372,20 +571,22 @@ async function getUnusedTopic(): Promise<{ category: string; topic: string; targ
   const available = EVERGREEN_TOPICS.filter(t => !usedTopics.has(t.topic));
   
   if (available.length === 0) {
-    console.log('📚 All topics used! Rotating from start.');
-    return EVERGREEN_TOPICS[Math.floor(Math.random() * EVERGREEN_TOPICS.length)];
+    console.log('📚 All topics used! Rotating from start (will add unique suffix).');
+    const topic = EVERGREEN_TOPICS[Math.floor(Math.random() * EVERGREEN_TOPICS.length)];
+    return { ...topic, isReused: true };
   }
   
-  return available[Math.floor(Math.random() * available.length)];
+  const topic = available[Math.floor(Math.random() * available.length)];
+  return { ...topic, isReused: false };
 }
 
-async function saveBlogPost(content: BlogContent, category: string, topic: string, publish: boolean, useAIImages: boolean = true): Promise<string> {
-  const slug = generateSlug(content.title);
+async function saveBlogPost(content: BlogContent, category: string, topic: string, publish: boolean, useAIImages: boolean = true, useOpenAI: boolean = false, isReused: boolean = false): Promise<string> {
+  const slug = generateSlug(content.title, isReused);
   
   // Try AI image generation first, fall back to stock images
   let imageUrl: string;
   if (useAIImages) {
-    const aiImage = await generateAIImage(content.title, category);
+    const aiImage = await generateAIImage(content.title, category, useOpenAI);
     imageUrl = aiImage || getRandomImage(category);
   } else {
     imageUrl = getRandomImage(category);
@@ -426,14 +627,22 @@ async function saveBlogPost(content: BlogContent, category: string, topic: strin
 async function main() {
   const args = process.argv.slice(2);
   const publish = args.includes('--publish');
-  const useAIImages = args.includes('--ai-images');
+  const useAIImages = args.includes('--ai-images') || args.includes('--openai-images');
+  const useOpenAI = args.includes('--openai-images');
   const countIdx = args.indexOf('--count');
   const count = countIdx !== -1 ? parseInt(args[countIdx + 1]) || 1 : 1;
 
   console.log('🚀 EquityMD Blog Generator (Evergreen)');
   console.log(`   Generating ${count} blog(s)...`);
   if (useAIImages) {
-    console.log('   🎨 AI Image Generation: ENABLED');
+    if (useOpenAI) {
+      console.log('   🎨 AI Image Generation: OpenAI DALL-E 3');
+      if (!OPENAI_API_KEY) {
+        console.log('   ⚠️ Warning: OPENAI_API_KEY not set, will fall back to Grok');
+      }
+    } else {
+      console.log('   🎨 AI Image Generation: xAI Grok');
+    }
   }
   console.log('=====================================\n');
 
@@ -445,7 +654,7 @@ async function main() {
       console.log(`[${i + 1}/${count}] "${topic.topic}"`);
       
       const content = await generateBlog(topic.topic, topic.category, topic.targetKeyword);
-      const slug = await saveBlogPost(content, topic.category, topic.topic, publish, useAIImages);
+      const slug = await saveBlogPost(content, topic.category, topic.topic, publish, useAIImages, useOpenAI, topic.isReused);
       
       console.log(`   ✅ ${publish ? 'Published' : 'Draft'}: ${content.title}`);
       console.log(`   📍 /blog/${slug}\n`);

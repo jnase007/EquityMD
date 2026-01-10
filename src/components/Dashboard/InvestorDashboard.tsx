@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Heart, MessageSquare, 
@@ -22,6 +22,7 @@ export function InvestorDashboard() {
   const navigate = useNavigate();
   const gamification = useGamification();
   const [showAchievements, setShowAchievements] = useState(false);
+  const achievementsButtonRef = useRef<HTMLButtonElement>(null);
   const [stats, setStats] = useState({
     favoriteDeals: 0,
     interestedDeals: 0,
@@ -211,6 +212,7 @@ export function InvestorDashboard() {
         profileCompletion={profileCompletion}
         lastViewedDeal={lastViewedDeal}
         onViewAchievements={() => setShowAchievements(true)}
+        achievementsButtonRef={achievementsButtonRef}
       />
 
       {/* Stats Cards */}
@@ -456,6 +458,7 @@ export function InvestorDashboard() {
         onClose={() => setShowAchievements(false)}
         achievements={gamification.achievements}
         totalPoints={gamification.totalPoints}
+        anchorRef={achievementsButtonRef}
       />
       
       {/* Achievement Unlock Celebration */}

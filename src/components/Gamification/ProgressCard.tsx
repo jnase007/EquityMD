@@ -9,6 +9,7 @@ interface ProgressCardProps {
   achievementCount: number;
   totalAchievements: number;
   onViewAchievements?: () => void;
+  achievementsButtonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 export function ProgressCard({
@@ -18,6 +19,7 @@ export function ProgressCard({
   achievementCount,
   totalAchievements,
   onViewAchievements,
+  achievementsButtonRef,
 }: ProgressCardProps) {
   const currentLevel = getLevelFromPoints(totalPoints, role);
   const progressToNext = getProgressToNextLevel(totalPoints, role);
@@ -100,6 +102,7 @@ export function ProgressCard({
         
         {/* View all achievements button */}
         <button
+          ref={achievementsButtonRef}
           onClick={onViewAchievements}
           className="w-full py-3 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center gap-2 text-gray-700 font-medium transition-colors"
         >

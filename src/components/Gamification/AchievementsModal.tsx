@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, Trophy, Lock, CheckCircle2, Zap, Filter } from 'lucide-react';
 import { Achievement, getRarityColor } from './types';
 import { AchievementBadge } from './AchievementBadge';
@@ -8,14 +8,74 @@ interface AchievementsModalProps {
   onClose: () => void;
   achievements: Achievement[];
   totalPoints: number;
+  anchorRef?: React.RefObject<HTMLElement>;
 }
 
 type FilterType = 'all' | 'unlocked' | 'locked';
 type CategoryType = 'all' | 'profile' | 'engagement' | 'milestone' | 'social';
 
-export function AchievementsModal({ isOpen, onClose, achievements, totalPoints }: AchievementsModalProps) {
+export function AchievementsModal({ isOpen, onClose, achievements, totalPoints, anchorRef }: AchievementsModalProps) {
   const [filter, setFilter] = useState<FilterType>('all');
   const [category, setCategory] = useState<CategoryType>('all');
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  
+  // Calculate position relative to anchor
+  useEffect(() => {
+    if (!isOpen || !anchorRef?.current) {
+      setPosition(null);
+      return;
+    }
+    
+    const updatePosition = () => {
+      const anchor = anchorRef.current;
+      const modal = modalRef.current;
+      if (!anchor || !modal) return;
+      
+      const anchorRect = anchor.getBoundingClientRect();
+      const modalWidth = 672; // max-w-2xl = 42rem = 672px
+      const modalMaxHeight = window.innerHeight * 0.85;
+      const padding = 16;
+      
+      // Calculate horizontal position - try to align with anchor, but stay in viewport
+      let left = anchorRect.left;
+      if (left + modalWidth > window.innerWidth - padding) {
+        left = window.innerWidth - modalWidth - padding;
+      }
+      if (left < padding) {
+        left = padding;
+      }
+      
+      // Calculate vertical position - prefer below the anchor, but go above if needed
+      let top = anchorRect.bottom + 8;
+      const spaceBelow = window.innerHeight - anchorRect.bottom - padding;
+      const spaceAbove = anchorRect.top - padding;
+      
+      // If not enough space below and more space above, position above
+      if (spaceBelow < modalMaxHeight && spaceAbove > spaceBelow) {
+        // Position above - but we need to estimate the modal height
+        const estimatedHeight = Math.min(modalMaxHeight, 500);
+        top = anchorRect.top - estimatedHeight - 8;
+        if (top < padding) {
+          top = padding;
+        }
+      }
+      
+      setPosition({ top, left });
+    };
+    
+    // Initial position
+    updatePosition();
+    
+    // Update on scroll or resize
+    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener('resize', updatePosition);
+    
+    return () => {
+      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener('resize', updatePosition);
+    };
+  }, [isOpen, anchorRef]);
   
   if (!isOpen) return null;
   
@@ -38,16 +98,28 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints }
     common: filteredAchievements.filter(a => a.rarity === 'common'),
   };
 
+  // Use anchored positioning if anchor is provided, otherwise center
+  const isAnchored = anchorRef && position;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+    <div className={`fixed z-50 ${isAnchored ? '' : 'inset-0 flex items-center justify-center p-4'}`}>
+      {/* Backdrop - lighter when anchored */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        className={`fixed inset-0 ${isAnchored ? 'bg-black/20' : 'bg-black/60 backdrop-blur-sm'}`}
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col z-10">
+      <div 
+        ref={modalRef}
+        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col z-10"
+        style={isAnchored ? { 
+          position: 'fixed',
+          top: position.top,
+          left: position.left,
+          width: 'min(672px, calc(100vw - 32px))'
+        } : undefined}
+      >
           {/* Header */}
           <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-5 text-white">
             <div className="flex items-center justify-between">

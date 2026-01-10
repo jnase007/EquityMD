@@ -11,6 +11,7 @@ interface PersonalizedGreetingProps {
   profileCompletion?: number;
   lastViewedDeal?: { title: string; slug: string } | null;
   onViewAchievements?: () => void;
+  achievementsButtonRef?: React.RefObject<HTMLButtonElement>;
 }
 
 export function PersonalizedGreeting({
@@ -21,7 +22,8 @@ export function PersonalizedGreeting({
   levelTitle = 'Newcomer',
   profileCompletion = 0,
   lastViewedDeal,
-  onViewAchievements
+  onViewAchievements,
+  achievementsButtonRef
 }: PersonalizedGreetingProps) {
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
@@ -74,6 +76,7 @@ export function PersonalizedGreeting({
               </div>
               {onViewAchievements && (
                 <button
+                  ref={achievementsButtonRef}
                   onClick={onViewAchievements}
                   className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/20 rounded-full hover:bg-blue-500/30 transition-colors cursor-pointer"
                 >
