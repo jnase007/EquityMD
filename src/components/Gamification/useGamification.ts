@@ -136,7 +136,10 @@ export function useGamification(): GamificationData {
           unlocked.push('inv_preferences_set');
         }
         
-        if (investorProfile.accreditation_status === 'verified') {
+        // Check accreditation - can be in profiles.accredited_status (boolean) or investor_profiles.accredited_status
+        if (investorProfile.accredited_status === true || 
+            investorProfile.accreditation_status === 'verified' ||
+            (profile as any).accredited_status === true) {
           unlocked.push('inv_accredited');
         }
         
@@ -333,7 +336,9 @@ export function useGamification(): GamificationData {
             completed = !!(profile.full_name && profile.avatar_url && profile.phone_number);
             break;
           case 'verify_accreditation':
-            completed = investorProfile?.accreditation_status === 'verified';
+            completed = investorProfile?.accredited_status === true || 
+                       investorProfile?.accreditation_status === 'verified' ||
+                       (profile as any)?.accredited_status === true;
             break;
           case 'set_preferences':
             completed = !!(investorProfile?.preferred_property_types?.length || 
