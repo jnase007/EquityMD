@@ -803,11 +803,11 @@ export function EditDeal() {
         </div>
 
         {/* Status & Actions Panel - Always visible */}
-        <div className="mb-6 bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl border border-slate-700 p-5 shadow-lg">
+        <div className="mb-6 bg-gradient-to-r from-indigo-100 to-blue-100 rounded-xl border border-indigo-200 p-5 shadow-lg">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             {/* Status Badge */}
             <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-300 font-medium">Status:</span>
+              <span className="text-sm text-indigo-700 font-medium">Status:</span>
               <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${
                 formData.status === 'active' 
                   ? 'bg-emerald-100 text-emerald-700' 
@@ -850,7 +850,7 @@ export function EditDeal() {
               
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="px-4 py-2 text-red-100 bg-red-600/80 hover:bg-red-600 font-medium rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 text-red-700 bg-red-100 hover:bg-red-200 font-medium rounded-lg transition-colors flex items-center gap-2"
               >
                 <Trash2 className="h-4 w-4" />
                 Delete
@@ -860,13 +860,13 @@ export function EditDeal() {
           
           {/* Helpful hint */}
           {formData.status === 'draft' && (
-            <p className="mt-4 text-sm text-slate-300 border-t border-slate-600 pt-3">
-              💡 <strong className="text-white">Draft deals</strong> are only visible to you. Click "Publish Deal" to make it visible to investors on the Find Deals page.
+            <p className="mt-4 text-sm text-indigo-700 border-t border-indigo-200 pt-3">
+              💡 <strong className="text-indigo-900">Draft deals</strong> are only visible to you. Click "Publish Deal" to make it visible to investors on the Find Deals page.
             </p>
           )}
           {formData.status === 'active' && (
-            <p className="mt-4 text-sm text-emerald-300 border-t border-slate-600 pt-3">
-              ✅ <strong className="text-emerald-200">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-200">Find Deals</a> page.
+            <p className="mt-4 text-sm text-emerald-700 border-t border-indigo-200 pt-3">
+              ✅ <strong className="text-emerald-800">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-700">Find Deals</a> page.
             </p>
           )}
         </div>
