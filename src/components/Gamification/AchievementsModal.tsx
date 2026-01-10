@@ -20,46 +20,23 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints, 
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   
-  // Calculate position relative to anchor
+  // Calculate position - always ensure modal is visible in viewport
   useEffect(() => {
-    if (!isOpen || !anchorRef?.current) {
+    if (!isOpen) {
       setPosition(null);
       return;
     }
     
     const updatePosition = () => {
-      const anchor = anchorRef.current;
-      const modal = modalRef.current;
-      if (!anchor || !modal) return;
-      
-      const anchorRect = anchor.getBoundingClientRect();
-      const modalWidth = 672; // max-w-2xl = 42rem = 672px
-      const modalMaxHeight = window.innerHeight * 0.85;
+      const modalWidth = Math.min(672, window.innerWidth - 32);
       const padding = 16;
       
-      // Calculate horizontal position - try to align with anchor, but stay in viewport
-      let left = anchorRect.left;
-      if (left + modalWidth > window.innerWidth - padding) {
-        left = window.innerWidth - modalWidth - padding;
-      }
-      if (left < padding) {
-        left = padding;
-      }
+      // Center horizontally
+      const left = (window.innerWidth - modalWidth) / 2;
       
-      // Calculate vertical position - prefer below the anchor, but go above if needed
-      let top = anchorRect.bottom + 8;
-      const spaceBelow = window.innerHeight - anchorRect.bottom - padding;
-      const spaceAbove = anchorRect.top - padding;
-      
-      // If not enough space below and more space above, position above
-      if (spaceBelow < modalMaxHeight && spaceAbove > spaceBelow) {
-        // Position above - but we need to estimate the modal height
-        const estimatedHeight = Math.min(modalMaxHeight, 500);
-        top = anchorRect.top - estimatedHeight - 8;
-        if (top < padding) {
-          top = padding;
-        }
-      }
+      // Position near top of viewport with some padding
+      // This ensures it's always visible regardless of where button is
+      const top = Math.max(padding, window.innerHeight * 0.05);
       
       setPosition({ top, left });
     };
@@ -67,15 +44,13 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints, 
     // Initial position
     updatePosition();
     
-    // Update on scroll or resize
-    window.addEventListener('scroll', updatePosition, true);
+    // Update on resize
     window.addEventListener('resize', updatePosition);
     
     return () => {
-      window.removeEventListener('scroll', updatePosition, true);
       window.removeEventListener('resize', updatePosition);
     };
-  }, [isOpen, anchorRef]);
+  }, [isOpen]);
   
   if (!isOpen) return null;
   
@@ -98,27 +73,22 @@ export function AchievementsModal({ isOpen, onClose, achievements, totalPoints, 
     common: filteredAchievements.filter(a => a.rarity === 'common'),
   };
 
-  // Use anchored positioning if anchor is provided, otherwise center
-  const isAnchored = anchorRef && position;
-
   return (
-    <div className={`fixed z-50 ${isAnchored ? '' : 'inset-0 flex items-center justify-center p-4'}`}>
-      {/* Backdrop - lighter when anchored */}
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      {/* Backdrop */}
       <div 
-        className={`fixed inset-0 ${isAnchored ? 'bg-black/20' : 'bg-black/60 backdrop-blur-sm'}`}
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* Modal */}
+      {/* Modal - always positioned near top center */}
       <div 
         ref={modalRef}
-        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col z-10"
-        style={isAnchored ? { 
-          position: 'fixed',
-          top: position.top,
-          left: position.left,
+        className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col z-10 mx-auto my-8"
+        style={{ 
+          marginTop: position?.top || 32,
           width: 'min(672px, calc(100vw - 32px))'
-        } : undefined}
+        }}
       >
           {/* Header */}
           <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-5 text-white">
