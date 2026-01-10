@@ -456,12 +456,17 @@ export function EditDeal() {
 
   // Document upload functions
   const uploadDocument = async (file: File) => {
+    console.log('📄 uploadDocument called with:', file.name, file.type, file.size);
+    
     if (!deal) {
+      console.error('❌ Deal not loaded');
       toast.error('Deal not loaded');
       return;
     }
 
+    console.log('📄 Deal ID:', deal.id);
     setUploadingDoc(true);
+    
     try {
       // Validate file size (max 50MB)
       if (file.size > 50 * 1024 * 1024) {
@@ -473,21 +478,28 @@ export function EditDeal() {
       const fileName = `${timestamp}.${fileExt}`;
       const filePath = `deals/${deal.id}/documents/${fileName}`;
 
-      console.log('Uploading document to path:', filePath);
+      console.log('📄 Step 1: Uploading to storage path:', filePath);
 
-      // Upload to storage (using deal-documents bucket for document files)
-      const { error: uploadError } = await supabase.storage
-        .from('deal-documents')
+      // Upload to storage - try deal-media bucket (more likely to exist)
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('deal-media')
         .upload(filePath, file, { cacheControl: '3600', upsert: false });
 
       if (uploadError) {
-        console.error('Storage upload error:', uploadError);
+        console.error('❌ Storage upload error:', uploadError);
+        console.error('❌ Error message:', uploadError.message);
+        console.error('❌ Full error:', JSON.stringify(uploadError, null, 2));
         throw new Error(`Upload failed: ${uploadError.message}`);
       }
 
+      console.log('✅ Step 1 complete: File uploaded to storage', uploadData);
+
       const { data: { publicUrl } } = supabase.storage
-        .from('deal-documents')
+        .from('deal-media')
         .getPublicUrl(filePath);
+
+      console.log('📄 Step 2: Public URL:', publicUrl);
+      console.log('📄 Step 3: Inserting into deal_files table...');
 
       // Save to database
       const { data: insertedFile, error: dbError } = await supabase
@@ -506,21 +518,32 @@ export function EditDeal() {
         .single();
 
       if (dbError) {
-        console.error('Database error:', dbError);
-        await supabase.storage.from('deal-documents').remove([filePath]);
+        console.error('❌ Database error:', dbError);
+        console.error('❌ Error code:', dbError.code);
+        console.error('❌ Error message:', dbError.message);
+        console.error('❌ Full error:', JSON.stringify(dbError, null, 2));
+        await supabase.storage.from('deal-media').remove([filePath]);
         throw new Error(`Database error: ${dbError.message}`);
       }
 
-      setDealFiles(prev => [insertedFile, ...prev]);
+      console.log('✅ Step 3 complete: Database record created', insertedFile);
+
+      setDealFiles(prev => {
+        console.log('📄 Updating state. Previous files:', prev.length, 'Adding:', insertedFile);
+        return [insertedFile, ...prev];
+      });
       setShowDocUpload(false);
       setDocCategory('Other Documents');
       setDocDescription('');
       toast.success(`Uploaded ${file.name}`);
+      console.log('✅ Upload complete!');
     } catch (error: any) {
-      console.error('Document upload error:', error);
+      console.error('❌ Document upload error:', error);
+      console.error('❌ Error stack:', error.stack);
       toast.error(error.message || 'Failed to upload document');
     } finally {
       setUploadingDoc(false);
+      console.log('📄 uploadingDoc set to false');
     }
   };
 
