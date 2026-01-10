@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Sparkles, X, CheckCircle, AlertCircle, HelpCircle, Loader2, FileText, TrendingUp, Shield, Brain } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Sparkles, X, CheckCircle, AlertCircle, HelpCircle, Loader2, FileText, TrendingUp, Shield, Brain, MapPin, Building2, Users, Briefcase } from 'lucide-react';
+import { MARKET_DATA, type MarketData } from '../data/marketData';
 
 interface DealData {
   id: string;
@@ -39,11 +40,53 @@ export function AIDealInsights({ deal, className = '' }: AIDealInsightsProps) {
   const [insights, setInsights] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Find matching market data for this deal's location
+  const marketData = useMemo(() => {
+    if (!deal.location) return null;
+    
+    const locationLower = deal.location.toLowerCase();
+    
+    // Try to match city name from location
+    return MARKET_DATA.find(market => {
+      const cityLower = market.city.toLowerCase();
+      const stateLower = market.state.toLowerCase();
+      const stateCodeLower = market.stateCode.toLowerCase();
+      
+      // Check if location contains the city name
+      if (locationLower.includes(cityLower)) return true;
+      
+      // Check for state match if location is just a state
+      if (locationLower === stateLower || locationLower === stateCodeLower) return true;
+      
+      return false;
+    });
+  }, [deal.location]);
+
   const generateInsights = async () => {
     setLoading(true);
     setError(null);
     
     try {
+      // Build market context if available
+      const marketContext = marketData ? `
+MARKET DATA FOR ${marketData.city.toUpperCase()}, ${marketData.stateCode}:
+- Market Tier: ${marketData.tier.charAt(0).toUpperCase() + marketData.tier.slice(1)} Market
+- Population: ${marketData.population.toLocaleString()} (${marketData.populationGrowth > 0 ? '+' : ''}${marketData.populationGrowth}% YoY growth)
+- Median Household Income: $${marketData.medianHouseholdIncome.toLocaleString()}
+- Unemployment Rate: ${marketData.unemploymentRate}%
+- Job Growth: ${marketData.jobGrowth > 0 ? '+' : ''}${marketData.jobGrowth}% YoY
+- Top Industries: ${marketData.topIndustries.join(', ')}
+- Median Rent (1BR): $${marketData.medianRent1BR.toLocaleString()}/mo
+- Median Rent (2BR): $${marketData.medianRent2BR.toLocaleString()}/mo
+- Rent Growth: ${marketData.rentGrowthYoY > 0 ? '+' : ''}${marketData.rentGrowthYoY}% YoY
+- Vacancy Rate: ${marketData.vacancyRate}%
+- Cap Rate Range: ${marketData.capRateRange.min}% - ${marketData.capRateRange.max}%
+- Price Per Unit Range: $${marketData.pricePerUnit.min.toLocaleString()} - $${marketData.pricePerUnit.max.toLocaleString()}
+- Investment Score: ${marketData.investmentScore}/100
+- Market Highlights: ${marketData.highlights.join('; ')}
+- Market Risks: ${marketData.risks.join('; ')}
+` : '';
+
       // Build context about the deal
       const dealContext = `
 DEAL INFORMATION:
@@ -65,6 +108,7 @@ ${deal.description || 'No description provided'}
 
 INVESTMENT HIGHLIGHTS:
 ${deal.investment_highlights?.join('\n') || 'None listed'}
+${marketContext}
       `.trim();
 
       const systemPrompt = `You are an educational assistant helping investors understand real estate syndication deals. You provide NEUTRAL, FACTUAL analysis to help investors conduct their own due diligence.
@@ -83,15 +127,17 @@ Your role is to help investors understand what questions to ask and what informa
 
 1. **📋 Deal Overview** - A brief, neutral summary of what this deal is (2-3 sentences)
 
-2. **✅ Information Provided** - List what information/documents the syndicator HAS included
+2. **📍 Market Context** - ${marketData ? 'Using the market data provided, explain key factors about this location that investors should understand (population trends, job market, rent trends, etc.). Be factual and neutral.' : 'Note that we don\'t have detailed market data for this specific location - encourage the investor to research local market conditions.'}
 
-3. **❓ Information to Request** - List what additional information an investor might want to request before making a decision
+3. **✅ Information Provided** - List what information/documents the syndicator HAS included
 
-4. **🔍 Due Diligence Questions** - 5-7 specific questions the investor should consider asking or researching
+4. **❓ Information to Request** - List what additional information an investor might want to request before making a decision
 
-5. **📊 Key Metrics to Understand** - Explain what the stated metrics (IRR, equity multiple, preferred return) mean in simple terms, without saying if they're good or bad
+5. **🔍 Due Diligence Questions** - 5-7 specific questions the investor should consider asking or researching${marketData ? ', including questions specific to this market' : ''}
 
-6. **💡 Educational Notes** - Any general educational information about this type of investment that would help the investor
+6. **📊 Key Metrics to Understand** - Explain what the stated metrics (IRR, equity multiple, preferred return) mean in simple terms${marketData ? ', and how they compare to typical cap rates in this market' : ''}
+
+7. **💡 Educational Notes** - Any general educational information about this type of investment and market that would help the investor
 
 Remember: Be helpful and educational, but NEVER tell them what to do. End with a reminder to consult professionals.
 
@@ -201,6 +247,70 @@ ${dealContext}`;
 
             {/* Content */}
             <div className="flex-1 overflow-y-auto p-6">
+              {/* Market Data Summary Card - Always visible if we have data */}
+              {marketData && (
+                <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapPin className="h-5 w-5 text-blue-600" />
+                    <h3 className="font-bold text-gray-900">{marketData.city}, {marketData.stateCode} Market Snapshot</h3>
+                    <span className={`ml-auto text-xs px-2 py-1 rounded-full font-medium ${
+                      marketData.tier === 'primary' ? 'bg-green-100 text-green-700' :
+                      marketData.tier === 'secondary' ? 'bg-blue-100 text-blue-700' :
+                      'bg-amber-100 text-amber-700'
+                    }`}>
+                      {marketData.tier.charAt(0).toUpperCase() + marketData.tier.slice(1)} Market
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                    <div className="bg-white rounded-lg p-2 border border-blue-100">
+                      <div className="flex items-center gap-1 text-gray-500 text-xs mb-1">
+                        <Users className="h-3 w-3" />
+                        Population
+                      </div>
+                      <p className="font-semibold text-gray-900">{(marketData.population / 1000000).toFixed(2)}M</p>
+                      <p className={`text-xs ${marketData.populationGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {marketData.populationGrowth >= 0 ? '↑' : '↓'} {Math.abs(marketData.populationGrowth)}% YoY
+                      </p>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-2 border border-blue-100">
+                      <div className="flex items-center gap-1 text-gray-500 text-xs mb-1">
+                        <Briefcase className="h-3 w-3" />
+                        Job Growth
+                      </div>
+                      <p className="font-semibold text-gray-900">{marketData.jobGrowth >= 0 ? '+' : ''}{marketData.jobGrowth}%</p>
+                      <p className="text-xs text-gray-500">{marketData.unemploymentRate}% unemployment</p>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-2 border border-blue-100">
+                      <div className="flex items-center gap-1 text-gray-500 text-xs mb-1">
+                        <Building2 className="h-3 w-3" />
+                        Rent Growth
+                      </div>
+                      <p className="font-semibold text-gray-900">{marketData.rentGrowthYoY >= 0 ? '+' : ''}{marketData.rentGrowthYoY}% YoY</p>
+                      <p className="text-xs text-gray-500">${marketData.medianRent2BR.toLocaleString()}/mo 2BR</p>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-2 border border-blue-100">
+                      <div className="flex items-center gap-1 text-gray-500 text-xs mb-1">
+                        <TrendingUp className="h-3 w-3" />
+                        Cap Rate
+                      </div>
+                      <p className="font-semibold text-gray-900">{marketData.capRateRange.min}% - {marketData.capRateRange.max}%</p>
+                      <p className="text-xs text-gray-500">{marketData.vacancyRate}% vacancy</p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 pt-3 border-t border-blue-100">
+                    <p className="text-xs text-gray-500">
+                      <strong>Top Industries:</strong> {marketData.topIndustries.slice(0, 3).join(', ')} • 
+                      <strong className="ml-2">Investment Score:</strong> {marketData.investmentScore}/100
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {loading && (
                 <div className="flex flex-col items-center justify-center py-12">
                   <div className="relative">
