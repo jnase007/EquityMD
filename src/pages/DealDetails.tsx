@@ -231,8 +231,24 @@ export function DealDetails() {
       // Track view (fire and forget - don't block the page load)
       trackDealView(dealData.id);
 
-      // Fetch deal files - show both public and private files to authenticated users
-      setFiles(dealData.documents || []);
+      // Fetch deal files from deal_files table
+      const { data: filesData, error: filesError } = await supabase
+        .from("deal_files")
+        .select("*")
+        .eq("deal_id", dealData.id)
+        .order("created_at", { ascending: false });
+
+      if (filesError) {
+        console.error("Error fetching deal files:", filesError);
+      } else {
+        // For non-authenticated users, only show public files
+        // For authenticated users, show all files
+        const visibleFiles = user 
+          ? filesData || []
+          : (filesData || []).filter(f => !f.is_private);
+        setFiles(visibleFiles);
+        console.log("Fetched deal files:", visibleFiles.length);
+      }
 
       // Fetch deal media
       const { data: mediaData, error: mediaError } = await supabase

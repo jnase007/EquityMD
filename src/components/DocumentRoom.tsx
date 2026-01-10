@@ -17,6 +17,7 @@ interface Document {
   file_size: number;
   category: string;
   created_at: string;
+  is_private?: boolean;
 }
 
 interface DocumentRoomProps {
@@ -50,15 +51,36 @@ export function DocumentRoom({ dealId, dealTitle, isOwner, syndicatorId }: Docum
 
   async function fetchDocuments() {
     try {
+      // Query deal_files table (where EditDeal uploads documents)
       const { data, error } = await supabase
-        .from('deal_documents')
+        .from('deal_files')
         .select('*')
         .eq('deal_id', dealId)
-        .order('category', { ascending: true })
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDocuments(data || []);
+      
+      // Map deal_files format to Document format
+      const mappedDocs = (data || []).map(file => ({
+        id: file.id,
+        deal_id: file.deal_id,
+        name: file.file_name,
+        description: file.description || null,
+        file_url: file.file_url,
+        file_type: file.file_type,
+        file_size: file.file_size,
+        category: file.category || 'other',
+        created_at: file.created_at,
+        is_private: file.is_private
+      }));
+      
+      // Filter: show all to authenticated users, only public to others
+      const visibleDocs = user 
+        ? mappedDocs 
+        : mappedDocs.filter(d => !d.is_private);
+      
+      setDocuments(visibleDocs);
+      console.log('DocumentRoom: Fetched', visibleDocs.length, 'documents');
     } catch (error) {
       console.error('Error fetching documents:', error);
     } finally {
