@@ -38,6 +38,7 @@ import { Tooltip } from "react-tooltip";
 import type { Deal, DealFile } from "../types/database";
 import { ReturnsCalculator } from "../components/ReturnsCalculator";
 import { CountdownTimer } from "../components/CountdownTimer";
+import { AIDealInsights } from "../components/AIDealInsights";
 import { SimilarDeals } from "../components/SimilarDeals";
 import { DealComparisonTool, useComparisonTool } from "../components/DealComparisonTool";
 import { ContentGate } from "../components/ContentGate";
@@ -660,6 +661,30 @@ export function DealDetails() {
                 )}
 
                 <FavoriteButton dealId={deal.id} className="w-full py-3" />
+
+                {/* AI Insights Button */}
+                <div className="w-full">
+                  <AIDealInsights deal={{
+                    id: deal.id,
+                    title: deal.title,
+                    property_type: deal.property_type,
+                    location: deal.location,
+                    minimum_investment: deal.minimum_investment,
+                    target_irr: deal.target_irr,
+                    investment_term: deal.investment_term,
+                    total_equity: deal.total_equity,
+                    preferred_return: deal.preferred_return,
+                    equity_multiple: deal.equity_multiple,
+                    description: deal.description,
+                    investment_highlights: deal.investment_highlights,
+                    status: deal.status,
+                    syndicator: deal.syndicator ? {
+                      company_name: deal.syndicator.company_name,
+                      is_verified: deal.syndicator.is_verified,
+                    } : undefined,
+                    files: files.map(f => ({ category: f.category || 'Other', file_name: f.file_name })),
+                  }} />
+                </div>
 
                 {/* Compare Deals Button */}
                 <button
