@@ -964,6 +964,142 @@ export function SyndicatorDashboard() {
         )}
       </div>
 
+      {/* Integrations Coming Soon */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="px-6 py-5 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                Integrations
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                  Coming Soon
+                </span>
+              </h2>
+              <p className="text-gray-500 text-sm">Connect your existing platforms to import deals automatically</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="p-6">
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* CashFlow Portal */}
+            <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200 opacity-75">
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="h-12 flex items-center mb-4">
+                <img 
+                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//cashflow_logo.jpg`}
+                  alt="CashFlow Portal"
+                  className="h-10 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+                <span className="hidden text-lg font-bold text-gray-700">CashFlow Portal</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">CashFlow Portal</h3>
+              <p className="text-sm text-gray-500 mb-3">Import deals directly from CashFlow Portal with one click</p>
+              <ul className="text-xs text-gray-500 space-y-1">
+                <li className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-gray-400" />
+                  Direct deal import
+                </li>
+                <li className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-gray-400" />
+                  Investment terms sync
+                </li>
+              </ul>
+            </div>
+
+            {/* AppFolio */}
+            <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200 opacity-75">
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="h-12 flex items-center mb-4">
+                <img 
+                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//appfolio_logo.png`}
+                  alt="AppFolio"
+                  className="h-10 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+                <span className="hidden text-lg font-bold text-gray-700">AppFolio</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">AppFolio</h3>
+              <p className="text-sm text-gray-500 mb-3">Seamlessly sync property data from AppFolio</p>
+              <ul className="text-xs text-gray-500 space-y-1">
+                <li className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-gray-400" />
+                  One-click property import
+                </li>
+                <li className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-gray-400" />
+                  Automatic data sync
+                </li>
+              </ul>
+            </div>
+
+            {/* Juniper Square */}
+            <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200 opacity-75">
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">
+                  Coming Soon
+                </span>
+              </div>
+              <div className="h-12 flex items-center mb-4">
+                <img 
+                  src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos//Juniper_Square.png`}
+                  alt="Juniper Square"
+                  className="h-10 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+                <span className="hidden text-lg font-bold text-gray-700">Juniper Square</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Juniper Square</h3>
+              <p className="text-sm text-gray-500 mb-3">Leverage Juniper Square for enhanced investor management</p>
+              <ul className="text-xs text-gray-500 space-y-1">
+                <li className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-gray-400" />
+                  Investor reporting
+                </li>
+                <li className="flex items-center gap-1">
+                  <CheckCircle className="h-3 w-3 text-gray-400" />
+                  Distribution management
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Interest Form */}
+          <div className="mt-6 p-4 bg-purple-50 rounded-xl border border-purple-100">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <p className="font-medium text-purple-900">Want to be notified when integrations launch?</p>
+                <p className="text-sm text-purple-700">We'll let you know as soon as these become available.</p>
+              </div>
+              <button 
+                onClick={() => toast.success('Thanks! We\'ll notify you when integrations are ready.')}
+                className="px-4 py-2 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Notify Me
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Achievements Modal */}
       <AchievementsModal 
         isOpen={showAchievements} 
