@@ -302,13 +302,16 @@ export function Pricing() {
         </div>
 
         {/* Trust Section */}
-        <div className="mt-16 text-center">
+        <div className="mt-16 text-center space-y-4">
           <div className={`inline-flex items-center gap-2 px-6 py-3 rounded-full ${isDarkTheme ? 'bg-emerald-900/30 border border-emerald-700' : 'bg-emerald-50 border border-emerald-200'}`}>
             <Gift className={`h-5 w-5 ${isDarkTheme ? 'text-emerald-400' : 'text-emerald-600'}`} />
             <p className={`text-sm font-medium ${isDarkTheme ? 'text-emerald-300' : 'text-emerald-700'}`}>
               No credit card required. Start listing deals for free today!
             </p>
           </div>
+          <p className={`text-xs ${isDarkTheme ? 'text-gray-500' : 'text-gray-400'}`}>
+            Pricing and promotions are subject to change at EquityMD's discretion.
+          </p>
         </div>
 
         {/* FAQ */}

@@ -484,6 +484,9 @@ export function SyndicatorDashboard() {
           </span>
           <span className="text-2xl hidden sm:block">🎁</span>
         </div>
+        <p className="text-center text-emerald-100/70 text-xs mt-2">
+          Pricing and promotions subject to change at EquityMD's discretion.
+        </p>
       </div>
 
       {/* Business Profile Card */}
