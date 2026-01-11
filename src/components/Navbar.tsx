@@ -96,7 +96,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, profile, unreadCount, setNotifications, setUser, setProfile } = useAuthStore();
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -174,8 +174,8 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const firstName = profile?.full_name?.split(' ')[0] || 'User';
   const useTransparentStyle = isTransparent && !isScrolled;
   
-  // Determine if we should use dark styling
-  const isDarkTheme = theme === 'dim' || theme === 'dark';
+  // Determine if we should use dark styling (use resolvedTheme for auto mode)
+  const isDarkTheme = resolvedTheme === 'dim' || resolvedTheme === 'dark';
   const showWhiteLogo = useTransparentStyle || isDarkTheme;
   const navTextClass = isDarkTheme 
     ? 'text-gray-200 hover:text-white' 
@@ -335,47 +335,64 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                         </Link>
                         
                         {/* Appearance/Theme Section */}
-                        <div className={`px-4 py-2 ${isDarkTheme ? 'border-t border-[var(--border-color)]' : 'border-t border-gray-100'}`}>
+                        <div className={`px-4 py-3 ${isDarkTheme ? 'border-t border-[var(--border-color)]' : 'border-t border-gray-100'}`}>
                           <p className={`text-xs font-medium mb-2 ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Appearance</p>
-                          <div className="flex gap-1">
+                          <div className="grid grid-cols-4 gap-1">
                             <button
                               onClick={() => setTheme('light')}
-                              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition ${
+                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
                                 theme === 'light' 
-                                  ? 'bg-blue-100 text-blue-700' 
+                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
                                   : isDarkTheme 
                                     ? 'text-gray-300 hover:bg-gray-700' 
                                     : 'text-gray-600 hover:bg-gray-100'
                               }`}
+                              title="Light mode"
                             >
-                              <Sun className="h-3.5 w-3.5" />
-                              Light
+                              <Sun className="h-4 w-4" />
+                              <span>Light</span>
                             </button>
                             <button
                               onClick={() => setTheme('dim')}
-                              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition ${
+                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
                                 theme === 'dim' 
-                                  ? 'bg-blue-100 text-blue-700' 
+                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
                                   : isDarkTheme 
                                     ? 'text-gray-300 hover:bg-gray-700' 
                                     : 'text-gray-600 hover:bg-gray-100'
                               }`}
+                              title="Dim mode - easier on the eyes"
                             >
-                              <Monitor className="h-3.5 w-3.5" />
-                              Dim
+                              <Monitor className="h-4 w-4" />
+                              <span>Dim</span>
                             </button>
                             <button
                               onClick={() => setTheme('dark')}
-                              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition ${
+                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
                                 theme === 'dark' 
-                                  ? 'bg-blue-100 text-blue-700' 
+                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
                                   : isDarkTheme 
                                     ? 'text-gray-300 hover:bg-gray-700' 
                                     : 'text-gray-600 hover:bg-gray-100'
                               }`}
+                              title="Dark mode"
                             >
-                              <Moon className="h-3.5 w-3.5" />
-                              Dark
+                              <Moon className="h-4 w-4" />
+                              <span>Dark</span>
+                            </button>
+                            <button
+                              onClick={() => setTheme('auto')}
+                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
+                                theme === 'auto' 
+                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
+                                  : isDarkTheme 
+                                    ? 'text-gray-300 hover:bg-gray-700' 
+                                    : 'text-gray-600 hover:bg-gray-100'
+                              }`}
+                              title="Follow system preference"
+                            >
+                              <Settings className="h-4 w-4" />
+                              <span>Auto</span>
                             </button>
                           </div>
                         </div>
