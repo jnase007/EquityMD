@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface NotificationsDropdownProps {
   isOpen: boolean;
@@ -13,6 +14,8 @@ interface NotificationsDropdownProps {
 export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdownProps) {
   const { notifications, markNotificationRead, markAllNotificationsRead } = useAuthStore();
   const navigate = useNavigate();
+  const { theme } = useTheme();
+  const isDarkTheme = theme === 'dim' || theme === 'dark';
 
   const handleNotificationClick = async (notification: any) => {
     try {
@@ -125,14 +128,21 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
   const hasItems = notifications.length > 0;
 
   return (
-    <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl z-[9999]" style={{ position: 'fixed', top: '60px', right: '60px' }}>
-      <div className="p-4 border-b">
+    <div 
+      className={`absolute right-0 mt-2 w-96 rounded-lg shadow-xl z-[9999] ${
+        isDarkTheme 
+          ? 'bg-[var(--card-bg)] border border-[var(--border-color)]' 
+          : 'bg-white'
+      }`} 
+      style={{ position: 'fixed', top: '60px', right: '60px' }}
+    >
+      <div className={`p-4 border-b ${isDarkTheme ? 'border-[var(--border-color)]' : 'border-gray-200'}`}>
         <div className="flex justify-between items-center">
-          <h3 className="font-bold">Notifications</h3>
+          <h3 className={`font-bold ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>Notifications</h3>
           {hasItems && (
             <button
               onClick={handleMarkAllRead}
-              className="text-sm text-blue-600 hover:text-blue-700"
+              className="text-sm text-blue-500 hover:text-blue-400"
             >
               Mark all as read
             </button>
@@ -142,38 +152,40 @@ export function NotificationsDropdown({ isOpen, onClose }: NotificationsDropdown
 
       <div className="max-h-96 overflow-y-auto">
         {notifications.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
+          <div className={`p-4 text-center ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
             No notifications
           </div>
         ) : (
           notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${
-                !notification.read ? 'bg-blue-50' : ''
+              className={`p-4 border-b cursor-pointer transition ${
+                isDarkTheme 
+                  ? `border-[var(--border-color)] hover:bg-[var(--bg-tertiary)] ${!notification.read ? 'bg-blue-900/20' : ''}` 
+                  : `border-gray-100 hover:bg-gray-50 ${!notification.read ? 'bg-blue-50' : ''}`
               }`}
               onClick={() => handleNotificationClick(notification)}
             >
               <div className="flex items-start">
                 <div className="flex-shrink-0">
                   {notification.type === 'message' ? (
-                    <MailOpen className="h-6 w-6 text-blue-600" />
+                    <MailOpen className={`h-6 w-6 ${isDarkTheme ? 'text-blue-400' : 'text-blue-600'}`} />
                   ) : (
-                    <Building2 className="h-6 w-6 text-blue-600" />
+                    <Building2 className={`h-6 w-6 ${isDarkTheme ? 'text-blue-400' : 'text-blue-600'}`} />
                   )}
                 </div>
                 <div className="ml-3 flex-1">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className={`text-sm font-medium ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>
                     {notification.title}
                   </p>
-                  <p className="text-sm text-gray-600 line-clamp-2">
+                  <p className={`text-sm line-clamp-2 ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>
                     {notification.content}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className={`text-xs mt-1 ${isDarkTheme ? 'text-gray-500' : 'text-gray-500'}`}>
                     {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                   </p>
                 </div>
-                <ChevronRight className="h-5 w-5 text-gray-400" />
+                <ChevronRight className={`h-5 w-5 ${isDarkTheme ? 'text-gray-500' : 'text-gray-400'}`} />
               </div>
             </div>
           ))
