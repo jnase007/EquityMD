@@ -56,20 +56,19 @@ const tiers = [
   },
   {
     name: 'Premium',
-    tagline: 'Direct Access',
-    annualPrice: 99995,
-    annualOnly: true,
+    tagline: 'Direct Investor Access',
+    customPricing: true,
     icon: Crown,
     iconColor: 'text-amber-500',
     iconBg: 'bg-amber-100',
     features: [
       'Unlimited deal listings',
       'Direct access to all 7,400+ investors',
+      'Investor database with contact info',
+      'Priority messaging to investors',
       'Dedicated investor outreach campaigns',
       'Featured "Spotlight" placement',
       'Custom branded deal pages',
-      'Investor database with contact info',
-      'Priority messaging to investors',
       'Dedicated account manager',
       'Quarterly investor webinar hosting',
       'White-glove onboarding'
@@ -188,10 +187,9 @@ export function Pricing() {
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
           {tiers.map((tier) => {
             const Icon = tier.icon;
-            const isAnnualOnly = tier.annualOnly;
-            const showMonthly = billingInterval === 'monthly' && !isAnnualOnly;
-            const price = showMonthly ? tier.monthlyPrice : tier.annualPrice;
-            const perMonth = isAnnualOnly ? Math.round(tier.annualPrice / 12) : (showMonthly ? tier.monthlyPrice : Math.round(tier.annualPrice / 12));
+            const isCustomPricing = tier.customPricing;
+            const showMonthly = billingInterval === 'monthly' && !isCustomPricing;
+            const perMonth = showMonthly ? tier.monthlyPrice : (tier.annualPrice ? Math.round(tier.annualPrice / 12) : 0);
             
             return (
               <div 
@@ -228,13 +226,16 @@ export function Pricing() {
                   </p>
                   
                   <div className="mt-6">
-                    {isAnnualOnly ? (
+                    {isCustomPricing ? (
                       <>
-                        <div className={`text-4xl font-bold ${tier.popular ? 'text-white' : ''}`}>
-                          {formatPrice(tier.annualPrice)}
+                        <div className={`text-4xl font-bold ${isDarkTheme ? 'text-amber-400' : 'text-amber-600'}`}>
+                          Custom
                         </div>
-                        <div className={`text-sm mt-1 ${tier.popular ? 'text-blue-100' : 'text-gray-500'}`}>
-                          per year
+                        <div className={`text-sm mt-2 ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
+                          Tailored to your needs
+                        </div>
+                        <div className={`text-xs mt-1 ${isDarkTheme ? 'text-amber-400/70' : 'text-amber-600/70'}`}>
+                          Let's discuss on a call
                         </div>
                       </>
                     ) : (
@@ -329,7 +330,7 @@ export function Pricing() {
                 What's included in the Premium plan?
               </h3>
               <p className={isDarkTheme ? 'text-gray-400' : 'text-gray-600'}>
-                Premium gives you direct access to our entire investor database of 7,400+ accredited investors. You get their contact information, can message them directly, and receive a dedicated account manager to help you maximize your investor outreach.
+                Premium gives you direct access to our entire investor database of 7,400+ accredited investors. You get their contact information, can message them directly, and receive a dedicated account manager. Pricing is custom based on your needs — schedule a call with our team to discuss.
               </p>
             </div>
             <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-[var(--card-bg)] border border-[var(--border-color)]' : 'bg-white shadow-sm border border-gray-100'}`}>
