@@ -3,9 +3,38 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQSection } from '../components/FAQSection';
 import { AuthModal } from '../components/AuthModal';
 import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award, Trophy, Zap, Target, Flame, Lock, Sparkles, Play } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+
+// FAQ data for SEO schema markup - targeting "People Also Ask" questions
+const howItWorksFaqs = [
+  {
+    question: "What is real estate syndication?",
+    answer: "Real estate syndication is when multiple investors pool their capital together to purchase properties that would be too expensive to buy individually. A syndicator (also called sponsor or general partner) finds and manages the property, while limited partners provide capital and receive passive returns."
+  },
+  {
+    question: "How much money do I need to invest in a syndication?",
+    answer: "Minimum investments typically range from $25,000 to $100,000, though some deals may have lower or higher minimums. On EquityMD, you can browse deals with various entry points to find one that fits your investment capacity."
+  },
+  {
+    question: "Do I need to be an accredited investor?",
+    answer: "Most real estate syndications are offered under SEC Regulation D, which requires investors to be accredited. This means having a net worth of $1M+ (excluding primary residence) or annual income of $200K+ ($300K+ for couples) for the past two years."
+  },
+  {
+    question: "What returns can I expect from real estate syndication?",
+    answer: "Returns vary by deal, but typical syndications target 15-20% IRR (Internal Rate of Return) with 6-10% annual cash-on-cash returns from rental income. Some value-add deals may offer higher returns with correspondingly higher risk."
+  },
+  {
+    question: "How long is my money locked up in a syndication?",
+    answer: "Most syndications have a hold period of 3-7 years. During this time, you'll typically receive quarterly or monthly distributions from rental income, with a larger payout when the property is sold or refinanced."
+  },
+  {
+    question: "Is EquityMD a crowdfunding platform?",
+    answer: "EquityMD is a marketplace that connects accredited investors with verified syndicators. We don't pool investments ourselves - instead, we help you discover quality syndication opportunities and connect directly with experienced sponsors."
+  }
+];
 
 export function HowItWorks() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -547,6 +576,16 @@ export function HowItWorks() {
               SEC compliant
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <div className={`py-20 ${resolvedTheme === 'dim' || resolvedTheme === 'dark' ? 'bg-[var(--bg-secondary)]' : 'bg-gray-50'}`}>
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Frequently Asked Questions About Real Estate Syndication"
+            faqs={howItWorksFaqs}
+          />
         </div>
       </div>
 

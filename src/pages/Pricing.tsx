@@ -2,10 +2,40 @@ import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQList } from '../components/FAQSection';
 import { Building2, Users, CheckCircle, Star, ArrowRight, Sparkles, Crown, Zap, Gift, PartyPopper } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
 import { useTheme } from '../contexts/ThemeContext';
+
+// FAQ data for schema markup and display
+const pricingFaqs = [
+  {
+    question: "Is it really free until June 2026?",
+    answer: "Yes! We're waiving all listing fees for Starter and Pro plans until June 2026 as a launch promotion to help syndicators get started on our platform. No credit card required, no hidden fees. Just sign up and start listing your deals to reach 7,400+ accredited investors.",
+    highlighted: true
+  },
+  {
+    question: "Can I upgrade or downgrade my plan?",
+    answer: "Yes! You can change your plan at any time. When upgrading, you'll be prorated for the remainder of your billing cycle. When downgrading, the change takes effect at your next billing date."
+  },
+  {
+    question: "What's included in the Premium plan?",
+    answer: "Premium gives you direct access to our entire investor database of 7,400+ accredited investors. You get their contact information, can message them directly, and receive a dedicated account manager. Pricing is custom based on your needs — schedule a call with our team to discuss."
+  },
+  {
+    question: "How do I list a deal?",
+    answer: "After signing up, you can create a deal listing from your dashboard. Add property details, photos, investment terms, and documents. Once published, your deal is visible to all investors on the platform."
+  },
+  {
+    question: "How much does it cost to list a real estate syndication?",
+    answer: "Our Single Deal plan is $499/month for one active listing. Multi-Deal is $749/month for 2-3 deals. Premium pricing is custom. During our launch promotion, all listing fees are waived until June 2026!"
+  },
+  {
+    question: "What types of real estate can I list on EquityMD?",
+    answer: "You can list multifamily apartments, commercial properties, industrial assets, medical office buildings, retail centers, and other commercial real estate syndications. We focus on quality deals from verified syndicators."
+  }
+];
 
 const tiers = [
   {
@@ -314,46 +344,15 @@ export function Pricing() {
           </p>
         </div>
 
-        {/* FAQ */}
+        {/* FAQ with Schema.org markup for SEO */}
         <div className="mt-20 max-w-3xl mx-auto">
           <h2 className={`text-2xl font-bold text-center mb-10 ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>
             Frequently Asked Questions
           </h2>
-          <div className="space-y-6">
-            <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-emerald-900/20 border border-emerald-700/50' : 'bg-emerald-50 border border-emerald-200'}`}>
-              <h3 className={`font-bold mb-2 flex items-center gap-2 ${isDarkTheme ? 'text-emerald-300' : 'text-emerald-800'}`}>
-                <Gift className="h-5 w-5" />
-                Is it really free until June 2026?
-              </h3>
-              <p className={isDarkTheme ? 'text-emerald-200/80' : 'text-emerald-700'}>
-                Yes! We're waiving all listing fees for Starter and Pro plans until June 2026 as a launch promotion to help syndicators get started on our platform. No credit card required, no hidden fees. Just sign up and start listing your deals to reach 7,400+ accredited investors.
-              </p>
-            </div>
-            <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-[var(--card-bg)] border border-[var(--border-color)]' : 'bg-white shadow-sm border border-gray-100'}`}>
-              <h3 className={`font-bold mb-2 ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>
-                Can I upgrade or downgrade my plan?
-              </h3>
-              <p className={isDarkTheme ? 'text-gray-400' : 'text-gray-600'}>
-                Yes! You can change your plan at any time. When upgrading, you'll be prorated for the remainder of your billing cycle. When downgrading, the change takes effect at your next billing date.
-              </p>
-            </div>
-            <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-[var(--card-bg)] border border-[var(--border-color)]' : 'bg-white shadow-sm border border-gray-100'}`}>
-              <h3 className={`font-bold mb-2 ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>
-                What's included in the Premium plan?
-              </h3>
-              <p className={isDarkTheme ? 'text-gray-400' : 'text-gray-600'}>
-                Premium gives you direct access to our entire investor database of 7,400+ accredited investors. You get their contact information, can message them directly, and receive a dedicated account manager. Pricing is custom based on your needs — schedule a call with our team to discuss.
-              </p>
-            </div>
-            <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-[var(--card-bg)] border border-[var(--border-color)]' : 'bg-white shadow-sm border border-gray-100'}`}>
-              <h3 className={`font-bold mb-2 ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>
-                How do I list a deal?
-              </h3>
-              <p className={isDarkTheme ? 'text-gray-400' : 'text-gray-600'}>
-                After signing up, you can create a deal listing from your dashboard. Add property details, photos, investment terms, and documents. Once published, your deal is visible to all investors on the platform.
-              </p>
-            </div>
-          </div>
+          <FAQList faqs={pricingFaqs.map(faq => ({
+            ...faq,
+            icon: faq.highlighted ? <Gift className="h-5 w-5" /> : undefined
+          }))} />
         </div>
       </div>
 
