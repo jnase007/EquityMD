@@ -1153,11 +1153,7 @@ html.dark nav.sticky.bg-white\/95 {
   background-color: var(--header-bg) !important;
 }
 
-/* Cards and modals in dark mode */
-html.dim .bg-white,
-html.dark .bg-white {
-  background-color: var(--card-bg);
-}
+/* Text colors in dark mode */
 
 html.dim .text-gray-900,
 html.dark .text-gray-900 {
@@ -1253,7 +1249,22 @@ html.dark .text-white {
   color: #ffffff;
 }
 
-/* Page backgrounds */
+/* Page backgrounds - eliminate ALL white */
+html.dim,
+html.dark {
+  background-color: var(--bg-primary) !important;
+}
+
+html.dim body,
+html.dark body {
+  background-color: var(--bg-primary) !important;
+}
+
+html.dim .min-h-screen,
+html.dark .min-h-screen {
+  background-color: var(--bg-primary) !important;
+}
+
 html.dim .bg-gradient-to-br,
 html.dark .bg-gradient-to-br {
   background: var(--bg-primary) !important;
@@ -1263,13 +1274,29 @@ html.dim .from-slate-50,
 html.dim .from-gray-50,
 html.dim .via-blue-50\/30,
 html.dim .to-slate-50,
+html.dim .bg-slate-50,
+html.dim .bg-gray-50,
 html.dark .from-slate-50,
 html.dark .from-gray-50,
 html.dark .via-blue-50\/30,
-html.dark .to-slate-50 {
+html.dark .to-slate-50,
+html.dark .bg-slate-50,
+html.dark .bg-gray-50 {
   --tw-gradient-from: var(--bg-primary) !important;
   --tw-gradient-to: var(--bg-primary) !important;
   --tw-gradient-stops: var(--bg-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+
+/* Force all white backgrounds to dark */
+html.dim .bg-white,
+html.dark .bg-white {
+  background-color: var(--card-bg) !important;
+}
+
+html.dim .bg-white\/95,
+html.dark .bg-white\/95 {
+  background-color: var(--card-bg) !important;
 }
 
 /* Hero and banner sections */
@@ -1353,14 +1380,15 @@ html.dark footer {
   border-color: var(--border-color);
 }
 
-/* Modals keep their own styling in dark mode */
+/* Modals and cards in dark mode */
 html.dim .bg-white.rounded-xl,
 html.dim .bg-white.rounded-2xl,
 html.dim .bg-white.rounded-3xl,
 html.dark .bg-white.rounded-xl,
 html.dark .bg-white.rounded-2xl,
 html.dark .bg-white.rounded-3xl {
-  background-color: var(--card-bg);
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color);
 }
 
 /* Skeleton loading in dark mode */
