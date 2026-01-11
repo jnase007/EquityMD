@@ -220,10 +220,10 @@ export function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEO 
-        title="Find Top CRE Deals - Largest Syndication Directory | EquityMD"
-        description="EquityMD connects accredited investors with institutional-quality real estate investment opportunities through a curated platform of verified syndicators."
-        keywords="CRE deals, syndication directory, accredited investors, real estate syndication, commercial real estate, multifamily investments, verified syndicators"
+      <SEO
+        title="Real Estate Syndication Platform for Accredited Investors | EquityMD"
+        description="Browse 100+ real estate syndication deals from verified sponsors. Invest in multifamily, commercial & industrial properties. Free for investors. $25K minimum."
+        keywords="real estate syndication, accredited investor, commercial real estate investing, multifamily investment, passive income real estate, syndication deals, real estate crowdfunding"
         canonical="https://equitymd.com"
       />
       

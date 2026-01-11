@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
-import { SEO } from "../components/SEO";
+import { SEO, DealSchema, Breadcrumbs } from "../components/SEO";
 import { MessageModal } from "../components/MessageModal";
 import { DealMediaGallery } from "../components/DealMediaGallery";
 import { VideoEmbed } from "../components/VideoEmbed";
@@ -302,11 +302,28 @@ export function DealDetails() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <SEO 
+      <SEO
         title={`${deal.title} | Real Estate Investment | EquityMD`}
         description={`Invest in ${deal.title} - ${deal.property_type} in ${deal.location}. Target IRR: ${deal.target_irr}%. Minimum investment: $${deal.minimum_investment?.toLocaleString()}.`}
         canonical={`https://equitymd.com/deals/${slug}`}
         image={deal?.images?.[0] || deal?.cover_image_url}
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'Deals', url: 'https://equitymd.com/find' },
+          { name: deal.title, url: `https://equitymd.com/deals/${slug}` }
+        ]}
+      />
+      <DealSchema
+        name={deal.title}
+        description={deal.description || `Investment opportunity in ${deal.property_type} located in ${deal.location}`}
+        image={deal?.images?.[0] || deal?.cover_image_url || 'https://equitymd.com/og-image.png'}
+        url={`https://equitymd.com/deals/${slug}`}
+        price={deal.minimum_investment || 50000}
+        location={deal.location}
+        propertyType={deal.property_type}
+        syndicatorName={deal.syndicator?.company_name || 'EquityMD Syndicator'}
+        targetIrr={deal.target_irr}
+        minimumInvestment={deal.minimum_investment}
       />
       <Navbar />
 

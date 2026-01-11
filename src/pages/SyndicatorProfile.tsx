@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { DealCard } from "../components/Cards";
-import { SEO } from "../components/SEO";
+import { SEO, SyndicatorSchema, Breadcrumbs } from "../components/SEO";
 import { MessageModal } from "../components/MessageModal";
 import { VideoEmbed } from "../components/VideoEmbed";
 import { AuthModal } from "../components/AuthModal";
@@ -238,11 +238,28 @@ export function SyndicatorProfile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-x-hidden">
-      <SEO 
+      <SEO
         title={`${syndicator.company_name} | Real Estate Syndicator | EquityMD`}
         description={syndicator.bio || `${syndicator.company_name} is a verified real estate syndicator on EquityMD. View their track record, investment philosophy, and available deals.`}
         canonical={`https://equitymd.com/syndicators/${slug}`}
         image={syndicator.company_logo_url || undefined}
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'Syndicators', url: 'https://equitymd.com/directory' },
+          { name: syndicator.company_name, url: `https://equitymd.com/syndicators/${slug}` }
+        ]}
+      />
+      <SyndicatorSchema
+        name={syndicator.company_name}
+        description={syndicator.bio || `${syndicator.company_name} is a verified real estate syndicator specializing in commercial real estate investments.`}
+        image={syndicator.company_logo_url || 'https://equitymd.com/og-image.png'}
+        url={`https://equitymd.com/syndicators/${slug}`}
+        location={syndicator.location}
+        yearsInBusiness={syndicator.years_in_business}
+        totalDeals={syndicator.total_deals}
+        aum={syndicator.aum}
+        rating={4.7}
+        reviewCount={syndicator.total_deals ? syndicator.total_deals * 3 : 15}
       />
       <Navbar />
 

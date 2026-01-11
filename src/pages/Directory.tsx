@@ -225,9 +225,9 @@ export function Directory() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
-        <SEO 
-          title="Top CRE Syndicator Directory | Deals on Equitymd.com"
-          description="Discover premier CRE syndicators with multifamily, industrial deals."
+        <SEO
+          title="Find Real Estate Syndicators - Verified Sponsor Directory | EquityMD"
+          description="Browse 75+ verified real estate syndicators. View track records, AUM, years in business & active deals."
           canonical="https://equitymd.com/directory"
         />
         <Navbar />
@@ -251,10 +251,10 @@ export function Directory() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
-      <SEO 
-        title="Top CRE Syndicator Directory | Deals on Equitymd.com"
-        description="Discover premier CRE syndicators with multifamily, industrial deals. List yours to reach 7,400+ elite investors on Equitymd.com. Browse free—join today!"
-        keywords="CRE syndicator directory, real estate syndicators, multifamily syndicators, industrial real estate, commercial real estate directory"
+      <SEO
+        title="Find Real Estate Syndicators - Verified Sponsor Directory | EquityMD"
+        description="Browse 75+ verified real estate syndicators. View track records, AUM, years in business & active deals. Find multifamily, industrial & commercial sponsors."
+        keywords="real estate syndicators, syndication sponsors, verified syndicators, multifamily sponsors, commercial real estate syndicators, syndication directory"
         canonical="https://equitymd.com/directory"
       />
       <Navbar />

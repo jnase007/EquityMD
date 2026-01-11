@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
+import { QuickLinksFooter } from '../components/InternalLinks';
 import { AuthModal } from '../components/AuthModal';
 import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award, Trophy, Zap, Target, Flame, Lock, Sparkles, Play } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -588,6 +589,9 @@ export function HowItWorks() {
           />
         </div>
       </div>
+
+      {/* Internal Links Section */}
+      <QuickLinksFooter exclude={['/how-it-works']} />
 
       <Footer />
       

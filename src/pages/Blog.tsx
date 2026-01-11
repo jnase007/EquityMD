@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
+import { CTABanner } from '../components/InternalLinks';
 import {
   Calendar, User, ArrowRight, Loader2, TrendingUp,
   BookOpen, Clock, Sparkles, Search, Tag, ChevronRight,
@@ -523,6 +524,11 @@ export function Blog() {
             faqs={blogFaqs}
           />
         </div>
+      </div>
+
+      {/* CTA Banner for internal linking */}
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <CTABanner variant="investor" />
       </div>
 
       <Footer />

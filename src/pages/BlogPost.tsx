@@ -924,6 +924,17 @@ export function BlogPost() {
         description={post.meta_description || post.excerpt}
         keywords={post.meta_keywords?.join(', ') || 'multifamily investing, real estate syndication'}
         canonical={`https://equitymd.com/blog/${slug}`}
+        type="article"
+        articlePublishedTime={post.date}
+        articleModifiedTime={post.updated_at || post.date}
+        articleAuthor={post.author}
+        articleSection={post.category}
+        image={post.image}
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'Blog', url: 'https://equitymd.com/blog' },
+          { name: post.title, url: `https://equitymd.com/blog/${slug}` }
+        ]}
       />
       
       {/* JSON-LD Schema Markup */}
