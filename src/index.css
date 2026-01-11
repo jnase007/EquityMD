@@ -1906,3 +1906,236 @@ html.dark .bg-gradient-to-r.from-blue-600,
 html.dark .bg-gradient-to-r.from-indigo-600 {
   background: linear-gradient(to right, #2563eb, #7c3aed) !important;
 }
+
+/* ============================================
+   THIRD-PARTY COMPONENT OVERRIDES
+   ============================================ */
+
+/* React-Select dark mode */
+html.dim .react-select__control,
+html.dark .react-select__control {
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dim .react-select__menu,
+html.dark .react-select__menu {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+html.dim .react-select__option,
+html.dark .react-select__option {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+html.dim .react-select__option--is-focused,
+html.dark .react-select__option--is-focused {
+  background-color: var(--bg-tertiary) !important;
+}
+
+html.dim .react-select__option--is-selected,
+html.dark .react-select__option--is-selected {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+html.dim .react-select__single-value,
+html.dim .react-select__placeholder,
+html.dim .react-select__input-container,
+html.dark .react-select__single-value,
+html.dark .react-select__placeholder,
+html.dark .react-select__input-container {
+  color: var(--text-primary) !important;
+}
+
+html.dim .react-select__multi-value,
+html.dark .react-select__multi-value {
+  background-color: var(--bg-tertiary) !important;
+}
+
+html.dim .react-select__multi-value__label,
+html.dark .react-select__multi-value__label {
+  color: var(--text-primary) !important;
+}
+
+/* React-Quill dark mode */
+html.dim .ql-container,
+html.dim .ql-toolbar,
+html.dark .ql-container,
+html.dark .ql-toolbar {
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+html.dim .ql-editor,
+html.dark .ql-editor {
+  color: var(--text-primary) !important;
+}
+
+html.dim .ql-editor.ql-blank::before,
+html.dark .ql-editor.ql-blank::before {
+  color: var(--text-tertiary) !important;
+}
+
+html.dim .ql-toolbar button,
+html.dim .ql-toolbar .ql-picker-label,
+html.dark .ql-toolbar button,
+html.dark .ql-toolbar .ql-picker-label {
+  color: var(--text-secondary) !important;
+}
+
+html.dim .ql-toolbar button:hover,
+html.dim .ql-toolbar .ql-picker-label:hover,
+html.dark .ql-toolbar button:hover,
+html.dark .ql-toolbar .ql-picker-label:hover {
+  color: var(--text-primary) !important;
+}
+
+html.dim .ql-toolbar .ql-stroke,
+html.dark .ql-toolbar .ql-stroke {
+  stroke: var(--text-secondary) !important;
+}
+
+html.dim .ql-toolbar .ql-fill,
+html.dark .ql-toolbar .ql-fill {
+  fill: var(--text-secondary) !important;
+}
+
+html.dim .ql-picker-options,
+html.dark .ql-picker-options {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* React-Modal dark mode */
+html.dim .ReactModal__Overlay,
+html.dark .ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+html.dim .ReactModal__Content,
+html.dark .ReactModal__Content {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Loading skeleton dark mode */
+html.dim .react-loading-skeleton,
+html.dark .react-loading-skeleton {
+  --base-color: var(--bg-tertiary) !important;
+  --highlight-color: var(--bg-secondary) !important;
+}
+
+/* Tooltip dark mode */
+html.dim .react-tooltip,
+html.dark .react-tooltip {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Toast notifications */
+html.dim .react-hot-toast,
+html.dark .react-hot-toast {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================
+   SPECIFIC PAGE OVERRIDES
+   ============================================ */
+
+/* Hero sections with gradient backgrounds - keep them! */
+html.dim .bg-gradient-to-r.from-blue-600.via-indigo-600,
+html.dark .bg-gradient-to-r.from-blue-600.via-indigo-600 {
+  background: linear-gradient(to right, #2563eb, #4f46e5, #7c3aed) !important;
+}
+
+/* All "via" and "to" gradient modifiers */
+html.dim .via-white,
+html.dim .via-slate-50,
+html.dim .via-gray-50,
+html.dark .via-white,
+html.dark .via-slate-50,
+html.dark .via-gray-50 {
+  --tw-gradient-via: var(--bg-primary) !important;
+}
+
+html.dim .to-blue-50,
+html.dim .to-indigo-50,
+html.dark .to-blue-50,
+html.dark .to-indigo-50 {
+  --tw-gradient-to: var(--bg-primary) !important;
+}
+
+/* Fix for any remaining white areas */
+html.dim [class*="bg-white"],
+html.dark [class*="bg-white"] {
+  background-color: var(--card-bg) !important;
+}
+
+/* But preserve white text */
+html.dim .text-white,
+html.dark .text-white {
+  color: #ffffff !important;
+}
+
+/* Preserve white backgrounds on images and media */
+html.dim img,
+html.dim video,
+html.dark img,
+html.dark video {
+  background-color: transparent !important;
+}
+
+/* Ensure links in dark mode have good contrast */
+html.dim a.text-blue-600,
+html.dark a.text-blue-600 {
+  color: #60a5fa !important;
+}
+
+html.dim a.text-blue-500,
+html.dark a.text-blue-500 {
+  color: #60a5fa !important;
+}
+
+/* Fix placeholders */
+html.dim ::placeholder,
+html.dark ::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1;
+}
+
+/* Code blocks */
+html.dim pre,
+html.dim code,
+html.dark pre,
+html.dark code {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Checkbox and radio */
+html.dim input[type="checkbox"],
+html.dim input[type="radio"],
+html.dark input[type="checkbox"],
+html.dark input[type="radio"] {
+  background-color: var(--input-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* File inputs */
+html.dim input[type="file"],
+html.dark input[type="file"] {
+  background-color: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+html.dim input[type="file"]::file-selector-button,
+html.dark input[type="file"]::file-selector-button {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
