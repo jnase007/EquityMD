@@ -5,6 +5,7 @@ import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { Calendar, User, ArrowLeft, Tag, Loader2, Clock, ExternalLink, BookOpen, CheckCircle2, Quote, TrendingUp, Shield, DollarSign, Share2, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface FAQItem {
   question: string;
@@ -670,6 +671,8 @@ export function BlogPost() {
   const [readingProgress, setReadingProgress] = useState(0);
   const [copied, setCopied] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<{slug: string; title: string; category: string}[]>([]);
+  const { theme } = useTheme();
+  const isDarkTheme = theme === 'dim' || theme === 'dark';
 
   // Scroll to top when component mounts or slug changes
   useEffect(() => {

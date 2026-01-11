@@ -1407,3 +1407,136 @@ html.dim a:hover:not(.text-white):not(.text-blue-600):not([class*="bg-"]),
 html.dark a:hover:not(.text-white):not(.text-blue-600):not([class*="bg-"]) {
   color: var(--text-primary);
 }
+
+/* Blog specific dark mode overrides */
+html.dim .prose,
+html.dark .prose {
+  color: var(--text-secondary);
+}
+
+html.dim .prose h1,
+html.dim .prose h2,
+html.dim .prose h3,
+html.dim .prose h4,
+html.dark .prose h1,
+html.dark .prose h2,
+html.dark .prose h3,
+html.dark .prose h4 {
+  color: var(--text-primary);
+}
+
+html.dim .prose p,
+html.dim .prose li,
+html.dark .prose p,
+html.dark .prose li {
+  color: var(--text-secondary);
+}
+
+html.dim .prose strong,
+html.dark .prose strong {
+  color: var(--text-primary);
+}
+
+html.dim .prose blockquote,
+html.dark .prose blockquote {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-left-color: #3b82f6;
+  color: var(--text-secondary);
+}
+
+/* Blog cards */
+html.dim article,
+html.dark article {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+/* Search inputs */
+html.dim input[type="text"],
+html.dim input[type="email"],
+html.dim input[type="search"],
+html.dark input[type="text"],
+html.dark input[type="email"],
+html.dark input[type="search"] {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+html.dim input::placeholder,
+html.dark input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Wave SVG background fix for blog hero */
+html.dim svg path[fill="rgb(248 250 252)"],
+html.dark svg path[fill="rgb(248 250 252)"] {
+  fill: var(--bg-primary);
+}
+
+/* Category pills in dark mode */
+html.dim .bg-blue-50,
+html.dim .bg-emerald-50,
+html.dim .bg-amber-50,
+html.dim .bg-purple-50,
+html.dim .bg-rose-50,
+html.dim .bg-indigo-50,
+html.dark .bg-blue-50,
+html.dark .bg-emerald-50,
+html.dark .bg-amber-50,
+html.dark .bg-purple-50,
+html.dark .bg-rose-50,
+html.dark .bg-indigo-50 {
+  background-color: rgba(var(--category-color, 59, 130, 246), 0.15) !important;
+}
+
+/* Blog article list items */
+html.dim .line-clamp-2,
+html.dim .line-clamp-3,
+html.dark .line-clamp-2,
+html.dark .line-clamp-3 {
+  color: var(--text-secondary);
+}
+
+/* FAQ sections */
+html.dim .bg-gray-50.rounded-lg,
+html.dark .bg-gray-50.rounded-lg {
+  background-color: var(--bg-secondary);
+}
+
+/* Related topics/keywords */
+html.dim .bg-gray-100,
+html.dark .bg-gray-100 {
+  background-color: var(--bg-tertiary);
+}
+
+html.dim .bg-gray-100.text-gray-700,
+html.dark .bg-gray-100.text-gray-700 {
+  color: var(--text-secondary);
+}
+
+/* Border colors */
+html.dim .border-b,
+html.dim .border-t,
+html.dim .border-l,
+html.dim .border-r,
+html.dim .border,
+html.dark .border-b,
+html.dark .border-t,
+html.dark .border-l,
+html.dark .border-r,
+html.dark .border {
+  border-color: var(--border-color);
+}
+
+/* Loading states */
+html.dim .bg-gray-200,
+html.dark .bg-gray-200 {
+  background-color: var(--bg-tertiary);
+}
+
+/* Author avatars keep their gradient */
+html.dim .bg-gradient-to-br.from-blue-500,
+html.dark .bg-gradient-to-br.from-blue-500 {
+  background: linear-gradient(to bottom right, #3b82f6, #6366f1) !important;
+}

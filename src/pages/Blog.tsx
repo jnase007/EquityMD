@@ -9,6 +9,7 @@ import {
   BarChart3, FileText, DollarSign, Building2
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface BlogPost {
   id: string;
@@ -116,6 +117,8 @@ export function Blog() {
   const [categories, setCategories] = useState<string[]>(["All Posts"]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const { theme } = useTheme();
+  const isDarkTheme = theme === 'dim' || theme === 'dark';
 
   useEffect(() => {
     async function fetchBlogPosts() {
@@ -247,7 +250,7 @@ export function Blog() {
         {/* Wave Divider */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.5C672 45.7 768 56.3 864 58.8C960 61.3 1056 55.7 1152 50C1248 44.3 1344 38.7 1392 35.8L1440 33V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" fill="rgb(248 250 252)"/>
+            <path d="M0 50L48 45.7C96 41.3 192 32.7 288 30.2C384 27.7 480 31.3 576 38.5C672 45.7 768 56.3 864 58.8C960 61.3 1056 55.7 1152 50C1248 44.3 1344 38.7 1392 35.8L1440 33V100H1392C1344 100 1248 100 1152 100C1056 100 960 100 864 100C768 100 672 100 576 100C480 100 384 100 288 100C192 100 96 100 48 100H0V50Z" fill={isDarkTheme ? (theme === 'dark' ? '#000000' : '#15202b') : 'rgb(248 250 252)'}/>
           </svg>
         </div>
       </div>
