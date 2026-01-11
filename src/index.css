@@ -1586,3 +1586,323 @@ html.dim .card-container,
 html.dark .card-container {
   background-color: transparent;
 }
+
+/* ============================================
+   AGGRESSIVE DARK MODE OVERRIDES
+   These catch everything the above might miss
+   ============================================ */
+
+/* ALL divs with light backgrounds */
+html.dim div.bg-white,
+html.dim div.bg-gray-50,
+html.dim div.bg-gray-100,
+html.dim div.bg-slate-50,
+html.dim div.bg-slate-100,
+html.dark div.bg-white,
+html.dark div.bg-gray-50,
+html.dark div.bg-gray-100,
+html.dark div.bg-slate-50,
+html.dark div.bg-slate-100 {
+  background-color: var(--card-bg) !important;
+}
+
+/* Main content areas */
+html.dim main,
+html.dark main {
+  background-color: var(--bg-primary) !important;
+}
+
+/* All text that should be readable */
+html.dim .text-gray-800,
+html.dark .text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+html.dim .text-slate-900,
+html.dim .text-slate-800,
+html.dim .text-slate-700,
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700 {
+  color: var(--text-primary) !important;
+}
+
+html.dim .text-slate-600,
+html.dim .text-slate-500,
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: var(--text-secondary) !important;
+}
+
+/* Buttons with light backgrounds */
+html.dim button.bg-white,
+html.dim button.bg-gray-50,
+html.dim button.bg-gray-100,
+html.dark button.bg-white,
+html.dark button.bg-gray-50,
+html.dark button.bg-gray-100 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Links and navigation */
+html.dim nav a,
+html.dark nav a {
+  color: var(--text-secondary);
+}
+
+html.dim nav a:hover,
+html.dark nav a:hover {
+  color: var(--text-primary);
+}
+
+/* Card shadows in dark mode - more prominent */
+html.dim .shadow,
+html.dim .shadow-sm,
+html.dim .shadow-md,
+html.dim .shadow-lg,
+html.dim .shadow-xl,
+html.dim .shadow-2xl,
+html.dark .shadow,
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-color) !important;
+}
+
+/* Preserve buttons that should stay colored */
+html.dim .bg-blue-600,
+html.dim .bg-indigo-600,
+html.dim .bg-green-600,
+html.dim .bg-red-600,
+html.dark .bg-blue-600,
+html.dark .bg-indigo-600,
+html.dark .bg-green-600,
+html.dark .bg-red-600 {
+  /* Keep these as-is */
+}
+
+/* Form elements */
+html.dim label,
+html.dark label {
+  color: var(--text-secondary);
+}
+
+html.dim input:focus,
+html.dim textarea:focus,
+html.dim select:focus,
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: #3b82f6 !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Dropdown menus and popovers */
+html.dim [role="menu"],
+html.dim [role="listbox"],
+html.dim .dropdown-menu,
+html.dark [role="menu"],
+html.dark [role="listbox"],
+html.dark .dropdown-menu {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Hover states */
+html.dim .hover\:bg-white:hover,
+html.dark .hover\:bg-white:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Tab and pill buttons */
+html.dim .bg-white.text-gray-600,
+html.dim .bg-white.text-gray-700,
+html.dark .bg-white.text-gray-600,
+html.dark .bg-white.text-gray-700 {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Badge/tag colors */
+html.dim .bg-yellow-50,
+html.dim .bg-orange-50,
+html.dim .bg-teal-50,
+html.dim .bg-cyan-50,
+html.dim .bg-pink-50,
+html.dark .bg-yellow-50,
+html.dark .bg-orange-50,
+html.dark .bg-teal-50,
+html.dark .bg-cyan-50,
+html.dark .bg-pink-50 {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Text on badges */
+html.dim .text-yellow-700,
+html.dim .text-yellow-800,
+html.dark .text-yellow-700,
+html.dark .text-yellow-800 {
+  color: #fbbf24 !important;
+}
+
+html.dim .text-emerald-700,
+html.dim .text-emerald-800,
+html.dim .text-green-700,
+html.dim .text-green-800,
+html.dark .text-emerald-700,
+html.dark .text-emerald-800,
+html.dark .text-green-700,
+html.dark .text-green-800 {
+  color: #34d399 !important;
+}
+
+html.dim .text-red-700,
+html.dim .text-red-800,
+html.dark .text-red-700,
+html.dark .text-red-800 {
+  color: #f87171 !important;
+}
+
+html.dim .text-blue-700,
+html.dim .text-blue-800,
+html.dark .text-blue-700,
+html.dark .text-blue-800 {
+  color: #60a5fa !important;
+}
+
+html.dim .text-purple-700,
+html.dim .text-purple-800,
+html.dark .text-purple-700,
+html.dark .text-purple-800 {
+  color: #a78bfa !important;
+}
+
+/* Dividers */
+html.dim hr,
+html.dark hr {
+  border-color: var(--border-color) !important;
+}
+
+/* Breadcrumbs and navigation */
+html.dim .text-gray-300,
+html.dark .text-gray-300 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Stats/metric cards */
+html.dim .bg-gradient-to-r.from-blue-50,
+html.dim .bg-gradient-to-r.from-green-50,
+html.dim .bg-gradient-to-r.from-purple-50,
+html.dark .bg-gradient-to-r.from-blue-50,
+html.dark .bg-gradient-to-r.from-green-50,
+html.dark .bg-gradient-to-r.from-purple-50 {
+  background: var(--bg-secondary) !important;
+}
+
+/* Empty states */
+html.dim .text-gray-400 svg,
+html.dark .text-gray-400 svg {
+  color: var(--text-tertiary);
+}
+
+/* List items */
+html.dim li,
+html.dark li {
+  color: var(--text-secondary);
+}
+
+/* Accordions and collapsibles */
+html.dim details,
+html.dim summary,
+html.dark details,
+html.dark summary {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+/* Modal overlays */
+html.dim .fixed.inset-0.bg-black\/50,
+html.dim .fixed.inset-0.bg-gray-500\/75,
+html.dark .fixed.inset-0.bg-black\/50,
+html.dark .fixed.inset-0.bg-gray-500\/75 {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* All round borders */
+html.dim .ring-1,
+html.dim .ring-2,
+html.dark .ring-1,
+html.dark .ring-2 {
+  --tw-ring-color: var(--border-color) !important;
+}
+
+/* Progress bars backgrounds */
+html.dim .bg-gray-200.rounded-full,
+html.dark .bg-gray-200.rounded-full {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Tooltip styles */
+html.dim [role="tooltip"],
+html.dark [role="tooltip"] {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Fix scrollbar colors */
+html.dim ::-webkit-scrollbar-track,
+html.dark ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+html.dim ::-webkit-scrollbar-thumb,
+html.dark ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+html.dim ::-webkit-scrollbar-thumb:hover,
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* Preserve certain elements that shouldn't change */
+html.dim .bg-blue-600.text-white,
+html.dim .bg-indigo-600.text-white,
+html.dark .bg-blue-600.text-white,
+html.dark .bg-indigo-600.text-white {
+  color: white !important;
+}
+
+/* Fix gradients from/to white */
+html.dim .from-white,
+html.dim .to-white,
+html.dark .from-white,
+html.dark .to-white {
+  --tw-gradient-from: var(--bg-primary) !important;
+  --tw-gradient-to: var(--bg-primary) !important;
+}
+
+/* Section specific backgrounds */
+html.dim .bg-gradient-to-b,
+html.dark .bg-gradient-to-b {
+  background: var(--bg-primary) !important;
+}
+
+/* Keep intentional colored gradients */
+html.dim .bg-gradient-to-br.from-blue-600,
+html.dim .bg-gradient-to-br.from-indigo-600,
+html.dim .bg-gradient-to-r.from-blue-600,
+html.dim .bg-gradient-to-r.from-indigo-600,
+html.dark .bg-gradient-to-br.from-blue-600,
+html.dark .bg-gradient-to-br.from-indigo-600,
+html.dark .bg-gradient-to-r.from-blue-600,
+html.dark .bg-gradient-to-r.from-indigo-600 {
+  background: linear-gradient(to right, #2563eb, #7c3aed) !important;
+}
