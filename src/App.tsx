@@ -430,9 +430,17 @@ export default function App() {
           path="/welcome" 
           element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Welcome />)} 
         />
-        <Route 
-          path="/dashboard" 
-          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Dashboard />)} 
+        <Route
+          path="/dashboard"
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Dashboard />)}
+        />
+        <Route
+          path="/dashboard/investor"
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Dashboard initialView="investor" />)}
+        />
+        <Route
+          path="/dashboard/syndicator"
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Dashboard initialView="syndicator" />)}
         />
         <Route 
           path="/deals/new" 

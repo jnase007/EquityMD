@@ -57,17 +57,22 @@ function Confetti() {
   );
 }
 
-export function UnifiedDashboard() {
+interface UnifiedDashboardProps {
+  initialView?: 'investor' | 'syndicator';
+}
+
+export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const { user, profile, setProfile } = useAuthStore();
   const navigate = useNavigate();
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentView, setCurrentView] = useState<'investor' | 'syndicator'>('investor');
+  const [currentView, setCurrentView] = useState<'investor' | 'syndicator'>(initialView || 'investor');
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredView, setHoveredView] = useState<'investor' | 'syndicator' | null>(null);
+  const [hasInitialViewOverride] = useState(!!initialView); // Track if URL specified a view
 
   // Get time-based greeting
   const getGreeting = () => {
@@ -135,28 +140,48 @@ export function UnifiedDashboard() {
     }
   }, [user]);
 
-  // Set initial view based on profile preference - but only after checking syndicators
+  // Set initial view based on URL, syndicator status, and preference
+  // Priority: 1) URL-specified view (initialView prop)
+  //           2) If user has syndicators -> show syndicator dashboard
+  //           3) Else use their saved preference
+  //           4) Default to investor
   useEffect(() => {
     if (profile && hasSyndicators !== null) {
-      const preference = profile.dashboard_preference || profile.user_type || 'investor';
-      // Only allow syndicator view if user actually has syndicators
-      if (preference === 'syndicator' && !hasSyndicators) {
-        // User preference is syndicator but they don't have any syndicators
-        // Fall back to investor view and update their preference
-        setCurrentView('investor');
-        // Update their preference in the database to avoid this next time
-        supabase
-          .from('profiles')
-          .update({ dashboard_preference: 'investor' })
-          .eq('id', profile.id)
-          .then(() => {
-            console.log('Reset dashboard preference to investor (no syndicators found)');
-          });
+      // If URL specified a view, respect it (but only if valid)
+      if (hasInitialViewOverride) {
+        if (initialView === 'syndicator' && !hasSyndicators) {
+          // Can't show syndicator view without syndicators - redirect to main dashboard
+          navigate('/dashboard', { replace: true });
+        }
+        // Otherwise, initialView is already set in state
+        return;
+      }
+      
+      // If user has created a syndicator company, default to syndicator view
+      if (hasSyndicators) {
+        setCurrentView('syndicator');
+        // Update preference if not already syndicator
+        if (profile.dashboard_preference !== 'syndicator') {
+          supabase
+            .from('profiles')
+            .update({ dashboard_preference: 'syndicator' })
+            .eq('id', profile.id)
+            .then(() => {
+              console.log('Auto-set dashboard preference to syndicator (has syndicators)');
+            });
+        }
       } else {
-        setCurrentView(preference);
+        // No syndicators, use their preference or default to investor
+        const preference = profile.dashboard_preference || profile.user_type || 'investor';
+        if (preference === 'syndicator') {
+          // They want syndicator view but don't have syndicators - fall back to investor
+          setCurrentView('investor');
+        } else {
+          setCurrentView(preference);
+        }
       }
     }
-  }, [profile, hasSyndicators]);
+  }, [profile, hasSyndicators, hasInitialViewOverride, initialView, navigate]);
 
   async function checkUserSyndicators() {
     try {
