@@ -34,8 +34,8 @@ const tiers = [
   {
     name: 'Multi-Deal',
     tagline: 'For growing syndicators',
-    monthlyPrice: 699,
-    annualPrice: 6990,
+    monthlyPrice: 749,
+    annualPrice: 7490,
     dealCount: '2-3 Deals',
     popular: true,
     icon: Star,
