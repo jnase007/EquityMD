@@ -100,11 +100,9 @@ export class ErrorBoundary extends Component<Props, State> {
             
             {/* Logo */}
             <div className="flex items-center justify-center mb-6">
-              <img 
-                src="/logo-black.png" 
-                alt="EquityMD" 
-                className="h-10"
-              />
+              <span className="text-2xl font-extrabold text-gray-900">
+                Equity<span className="text-blue-600">MD</span>
+              </span>
             </div>
 
             {/* Message */}
