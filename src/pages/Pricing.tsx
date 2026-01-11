@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
-import { Building2, Users, CheckCircle, Star, ArrowRight, Sparkles, Crown, Zap } from 'lucide-react';
+import { Building2, Users, CheckCircle, Star, ArrowRight, Sparkles, Crown, Zap, Gift, PartyPopper } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
 import { useTheme } from '../contexts/ThemeContext';
@@ -123,6 +123,20 @@ export function Pricing() {
       />
       <Navbar />
 
+      {/* Promotional Banner */}
+      <div className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white py-4 px-4">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+          <div className="flex items-center gap-2">
+            <PartyPopper className="h-5 w-5 text-yellow-200" />
+            <span className="font-bold text-lg">🎉 Launch Promotion!</span>
+          </div>
+          <span className="text-emerald-50">
+            All listing fees waived until <strong>June 2026</strong> — Start listing for FREE!
+          </span>
+          <Gift className="h-5 w-5 text-yellow-200 hidden sm:block" />
+        </div>
+      </div>
+
       {/* Hero */}
       <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white py-20 relative overflow-hidden">
         {/* Decorative elements */}
@@ -130,16 +144,16 @@ export function Pricing() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
         
         <div className="max-w-4xl mx-auto text-center px-4 relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur rounded-full mb-6">
-            <Sparkles className="h-4 w-4 text-yellow-300" />
-            <span className="text-sm font-medium">Reach 7,400+ Accredited Investors</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/90 backdrop-blur rounded-full mb-6 animate-pulse">
+            <Gift className="h-4 w-4 text-white" />
+            <span className="text-sm font-bold">FREE Until June 2026</span>
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Simple, Transparent Pricing
+            List Your Deals for Free
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            Choose the plan that fits your needs. List deals, reach investors, and grow your syndication business.
+            We're waiving all listing fees until June 2026 to help syndicators get started. Join now and reach 7,400+ accredited investors!
           </p>
 
           {/* Billing Toggle */}
@@ -225,17 +239,21 @@ export function Pricing() {
                       </>
                     ) : (
                       <>
-                        <div className={`text-4xl font-bold ${tier.popular ? 'text-white' : ''}`}>
-                          {formatPrice(perMonth)}
-                        </div>
-                        <div className={`text-sm mt-1 ${tier.popular ? 'text-blue-100' : 'text-gray-500'}`}>
-                          per month{billingInterval === 'annual' && ', billed annually'}
-                        </div>
-                        {billingInterval === 'annual' && (
-                          <div className="text-green-400 text-sm mt-2 font-medium">
-                            Save {formatPrice((tier.monthlyPrice * 12) - tier.annualPrice)}/year
+                        {/* Show FREE promotion for Starter and Pro */}
+                        <div className="relative inline-block">
+                          <div className={`text-4xl font-bold line-through opacity-50 ${tier.popular ? 'text-white' : 'text-gray-400'}`}>
+                            {formatPrice(perMonth)}
                           </div>
-                        )}
+                          <div className={`text-5xl font-bold ${tier.popular ? 'text-emerald-300' : 'text-emerald-500'}`}>
+                            FREE
+                          </div>
+                        </div>
+                        <div className={`text-sm mt-2 ${tier.popular ? 'text-emerald-200' : 'text-emerald-600'} font-medium`}>
+                          Until June 2026
+                        </div>
+                        <div className={`text-xs mt-1 ${tier.popular ? 'text-blue-200' : 'text-gray-500'}`}>
+                          Then {formatPrice(perMonth)}/month
+                        </div>
                       </>
                     )}
                   </div>
@@ -262,12 +280,10 @@ export function Pricing() {
                       ? 'bg-white text-blue-600 hover:bg-gray-100 shadow-lg'
                       : tier.name === 'Premium'
                         ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700 shadow-lg'
-                        : isDarkTheme
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-900 text-white hover:bg-gray-800'
+                        : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:from-emerald-600 hover:to-green-700 shadow-lg'
                   } disabled:opacity-50`}
                 >
-                  {tier.name === 'Premium' ? 'Contact Sales' : 'Get Started'}
+                  {tier.name === 'Premium' ? 'Contact Sales' : 'Start Free Now'}
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -277,9 +293,12 @@ export function Pricing() {
 
         {/* Trust Section */}
         <div className="mt-16 text-center">
-          <p className={`text-sm ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
-            All plans include a 14-day money-back guarantee. No long-term contracts.
-          </p>
+          <div className={`inline-flex items-center gap-2 px-6 py-3 rounded-full ${isDarkTheme ? 'bg-emerald-900/30 border border-emerald-700' : 'bg-emerald-50 border border-emerald-200'}`}>
+            <Gift className={`h-5 w-5 ${isDarkTheme ? 'text-emerald-400' : 'text-emerald-600'}`} />
+            <p className={`text-sm font-medium ${isDarkTheme ? 'text-emerald-300' : 'text-emerald-700'}`}>
+              No credit card required. Start listing deals for free today!
+            </p>
+          </div>
         </div>
 
         {/* FAQ */}
@@ -288,6 +307,15 @@ export function Pricing() {
             Frequently Asked Questions
           </h2>
           <div className="space-y-6">
+            <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-emerald-900/20 border border-emerald-700/50' : 'bg-emerald-50 border border-emerald-200'}`}>
+              <h3 className={`font-bold mb-2 flex items-center gap-2 ${isDarkTheme ? 'text-emerald-300' : 'text-emerald-800'}`}>
+                <Gift className="h-5 w-5" />
+                Is it really free until June 2026?
+              </h3>
+              <p className={isDarkTheme ? 'text-emerald-200/80' : 'text-emerald-700'}>
+                Yes! We're waiving all listing fees for Starter and Pro plans until June 2026 as a launch promotion to help syndicators get started on our platform. No credit card required, no hidden fees. Just sign up and start listing your deals to reach 7,400+ accredited investors.
+              </p>
+            </div>
             <div className={`p-6 rounded-xl ${isDarkTheme ? 'bg-[var(--card-bg)] border border-[var(--border-color)]' : 'bg-white shadow-sm border border-gray-100'}`}>
               <h3 className={`font-bold mb-2 ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>
                 Can I upgrade or downgrade my plan?
