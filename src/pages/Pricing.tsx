@@ -9,55 +9,58 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const tiers = [
   {
-    name: 'Starter',
-    tagline: 'Get Started',
-    monthlyPrice: 149,
-    annualPrice: 1490,
-    icon: Zap,
+    name: 'Single Deal',
+    tagline: 'Perfect for one active offering',
+    monthlyPrice: 499,
+    annualPrice: 4990,
+    dealCount: '1 Deal',
+    icon: Building2,
     iconColor: 'text-blue-500',
     iconBg: 'bg-blue-100',
     features: [
-      'List up to 2 deals per month',
-      'Basic deal listing page',
-      'Single photo per listing',
-      'Text description',
-      'Standard search placement',
-      'Basic analytics dashboard',
+      '1 active deal listing',
+      'Full deal page with photos & video',
+      'Document room for investors',
+      'Investor inquiries & messaging',
+      'Analytics dashboard',
+      'Priority search placement',
       'Email support'
     ],
     priceId: {
-      monthly: 'price_starter_monthly',
-      annual: 'price_starter_annual'
+      monthly: 'price_single_monthly',
+      annual: 'price_single_annual'
     }
   },
   {
-    name: 'Pro',
-    tagline: 'Most Popular',
-    monthlyPrice: 349,
-    annualPrice: 3490,
+    name: 'Multi-Deal',
+    tagline: 'For growing syndicators',
+    monthlyPrice: 799,
+    annualPrice: 7990,
+    dealCount: '2-3 Deals',
     popular: true,
     icon: Star,
     iconColor: 'text-indigo-500',
     iconBg: 'bg-indigo-100',
     features: [
-      'List up to 5 deals per month',
-      'Enhanced deal pages with video',
-      'Up to 10 photos per listing',
-      'Priority search placement',
+      'Up to 3 active deal listings',
+      'Full deal pages with photos & video',
+      'Document room for each deal',
+      'Investor inquiries & messaging',
       'Advanced analytics & insights',
+      'Featured search placement',
       'Investor interest notifications',
-      'Document room for investors',
-      'Priority email support'
+      'Priority support'
     ],
     priceId: {
-      monthly: 'price_pro_monthly',
-      annual: 'price_pro_annual'
+      monthly: 'price_multi_monthly',
+      annual: 'price_multi_annual'
     }
   },
   {
     name: 'Premium',
     tagline: 'Direct Investor Access',
     customPricing: true,
+    dealCount: 'Unlimited',
     icon: Crown,
     iconColor: 'text-amber-500',
     iconBg: 'bg-amber-100',
@@ -212,16 +215,22 @@ export function Pricing() {
                 )}
 
                 <div className="text-center mb-8">
-                  <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-4 ${
-                    tier.popular ? 'bg-white/20' : tier.iconBg
+                  {/* Deal Count Badge */}
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 ${
+                    tier.popular 
+                      ? 'bg-white/20 text-white' 
+                      : isCustomPricing
+                        ? isDarkTheme ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'
+                        : isDarkTheme ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'
                   }`}>
-                    <Icon className={`h-7 w-7 ${tier.popular ? 'text-white' : tier.iconColor}`} />
+                    <Icon className="h-5 w-5" />
+                    <span className="font-bold">{tier.dealCount}</span>
                   </div>
                   
                   <h3 className={`text-2xl font-bold mb-1 ${tier.popular ? 'text-white' : ''}`}>
                     {tier.name}
                   </h3>
-                  <p className={`text-sm ${tier.popular ? 'text-blue-100' : 'text-gray-500'}`}>
+                  <p className={`text-sm ${tier.popular ? 'text-blue-100' : isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>
                     {tier.tagline}
                   </p>
                   
