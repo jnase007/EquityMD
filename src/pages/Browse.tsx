@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { DealCard, DealListItem } from '../components/Cards';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
@@ -170,8 +171,13 @@ export function Browse() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 animate-fade-in">
+      <SEO 
+        title="Browse Real Estate Deals | EquityMD"
+        description="Discover curated real estate syndication opportunities. Browse multifamily, industrial, and commercial properties from verified syndicators."
+        canonical="https://equitymd.com/find"
+      />
       <Navbar />
-      
+
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 relative overflow-hidden">
         {/* Decorative elements */}

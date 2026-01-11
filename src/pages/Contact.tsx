@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { Mail, Building2, Send, MessageSquare, Phone, Clock, Sparkles, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
@@ -56,6 +57,11 @@ export function Contact() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50">
+      <SEO 
+        title="Contact Us | EquityMD"
+        description="Get in touch with EquityMD. Questions about real estate syndication, investing, or listing your deals? We're here to help."
+        canonical="https://equitymd.com/contact"
+      />
       <Navbar />
 
       {/* Hero Header */}

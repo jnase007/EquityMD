@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Home, Search, ArrowRight, Building2, MapPin, TrendingUp, RefreshCw } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 
@@ -56,6 +57,12 @@ export function NotFound() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 overflow-hidden">
+      {/* Tell search engines this is a 404 page - don't index it */}
+      <Helmet>
+        <title>Page Not Found | EquityMD</title>
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="googlebot" content="noindex, nofollow" />
+      </Helmet>
       <Navbar />
       
       {/* Animated background */}

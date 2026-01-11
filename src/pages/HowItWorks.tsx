@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { AuthModal } from '../components/AuthModal';
 import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award, Trophy, Zap, Target, Flame, Lock, Sparkles, Play } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -93,6 +94,11 @@ export function HowItWorks() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO 
+        title="How It Works | EquityMD - Real Estate Investment Platform"
+        description="Learn how EquityMD connects accredited investors with verified real estate syndicators. Simple 3-step process to start investing in commercial real estate."
+        canonical="https://equitymd.com/how-it-works"
+      />
       <Navbar />
 
       {/* Hero Section */}
