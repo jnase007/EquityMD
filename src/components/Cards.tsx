@@ -264,7 +264,7 @@ export function InvestorCard({ name, title, company, image, portfolio, specialti
           </div>
           <div className="text-center">
             <p className="text-sm text-gray-500">Location</p>
-            <p className="font-semibold text-blue-600 text-sm">{location || 'N/A'}</p>
+            <p className="font-semibold text-blue-600 text-xs whitespace-nowrap">{location || 'N/A'}</p>
           </div>
         </div>
       </div>
