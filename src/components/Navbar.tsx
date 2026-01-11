@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Building2, Menu, X, ChevronRight, 
-  User, Bell, Search, Command, LayoutDashboard, 
+  Bell, Search, LayoutDashboard, 
   Settings, LogOut, Plus, Heart, ChevronDown,
   Sun, Moon, Monitor
 } from 'lucide-react';
@@ -10,7 +10,7 @@ import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
-import { useTheme, Theme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface NavbarProps {
   isTransparent?: boolean;
@@ -95,7 +95,6 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showThemeMenu, setShowThemeMenu] = useState(false);
   const { user, profile, unreadCount, setNotifications, setUser, setProfile } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -174,28 +173,44 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
 
   const firstName = profile?.full_name?.split(' ')[0] || 'User';
   const useTransparentStyle = isTransparent && !isScrolled;
+  
+  // Determine if we should use dark styling
+  const isDarkTheme = theme === 'dim' || theme === 'dark';
+  const showWhiteLogo = useTransparentStyle || isDarkTheme;
+  const navTextClass = isDarkTheme 
+    ? 'text-gray-200 hover:text-white' 
+    : useTransparentStyle 
+      ? 'text-white hover:text-white/80' 
+      : 'text-gray-700 hover:text-blue-600';
+  const navIconClass = isDarkTheme
+    ? 'text-gray-300 hover:bg-gray-700'
+    : useTransparentStyle
+      ? 'text-white/80 hover:bg-white/10'
+      : 'text-gray-500 hover:bg-gray-100';
 
   return (
     <>
       <nav className={`sticky top-0 z-50 transition-all duration-300 overflow-visible ${
         useTransparentStyle 
           ? 'bg-transparent' 
-          : isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-sm' 
-            : 'bg-white shadow-sm'
+          : isDarkTheme
+            ? 'bg-[var(--header-bg)] border-b border-[var(--border-color)]'
+            : isScrolled 
+              ? 'bg-white/95 backdrop-blur-md shadow-sm' 
+              : 'bg-white shadow-sm'
       }`}>
         <div className="max-w-6xl mx-auto flex justify-between items-center px-4 py-3 overflow-visible">
-          {/* Logo */}
+          {/* Logo - white on dark themes or transparent nav */}
           <Link to="/" className="flex-shrink-0">
             <img 
               src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-black.png`}
               alt="EquityMD"
-              className={`h-8 ${useTransparentStyle ? 'hidden' : 'block'}`}
+              className={`h-8 ${showWhiteLogo ? 'hidden' : 'block'}`}
             />
             <img 
               src={`${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/logos/logo-white.png`}
               alt="EquityMD"
-              className={`h-8 ${useTransparentStyle ? 'block' : 'hidden'}`}
+              className={`h-8 ${showWhiteLogo ? 'block' : 'hidden'}`}
             />
           </Link>
 
@@ -203,33 +218,25 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
           <div className="hidden md:flex items-center gap-8">
             <Link 
               to="/find" 
-              className={`font-medium transition ${
-                useTransparentStyle ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-blue-600'
-              }`}
+              className={`font-medium transition ${navTextClass}`}
             >
               Find Deals
             </Link>
             <Link 
               to="/directory"
-              className={`font-medium transition ${
-                useTransparentStyle ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-blue-600'
-              }`}
+              className={`font-medium transition ${navTextClass}`}
             >
               Syndicators
             </Link>
             <Link 
               to="/how-it-works"
-              className={`font-medium transition ${
-                useTransparentStyle ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-blue-600'
-              }`}
+              className={`font-medium transition ${navTextClass}`}
             >
               How It Works
             </Link>
             <Link 
               to="/blog"
-              className={`font-medium transition ${
-                useTransparentStyle ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-blue-600'
-              }`}
+              className={`font-medium transition ${navTextClass}`}
             >
               Blog
             </Link>
@@ -237,14 +244,23 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Quick Theme Toggle */}
+            {user && (
+              <button
+                onClick={() => setTheme(theme === 'light' ? 'dim' : theme === 'dim' ? 'dark' : 'light')}
+                className={`p-2 rounded-lg transition ${navIconClass}`}
+                title={`Theme: ${theme.charAt(0).toUpperCase() + theme.slice(1)}`}
+              >
+                {theme === 'light' && <Sun className="h-5 w-5" />}
+                {theme === 'dim' && <Monitor className="h-5 w-5" />}
+                {theme === 'dark' && <Moon className="h-5 w-5" />}
+              </button>
+            )}
+
             {/* Search */}
             <button
               onClick={() => setShowCommandPalette(true)}
-              className={`p-2 rounded-lg transition ${
-                useTransparentStyle 
-                  ? 'text-white/80 hover:bg-white/10' 
-                  : 'text-gray-500 hover:bg-gray-100'
-              }`}
+              className={`p-2 rounded-lg transition ${navIconClass}`}
               title="Search (⌘K)"
             >
               <Search className="h-5 w-5" />
@@ -256,11 +272,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 <div className="relative" ref={notificationsRef}>
                   <button
                     onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                    className={`relative p-2 rounded-lg transition ${
-                      useTransparentStyle 
-                        ? 'text-white/80 hover:bg-white/10' 
-                        : 'text-gray-500 hover:bg-gray-100'
-                    }`}
+                    className={`relative p-2 rounded-lg transition ${navIconClass}`}
                   >
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
@@ -290,85 +302,45 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                         firstName.charAt(0).toUpperCase()
                       )}
                     </div>
-                    <ChevronDown className={`h-4 w-4 transition ${useTransparentStyle ? 'text-white' : 'text-gray-400'}`} />
+                    <ChevronDown className={`h-4 w-4 transition ${showWhiteLogo ? 'text-white' : 'text-gray-400'}`} />
                   </button>
                   
                   {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border py-1 z-[9999]" style={{ position: 'fixed', top: '60px', right: '16px' }}>
-                      <div className="px-4 py-3 border-b">
-                        <p className="font-medium text-gray-900">{profile?.full_name || 'User'}</p>
-                        <p className="text-sm text-gray-500 truncate">{profile?.email}</p>
+                    <div className={`absolute right-0 mt-2 w-56 rounded-xl shadow-xl border py-1 z-[9999] ${
+                      isDarkTheme 
+                        ? 'bg-[var(--card-bg)] border-[var(--border-color)]' 
+                        : 'bg-white border-gray-200'
+                    }`} style={{ position: 'fixed', top: '60px', right: '16px' }}>
+                      <div className={`px-4 py-3 border-b ${isDarkTheme ? 'border-[var(--border-color)]' : 'border-gray-200'}`}>
+                        <p className={`font-medium ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>{profile?.full_name || 'User'}</p>
+                        <p className={`text-sm truncate ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>{profile?.email}</p>
                       </div>
                       
                       <div className="py-1">
                         <Link
                           to="/dashboard"
                           onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                         >
-                          <LayoutDashboard className="h-4 w-4 text-gray-400" />
+                          <LayoutDashboard className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                           Dashboard
                         </Link>
                         <Link
                           to="/profile"
                           onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                         >
-                          <Settings className="h-4 w-4 text-gray-400" />
+                          <Settings className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                           Settings
                         </Link>
-                        
-                        {/* Theme Selector */}
-                        <div className="relative">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setShowThemeMenu(!showThemeMenu); }}
-                            className="flex items-center justify-between w-full px-4 py-2 text-gray-700 hover:bg-gray-50"
-                          >
-                            <span className="flex items-center gap-3">
-                              {theme === 'light' && <Sun className="h-4 w-4 text-gray-400" />}
-                              {theme === 'dim' && <Monitor className="h-4 w-4 text-gray-400" />}
-                              {theme === 'dark' && <Moon className="h-4 w-4 text-gray-400" />}
-                              Appearance
-                            </span>
-                            <ChevronRight className={`h-4 w-4 text-gray-400 transition ${showThemeMenu ? 'rotate-90' : ''}`} />
-                          </button>
-                          {showThemeMenu && (
-                            <div className="pl-8 py-1 bg-gray-50 border-y">
-                              <button
-                                onClick={() => { setTheme('light'); setShowThemeMenu(false); }}
-                                className={`flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-100 ${theme === 'light' ? 'text-blue-600' : 'text-gray-600'}`}
-                              >
-                                <Sun className="h-4 w-4" />
-                                Light
-                                {theme === 'light' && <span className="ml-auto text-blue-500">✓</span>}
-                              </button>
-                              <button
-                                onClick={() => { setTheme('dim'); setShowThemeMenu(false); }}
-                                className={`flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-100 ${theme === 'dim' ? 'text-blue-600' : 'text-gray-600'}`}
-                              >
-                                <Monitor className="h-4 w-4" />
-                                Dim
-                                {theme === 'dim' && <span className="ml-auto text-blue-500">✓</span>}
-                              </button>
-                              <button
-                                onClick={() => { setTheme('dark'); setShowThemeMenu(false); }}
-                                className={`flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-100 ${theme === 'dark' ? 'text-blue-600' : 'text-gray-600'}`}
-                              >
-                                <Moon className="h-4 w-4" />
-                                Dark
-                                {theme === 'dark' && <span className="ml-auto text-blue-500">✓</span>}
-                              </button>
-                            </div>
-                          )}
-                        </div>
 
                         {profile?.user_type === 'investor' && (
                           <Link
                             to="/favorites"
                             onClick={() => setIsDropdownOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                            className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                           >
-                            <Heart className="h-4 w-4 text-gray-400" />
+                            <Heart className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                             Favorites
                           </Link>
                         )}
@@ -376,7 +348,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           <Link
                             to="/deals/new"
                             onClick={() => setIsDropdownOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                            className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                           >
                             <Plus className="h-4 w-4 text-gray-400" />
                             Post Deal
@@ -386,18 +358,18 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           <Link
                             to="/admin"
                             onClick={() => setIsDropdownOpen(false)}
-                            className="flex items-center gap-3 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                            className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
                           >
-                            <Building2 className="h-4 w-4 text-gray-400" />
+                            <Building2 className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                             Admin
                           </Link>
                         )}
                       </div>
                       
-                      <div className="border-t py-1">
+                      <div className={`border-t py-1 ${isDarkTheme ? 'border-[var(--border-color)]' : 'border-gray-200'}`}>
                         <button
                           onClick={handleSignOut}
-                          className="flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 w-full"
+                          className={`flex items-center gap-3 px-4 py-2 w-full ${isDarkTheme ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-50'}`}
                         >
                           <LogOut className="h-4 w-4" />
                           Sign Out
@@ -411,9 +383,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => { setAuthModalView('sign_in'); setShowAuthModal(true); }}
-                  className={`font-medium transition ${
-                    useTransparentStyle ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-blue-600'
-                  }`}
+                  className={`font-medium transition ${navTextClass}`}
                 >
                   Sign In
                 </button>
@@ -431,7 +401,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className={`md:hidden p-2 rounded-lg transition ${
-              useTransparentStyle ? 'text-white' : 'text-gray-700'
+              showWhiteLogo ? 'text-white' : 'text-gray-700'
             }`}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

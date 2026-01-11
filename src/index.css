@@ -1252,3 +1252,130 @@ html.dim .text-white,
 html.dark .text-white {
   color: #ffffff;
 }
+
+/* Page backgrounds */
+html.dim .bg-gradient-to-br,
+html.dark .bg-gradient-to-br {
+  background: var(--bg-primary) !important;
+}
+
+html.dim .from-slate-50,
+html.dim .from-gray-50,
+html.dim .via-blue-50\/30,
+html.dim .to-slate-50,
+html.dark .from-slate-50,
+html.dark .from-gray-50,
+html.dark .via-blue-50\/30,
+html.dark .to-slate-50 {
+  --tw-gradient-from: var(--bg-primary) !important;
+  --tw-gradient-to: var(--bg-primary) !important;
+  --tw-gradient-stops: var(--bg-primary) !important;
+}
+
+/* Hero and banner sections */
+html.dim .bg-gradient-to-r.from-blue-600,
+html.dark .bg-gradient-to-r.from-blue-600 {
+  /* Keep colorful gradients as-is */
+}
+
+/* Cards with shadow */
+html.dim .shadow-sm,
+html.dim .shadow-md,
+html.dim .shadow-lg,
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Rounded containers */
+html.dim .rounded-xl,
+html.dim .rounded-2xl,
+html.dim .rounded-3xl,
+html.dark .rounded-xl,
+html.dark .rounded-2xl,
+html.dark .rounded-3xl {
+  border-color: var(--border-color);
+}
+
+/* Stats cards and info boxes */
+html.dim .bg-blue-50,
+html.dark .bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+html.dim .bg-green-50,
+html.dark .bg-green-50 {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+html.dim .bg-purple-50,
+html.dark .bg-purple-50 {
+  background-color: rgba(168, 85, 247, 0.1);
+}
+
+html.dim .bg-amber-50,
+html.dark .bg-amber-50 {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+html.dim .bg-indigo-50,
+html.dark .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+html.dim .bg-red-50,
+html.dark .bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Tables */
+html.dim table,
+html.dark table {
+  background-color: var(--card-bg);
+}
+
+html.dim th,
+html.dark th {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+html.dim td,
+html.dark td {
+  border-color: var(--border-color);
+}
+
+/* Footer */
+html.dim footer,
+html.dark footer {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color);
+}
+
+/* Modals keep their own styling in dark mode */
+html.dim .bg-white.rounded-xl,
+html.dim .bg-white.rounded-2xl,
+html.dim .bg-white.rounded-3xl,
+html.dark .bg-white.rounded-xl,
+html.dark .bg-white.rounded-2xl,
+html.dark .bg-white.rounded-3xl {
+  background-color: var(--card-bg);
+}
+
+/* Skeleton loading in dark mode */
+html.dim .animate-pulse,
+html.dark .animate-pulse {
+  background-color: var(--bg-tertiary);
+}
+
+/* Links */
+html.dim a:not(.text-white):not(.text-blue-600):not([class*="bg-"]),
+html.dark a:not(.text-white):not(.text-blue-600):not([class*="bg-"]) {
+  color: var(--text-secondary);
+}
+
+html.dim a:hover:not(.text-white):not(.text-blue-600):not([class*="bg-"]),
+html.dark a:hover:not(.text-white):not(.text-blue-600):not([class*="bg-"]) {
+  color: var(--text-primary);
+}
