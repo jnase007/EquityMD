@@ -472,6 +472,20 @@ export function SyndicatorDashboard() {
   // Has business - show streamlined dashboard
   return (
     <div className="space-y-6">
+      {/* Launch Promotion Banner */}
+      <div className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 rounded-2xl p-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-white text-center">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🎉</span>
+            <span className="font-bold text-lg">Launch Promotion!</span>
+          </div>
+          <span className="text-emerald-50">
+            All listing fees waived until <strong>June 2026</strong> — Start listing for FREE!
+          </span>
+          <span className="text-2xl hidden sm:block">🎁</span>
+        </div>
+      </div>
+
       {/* Business Profile Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4">
