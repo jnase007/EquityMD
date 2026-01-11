@@ -2139,3 +2139,88 @@ html.dark input[type="file"]::file-selector-button {
   color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
 }
+
+/* ============================================
+   NUCLEAR OPTION - Catch absolutely everything
+   ============================================ */
+
+/* Any element with inline or computed white/light backgrounds */
+html.dim *[style*="background: white"],
+html.dim *[style*="background-color: white"],
+html.dim *[style*="background: #fff"],
+html.dim *[style*="background-color: #fff"],
+html.dim *[style*="background: rgb(255"],
+html.dim *[style*="background-color: rgb(255"],
+html.dark *[style*="background: white"],
+html.dark *[style*="background-color: white"],
+html.dark *[style*="background: #fff"],
+html.dark *[style*="background-color: #fff"],
+html.dark *[style*="background: rgb(255"],
+html.dark *[style*="background-color: rgb(255"] {
+  background-color: var(--card-bg) !important;
+}
+
+/* Extra specificity for stubborn elements */
+html.dim div[class*="bg-white"],
+html.dim section[class*="bg-white"],
+html.dim article[class*="bg-white"],
+html.dim aside[class*="bg-white"],
+html.dim header[class*="bg-white"],
+html.dark div[class*="bg-white"],
+html.dark section[class*="bg-white"],
+html.dark article[class*="bg-white"],
+html.dark aside[class*="bg-white"],
+html.dark header[class*="bg-white"] {
+  background-color: var(--card-bg) !important;
+}
+
+/* Ensure body/html never have white */
+html.dim, html.dim body,
+html.dark, html.dark body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Any element with gray-50/100 backgrounds */
+html.dim [class*="bg-gray-50"],
+html.dim [class*="bg-slate-50"],
+html.dim [class*="bg-gray-100"],
+html.dim [class*="bg-slate-100"],
+html.dark [class*="bg-gray-50"],
+html.dark [class*="bg-slate-50"],
+html.dark [class*="bg-gray-100"],
+html.dark [class*="bg-slate-100"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Stat/feature boxes with colored backgrounds */
+html.dim [class*="bg-blue-100"],
+html.dim [class*="bg-green-100"],
+html.dim [class*="bg-purple-100"],
+html.dim [class*="bg-red-100"],
+html.dim [class*="bg-yellow-100"],
+html.dim [class*="bg-orange-100"],
+html.dim [class*="bg-indigo-100"],
+html.dim [class*="bg-emerald-100"],
+html.dark [class*="bg-blue-100"],
+html.dark [class*="bg-green-100"],
+html.dark [class*="bg-purple-100"],
+html.dark [class*="bg-red-100"],
+html.dark [class*="bg-yellow-100"],
+html.dark [class*="bg-orange-100"],
+html.dark [class*="bg-indigo-100"],
+html.dark [class*="bg-emerald-100"] {
+  background-color: rgba(var(--color-accent, 100, 100, 100), 0.15) !important;
+}
+
+/* Make sure all text has good contrast */
+html.dim p, html.dim span, html.dim div,
+html.dark p, html.dark span, html.dark div {
+  color: inherit;
+}
+
+/* Fix any white borders */
+html.dim [class*="border-white"],
+html.dark [class*="border-white"] {
+  border-color: var(--border-color) !important;
+}
