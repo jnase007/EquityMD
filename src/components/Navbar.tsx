@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   Building2, Menu, X, ChevronRight, 
   User, Bell, Search, Command, LayoutDashboard, 
-  Settings, LogOut, Plus, Heart, ChevronDown
+  Settings, LogOut, Plus, Heart, ChevronDown,
+  Sun, Moon, Monitor
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
+import { useTheme, Theme } from '../contexts/ThemeContext';
 
 interface NavbarProps {
   isTransparent?: boolean;
@@ -93,7 +95,9 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showThemeMenu, setShowThemeMenu] = useState(false);
   const { user, profile, unreadCount, setNotifications, setUser, setProfile } = useAuthStore();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -313,6 +317,51 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           <Settings className="h-4 w-4 text-gray-400" />
                           Settings
                         </Link>
+                        
+                        {/* Theme Selector */}
+                        <div className="relative">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setShowThemeMenu(!showThemeMenu); }}
+                            className="flex items-center justify-between w-full px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          >
+                            <span className="flex items-center gap-3">
+                              {theme === 'light' && <Sun className="h-4 w-4 text-gray-400" />}
+                              {theme === 'dim' && <Monitor className="h-4 w-4 text-gray-400" />}
+                              {theme === 'dark' && <Moon className="h-4 w-4 text-gray-400" />}
+                              Appearance
+                            </span>
+                            <ChevronRight className={`h-4 w-4 text-gray-400 transition ${showThemeMenu ? 'rotate-90' : ''}`} />
+                          </button>
+                          {showThemeMenu && (
+                            <div className="pl-8 py-1 bg-gray-50 border-y">
+                              <button
+                                onClick={() => { setTheme('light'); setShowThemeMenu(false); }}
+                                className={`flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-100 ${theme === 'light' ? 'text-blue-600' : 'text-gray-600'}`}
+                              >
+                                <Sun className="h-4 w-4" />
+                                Light
+                                {theme === 'light' && <span className="ml-auto text-blue-500">✓</span>}
+                              </button>
+                              <button
+                                onClick={() => { setTheme('dim'); setShowThemeMenu(false); }}
+                                className={`flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-100 ${theme === 'dim' ? 'text-blue-600' : 'text-gray-600'}`}
+                              >
+                                <Monitor className="h-4 w-4" />
+                                Dim
+                                {theme === 'dim' && <span className="ml-auto text-blue-500">✓</span>}
+                              </button>
+                              <button
+                                onClick={() => { setTheme('dark'); setShowThemeMenu(false); }}
+                                className={`flex items-center gap-3 w-full px-4 py-2 text-sm hover:bg-gray-100 ${theme === 'dark' ? 'text-blue-600' : 'text-gray-600'}`}
+                              >
+                                <Moon className="h-4 w-4" />
+                                Dark
+                                {theme === 'dark' && <span className="ml-auto text-blue-500">✓</span>}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
                         {profile?.user_type === 'investor' && (
                           <Link
                             to="/favorites"
