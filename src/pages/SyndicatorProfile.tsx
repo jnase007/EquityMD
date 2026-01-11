@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { DealCard } from "../components/Cards";
+import { SEO } from "../components/SEO";
 import { MessageModal } from "../components/MessageModal";
 import { VideoEmbed } from "../components/VideoEmbed";
 import { AuthModal } from "../components/AuthModal";
@@ -237,6 +238,12 @@ export function SyndicatorProfile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-x-hidden">
+      <SEO 
+        title={`${syndicator.company_name} | Real Estate Syndicator | EquityMD`}
+        description={syndicator.bio || `${syndicator.company_name} is a verified real estate syndicator on EquityMD. View their track record, investment philosophy, and available deals.`}
+        canonical={`https://equitymd.com/syndicators/${slug}`}
+        image={syndicator.company_logo_url || undefined}
+      />
       <Navbar />
 
       {/* Modern Header */}

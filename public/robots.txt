@@ -7,20 +7,67 @@ Allow: /
 # Sitemap location
 Sitemap: https://equitymd.com/sitemap.xml
 
-# Disallow private/admin areas
+# Block private/auth-required areas (these redirect when not logged in)
 Disallow: /dashboard
+Disallow: /dashboard/
 Disallow: /profile
 Disallow: /settings
 Disallow: /messages
+Disallow: /inbox
+Disallow: /favorites
+Disallow: /portfolio
+Disallow: /discover
+Disallow: /calendar
+Disallow: /goals
+Disallow: /welcome
 Disallow: /deals/new
 Disallow: /deals/*/edit
+Disallow: /syndicator-setup
 Disallow: /admin
+Disallow: /admin/
+
+# Block API and internal routes
 Disallow: /api/
+Disallow: /test-
+Disallow: /email-preview
+Disallow: /email-test
+Disallow: /loader-demo
+Disallow: /tooltip-demo
+Disallow: /onboarding-demo
+Disallow: /dashboard-review
+Disallow: /new-pricing
+
+# Block signup routes (handled via modal)
+Disallow: /signup
+Disallow: /signup/
+
+# Block old URLs that redirect
+Disallow: /browse
+
+# Block protected resource pages
+Disallow: /resources/due-diligence
+Disallow: /resources/calculator
+Disallow: /resources/market-reports
+Disallow: /resources/education
+Disallow: /market-map
+Disallow: /legal/accreditation
+Disallow: /legal/compliance
+Disallow: /success-stories
 
 # Allow search engines to crawl public content
-Allow: /blog/
-Allow: /syndicators/
-Allow: /deals/
+Allow: /
 Allow: /find
 Allow: /directory
 Allow: /how-it-works
+Allow: /about
+Allow: /contact
+Allow: /pricing
+Allow: /blog
+Allow: /blog/
+Allow: /syndicators/
+Allow: /deals/
+Allow: /cities/
+Allow: /resources/glossary
+Allow: /legal/privacy
+Allow: /legal/terms
+Allow: /legal/disclaimer

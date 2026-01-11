@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
+import { SEO } from "../components/SEO";
 import { MessageModal } from "../components/MessageModal";
 import { DealMediaGallery } from "../components/DealMediaGallery";
 import { VideoEmbed } from "../components/VideoEmbed";
@@ -301,17 +302,12 @@ export function DealDetails() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <head>
-        <title>Invest in Top CRE Deals | EquityMD</title>
-        <meta
-          name="description"
-          content="Explore CRE deals with active investment requests on EquityMD. Connect with verified syndicators and join accredited investors in commercial real estate opportunities."
-        />
-        <meta
-          name="keywords"
-          content="CRE investment, commercial real estate deals, accredited investors, investment requests, real estate syndication"
-        />
-      </head>
+      <SEO 
+        title={`${deal.title} | Real Estate Investment | EquityMD`}
+        description={`Invest in ${deal.title} - ${deal.property_type} in ${deal.location}. Target IRR: ${deal.target_irr}%. Minimum investment: $${deal.minimum_investment?.toLocaleString()}.`}
+        canonical={`https://equitymd.com/deals/${slug}`}
+        image={deal?.images?.[0] || deal?.cover_image_url}
+      />
       <Navbar />
 
       {/* Hero Section */}

@@ -414,14 +414,10 @@ export default function App() {
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Compliance />)} 
         />
         <Route path="/cities/:city" element={<CityMarketReport />} />
-        <Route 
-          path="/deals/:slug" 
-          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <DealDetails />)} 
-        />
-        <Route 
-          path="/syndicators/:slug" 
-          element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <SyndicatorProfile />)} 
-        />
+        
+        {/* Public content pages - NO auth required for SEO indexing */}
+        <Route path="/deals/:slug" element={<DealDetails />} />
+        <Route path="/syndicators/:slug" element={<SyndicatorProfile />} />
         <Route 
           path="/profile" 
           element={authLoading ? <MinimalLoadingFallback /> : (requireAuth && !user ? <Navigate to="/" /> : <Profile />)} 
