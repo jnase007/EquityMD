@@ -2,9 +2,34 @@ import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQSection } from '../components/FAQSection';
 import { Mail, Building2, Send, MessageSquare, Phone, Clock, Sparkles, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
+
+// FAQ data for Contact page - support and getting started
+const contactFaqs = [
+  {
+    question: "How quickly will I receive a response to my inquiry?",
+    answer: "We typically respond to all inquiries within 24-48 business hours. For urgent matters, premium syndicators have access to priority support with faster response times."
+  },
+  {
+    question: "I'm a syndicator - how do I list my deals on EquityMD?",
+    answer: "Create a free account, complete your syndicator profile with your track record and company information, then navigate to your dashboard to create your first deal listing. Our team will review and approve your listing within 24 hours."
+  },
+  {
+    question: "I forgot my password - how do I reset it?",
+    answer: "Click 'Sign In' then 'Forgot Password' and enter your email address. You'll receive a password reset link within minutes. Check your spam folder if you don't see it."
+  },
+  {
+    question: "How do I update my investor profile or accreditation status?",
+    answer: "Log in to your account and navigate to your profile settings. You can update your personal information, investment preferences, and accreditation documentation at any time."
+  },
+  {
+    question: "Can I request a demo of the platform?",
+    answer: "Yes! Contact us through this form and mention you'd like a demo. We offer personalized walkthroughs for both investors and syndicators to help you get the most out of EquityMD."
+  }
+];
 
 export function Contact() {
   const { user, profile } = useAuthStore();
@@ -270,6 +295,16 @@ export function Contact() {
               </form>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <div className="py-20 bg-gradient-to-br from-slate-50 via-white to-cyan-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Common Support Questions"
+            faqs={contactFaqs}
+          />
         </div>
       </div>
 

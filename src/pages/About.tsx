@@ -3,8 +3,33 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQSection } from '../components/FAQSection';
 import { AuthModal } from '../components/AuthModal';
 import { Building2, Users, Shield, TrendingUp, Award, CheckCircle, ArrowRight, Sparkles, Target, Heart } from 'lucide-react';
+
+// FAQ data for About page - company/platform questions
+const aboutFaqs = [
+  {
+    question: "Who founded EquityMD and why?",
+    answer: "EquityMD was founded by real estate professionals who saw a gap in the market - accredited investors struggled to find quality syndication opportunities, while syndicators had difficulty reaching qualified investors. We built a platform to connect both sides efficiently."
+  },
+  {
+    question: "How is EquityMD different from crowdfunding platforms?",
+    answer: "Unlike crowdfunding platforms that pool investments, EquityMD is a marketplace. We connect investors directly with syndicators - you invest directly with the sponsor, not through us. This gives you a direct relationship and full transparency with who manages your money."
+  },
+  {
+    question: "Does EquityMD guarantee returns or vet every deal?",
+    answer: "No. We verify syndicator credentials and display track records, but we don't guarantee returns or approve specific deals. Real estate investing involves risk. We provide the platform and information; investors must conduct their own due diligence."
+  },
+  {
+    question: "How does EquityMD make money?",
+    answer: "We charge syndicators a subscription fee to list their deals and access our investor network. The platform is completely free for investors - no fees to browse, save deals, or connect with syndicators."
+  },
+  {
+    question: "Is my personal information secure on EquityMD?",
+    answer: "Yes. We use bank-level encryption, never share your information with third parties without consent, and follow strict data protection practices. Syndicators only see your information when you choose to connect with them."
+  }
+];
 
 export function About() {
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -240,6 +265,16 @@ export function About() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Questions About EquityMD"
+            faqs={aboutFaqs}
+          />
         </div>
       </section>
 

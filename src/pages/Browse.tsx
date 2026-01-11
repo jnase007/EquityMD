@@ -5,12 +5,37 @@ import { Navbar } from '../components/Navbar';
 import { DealCard, DealListItem } from '../components/Cards';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQSection } from '../components/FAQSection';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { VerificationBadge, VerificationStatus } from '../components/VerificationBadge';
 import type { Deal } from '../types/database';
+
+// FAQ data for deals/browse page - targeting deal-related searches
+const dealsFaqs = [
+  {
+    question: "How do I evaluate a real estate syndication deal?",
+    answer: "Look at key metrics like target IRR (15-20% is typical), cash-on-cash returns (6-10% annually), hold period (3-7 years), and minimum investment. Review the syndicator's track record, the property's location and condition, and the business plan (value-add vs. stabilized)."
+  },
+  {
+    question: "What is the difference between preferred return and IRR?",
+    answer: "Preferred return (pref) is the minimum annual return investors receive before the syndicator takes their share of profits, typically 6-8%. IRR (Internal Rate of Return) is the total annualized return including both distributions and profit at sale, accounting for the time value of money."
+  },
+  {
+    question: "Are real estate syndication investments liquid?",
+    answer: "No, syndication investments are illiquid. Your capital is typically locked for the hold period (3-7 years). You'll receive quarterly or monthly distributions, but cannot easily sell your shares. Plan to hold until the property is sold or refinanced."
+  },
+  {
+    question: "What documents should I review before investing?",
+    answer: "Review the Private Placement Memorandum (PPM), Operating Agreement, Subscription Agreement, and financial projections. Pay attention to fees, profit splits, voting rights, and exit strategies. Consider having an attorney review the documents."
+  },
+  {
+    question: "How are syndication returns taxed?",
+    answer: "Syndication returns receive favorable tax treatment. You'll receive a K-1 form annually showing your share of income, depreciation, and deductions. Depreciation often creates paper losses that offset income, and long-term capital gains rates apply at sale."
+  }
+];
 
 // Property type to image mapping
 const propertyTypeImages: Record<string, string> = {
@@ -513,6 +538,16 @@ export function Browse() {
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <div className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Common Questions About Real Estate Deals"
+            faqs={dealsFaqs}
+          />
         </div>
       </div>
 

@@ -3,13 +3,38 @@ import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
-import { 
-  Calendar, User, ArrowRight, Loader2, TrendingUp, 
+import { FAQSection } from '../components/FAQSection';
+import {
+  Calendar, User, ArrowRight, Loader2, TrendingUp,
   BookOpen, Clock, Sparkles, Search, Tag, ChevronRight,
   BarChart3, FileText, DollarSign, Building2
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useTheme } from '../contexts/ThemeContext';
+
+// FAQ data for Blog page - learning and education questions
+const blogFaqs = [
+  {
+    question: "How do I learn about real estate syndication investing?",
+    answer: "Start with our beginner's guide articles, then progress to topics like evaluating deals, understanding returns, and due diligence. Our blog covers everything from basic concepts to advanced strategies for passive real estate investing."
+  },
+  {
+    question: "What topics does the EquityMD blog cover?",
+    answer: "We cover real estate syndication fundamentals, deal analysis techniques, market trends, tax strategies, syndicator evaluation, risk management, and investor education. New articles are published weekly to keep you informed."
+  },
+  {
+    question: "How often is the blog updated?",
+    answer: "We publish new educational content weekly. Subscribe to our newsletter to receive the latest articles, market insights, and investment opportunities directly in your inbox."
+  },
+  {
+    question: "Can I contribute articles to the EquityMD blog?",
+    answer: "Yes! We welcome guest contributions from experienced investors and syndicators. Contact us with your article idea and credentials to be considered for publication."
+  },
+  {
+    question: "Where can I find articles about specific topics like IRR or 1031 exchanges?",
+    answer: "Use the category filters or search function to find articles on specific topics. We have in-depth guides on IRR calculations, 1031 exchanges, preferred returns, waterfall structures, and many other syndication concepts."
+  }
+];
 
 interface BlogPost {
   id: string;
@@ -487,6 +512,16 @@ export function Blog() {
               Free forever. Unsubscribe anytime.
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <div className={`py-20 ${isDarkTheme ? 'bg-[var(--bg-secondary)]' : 'bg-gradient-to-br from-slate-50 via-white to-blue-50'}`}>
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Learning About Real Estate Investing"
+            faqs={blogFaqs}
+          />
         </div>
       </div>
 

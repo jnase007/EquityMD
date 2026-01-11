@@ -4,12 +4,41 @@ import { Building2, Star, MapPin, Search, Filter, TrendingUp, Globe, LayoutGrid,
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQSection } from '../components/FAQSection';
 import { AuthModal } from '../components/AuthModal';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { isProfileCompleteForDirectory } from '../lib/syndicator-completion';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
+
+// FAQ data for syndicator directory - targeting sponsor-related searches
+const syndicatorFaqs = [
+  {
+    question: "What is a real estate syndicator?",
+    answer: "A syndicator (also called sponsor or general partner) is an experienced real estate professional who finds, acquires, and manages investment properties on behalf of passive investors. They handle all operations while investors provide capital and receive returns."
+  },
+  {
+    question: "How do I choose a good syndicator to invest with?",
+    answer: "Look for syndicators with a proven track record, transparent communication, relevant experience in the asset class, and aligned interests (they invest their own money). Check their past deal performance, years in business, and total assets under management."
+  },
+  {
+    question: "What fees do syndicators typically charge?",
+    answer: "Common fees include acquisition fees (1-3% of purchase price), asset management fees (1-2% annually), and a profit split (typically 20-30% of profits after preferred return). Fee structures vary, so always review the PPM carefully."
+  },
+  {
+    question: "How do syndicators make money?",
+    answer: "Syndicators earn through fees (acquisition, asset management, refinancing, disposition) and a share of profits after investors receive their preferred return. This profit split (called 'promote' or 'carried interest') incentivizes syndicators to maximize returns."
+  },
+  {
+    question: "What questions should I ask a syndicator before investing?",
+    answer: "Ask about their track record (full-cycle deals), worst-performing deal, how they handle problems, their investment thesis, team experience, communication frequency, and how interests are aligned through co-investment."
+  },
+  {
+    question: "Are syndicators regulated by the SEC?",
+    answer: "Yes, most syndications are securities offerings regulated by the SEC under Regulation D (506b or 506c). Syndicators must follow securities laws, though most offerings are exempt from registration. This doesn't mean they're SEC-approved."
+  }
+];
 
 interface Syndicator {
   id: string;
@@ -710,6 +739,16 @@ export function Directory() {
               <ArrowRight className="w-5 h-5" />
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <div className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Questions About Real Estate Syndicators"
+            faqs={syndicatorFaqs}
+          />
         </div>
       </div>
 

@@ -10,10 +10,39 @@ import { DealCard, FeatureCard, StatCard, InvestorCard } from '../components/Car
 import { AuthModal } from '../components/AuthModal';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
+import { FAQSection } from '../components/FAQSection';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { useScrollFix } from '../hooks/useScrollFix';
 import type { Deal } from '../types/database';
+
+// FAQ data for SEO - targeting high-value search queries
+const homeFaqs = [
+  {
+    question: "What is EquityMD and how does it work?",
+    answer: "EquityMD is a marketplace connecting accredited investors with verified real estate syndicators. Investors browse curated commercial real estate deals, review syndicator track records, and connect directly with sponsors to invest. Syndicators list their offerings to reach 7,400+ qualified investors."
+  },
+  {
+    question: "Is EquityMD free for investors?",
+    answer: "Yes! EquityMD is completely free for investors. You can browse deals, research syndicators, save favorites, and connect with sponsors at no cost. We only charge syndicators to list their investment opportunities."
+  },
+  {
+    question: "How do I know the syndicators are legitimate?",
+    answer: "All syndicators on EquityMD go through a verification process. We display verification badges, track records, years of experience, and total assets under management. We encourage investors to conduct their own due diligence before investing."
+  },
+  {
+    question: "What types of real estate investments are available?",
+    answer: "EquityMD features multifamily apartments, commercial properties, industrial warehouses, medical office buildings, retail centers, and other commercial real estate syndications. Most deals offer passive income through quarterly distributions."
+  },
+  {
+    question: "How do I get started investing in real estate syndications?",
+    answer: "Create a free account, verify your accredited investor status, then browse available deals. When you find an opportunity that interests you, you can request more information or connect directly with the syndicator to discuss investment terms."
+  },
+  {
+    question: "What is the minimum investment amount?",
+    answer: "Minimum investments vary by deal, typically ranging from $25,000 to $100,000. Each listing displays the minimum investment required, expected returns, hold period, and other key terms upfront."
+  }
+];
 
 // Property type to image mapping
 const propertyTypeImages: Record<string, string> = {
@@ -593,6 +622,16 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section with Schema.org markup for SEO */}
+      <div className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="max-w-3xl mx-auto px-4">
+          <FAQSection 
+            title="Frequently Asked Questions"
+            faqs={homeFaqs}
+          />
+        </div>
+      </div>
 
       {showAuthModal && (
         <AuthModal 
