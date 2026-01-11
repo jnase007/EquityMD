@@ -1540,3 +1540,49 @@ html.dim .bg-gradient-to-br.from-blue-500,
 html.dark .bg-gradient-to-br.from-blue-500 {
   background: linear-gradient(to bottom right, #3b82f6, #6366f1) !important;
 }
+
+/* Section background gradients in dark mode */
+html.dim .bg-gradient-to-b.from-slate-50,
+html.dim .bg-gradient-to-b.from-white,
+html.dim .from-slate-50.to-white,
+html.dim .from-white.to-slate-50,
+html.dark .bg-gradient-to-b.from-slate-50,
+html.dark .bg-gradient-to-b.from-white,
+html.dark .from-slate-50.to-white,
+html.dark .from-white.to-slate-50 {
+  background: var(--bg-primary) !important;
+}
+
+/* Gradient overlays on scroll sections */
+html.dim .from-slate-100,
+html.dim .from-indigo-100,
+html.dark .from-slate-100,
+html.dark .from-indigo-100 {
+  --tw-gradient-from: var(--bg-primary) !important;
+}
+
+/* Ensure all section backgrounds are dark */
+html.dim section,
+html.dark section {
+  background-color: var(--bg-primary);
+}
+
+/* Keep colorful gradients (like the stats section) */
+html.dim .from-blue-600.via-indigo-600,
+html.dark .from-blue-600.via-indigo-600 {
+  /* Keep as-is - these are intentionally colorful */
+}
+
+/* Fix any remaining light backgrounds */
+html.dim .bg-slate-50,
+html.dim .bg-slate-100,
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Card container in dark mode */
+html.dim .card-container,
+html.dark .card-container {
+  background-color: transparent;
+}

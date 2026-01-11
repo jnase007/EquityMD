@@ -333,6 +333,52 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           <Settings className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                           Settings
                         </Link>
+                        
+                        {/* Appearance/Theme Section */}
+                        <div className={`px-4 py-2 ${isDarkTheme ? 'border-t border-[var(--border-color)]' : 'border-t border-gray-100'}`}>
+                          <p className={`text-xs font-medium mb-2 ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Appearance</p>
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => setTheme('light')}
+                              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition ${
+                                theme === 'light' 
+                                  ? 'bg-blue-100 text-blue-700' 
+                                  : isDarkTheme 
+                                    ? 'text-gray-300 hover:bg-gray-700' 
+                                    : 'text-gray-600 hover:bg-gray-100'
+                              }`}
+                            >
+                              <Sun className="h-3.5 w-3.5" />
+                              Light
+                            </button>
+                            <button
+                              onClick={() => setTheme('dim')}
+                              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition ${
+                                theme === 'dim' 
+                                  ? 'bg-blue-100 text-blue-700' 
+                                  : isDarkTheme 
+                                    ? 'text-gray-300 hover:bg-gray-700' 
+                                    : 'text-gray-600 hover:bg-gray-100'
+                              }`}
+                            >
+                              <Monitor className="h-3.5 w-3.5" />
+                              Dim
+                            </button>
+                            <button
+                              onClick={() => setTheme('dark')}
+                              className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-xs font-medium transition ${
+                                theme === 'dark' 
+                                  ? 'bg-blue-100 text-blue-700' 
+                                  : isDarkTheme 
+                                    ? 'text-gray-300 hover:bg-gray-700' 
+                                    : 'text-gray-600 hover:bg-gray-100'
+                              }`}
+                            >
+                              <Moon className="h-3.5 w-3.5" />
+                              Dark
+                            </button>
+                          </div>
+                        </div>
 
                         {profile?.user_type === 'investor' && (
                           <Link
