@@ -357,8 +357,8 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="/pricing" element={<Navigate to="/" replace />} />
-        <Route path="/new-pricing" element={<Navigate to="/" replace />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/new-pricing" element={<NewPricing />} />
         <Route path="/email-preview" element={<EmailPreview />} />
         <Route path="/email-test" element={<EmailTest />} />
         <Route path="/loader-demo" element={<LoaderDemo />} />
