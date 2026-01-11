@@ -504,6 +504,7 @@ export function Home() {
                       image={investor.image}
                       portfolio={investor.portfolio}
                       specialties={investor.specialties}
+                      location={investor.location}
                     />
                   </div>
                 ))}
