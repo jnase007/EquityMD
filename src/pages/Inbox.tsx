@@ -327,17 +327,25 @@ export function Inbox() {
   };
 
   const handleMarkAllRead = async () => {
-    if (!user) return;
-    
+    if (!user || totalUnread === 0) return;
+
+    // Update UI immediately for responsiveness
+    setConversations(prev =>
+      prev.map(c => ({ ...c, unreadCount: 0 }))
+    );
+
     try {
-      await supabase
+      const { error } = await supabase
         .from('messages')
         .update({ read: true })
-        .eq('receiver_id', user.id);
+        .eq('receiver_id', user.id)
+        .eq('read', false);
 
-      setConversations(prev => 
-        prev.map(c => ({ ...c, unreadCount: 0 }))
-      );
+      if (error) {
+        console.error('Error marking messages as read:', error);
+        // Revert on error - refetch conversations
+        fetchConversations();
+      }
     } catch (error) {
       console.error('Error marking all as read:', error);
     }
