@@ -69,13 +69,33 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
     setSocialLoading(provider);
     setError(null);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log(`[Social Auth] Attempting ${provider} login...`);
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}${redirectPath || '/dashboard'}` },
+        options: { 
+          redirectTo: `${window.location.origin}${redirectPath || '/dashboard'}`,
+          skipBrowserRedirect: false
+        },
       });
-      if (error) throw error;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign in');
+      console.log(`[Social Auth] ${provider} response:`, { data, error });
+      if (error) {
+        console.error(`[Social Auth] ${provider} error:`, error);
+        throw error;
+      }
+      // If we get here without redirect, something went wrong
+      if (!data?.url) {
+        throw new Error(`${provider} authentication not configured. Please contact support.`);
+      }
+    } catch (err: any) {
+      console.error(`[Social Auth] ${provider} exception:`, err);
+      const providerName = provider === 'linkedin_oidc' ? 'LinkedIn' : provider.charAt(0).toUpperCase() + provider.slice(1);
+      if (err?.message?.includes('not enabled') || err?.message?.includes('not configured')) {
+        setError(`${providerName} sign-in is not currently available. Please try another method.`);
+      } else if (err?.message?.includes('popup')) {
+        setError(`Please allow popups for ${providerName} sign-in.`);
+      } else {
+        setError(err instanceof Error ? err.message : `Failed to sign in with ${providerName}`);
+      }
       setSocialLoading(null);
     }
   };
@@ -86,17 +106,33 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      console.log('[Magic Link] Attempting to send magic link to:', email);
+      const { data, error } = await supabase.auth.signInWithOtp({
         email,
         options: { 
           emailRedirectTo: `${window.location.origin}${redirectPath || '/dashboard'}`,
+          shouldCreateUser: true, // Allow new user creation via magic link
           data: firstName ? { full_name: firstName } : undefined
         },
       });
-      if (error) throw error;
+      console.log('[Magic Link] Response:', { data, error });
+      if (error) {
+        console.error('[Magic Link] Error:', error);
+        throw error;
+      }
       setMode('check_email');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send magic link');
+    } catch (err: any) {
+      console.error('[Magic Link] Exception:', err);
+      // Provide more specific error messages
+      if (err?.message?.includes('rate limit')) {
+        setError('Too many attempts. Please wait a few minutes and try again.');
+      } else if (err?.message?.includes('not allowed')) {
+        setError('Magic link sign-in is not enabled. Please use email/password or social login.');
+      } else if (err?.message?.includes('invalid')) {
+        setError('Invalid email address. Please check and try again.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to send magic link. Please try another sign-in method.');
+      }
     } finally {
       setLoading(false);
     }
