@@ -957,9 +957,13 @@ export function BlogPost() {
       {/* Hero Image */}
       <div className="relative h-[400px] bg-gray-900">
         <img
-          src={post.image_url}
+          src={post.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=600'}
           alt={post.title}
           className="w-full h-full object-cover opacity-70"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=600';
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
       </div>
