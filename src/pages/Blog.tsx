@@ -349,6 +349,10 @@ export function Blog() {
                         src={filteredPosts[0].image}
                         alt={filteredPosts[0].title}
                         className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800&h=400';
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent lg:hidden" />
                     </div>
@@ -417,6 +421,10 @@ export function Blog() {
                           src={post.image}
                           alt={post.title}
                           className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800&h=400';
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
