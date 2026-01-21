@@ -14,7 +14,7 @@ export function TestAuth() {
   const [directTestResult, setDirectTestResult] = useState<string>('');
   const { user, profile } = useAuthStore();
 
-  const providers = ['google', 'facebook', 'linkedin_oidc'];
+  const providers = ['google', 'linkedin_oidc'];
 
   // Direct test of social authentication
   const testDirectSocialAuth = async (provider: string) => {
