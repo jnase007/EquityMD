@@ -146,23 +146,41 @@ export function SyndicatorSetup() {
         verification_status: 'unverified',
       };
       
-      // Create syndicator profile
+      // Create syndicator profile with timeout
       console.log('Creating syndicator profile with data:', syndicatorData);
-      const { data: newSyndicator, error: syndicatorError } = await supabase
+      
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timed out. Please try again.')), 30000)
+      );
+      
+      const insertPromise = supabase
         .from('syndicators')
         .insert([syndicatorData])
         .select()
         .single();
       
+      const result = await Promise.race([insertPromise, timeoutPromise]) as any;
+      
+      const newSyndicator = result?.data;
+      const syndicatorError = result?.error;
+      
       console.log('Syndicator creation result:', { newSyndicator, syndicatorError });
       
       if (syndicatorError) {
         console.error('Syndicator creation failed:', syndicatorError);
+        // Check for specific errors
+        if (syndicatorError.message?.includes('duplicate') || syndicatorError.code === '23505') {
+          throw new Error('A company with this name already exists. Please use a different name.');
+        }
+        if (syndicatorError.message?.includes('permission') || syndicatorError.code === '42501') {
+          throw new Error('Permission denied. Please contact support.');
+        }
         throw new Error(syndicatorError.message || 'Failed to create syndicator profile');
       }
       
       if (!newSyndicator) {
-        throw new Error('No syndicator data returned after creation');
+        throw new Error('Profile creation failed - please try again');
       }
       
       // Update user profile
@@ -209,12 +227,28 @@ export function SyndicatorSetup() {
       
     } catch (error: any) {
       console.error('Error creating syndicator profile:', error);
-      const errMsg = error?.message || 'Failed to create profile. Please try again.';
+      let errMsg = 'Failed to create profile. Please try again.';
+      
+      if (error?.message) {
+        errMsg = error.message;
+      }
+      
+      // Handle specific error cases
+      if (error?.message?.includes('timed out')) {
+        errMsg = 'Request timed out. Please check your connection and try again.';
+      } else if (error?.message?.includes('network') || error?.message?.includes('fetch')) {
+        errMsg = 'Network error. Please check your connection and try again.';
+      }
+      
       setErrorMessage(errMsg);
       toast.error(errMsg);
+      setSaving(false); // Ensure saving is set to false on error
     } finally {
-      setSaving(false);
-      console.log('handleSubmit completed, saving:', false);
+      // Safety: always ensure saving is false after completion
+      setTimeout(() => {
+        setSaving(false);
+      }, 100);
+      console.log('handleSubmit completed');
     }
   };
 
