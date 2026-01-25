@@ -71,7 +71,8 @@ import { TooltipDemo } from './pages/TooltipDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AdminErrorBoundary } from './components/AdminErrorBoundary';
 import { ScrollToTop } from './components/ScrollToTop';
-import { CookieConsent } from './components/CookieConsent';
+// CookieConsent removed per user request
+// import { CookieConsent } from './components/CookieConsent';
 import { ExitIntentPopup } from './components/ExitIntentPopup';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 
