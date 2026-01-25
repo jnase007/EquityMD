@@ -1,6 +1,6 @@
 import React from 'react';
-import { Bell, MailOpen, Building2, ChevronRight, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { MailOpen, Building2, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { formatDistanceToNow } from 'date-fns';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
-import { Building2, User, Pin, Archive, MoreHorizontal, Check, CheckCheck, Circle } from 'lucide-react';
+import { format, isToday, isYesterday } from 'date-fns';
+import { Building2, Pin, Archive } from 'lucide-react';
 
 interface Conversation {
   userId: string;
