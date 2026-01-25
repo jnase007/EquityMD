@@ -512,7 +512,7 @@ export default function App() {
 
       <PerformanceMonitor />
       <ScrollToTop />
-      <CookieConsent />
+      {/* <CookieConsent /> */}
       <ExitIntentPopup />
     </div>
   );

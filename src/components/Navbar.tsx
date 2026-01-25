@@ -4,7 +4,7 @@ import {
   Building2, Menu, X, ChevronRight, 
   Bell, Search, LayoutDashboard, 
   Settings, LogOut, Plus, Heart, ChevronDown,
-  Sun, Moon, Monitor
+  Sun, Moon, Monitor, BookOpen
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
@@ -332,6 +332,14 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                         >
                           <Settings className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                           Settings
+                        </Link>
+                        <Link
+                          to="/how-it-works"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                        >
+                          <BookOpen className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
+                          How It Works
                         </Link>
                         
                         {/* Appearance/Theme Section */}
