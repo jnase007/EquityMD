@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Plus, Building2, Users, TrendingUp, 
+  Plus, Building2, Users, 
   MessageSquare, Eye, CheckCircle, AlertCircle,
-  Sparkles, Trophy, Zap, Edit, MapPin, ExternalLink,
-  Camera, Clock, ArrowRight, Globe, Upload, XCircle,
-  DollarSign, User, MoreHorizontal, Phone
+  Sparkles, Trophy, Zap, Edit, MapPin,
+  Camera, Clock, ArrowRight, Globe, XCircle,
+  DollarSign, User
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';

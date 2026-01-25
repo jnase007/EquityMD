@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   MessageCircle, Send, X, Sparkles, Building2,
-  HelpCircle, DollarSign, TrendingUp, MapPin,
+  DollarSign, TrendingUp, MapPin,
   ChevronDown, ChevronUp, Bot, User, Loader2,
   Search, BookOpen, Calculator, Shield
 } from 'lucide-react';

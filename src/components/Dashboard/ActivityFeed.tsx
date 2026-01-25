@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MessageSquare, TrendingUp, Users, Building2, Star, Clock, Eye, Zap } from 'lucide-react';
+import { Heart, MessageSquare, TrendingUp, Users, Building2, Eye, Zap } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 interface ActivityItem {

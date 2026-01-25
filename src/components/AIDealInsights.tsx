@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Sparkles, X, CheckCircle, AlertCircle, HelpCircle, Loader2, FileText, TrendingUp, Shield, Brain, MapPin, Building2, Users, Briefcase } from 'lucide-react';
-import { MARKET_DATA, type MarketData } from '../data/marketData';
+import { Sparkles, X, AlertCircle, TrendingUp, Shield, Brain, MapPin, Building2, Users, Briefcase } from 'lucide-react';
+import { MARKET_DATA } from '../data/marketData';
 
 interface DealData {
   id: string;
