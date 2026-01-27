@@ -4,19 +4,22 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>
-      <ThemeProvider>
-        <HelmetProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </HelmetProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <HelmetProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </HelmetProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </ErrorBoundary>
   </StrictMode>
 );
