@@ -39,6 +39,8 @@ export const supabase: SupabaseClient =
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: true,
-          flowType: "pkce",
+          // Using 'implicit' instead of 'pkce' to fix iOS tab suspension issue
+          // PKCE's internal lock mechanism gets stuck when iOS backgrounds tabs
+          flowType: "implicit",
         },
       });
