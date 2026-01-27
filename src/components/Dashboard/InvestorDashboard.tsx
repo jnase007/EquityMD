@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   Heart, MessageSquare, 
   Building2, ChevronRight, Target,
-  Briefcase, MapPin, Users, CheckCircle, ArrowUpRight, Trophy
+  Briefcase, MapPin, Users, CheckCircle, ArrowUpRight, Trophy, ArrowRight
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
@@ -276,6 +276,34 @@ export function InvestorDashboard() {
           <p className="text-sm text-gray-500">Active Deals</p>
         </Link>
       </div>
+
+      {/* Prominent Unread Messages Alert Banner */}
+      {stats.messagesUnread > 0 && (
+        <Link 
+          to="/inbox"
+          className="block bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.01]"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <MessageSquare className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">
+                  You have {stats.messagesUnread} unread message{stats.messagesUnread !== 1 ? 's' : ''}!
+                </h3>
+                <p className="text-blue-100 text-sm">
+                  Syndicators have responded to your investment inquiries
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
+              <span className="font-medium">View Messages</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+        </Link>
+      )}
 
       {/* Deals Matching Your Filters - Moved to top */}
       <SmartRecommendations

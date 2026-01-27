@@ -669,17 +669,59 @@ export function SyndicatorDashboard() {
         
         <Link 
           to="/inbox"
-          className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:border-purple-200 hover:shadow-md transition-all"
+          className={`rounded-xl p-5 border shadow-sm hover:shadow-md transition-all ${
+            stats.unreadMessages > 0 
+              ? 'bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200 ring-2 ring-purple-300 ring-opacity-50' 
+              : 'bg-white border-gray-100 hover:border-purple-200'
+          }`}
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <MessageSquare className="h-5 w-5 text-purple-600" />
+            <div className={`p-2 rounded-lg ${stats.unreadMessages > 0 ? 'bg-purple-200' : 'bg-purple-100'}`}>
+              <MessageSquare className={`h-5 w-5 ${stats.unreadMessages > 0 ? 'text-purple-700' : 'text-purple-600'}`} />
             </div>
-            <span className="text-gray-500 text-sm">Messages</span>
+            <span className={`text-sm ${stats.unreadMessages > 0 ? 'text-purple-700 font-medium' : 'text-gray-500'}`}>
+              {stats.unreadMessages > 0 ? 'Unread Messages' : 'Messages'}
+            </span>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.unreadMessages}</p>
+          <p className={`text-3xl font-bold ${stats.unreadMessages > 0 ? 'text-purple-700' : 'text-gray-900'}`}>
+            {stats.unreadMessages}
+          </p>
+          {stats.unreadMessages > 0 && (
+            <p className="text-xs text-purple-600 mt-1 flex items-center gap-1">
+              <span className="inline-block w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
+              Click to view
+            </p>
+          )}
         </Link>
       </div>
+
+      {/* Prominent Unread Messages Alert Banner */}
+      {stats.unreadMessages > 0 && (
+        <Link 
+          to="/inbox"
+          className="block bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all transform hover:scale-[1.01]"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-white/20 rounded-xl">
+                <MessageSquare className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold">
+                  You have {stats.unreadMessages} unread message{stats.unreadMessages !== 1 ? 's' : ''}!
+                </h3>
+                <p className="text-purple-100 text-sm">
+                  Investors are interested in your deals - respond quickly to increase conversions
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
+              <span className="font-medium">View Messages</span>
+              <ArrowRight className="h-4 w-4" />
+            </div>
+          </div>
+        </Link>
+      )}
 
       {/* Investment Requests Section */}
       {investmentRequests.length > 0 && (

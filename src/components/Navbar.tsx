@@ -4,7 +4,7 @@ import {
   Building2, Menu, X, ChevronRight, 
   Bell, Search, LayoutDashboard, 
   Settings, LogOut, Plus, Heart, ChevronDown,
-  Sun, Moon, Monitor, BookOpen
+  Sun, Moon, Monitor, BookOpen, MessageSquare
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
@@ -405,6 +405,16 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           </div>
                         </div>
 
+                        {/* Messages - shown for all logged-in users */}
+                        <Link
+                          to="/inbox"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                        >
+                          <MessageSquare className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
+                          Messages
+                        </Link>
+                        
                         {profile?.user_type === 'investor' && (
                           <Link
                             to="/favorites"
@@ -532,6 +542,13 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                 
                 {user ? (
                   <div className="pt-4 mt-4 border-t space-y-1">
+                    <Link to="/inbox" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50">
+                      <span className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4 text-blue-600" />
+                        Messages
+                      </span>
+                      <ChevronRight className="h-4 w-4 text-gray-400" />
+                    </Link>
                     <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50">
                       <span>Settings</span>
                       <ChevronRight className="h-4 w-4 text-gray-400" />

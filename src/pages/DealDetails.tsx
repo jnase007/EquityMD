@@ -67,6 +67,7 @@ interface DealWithSyndicator extends Deal {
     average_rating: number | null;
     total_reviews: number | null;
     claimed_by: string | null;
+    contact_email: string | null;
   };
 }
 
@@ -211,7 +212,8 @@ export function DealDetails() {
             state,
             average_rating,
             total_reviews,
-            claimed_by
+            claimed_by,
+            contact_email
           )
         `
         )
@@ -789,6 +791,7 @@ export function DealDetails() {
           dealSlug={deal.slug}
           receiverId={deal.syndicator?.claimed_by || deal.syndicator_id}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
+          syndicatorEmail={deal.syndicator?.contact_email || undefined}
           onClose={() => setShowMessageModal(false)}
         />
       )}
@@ -800,6 +803,7 @@ export function DealDetails() {
           dealSlug={deal.slug}
           receiverId={deal.syndicator?.claimed_by || deal.syndicator_id}
           syndicatorName={deal.syndicator?.company_name || "Syndicator"}
+          syndicatorEmail={deal.syndicator?.contact_email || undefined}
           onClose={() => setShowInvestModal(false)}
           isInvestment
         />
