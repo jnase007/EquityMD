@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Gift, TrendingUp, Building2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const STORAGE_KEY = 'equitymd_exit_popup_shown';
 const SHOW_AFTER_DAYS = 7; // Don't show again for 7 days after dismissing
@@ -66,7 +67,6 @@ export function ExitIntentPopup() {
 
     try {
       // Try to save to database (non-blocking)
-      const { supabase } = await import('../lib/supabase');
       await supabase
         .from('newsletter_subscribers')
         .insert([{ email, source: 'exit_popup' }]);

@@ -30,7 +30,7 @@ export function InvestorDashboard() {
     activeDeals: 0,
   });
   const [recentDeals, setRecentDeals] = useState<any[]>([]);
-  const [recommendedDeals, setRecommendedDeals] = useState<any[]>([]);
+  const [_recommendedDeals, _setRecommendedDeals] = useState<any[]>([]);
   const [favoriteDeals, setFavoriteDeals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [profileCompletion, setProfileCompletion] = useState(0);
