@@ -80,6 +80,7 @@ export function SyndicatorProfile() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [syndicatorHasEmail, setSyndicatorHasEmail] = useState<boolean | null>(null);
   const [projectStats, setProjectStats] = useState<ProjectStats>({
     totalDeals: 0,
     activeDeals: 0,
@@ -98,6 +99,39 @@ export function SyndicatorProfile() {
     window.scrollTo(0, 0);
   }, [slug]);
 
+  // Check if syndicator has an email address
+  async function checkSyndicatorEmail(syndicatorData: any) {
+    if (!syndicatorData) {
+      setSyndicatorHasEmail(false);
+      return;
+    }
+
+    // If syndicator has contact_email, they have an email
+    if (syndicatorData.contact_email) {
+      setSyndicatorHasEmail(true);
+      return;
+    }
+
+    // If claimed, check profiles table for email
+    if (syndicatorData.claimed_by) {
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('id', syndicatorData.claimed_by)
+          .maybeSingle();
+        
+        setSyndicatorHasEmail(!!profile?.email);
+      } catch (error) {
+        console.error('Error checking syndicator email:', error);
+        setSyndicatorHasEmail(false);
+      }
+    } else {
+      // Not claimed and no contact_email
+      setSyndicatorHasEmail(false);
+    }
+  }
+
   async function fetchSyndicatorData() {
     try {
       // Include unverified syndicators so directory listings work
@@ -112,6 +146,9 @@ export function SyndicatorProfile() {
         return;
       }
       setSyndicator(syndicatorData);
+
+      // Check if syndicator has email
+      checkSyndicatorEmail(syndicatorData);
 
       const { data: dealsData, error: dealsError } = await supabase
         .from("deals")
@@ -340,13 +377,19 @@ export function SyndicatorProfile() {
                   onClick={() => {
                     if (!user) {
                       setShowAuthModal(true);
-                    } else if (syndicator.claimed_by) {
+                    } else if (syndicator.claimed_by && syndicatorHasEmail !== false) {
                       setShowMessageModal(true);
                     }
                   }}
-                  disabled={user && !syndicator.claimed_by}
+                  disabled={(user && !syndicator.claimed_by) || syndicatorHasEmail === false}
                   className="flex items-center px-5 py-2.5 bg-white text-blue-700 font-semibold rounded-xl hover:bg-blue-50 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={user && !syndicator.claimed_by ? "This syndicator profile hasn't been claimed yet" : ""}
+                  title={
+                    user && !syndicator.claimed_by 
+                      ? "This syndicator profile hasn't been claimed yet" 
+                      : syndicatorHasEmail === false
+                      ? "This syndicator has not provided a contact email"
+                      : ""
+                  }
                 >
                   {!user ? (
                     <>

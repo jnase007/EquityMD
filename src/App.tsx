@@ -233,20 +233,37 @@ export default function App() {
   useEffect(() => {
     const initAuth = async () => {  
       try {
-        const { error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError) {
-          authLogger.log('Refresh session error:', refreshError);
+        // Check if this is an OAuth callback (has hash fragment with tokens)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const hasAuthTokens = hashParams.has('access_token') || hashParams.has('error');
+        
+        if (hasAuthTokens) {
+          authLogger.log('OAuth callback detected, processing...');
+          // Give Supabase a moment to process the hash fragment
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
-    
+
+        // Try to get session (Supabase should have processed the hash by now)
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
           authLogger.log('Session retrieval error:', error);
+          console.error('Session error:', error);
         }
         authLogger.log('Initial session check:', session?.user?.id);
     
         setUser(session?.user ?? null);
         if (session?.user) {
-          await fetchProfile(session.user.id);
+          try {
+            await fetchProfile(session.user.id);
+          } catch (profileError) {
+            console.error('Profile fetch error:', profileError);
+            // Don't block auth if profile fetch fails
+          }
+        }
+        
+        // Clear hash fragment after processing to clean up URL
+        if (hasAuthTokens) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
         }
         
         // Set loading to false after initial auth check
@@ -261,9 +278,13 @@ export default function App() {
           } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
             setUser(session?.user ?? null);
             if (session?.user) {
-              await fetchProfile(session.user.id);
-              // Sync guest favorites to database
-              await syncGuestFavorites(session.user.id);
+              try {
+                await fetchProfile(session.user.id);
+                // Sync guest favorites to database
+                await syncGuestFavorites(session.user.id);
+              } catch (profileError) {
+                console.error('Profile fetch error in auth state change:', profileError);
+              }
             }
           }
         });

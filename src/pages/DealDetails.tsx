@@ -88,6 +88,7 @@ export function DealDetails() {
   });
   const [showStickyInvest, setShowStickyInvest] = useState(false);
   const { isOpen: isComparisonOpen, openComparison, closeComparison } = useComparisonTool();
+  const [syndicatorHasEmail, setSyndicatorHasEmail] = useState<boolean | null>(null);
 
   // Show sticky invest button after scrolling past hero
   useEffect(() => {
@@ -128,6 +129,39 @@ export function DealDetails() {
   useEffect(() => {
     fetchDealDetails();
   }, [slug]);
+
+  // Check if syndicator has an email address
+  async function checkSyndicatorEmail(syndicator: DealWithSyndicator['syndicator']) {
+    if (!syndicator) {
+      setSyndicatorHasEmail(false);
+      return;
+    }
+
+    // If syndicator has contact_email, they have an email
+    if (syndicator.contact_email) {
+      setSyndicatorHasEmail(true);
+      return;
+    }
+
+    // If claimed, check profiles table for email
+    if (syndicator.claimed_by) {
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('email')
+          .eq('id', syndicator.claimed_by)
+          .maybeSingle();
+        
+        setSyndicatorHasEmail(!!profile?.email);
+      } catch (error) {
+        console.error('Error checking syndicator email:', error);
+        setSyndicatorHasEmail(false);
+      }
+    } else {
+      // Not claimed and no contact_email
+      setSyndicatorHasEmail(false);
+    }
+  }
 
   async function fetchInvestmentRequestCount(dealId: string) {
     try {
@@ -230,6 +264,11 @@ export function DealDetails() {
       }
 
       setDeal(dealData);
+
+      // Check if syndicator has email
+      if (dealData.syndicator) {
+        checkSyndicatorEmail(dealData.syndicator);
+      }
 
       // Track view (fire and forget - don't block the page load)
       trackDealView(dealData.id);
@@ -690,7 +729,9 @@ export function DealDetails() {
 
                     <button
                       onClick={() => handleAction("contact")}
-                      className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center"
+                      disabled={syndicatorHasEmail === false}
+                      className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                      title={syndicatorHasEmail === false ? "This syndicator has not provided a contact email" : ""}
                     >
                       <MessageCircle className="h-5 w-5 mr-2" />
                       Contact Syndicator
