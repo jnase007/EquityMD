@@ -271,6 +271,7 @@ export default function App() {
         // Set loading to false after initial auth check
         setAuthLoading(false);
         
+        // Set up auth state listener for future changes
         const {
           data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -280,8 +281,7 @@ export default function App() {
           
           if (event === 'SIGNED_OUT') {
             clearAuth();
-            setAuthLoading(false);
-          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
+          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
             setUser(session?.user ?? null);
             if (session?.user) {
               try {
@@ -292,32 +292,8 @@ export default function App() {
                 console.error('Profile fetch error in auth state change:', profileError);
               }
             }
-            setAuthLoading(false);
           }
         });
-
-        // Check for hash fragment with access_token (OAuth/magic link redirect)
-        const hasAuthHash = window.location.hash.includes('access_token');
-        
-        if (hasAuthHash) {
-          // Let the SDK process the hash - onAuthStateChange will handle it
-          authLogger.log('Auth hash detected, waiting for SDK to process...');
-          // The onAuthStateChange will fire with SIGNED_IN when processing completes
-        } else {
-          // No hash, do a normal session check
-          const { data: { session }, error } = await supabase.auth.getSession();
-          if (error) {
-            authLogger.log('Session retrieval error:', error);
-          }
-          authLogger.log('Initial session check:', session?.user?.id);
-      
-          setUser(session?.user ?? null);
-          if (session?.user) {
-            await fetchProfile(session.user.id);
-          }
-          
-          setAuthLoading(false);
-        }
     
         await fetchSiteSettings();
         
