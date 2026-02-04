@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Mail, Eye, Send, Copy, Check, Download } from 'lucide-react';
+import { MassEmailSender } from '../components/admin/MassEmailSender';
 
 export function EmailPreview() {
   const [selectedEmail, setSelectedEmail] = useState<'investor' | 'syndicator' | 'welcome_investor' | 'welcome_syndicator' | 'investment_opportunity' | 'sms_deal_alert' | 'sms_welcome' | 'admin_new_investor' | 'admin_new_syndicator' | 'admin_user_message' | 'investor_launch' | 'deal_alert' | 'weekly_digest' | 'profile_incomplete' | 'deal_closing_soon'>('investor');
   const [copied, setCopied] = useState(false);
+  const [showMassSender, setShowMassSender] = useState(false);
 
   // Handle URL parameters for direct email access
   useEffect(() => {
@@ -1618,29 +1620,57 @@ Msg & data rates may apply.`;
 
           {/* Email Preview */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-sm">
-              <div className="border-b px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold flex items-center">
-                    <Eye className="h-5 w-5 mr-2 text-blue-600" />
-                    Email Preview
-                  </h2>
-                  <div className="text-sm text-gray-500">
-                    {emailTypes.find(t => t.id === selectedEmail)?.label}
+            {/* Tabs */}
+            <div className="mb-4 flex gap-2 border-b">
+              <button
+                onClick={() => setShowMassSender(false)}
+                className={`px-4 py-2 font-medium transition ${
+                  !showMassSender
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Preview
+              </button>
+              <button
+                onClick={() => setShowMassSender(true)}
+                className={`px-4 py-2 font-medium transition ${
+                  showMassSender
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Mass Send
+              </button>
+            </div>
+
+            {showMassSender ? (
+              <MassEmailSender emailType={selectedEmail} />
+            ) : (
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="border-b px-6 py-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-semibold flex items-center">
+                      <Eye className="h-5 w-5 mr-2 text-blue-600" />
+                      Email Preview
+                    </h2>
+                    <div className="text-sm text-gray-500">
+                      {emailTypes.find(t => t.id === selectedEmail)?.label}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  <div className="border rounded-lg overflow-hidden">
+                    <iframe
+                      srcDoc={getEmailHTML(selectedEmail)}
+                      className="w-full h-[600px] border-0"
+                      title="Email Preview"
+                    />
                   </div>
                 </div>
               </div>
-              
-              <div className="p-6">
-                <div className="border rounded-lg overflow-hidden">
-                  <iframe
-                    srcDoc={getEmailHTML(selectedEmail)}
-                    className="w-full h-[600px] border-0"
-                    title="Email Preview"
-                  />
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* Sample Data Info */}
             <div className="mt-6 bg-blue-50 rounded-lg p-4">
