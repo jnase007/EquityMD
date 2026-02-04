@@ -232,83 +232,88 @@ export default function App() {
 
   useEffect(() => {
     let mounted = true;
+    let authProcessed = false;
     
-    const initAuth = async () => {  
-      try {
-        // Check if this is an OAuth callback (has hash fragment with tokens)
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const hasAuthTokens = hashParams.has('access_token') || hashParams.has('error');
-        
-        if (hasAuthTokens) {
-          authLogger.log('OAuth callback detected, processing...');
-          // Give Supabase a moment to process the hash fragment
-          await new Promise(resolve => setTimeout(resolve, 100));
-        }
-
-        // Try to get session (Supabase should have processed the hash by now)
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          authLogger.log('Session retrieval error:', error);
-          console.error('Session error:', error);
-        }
-        authLogger.log('Initial session check:', session?.user?.id);
+    // Check if this is an OAuth callback (has hash fragment with tokens)
+    const hasAuthTokens = window.location.hash.includes('access_token') || 
+                          window.location.hash.includes('error=');
     
+    if (hasAuthTokens) {
+      authLogger.log('OAuth callback detected in URL hash');
+    }
+    
+    // IMPORTANT: Set up onAuthStateChange FIRST - this catches the SIGNED_IN event
+    // that Supabase fires when it parses tokens from the URL hash
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+      
+      authLogger.log('Auth state changed:', event, session?.user?.id);
+      
+      if (event === 'INITIAL_SESSION') {
+        // This fires immediately with the current session (or null)
+        authLogger.log('Initial session event:', session?.user?.id);
         setUser(session?.user ?? null);
         if (session?.user) {
           try {
             await fetchProfile(session.user.id);
           } catch (profileError) {
             console.error('Profile fetch error:', profileError);
-            // Don't block auth if profile fetch fails
           }
         }
-        
-        // Clear hash fragment after processing to clean up URL
-        if (hasAuthTokens) {
-          window.history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-        
-        // Set loading to false after initial auth check
+        authProcessed = true;
         setAuthLoading(false);
         
-        // Set up auth state listener for future changes
-        const {
-          data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
-          if (!mounted) return;
-          
-          authLogger.log('State changed:', event, session?.user?.id);
-          
-          if (event === 'SIGNED_OUT') {
-            clearAuth();
-          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            setUser(session?.user ?? null);
-            if (session?.user) {
-              try {
-                await fetchProfile(session.user.id);
-                // Sync guest favorites to database
-                await syncGuestFavorites(session.user.id);
-              } catch (profileError) {
-                console.error('Profile fetch error in auth state change:', profileError);
-              }
-            }
+        // Clean up URL hash after processing
+        if (hasAuthTokens) {
+          window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        }
+      } else if (event === 'SIGNED_IN') {
+        authLogger.log('User signed in:', session?.user?.id);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          try {
+            await fetchProfile(session.user.id);
+            await syncGuestFavorites(session.user.id);
+          } catch (profileError) {
+            console.error('Profile fetch error:', profileError);
           }
-        });
-    
-        await fetchSiteSettings();
+        }
+        if (!authProcessed) {
+          setAuthLoading(false);
+        }
         
-        return () => {
-          mounted = false;
-          subscription.unsubscribe();
-        };
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        // Set loading to false even on error to prevent infinite loading
-        if (mounted) setAuthLoading(false);
+        // Clean up URL hash after sign in
+        if (hasAuthTokens) {
+          window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        clearAuth();
+        setAuthLoading(false);
+      } else if (event === 'TOKEN_REFRESHED') {
+        authLogger.log('Token refreshed');
+        setUser(session?.user ?? null);
       }
+    });
+
+    // Fetch site settings
+    fetchSiteSettings();
+    
+    // Fallback: If no auth event fires within 2 seconds, set loading to false
+    // This handles the case where there's no session and no hash tokens
+    const fallbackTimeout = setTimeout(() => {
+      if (!authProcessed && mounted) {
+        authLogger.log('Auth fallback timeout - no session detected');
+        setAuthLoading(false);
+      }
+    }, 2000);
+    
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+      clearTimeout(fallbackTimeout);
     };
-  
-    initAuth();
   }, [clearAuth, setUser, fetchProfile]);
 
   // Session recovery on tab resume (handles iOS suspension and network reconnection)
