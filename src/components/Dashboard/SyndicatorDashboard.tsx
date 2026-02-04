@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
   Plus, Building2, Users, 
   MessageSquare, Eye, CheckCircle, AlertCircle,
@@ -39,7 +39,6 @@ interface InvestmentRequest {
 
 export function SyndicatorDashboard() {
   const { user, profile } = useAuthStore();
-  const navigate = useNavigate();
   const gamification = useGamification();
   const [showAchievements, setShowAchievements] = useState(false);
   const achievementsButtonRef = useRef<HTMLButtonElement>(null);
@@ -56,7 +55,6 @@ export function SyndicatorDashboard() {
   const [showCreateBusiness, setShowCreateBusiness] = useState(false);
   const [newBusinessName, setNewBusinessName] = useState('');
   const [creating, setCreating] = useState(false);
-  const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
   const [showEditBusiness, setShowEditBusiness] = useState(false);
   const [editForm, setEditForm] = useState({ companyName: '', companyDescription: '' });
   const [savingBusiness, setSavingBusiness] = useState(false);

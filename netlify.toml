@@ -27,9 +27,144 @@
   status = 301
   force = true
 
+# Preserve query params when redirecting browse to find
+[[redirects]]
+  from = "/browse?state=:state"
+  to = "/find?state=:state"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/browse/*"
   to = "/find"
+  status = 301
+  force = true
+
+# 410 Gone for old test/deleted deals
+[[redirects]]
+  from = "/deals/testdeal2"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/testdeal4"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/the-evergreen-at-bellevue"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/evergreen-commons"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/denver-medical-center"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/metro-city-center"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/innovation-square"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/innovation-medical-plaza"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/horizon-logistics-center"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/innovation-medical-campus"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/silicon-valley-office-plaza"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/premium-office-complex"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/the-metropolitan-downtown"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/the-marina-residences"
+  to = "/find"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deals/multi-family-development"
+  to = "/find"
+  status = 301
+  force = true
+
+# 301 for old/test syndicator profiles
+[[redirects]]
+  from = "/syndicators/react"
+  to = "/directory"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/syndicators/kjh"
+  to = "/directory"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/syndicators/vdevd"
+  to = "/directory"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/syndicators/prologis"
+  to = "/directory"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/syndicators/dlp-capital"
+  to = "/directory"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/syndicators/cardone-capital"
+  to = "/directory"
   status = 301
   force = true
 

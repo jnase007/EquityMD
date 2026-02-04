@@ -796,6 +796,117 @@ export function EmailPreview() {
           </html>
         `;
 
+      case 'new_message':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>💬 New Message - EquityMD</title>
+              ${baseStyles}
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">💬 You Have a New Message</div>
+                  
+                  <div class="content">
+                    <p>Hi ${sampleData.message.recipientName},</p>
+                    
+                    <p>You have received a new message from <strong>${sampleData.message.senderName}</strong>.</p>
+                    
+                    <div class="info-box">
+                      <h4>Message Preview:</h4>
+                      <p><strong>From:</strong> ${sampleData.message.senderName}</p>
+                      <p><strong>Regarding:</strong> ${sampleData.message.dealTitle}</p>
+                      <p><strong>Received:</strong> ${sampleData.message.sentDate}</p>
+                    </div>
+                    
+                    <div class="message-box">
+                      <p>"${sampleData.message.messageContent}"</p>
+                    </div>
+                    
+                    <p>Log in to your EquityMD account to view the full message and respond.</p>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/inbox" class="button">
+                      View Message & Reply
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this email because you have message notifications enabled.</p>
+                  <p>To update your preferences, visit your <a href="https://equitymd.com/settings">profile settings</a>.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
+      case 'investment_interest':
+        return `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>💰 New Investment Interest - EquityMD</title>
+              ${baseStyles}
+            </head>
+            <body>
+              <div class="container">
+                <div class="card">
+                  <div class="logo">
+                    Equity<span>MD</span>
+                  </div>
+                  
+                  <div class="title">💰 New Investment Interest</div>
+                  
+                  <div class="content">
+                    <p>Great news! An investor has expressed interest in your deal.</p>
+                    
+                    <div class="info-box">
+                      <h4>Investor Details:</h4>
+                      <p><strong>Name:</strong> ${sampleData.message.senderName}</p>
+                      <p><strong>Email:</strong> ${sampleData.message.senderEmail}</p>
+                      <p><strong>Deal:</strong> ${sampleData.message.dealTitle}</p>
+                      <p><strong>Investment Amount:</strong> $100,000</p>
+                      <p><strong>Date:</strong> ${sampleData.message.sentDate}</p>
+                    </div>
+                    
+                    ${sampleData.message.messageContent ? `
+                    <div class="message-box">
+                      <p><strong>Message from Investor:</strong></p>
+                      <p>"${sampleData.message.messageContent}"</p>
+                    </div>
+                    ` : ''}
+                    
+                    <p>Log in to your EquityMD account to respond to this investor and continue the conversation.</p>
+                  </div>
+
+                  <div style="text-align: center;">
+                    <a href="https://equitymd.com/inbox" class="button">
+                      Respond to Investor
+                    </a>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p>You received this email because you have investment notifications enabled.</p>
+                  <p>To update your preferences, visit your <a href="https://equitymd.com/settings">profile settings</a>.</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+
       case 'investor_launch':
         return `
           <!DOCTYPE html>
@@ -1536,6 +1647,8 @@ Msg & data rates may apply.`;
     { id: 'admin_new_investor', label: 'Admin: New Investor Signup', icon: '👥' },
     { id: 'admin_new_syndicator', label: 'Admin: New Syndicator Signup', icon: '🏗️' },
     { id: 'admin_user_message', label: 'Admin: User-to-Syndicator Message', icon: '💬' },
+    { id: 'new_message', label: 'New Message Notification', icon: '💬' },
+    { id: 'investment_interest', label: 'Investment Interest', icon: '💰' },
     { id: 'welcome_investor', label: 'Welcome Investor', icon: '👋' },
     { id: 'welcome_syndicator', label: 'Welcome Syndicator', icon: '🤝' },
     { id: 'investment_opportunity', label: 'New Investment Alert', icon: '🏢' },

@@ -12,7 +12,7 @@ interface AccreditationData {
 }
 
 export function AccreditationVerification() {
-  const { user, profile } = useAuthStore();
+  const { user } = useAuthStore();
   const [accreditation, setAccreditation] = useState<AccreditationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

@@ -739,6 +739,66 @@ export function EditDeal() {
 
       if (error) throw error;
 
+      // Notify investors who have favorited this deal about the update
+      try {
+        // Get investors who have favorited this deal
+        const { data: favorites } = await supabase
+          .from('favorites')
+          .select(`
+            investor_id,
+            profiles:investor_id (
+              id,
+              email,
+              full_name,
+              email_notifications
+            )
+          `)
+          .eq('deal_id', deal.id);
+
+        if (favorites && favorites.length > 0) {
+          // Filter to investors who have deal_updates enabled
+          const investorsToNotify = favorites.filter(fav => {
+            const profile = fav.profiles as any;
+            const notifications = profile?.email_notifications;
+            return profile?.email && (!notifications || notifications.deal_updates !== false);
+          });
+
+          console.log(`Notifying ${investorsToNotify.length} investors about deal update`);
+
+          // Send notifications in batches
+          const batchSize = 5;
+          for (let i = 0; i < Math.min(investorsToNotify.length, 25); i += batchSize) {
+            const batch = investorsToNotify.slice(i, i + batchSize);
+            await Promise.all(batch.map(fav => {
+              const profile = fav.profiles as any;
+              return supabase.functions.invoke('send-email', {
+                body: {
+                  to: profile.email,
+                  type: 'deal_alert',
+                  data: {
+                    investorName: profile.full_name || 'Investor',
+                    dealTitle: formData.title,
+                    dealSlug: deal.slug,
+                    propertyType: formData.propertyType,
+                    location: formData.address.city && formData.address.state 
+                      ? `${formData.address.city}, ${formData.address.state}` 
+                      : formData.location,
+                    targetIrr: formData.targetIrr,
+                    minimumInvestment: `$${parseInt(formData.minimumInvestment).toLocaleString()}`,
+                    syndicatorName: deal.syndicator?.company_name || 'EquityMD Partner',
+                    matchReasons: ['A deal you saved has been updated']
+                  }
+                }
+              }).catch(err => console.error(`Failed to notify ${profile.email}:`, err));
+            }));
+          }
+          console.log('Deal update notifications sent');
+        }
+      } catch (notifyError) {
+        console.error('Failed to send deal update notifications:', notifyError);
+        // Don't block the save flow
+      }
+
       toast.success(newStatus === 'active' ? 'Deal published successfully!' : 'Changes saved successfully!');
       
       // Navigate to the deal page

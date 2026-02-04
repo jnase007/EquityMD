@@ -30,7 +30,6 @@ export function InvestorDashboard() {
     activeDeals: 0,
   });
   const [recentDeals, setRecentDeals] = useState<any[]>([]);
-  const [_recommendedDeals, _setRecommendedDeals] = useState<any[]>([]);
   const [favoriteDeals, setFavoriteDeals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [profileCompletion, setProfileCompletion] = useState(0);
@@ -196,9 +195,6 @@ export function InvestorDashboard() {
     if (value >= 1000) return `$${(value / 1000).toFixed(0)}K`;
     return `$${value.toLocaleString()}`;
   };
-
-  const firstName = profile?.full_name?.split(' ')[0] || 'Investor';
-  const nextIncomplete = gamification.nextSteps.find(s => !s.completed);
 
   return (
     <div className="space-y-6">

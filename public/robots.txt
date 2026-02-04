@@ -7,12 +7,11 @@ Allow: /
 # Sitemap location
 Sitemap: https://equitymd.com/sitemap.xml
 
-# Block private/auth-required areas (these redirect when not logged in)
+# Block private/auth-required areas only
 Disallow: /dashboard
 Disallow: /dashboard/
 Disallow: /profile
 Disallow: /settings
-Disallow: /messages
 Disallow: /inbox
 Disallow: /favorites
 Disallow: /portfolio
@@ -26,7 +25,7 @@ Disallow: /syndicator-setup
 Disallow: /admin
 Disallow: /admin/
 
-# Block API and internal routes
+# Block API and internal test routes
 Disallow: /api/
 Disallow: /test-
 Disallow: /email-preview
@@ -35,26 +34,12 @@ Disallow: /loader-demo
 Disallow: /tooltip-demo
 Disallow: /onboarding-demo
 Disallow: /dashboard-review
-Disallow: /new-pricing
 
 # Block signup routes (handled via modal)
 Disallow: /signup
 Disallow: /signup/
 
-# Block old URLs that redirect
-Disallow: /browse
-
-# Block protected resource pages
-Disallow: /resources/due-diligence
-Disallow: /resources/calculator
-Disallow: /resources/market-reports
-Disallow: /resources/education
-Disallow: /market-map
-Disallow: /legal/accreditation
-Disallow: /legal/compliance
-Disallow: /success-stories
-
-# Allow search engines to crawl public content
+# Allow all public content (explicitly listed for clarity)
 Allow: /
 Allow: /find
 Allow: /directory
@@ -62,12 +47,24 @@ Allow: /how-it-works
 Allow: /about
 Allow: /contact
 Allow: /pricing
+Allow: /new-pricing
 Allow: /blog
-Allow: /blog/
-Allow: /syndicators/
-Allow: /deals/
-Allow: /cities/
+Allow: /blog/*
+Allow: /syndicators/*
+Allow: /deals/*
+Allow: /cities/*
+Allow: /resources/
 Allow: /resources/glossary
+Allow: /resources/due-diligence
+Allow: /resources/calculator
+Allow: /resources/market-reports
+Allow: /resources/market-reports/*
+Allow: /resources/education
+Allow: /market-map
+Allow: /success-stories
+Allow: /legal/
 Allow: /legal/privacy
 Allow: /legal/terms
 Allow: /legal/disclaimer
+Allow: /legal/accreditation
+Allow: /legal/compliance

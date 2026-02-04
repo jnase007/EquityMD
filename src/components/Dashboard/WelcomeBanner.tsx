@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  X, Camera, Search, Heart, Bell, Building2, Plus, 
+  X, Camera, Search, Heart, Plus, 
   ArrowRight, Sparkles, Target, Users
 } from 'lucide-react';
 import { useAuthStore } from '../../lib/store';

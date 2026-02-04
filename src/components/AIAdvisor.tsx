@@ -2,10 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   MessageCircle, Send, X, Sparkles, Building2,
   DollarSign, TrendingUp, MapPin,
-  ChevronDown, ChevronUp, Bot, User, Loader2,
+  Bot, User, Loader2,
   Search, BookOpen, Calculator, Shield
 } from 'lucide-react';
-import { useAuthStore } from '../lib/store';
 
 interface Message {
   id: string;
@@ -82,8 +81,7 @@ interface AIAdvisorProps {
   floating?: boolean;
 }
 
-export function AIAdvisor({ dealContext, floating = true }: AIAdvisorProps) {
-  const { user } = useAuthStore();
+export function AIAdvisor({ floating = true }: AIAdvisorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');

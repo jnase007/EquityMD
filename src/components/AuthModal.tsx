@@ -49,7 +49,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
       setCheckingEmail(true);
       try {
         // Check if email exists by attempting to get user
-        const { data } = await supabase.auth.signInWithOtp({ 
+        await supabase.auth.signInWithOtp({ 
           email,
           options: { shouldCreateUser: false }
         });

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Calendar, ChevronLeft, ChevronRight, Clock, 
-  MapPin, DollarSign, Building2, Eye, ArrowRight,
-  Video, Bell, Star
+  MapPin, DollarSign, Building2, ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -34,7 +33,6 @@ export function DealCalendar() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [view, setView] = useState<'calendar' | 'list'>('calendar');
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchDeals();

@@ -457,6 +457,57 @@ export function PropertyListingWizard() {
             }
           });
           console.log('Admin notification sent for new deal');
+
+          // Send deal alert emails to investors who have deal notifications enabled
+          try {
+            // Get investors with email notifications enabled (limit to prevent overload)
+            const { data: investors } = await supabase
+              .from('profiles')
+              .select('id, email, full_name, email_notifications')
+              .eq('user_type', 'investor')
+              .not('email', 'is', null)
+              .limit(200);
+
+            if (investors && investors.length > 0) {
+              // Filter to investors who have deal_updates enabled (default is true)
+              const investorsToNotify = investors.filter(inv => {
+                const notifications = inv.email_notifications;
+                return !notifications || notifications.deal_updates !== false;
+              });
+
+              console.log(`Sending deal alerts to ${investorsToNotify.length} investors`);
+
+              // Send emails in batches to avoid overloading
+              const batchSize = 10;
+              for (let i = 0; i < Math.min(investorsToNotify.length, 50); i += batchSize) {
+                const batch = investorsToNotify.slice(i, i + batchSize);
+                await Promise.all(batch.map(investor => 
+                  supabase.functions.invoke('send-email', {
+                    body: {
+                      to: investor.email,
+                      type: 'deal_alert',
+                      data: {
+                        investorName: investor.full_name || 'Investor',
+                        dealTitle: formData.title,
+                        dealSlug: deal.slug,
+                        propertyType: formData.propertyType,
+                        location: location,
+                        targetIrr: formData.targetIrr,
+                        minimumInvestment: `$${parseInt(formData.minimumInvestment).toLocaleString()}`,
+                        investmentTerm: formData.investmentTerm,
+                        syndicatorName: syndicator?.company_name || 'EquityMD Partner',
+                        matchReasons: ['New investment opportunity on EquityMD']
+                      }
+                    }
+                  }).catch(err => console.error(`Failed to send alert to ${investor.email}:`, err))
+                ));
+              }
+              console.log('Deal alert emails sent successfully');
+            }
+          } catch (alertError) {
+            console.error('Failed to send deal alert emails:', alertError);
+            // Don't block the flow
+          }
         } catch (emailError) {
           console.error('Failed to send admin notification:', emailError);
           // Don't block the flow if email fails

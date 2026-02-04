@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cookie, X, Settings, Check } from 'lucide-react';
+import { Cookie, X, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CONSENT_KEY = 'equitymd_cookie_consent';

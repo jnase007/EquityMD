@@ -317,6 +317,56 @@ export function MessageThread({
           msg.id === optimisticMessage.id ? data : msg
         )
       );
+
+      // Send email notification to recipient
+      try {
+        // Get recipient's profile for email and preferences
+        const { data: recipientProfile } = await supabase
+          .from('profiles')
+          .select('email, email_notifications, full_name')
+          .eq('id', recipientId)
+          .single();
+        
+        // Check if user has message notifications enabled (default to true)
+        const notifications = recipientProfile?.email_notifications;
+        const shouldSendEmail = !notifications || notifications.messages !== false;
+        
+        if (shouldSendEmail && recipientProfile?.email) {
+          // Get sender's profile info
+          const { data: senderProfile } = await supabase
+            .from('profiles')
+            .select('full_name, user_type')
+            .eq('id', user.id)
+            .single();
+          
+          // Send email notification via edge function
+          await supabase.functions.invoke('send-email', {
+            body: {
+              to: recipientProfile.email,
+              type: 'new_message',
+              data: {
+                senderName: senderProfile?.full_name || 'A User',
+                senderType: senderProfile?.user_type || 'user',
+                messagePreview: messageContent.substring(0, 200),
+                dealTitle: dealContext?.deal_title,
+                dealSlug: data?.deal?.slug,
+                timestamp: new Date().toLocaleString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })
+              }
+            }
+          });
+          console.log('Message notification email sent to:', recipientProfile.email);
+        }
+      } catch (emailError) {
+        // Don't block on email failure - log and continue
+        console.error('Failed to send message notification email:', emailError);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       alert('Error sending message. Please try again.');

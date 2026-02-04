@@ -231,57 +231,106 @@ export default function App() {
   }, [clearAuth, setProfile]);
 
   useEffect(() => {
+    let mounted = true;
+    
     const initAuth = async () => {  
       try {
-        const { error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError) {
-          authLogger.log('Refresh session error:', refreshError);
-        }
-    
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          authLogger.log('Session retrieval error:', error);
-        }
-        authLogger.log('Initial session check:', session?.user?.id);
-    
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        }
-        
-        // Set loading to false after initial auth check
-        setAuthLoading(false);
-        
+        // Set up auth state listener FIRST to catch any auth events from URL processing
         const {
           data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
+          if (!mounted) return;
+          
           authLogger.log('State changed:', event, session?.user?.id);
+          
           if (event === 'SIGNED_OUT') {
             clearAuth();
-          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            setAuthLoading(false);
+          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
             setUser(session?.user ?? null);
             if (session?.user) {
               await fetchProfile(session.user.id);
               // Sync guest favorites to database
               await syncGuestFavorites(session.user.id);
             }
+            setAuthLoading(false);
           }
         });
+
+        // Check for hash fragment with access_token (OAuth/magic link redirect)
+        const hasAuthHash = window.location.hash.includes('access_token');
+        
+        if (hasAuthHash) {
+          // Let the SDK process the hash - onAuthStateChange will handle it
+          authLogger.log('Auth hash detected, waiting for SDK to process...');
+          // The onAuthStateChange will fire with SIGNED_IN when processing completes
+        } else {
+          // No hash, do a normal session check
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (error) {
+            authLogger.log('Session retrieval error:', error);
+          }
+          authLogger.log('Initial session check:', session?.user?.id);
+      
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            await fetchProfile(session.user.id);
+          }
+          
+          setAuthLoading(false);
+        }
     
         await fetchSiteSettings();
         
-        return () => subscription.unsubscribe();
+        return () => {
+          mounted = false;
+          subscription.unsubscribe();
+        };
       } catch (error) {
         console.error('Auth initialization error:', error);
         // Set loading to false even on error to prevent infinite loading
-        setAuthLoading(false);
+        if (mounted) setAuthLoading(false);
       }
     };
   
     initAuth();
   }, [clearAuth, setUser, fetchProfile]);
 
-  // NOTE: Session recovery and heartbeat logic moved to AuthContext for centralized handling
+  // Session recovery on tab resume (handles iOS suspension and network reconnection)
+  useEffect(() => {
+    const handleResume = async () => {
+      if (document.visibilityState !== 'visible') return;
+      
+      // Only attempt recovery if we had a user before
+      const currentUser = useAuthStore.getState().user;
+      if (!currentUser) return;
+      
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          authLogger.log('Session lost on resume — attempting refresh');
+          const { error } = await supabase.auth.refreshSession();
+          if (error) {
+            authLogger.log('Session refresh failed:', error.message);
+            // Only clear auth if refresh definitively failed
+            if (error.message.includes('refresh_token') || error.message.includes('expired')) {
+              clearAuth();
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Resume recovery error:', err);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleResume);
+    window.addEventListener('focus', handleResume);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleResume);
+      window.removeEventListener('focus', handleResume);
+    };
+  }, [clearAuth]);
 
   // Sync guest favorites from localStorage to database when user logs in
   async function syncGuestFavorites(userId: string) {

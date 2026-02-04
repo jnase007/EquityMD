@@ -72,14 +72,26 @@ const getPropertyImage = (propertyType: string, index: number) => {
   return propertyTypeImages[propertyType] || fallbackImages[index % fallbackImages.length];
 };
 
+// Hero banner images - randomly selected on each page load
+const heroImages = [
+  'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
+  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg',
+  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276527.jpg',
+  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2370692195.jpg',
+  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2527861391%20(1).jpg',
+  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2674157071%20(1).jpg',
+];
+
 export function Home() {
   const { user } = useAuthStore();
   const [featuredDeals, setFeaturedDeals] = useState<Deal[]>([]);
   const [totalDealVolume, setTotalDealVolume] = useState<string>('$450M+');
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [useVideo, setUseVideo] = useState(true);
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
   const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
+  
+  // Select a random hero image on mount
+  const [heroImage] = useState(() => heroImages[Math.floor(Math.random() * heroImages.length)]);
   
   useScrollFix();
   
@@ -253,32 +265,11 @@ export function Home() {
       {/* Hero Section */}
       <div className="relative min-h-[500px] sm:min-h-[580px]">
         <div className="absolute inset-0">
-          {useVideo ? (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-              onError={() => setUseVideo(false)}
-            >
-              <source
-                src="https://player.vimeo.com/external/451523650.hd.mp4?s=b7fb7f549263e0f9d5c8674ec12be96b2785fc7d&profile_id=174"
-                type="video/mp4"
-              />
-              <img 
-                src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
-                alt="Modern Apartment Building"
-                className="w-full h-full object-cover"
-              />
-            </video>
-          ) : (
-            <img 
-              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80"
-              alt="Modern Apartment Building"
-              className="w-full h-full object-cover"
-            />
-          )}
+          <img 
+            src={heroImage}
+            alt="Modern Apartment Building"
+            className="w-full h-full object-cover"
+          />
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/60 to-slate-900/80" />
           {/* Pattern Overlay */}

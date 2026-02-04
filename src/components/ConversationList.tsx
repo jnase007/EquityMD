@@ -48,7 +48,6 @@ export function ConversationList({
   onArchiveConversation 
 }: ConversationListProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [showActionsId, setShowActionsId] = useState<string | null>(null);
 
   // Sort: pinned first, then by date
   const sortedConversations = [...conversations].sort((a, b) => {

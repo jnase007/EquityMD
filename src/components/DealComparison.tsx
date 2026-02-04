@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Scale, X, Plus, Building2, MapPin, TrendingUp, 
-  DollarSign, Clock, Users, CheckCircle, AlertCircle,
-  ChevronDown
+  Scale, X, Plus, Building2, CheckCircle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { useAuthStore } from '../lib/store';
 
 interface Deal {
   id: string;
@@ -46,7 +43,6 @@ const COMPARISON_METRICS = [
 ];
 
 export function DealComparison({ isOpen, onClose, initialDeals = [] }: DealComparisonProps) {
-  const { user } = useAuthStore();
   const [selectedDeals, setSelectedDeals] = useState<Deal[]>([]);
   const [availableDeals, setAvailableDeals] = useState<Deal[]>([]);
   const [showDealSelector, setShowDealSelector] = useState(false);
