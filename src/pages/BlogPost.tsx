@@ -24,6 +24,7 @@ interface BlogPostData {
   content: string;
   author: string;
   published_at: string;
+  updated_at?: string;
   category: string;
   image_url: string;
   meta_description: string;
@@ -925,11 +926,11 @@ export function BlogPost() {
         keywords={post.meta_keywords?.join(', ') || 'multifamily investing, real estate syndication'}
         canonical={`https://equitymd.com/blog/${slug}`}
         type="article"
-        articlePublishedTime={post.date}
-        articleModifiedTime={post.updated_at || post.date}
+        articlePublishedTime={post.published_at}
+        articleModifiedTime={post.updated_at || post.published_at}
         articleAuthor={post.author}
         articleSection={post.category}
-        image={post.image}
+        image={post.image_url}
         breadcrumbs={[
           { name: 'Home', url: 'https://equitymd.com' },
           { name: 'Blog', url: 'https://equitymd.com/blog' },

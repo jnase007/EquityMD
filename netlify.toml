@@ -6,6 +6,19 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Edge Functions for social media OG tags
+[[edge_functions]]
+  function = "og-tags"
+  path = "/blog/*"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/deals/*"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/syndicators/*"
+
 # SEO: Redirect www to non-www (canonical domain)
 [[redirects]]
   from = "https://www.equitymd.com/*"

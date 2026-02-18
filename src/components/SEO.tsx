@@ -29,7 +29,7 @@ interface SEOProps {
 export function SEO({ 
   title = 'EquityMD | Real Estate Syndication Platform for Accredited Investors',
   description = 'Connect with verified syndicators and access institutional-quality real estate investments. Browse multifamily, commercial, and industrial deals. Free for investors.',
-  image = 'https://equitymd.com/og-image.png',
+  image = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630',
   url = typeof window !== 'undefined' ? window.location.href : 'https://equitymd.com',
   type = 'website',
   noindex = false,
@@ -59,7 +59,7 @@ export function SEO({
       "width": 512,
       "height": 512
     },
-    "image": "https://equitymd.com/og-image.png",
+    "image": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630",
     "description": "EquityMD is a premier real estate syndication marketplace connecting accredited investors with verified syndicators. Browse multifamily, commercial, and industrial investment opportunities.",
     "foundingDate": "2024",
     "founders": [
@@ -168,8 +168,11 @@ export function SEO({
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={image} />
+        <meta property="og:image:secure_url" content={image} />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={title} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
         <meta property="og:site_name" content={siteName} />
@@ -188,6 +191,11 @@ export function SEO({
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
+        <meta name="twitter:image:alt" content={title} />
+
+        {/* LinkedIn-specific Meta Tags */}
+        <meta property="og:image:url" content={image} />
+        <meta name="linkedin:owner" content="equitymd" />
 
         {/* Additional SEO Meta Tags */}
         <meta name="application-name" content={siteName} />
