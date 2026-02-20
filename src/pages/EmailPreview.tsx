@@ -1095,7 +1095,7 @@ export function EmailPreview() {
                       <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
                     </div>
                     
-                    <p><strong>Congratulations {{firstName}}!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
+                    <p><strong>Congratulations *|FNAME|*!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
                     
                     <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
                     
@@ -1105,10 +1105,6 @@ export function EmailPreview() {
                          <div class="stat-item">
                            <span class="stat-number">3+</span>
                            <span class="stat-label">Syndicators</span>
-                         </div>
-                         <div class="stat-item">
-                           <span class="stat-number">7,400+</span>
-                           <span class="stat-label">Investors</span>
                          </div>
                          <div class="stat-item">
                            <span class="stat-number">18.5%</span>
@@ -1137,41 +1133,9 @@ export function EmailPreview() {
                     </div>
                     
                     <h3 style="color: #1f2937; margin: 32px 0 16px 0;">Featured Investment Opportunities</h3>
-                    <p>Take a look at some of the premium deals currently available on our platform:</p>
+                    <p>Take a look at some of the premium deals currently available on our platform. <strong>Sign up or log in with Google or LinkedIn</strong> to view full details, documents, and contact syndicators.</p>
                     
                                          <div class="deal-grid">
-                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//Backbay_Newport.jpg" alt="Newport Beach Residential Offering" style="width: 100%; height: 100%; object-fit: cover;">
-                         </div>
-                         <div class="deal-content" style="padding: 20px;">
-                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Newport Beach Residential Offering</div>
-                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
-                               <span style="margin-right: 4px;">👑</span> Premier Partner
-                             </div>
-                           </div>
-                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Newport Beach, CA</div>
-                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
-                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">20% IRR</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$250,000</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">2 years</div>
-                               </div>
-                             </div>
-                           </div>
-                           <a href="https://equitymd.com/deals/back-bay-newport" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
-                         </div>
-                       </div>
-                       
                        <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                          <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
                            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
@@ -1200,7 +1164,7 @@ export function EmailPreview() {
                                </div>
                              </div>
                            </div>
-                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
+                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
                          </div>
                        </div>
                        
@@ -1232,7 +1196,7 @@ export function EmailPreview() {
                                </div>
                              </div>
                            </div>
-                           <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">View Details ></a>
+                           <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
                          </div>
                        </div>
                      </div>
@@ -1250,9 +1214,9 @@ export function EmailPreview() {
                     
                     <div class="urgent-cta">
                       <h3>⏰ Limited Time Opportunity</h3>
-                      <p>New deals are hitting the market every month. Complete your profile now to ensure you don't miss out on these exclusive investment opportunities.</p>
+                      <p>New deals are hitting the market every month. Sign up free with Google or LinkedIn to get access to full deal details and connect with syndicators.</p>
                       <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;">
-                        Complete Your Profile Now
+                        Sign Up Free with Google or LinkedIn
                       </a>
                     </div>
                     
@@ -1264,15 +1228,15 @@ export function EmailPreview() {
 
                   <div style="text-align: center; margin-top: 32px;">
                     <a href="https://equitymd.com" class="button">
-                      🚀 Get Started Now
+                      Sign Up Free with Google or LinkedIn
                     </a>
                   </div>
                 </div>
 
                 <div class="footer">
-                  <p>You received this email because you've been selected as a qualified investor candidate.</p>
+                  <p>You received this email because you've been selected as a qualified investor candidate. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
                   <p>Questions? Contact us at hello@equitymd.com</p>
-                  <p>© 2025 EquityMD. All rights reserved.</p>
+                  <p>© 2026 EquityMD. All rights reserved.</p>
                 </div>
               </div>
             </body>
@@ -1654,7 +1618,7 @@ Msg & data rates may apply.`;
     { id: 'welcome_investor', label: 'Welcome Investor', icon: '👋' },
     { id: 'welcome_syndicator', label: 'Welcome Syndicator', icon: '🤝' },
     { id: 'investment_opportunity', label: 'New Investment Alert', icon: '🏢' },
-    { id: 'investor_launch', label: '7,400+ Investor Launch', icon: '🚀' },
+    { id: 'investor_launch', label: 'Investor Launch', icon: '🚀' },
     { id: 'deal_alert', label: 'Deal Alert (NEW)', icon: '🎯' },
     { id: 'weekly_digest', label: 'Weekly Digest (NEW)', icon: '📊' },
     { id: 'profile_incomplete', label: 'Profile Incomplete (NEW)', icon: '📝' },
