@@ -72,15 +72,8 @@ const getPropertyImage = (propertyType: string, index: number) => {
   return propertyTypeImages[propertyType] || fallbackImages[index % fallbackImages.length];
 };
 
-// Hero banner images - randomly selected on each page load
-const heroImages = [
-  'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80',
-  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg',
-  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276527.jpg',
-  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2370692195.jpg',
-  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2527861391%20(1).jpg',
-  'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2674157071%20(1).jpg',
-];
+// Hero banner image
+const heroImageUrl = 'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg';
 
 export function Home() {
   const { user } = useAuthStore();
@@ -90,8 +83,7 @@ export function Home() {
   const [authModalType, setAuthModalType] = useState<'investor' | 'syndicator'>('investor');
   const [authModalView, setAuthModalView] = useState<'sign_in' | 'sign_up'>('sign_up');
   
-  // Select a random hero image on mount
-  const [heroImage] = useState(() => heroImages[Math.floor(Math.random() * heroImages.length)]);
+  const heroImage = heroImageUrl;
   
   useScrollFix();
   
