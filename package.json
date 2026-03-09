@@ -12,6 +12,7 @@
     "update-market-data": "tsx scripts/update-market-data.ts",
     "schedule-market-updates": "tsx scripts/update-market-data.ts --schedule",
     "generate-blog": "tsx scripts/generate-blog.ts",
+    "generate-sitemap": "tsx scripts/generate-sitemap.ts",
     "generate-blog:publish": "tsx scripts/generate-blog.ts --publish",
     "generate-blogs:batch": "tsx scripts/generate-blog.ts --publish --count"
   },

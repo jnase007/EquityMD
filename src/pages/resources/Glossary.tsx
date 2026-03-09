@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
-import { Search, Book, Sparkles, Filter, ArrowRight, BookOpen } from 'lucide-react';
+import { SEO } from '../../components/SEO';
+import { Helmet } from 'react-helmet-async';
+import { Search, Book, Filter, BookOpen } from 'lucide-react';
 
 interface GlossaryTerm {
   term: string;
@@ -139,8 +141,30 @@ export function Glossary() {
     return colors[category] || 'bg-gray-100 text-gray-700';
   };
 
+  const definedTermSetSchema = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "name": "Real Estate Syndication Glossary",
+    "description": "Complete guide to real estate syndication terminology for accredited investors",
+    "definedTerm": glossaryTerms.map(t => ({
+      "@type": "DefinedTerm",
+      "name": t.term,
+      "description": t.definition
+    }))
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      <SEO
+        title="Real Estate Syndication Glossary — 30+ Terms Defined | EquityMD"
+        description="Comprehensive glossary of real estate syndication terms. Learn about preferred return, IRR, PPM, 506(b), and more."
+        canonical="https://equitymd.com/resources/glossary"
+      />
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(definedTermSetSchema)}
+        </script>
+      </Helmet>
       <Navbar />
 
       {/* Hero Header */}

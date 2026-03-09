@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Building2, Star, MapPin, Search, Filter, TrendingUp, Globe, LayoutGrid, List, ChevronRight, Users, Award, Sparkles, ArrowRight, Briefcase } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { SEO } from '../components/SEO';
+import { SEO, ItemListSchema } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { AuthModal } from '../components/AuthModal';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
@@ -249,13 +249,23 @@ export function Directory() {
     );
   }
 
+  const itemListItems = filteredSyndicators.slice(0, 50).map(s => ({
+    name: s.company_name,
+    url: `https://equitymd.com/syndicators/${s.slug || s.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+  }));
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
       <SEO
-        title="Find Real Estate Syndicators - Verified Sponsor Directory | EquityMD"
-        description="Browse 75+ verified real estate syndicators. View track records, AUM, years in business & active deals. Find multifamily, industrial & commercial sponsors."
+        title="400+ Real Estate Syndicators — Compare Reviews & Ratings | EquityMD"
+        description="Browse 400+ verified real estate syndicators. Compare track records, reviews, minimum investments, and specialties. Free for investors."
         keywords="real estate syndicators, syndication sponsors, verified syndicators, multifamily sponsors, commercial real estate syndicators, syndication directory"
         canonical="https://equitymd.com/directory"
+      />
+      <ItemListSchema
+        name="Top Real Estate Syndicators"
+        numberOfItems={filteredSyndicators.length}
+        items={itemListItems}
       />
       <Navbar />
 
@@ -724,6 +734,29 @@ export function Directory() {
             </button>
           </div>
         )}
+
+        {/* Popular Comparisons */}
+        <div className="mt-16">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Popular Comparisons</h2>
+          <div className="flex flex-wrap gap-3">
+            {[
+              { s1: 'ashcroft-capital', s2: 'bam-capital', label: 'Ashcroft Capital vs BAM Capital' },
+              { s1: 'cardone-capital', s2: 'dlp-capital', label: 'Cardone Capital vs DLP Capital' },
+              { s1: 'sutera-properties', s2: 'back-bay-capital', label: 'Sutera Properties vs Back Bay Capital' },
+              { s1: '37th-parallel-properties', s2: 'summit-capital-partners', label: '37th Parallel vs Summit Capital' },
+              { s1: 'horizon-investment-group', s2: 'crow-holdings', label: 'Horizon vs Crow Holdings' },
+            ].map(({ s1, s2, label }) => (
+              <Link
+                key={`${s1}-${s2}`}
+                to={`/compare/${s1}/${s2}`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl hover:border-emerald-300 hover:bg-emerald-50/50 transition text-gray-700 text-sm font-medium"
+              >
+                {label}
+                <ChevronRight className="h-4 w-4 text-gray-400" />
+              </Link>
+            ))}
+          </div>
+        </div>
 
         {/* CTA for Syndicators */}
         <div className="mt-16 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-8 lg:p-12 relative overflow-hidden">

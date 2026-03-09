@@ -18,6 +18,8 @@ const NewDeal = lazy(() => import('./pages/NewDeal').then(module => ({ default: 
 const EditDeal = lazy(() => import('./pages/EditDeal').then(module => ({ default: module.EditDeal })));
 const SyndicatorProfile = lazy(() => import('./pages/SyndicatorProfile').then(module => ({ default: module.SyndicatorProfile })));
 const Directory = lazy(() => import('./pages/Directory').then(module => ({ default: module.Directory })));
+const Compare = lazy(() => import('./pages/Compare').then(module => ({ default: module.Compare })));
+const Rankings = lazy(() => import('./pages/Rankings').then(module => ({ default: module.Rankings })));
 const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
 const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
 const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
@@ -390,7 +392,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review', '/gtm'];
+  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review', '/gtm', '/rankings', '/compare'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -449,6 +451,9 @@ export default function App() {
         {/* Redirect old /browse URL to /find */}
         <Route path="/browse" element={<Navigate to="/find" replace />} />
         <Route path="/directory" element={<Directory />} />
+        <Route path="/compare/:slug1/:slug2" element={<Compare />} />
+        <Route path="/rankings" element={<Rankings />} />
+        <Route path="/rankings/:category" element={<Rankings />} />
         
         {/* Protected Routes */}
         <Route 

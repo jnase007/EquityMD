@@ -87,6 +87,7 @@ export function SyndicatorProfile() {
     averageReturn: 0,
     totalInvestors: 0,
   });
+  const [similarSyndicators, setSimilarSyndicators] = useState<any[]>([]);
 
   useEffect(() => {
     if (slug) {
@@ -208,6 +209,18 @@ export function SyndicatorProfile() {
         averageReturn: syndicatorData.average_return,
         totalInvestors: syndicatorData.total_investors,
       });
+
+      // Fetch similar syndicators (same state or any verified)
+      let similarQuery = supabase
+        .from("syndicators")
+        .select("id, company_name, company_logo_url, slug, state, average_rating, active_deals")
+        .in("verification_status", ["verified", "premier"])
+        .neq("id", syndicatorData.id);
+      if (syndicatorData.state) {
+        similarQuery = similarQuery.eq("state", syndicatorData.state);
+      }
+      const { data: similarData } = await similarQuery.order("average_rating", { ascending: false }).limit(6);
+      setSimilarSyndicators(similarData || []);
     } catch (error) {
       console.error("Error fetching syndicator data:", error);
     } finally {
@@ -276,8 +289,8 @@ export function SyndicatorProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-x-hidden">
       <SEO
-        title={`${syndicator.company_name} | Real Estate Syndicator | EquityMD`}
-        description={syndicator.bio || `${syndicator.company_name} is a verified real estate syndicator on EquityMD. View their track record, investment philosophy, and available deals.`}
+        title={`${syndicator.company_name} Reviews & Ratings 2026 | EquityMD`}
+        description={`Read investor reviews of ${syndicator.company_name}. ${syndicator.years_in_business || 'Several'} years in business, $${(syndicator.total_deal_volume || 0) >= 1e6 ? `${((syndicator.total_deal_volume || 0) / 1e6).toFixed(0)}M` : (syndicator.total_deal_volume || 0).toLocaleString()} in deals. Compare ratings, track record, and minimum investment on EquityMD.`}
         canonical={`https://equitymd.com/syndicators/${slug}`}
         image={syndicator.company_logo_url || undefined}
         breadcrumbs={[
@@ -292,11 +305,23 @@ export function SyndicatorProfile() {
         image={syndicator.company_logo_url || 'https://equitymd.com/og-image.png'}
         url={`https://equitymd.com/syndicators/${slug}`}
         location={syndicator.location}
+        city={syndicator.city}
+        state={syndicator.state}
         yearsInBusiness={syndicator.years_in_business}
         totalDeals={syndicator.total_deals}
-        aum={syndicator.aum}
-        rating={4.7}
-        reviewCount={syndicator.total_deals ? syndicator.total_deals * 3 : 15}
+        aum={syndicator.total_deal_volume}
+        rating={averageRating || 4.7}
+        reviewCount={reviews.length || syndicator.total_reviews || 15}
+        bbbRating={syndicator.bbb_rating}
+        bbbAccredited={syndicator.bbb_accredited}
+        trustpilotRating={syndicator.trustpilot_rating}
+        trustpilotReviewCount={syndicator.trustpilot_review_count}
+        googleRating={syndicator.google_rating}
+        googleReviewCount={syndicator.google_review_count}
+        specialties={syndicator.specialties}
+        website={syndicator.website_url}
+        foundingYear={syndicator.years_in_business ? new Date().getFullYear() - syndicator.years_in_business : undefined}
+        targetMarkets={syndicator.target_markets}
       />
       <Navbar />
 
@@ -829,6 +854,60 @@ export function SyndicatorProfile() {
           </div>
 
           <div className="space-y-6">
+            {(syndicator.bbb_rating || syndicator.trustpilot_rating || syndicator.google_rating) && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <BarChart className="h-5 w-5 text-blue-600" />
+                  External Ratings
+                </h2>
+                <div className="space-y-3">
+                  {syndicator.bbb_rating && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">BBB</span>
+                      <span className={`font-semibold px-2 py-0.5 rounded ${
+                        syndicator.bbb_rating?.startsWith('A') ? 'bg-green-100 text-green-800' :
+                        syndicator.bbb_rating?.startsWith('B') ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {syndicator.bbb_rating}
+                        {syndicator.bbb_accredited && (
+                          <span className="ml-1 text-xs">Accredited ✓</span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {syndicator.trustpilot_rating != null && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Trustpilot</span>
+                      <span className="flex items-center gap-1 font-medium" style={{ color: '#00B67A' }}>
+                        <Star className="h-4 w-4" fill="currentColor" />
+                        {Number(syndicator.trustpilot_rating).toFixed(1)}
+                        {syndicator.trustpilot_review_count != null && (
+                          <span className="text-gray-500 text-sm">
+                            ({syndicator.trustpilot_review_count.toLocaleString()})
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {syndicator.google_rating != null && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Google</span>
+                      <span className="flex items-center gap-1 font-medium text-blue-600">
+                        <Star className="h-4 w-4" fill="currentColor" />
+                        {Number(syndicator.google_rating).toFixed(1)}
+                        {syndicator.google_review_count != null && (
+                          <span className="text-gray-500 text-sm">
+                            ({syndicator.google_review_count.toLocaleString()})
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-400 mt-4">Ratings sourced from public data</p>
+              </div>
+            )}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-xl font-bold mb-6">Track Record</h2>
               <div className="space-y-4">
@@ -890,6 +969,48 @@ export function SyndicatorProfile() {
           </div>
         </div>
       </div>
+
+      {similarSyndicators.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 py-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Syndicators</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {similarSyndicators.slice(0, 4).map((s) => (
+              <Link
+                key={s.id}
+                to={`/syndicators/${s.slug || s.company_name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition flex items-center gap-4"
+              >
+                {getSyndicatorLogo(s.company_name, s.company_logo_url) ? (
+                  <img
+                    src={getSyndicatorLogo(s.company_name, s.company_logo_url)!}
+                    alt={s.company_name}
+                    className="w-12 h-12 object-contain rounded-lg"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-xs">
+                      {s.company_name?.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-gray-900 truncate">{s.company_name}</div>
+                  <div className="text-sm text-gray-500 flex items-center gap-1">
+                    {s.average_rating > 0 && (
+                      <span className="flex items-center">
+                        <Star className="h-3 w-3 text-amber-400" fill="currentColor" />
+                        {s.average_rating?.toFixed(1)}
+                      </span>
+                    )}
+                    {s.state && <span>• {s.state}</span>}
+                  </div>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400 flex-shrink-0" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {showMessageModal && syndicator?.claimed_by && (
         <MessageModal

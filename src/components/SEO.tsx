@@ -366,7 +366,7 @@ export function DealSchema({
 }
 
 /**
- * Local Business Schema for syndicator profiles
+ * Enhanced Local Business / FinancialService Schema for syndicator profiles
  */
 interface SyndicatorSchemaProps {
   name: string;
@@ -374,11 +374,23 @@ interface SyndicatorSchemaProps {
   image: string;
   url: string;
   location?: string;
+  city?: string;
+  state?: string;
   yearsInBusiness?: number;
   totalDeals?: number;
   aum?: number;
   rating?: number;
   reviewCount?: number;
+  bbbRating?: string;
+  bbbAccredited?: boolean;
+  trustpilotRating?: number;
+  trustpilotReviewCount?: number;
+  googleRating?: number;
+  googleReviewCount?: number;
+  specialties?: string[];
+  website?: string;
+  foundingYear?: number;
+  targetMarkets?: string[];
 }
 
 export function SyndicatorSchema({
@@ -387,23 +399,46 @@ export function SyndicatorSchema({
   image,
   url,
   location,
+  city,
+  state,
   yearsInBusiness,
   totalDeals,
   aum,
   rating = 4.5,
-  reviewCount = 10
+  reviewCount = 10,
+  bbbRating,
+  bbbAccredited,
+  trustpilotRating,
+  trustpilotReviewCount,
+  googleRating,
+  googleReviewCount,
+  specialties,
+  website,
+  foundingYear,
+  targetMarkets,
 }: SyndicatorSchemaProps) {
+  const additionalProps: Record<string, unknown>[] = [
+    yearsInBusiness != null && { "@type": "PropertyValue", name: "Years in Business", value: yearsInBusiness },
+    totalDeals != null && { "@type": "PropertyValue", name: "Total Deals", value: totalDeals },
+    aum != null && { "@type": "PropertyValue", name: "Assets Under Management", value: `$${(aum / 1000000).toFixed(0)}M` },
+    bbbRating && { "@type": "PropertyValue", name: "BBB Rating", value: bbbRating },
+    trustpilotRating != null && { "@type": "PropertyValue", name: "Trustpilot Rating", value: trustpilotRating.toString() },
+    googleRating != null && { "@type": "PropertyValue", name: "Google Rating", value: googleRating.toString() },
+  ].filter(Boolean) as Record<string, unknown>[];
+
   const schema = {
     "@context": "https://schema.org",
-    "@type": "FinancialService",
+    "@type": ["FinancialService", "LocalBusiness"],
     "name": name,
     "description": description,
     "image": image,
     "url": url,
     "@id": url,
-    "address": location ? {
+    "address": (city || state || location) ? {
       "@type": "PostalAddress",
-      "addressLocality": location
+      ...(city && { addressLocality: city }),
+      ...(state && { addressRegion: state }),
+      ...(location && !city && !state && { addressLocality: location }),
     } : undefined,
     "aggregateRating": {
       "@type": "AggregateRating",
@@ -413,23 +448,46 @@ export function SyndicatorSchema({
       "worstRating": "1"
     },
     "priceRange": "$$$",
-    "additionalProperty": [
-      yearsInBusiness && {
-        "@type": "PropertyValue",
-        "name": "Years in Business",
-        "value": yearsInBusiness
-      },
-      totalDeals && {
-        "@type": "PropertyValue",
-        "name": "Total Deals",
-        "value": totalDeals
-      },
-      aum && {
-        "@type": "PropertyValue",
-        "name": "Assets Under Management",
-        "value": `$${(aum / 1000000).toFixed(0)}M`
+    "additionalProperty": additionalProps,
+    ...(website && { sameAs: [website] }),
+    ...(foundingYear && { foundingDate: foundingYear.toString() }),
+    ...(targetMarkets && targetMarkets.length > 0 && { areaServed: targetMarkets }),
+    ...(specialties && specialties.length > 0 && { knowsAbout: specialties }),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify(schema)}
+      </script>
+    </Helmet>
+  );
+}
+
+/**
+ * ItemList Schema for directory/listing pages
+ */
+interface ItemListSchemaProps {
+  name: string;
+  numberOfItems: number;
+  items: { name: string; url: string }[];
+}
+
+export function ItemListSchema({ name, numberOfItems, items }: ItemListSchemaProps) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": name,
+    "numberOfItems": numberOfItems,
+    "itemListElement": items.slice(0, 50).map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "FinancialService",
+        "name": item.name,
+        "url": item.url
       }
-    ].filter(Boolean)
+    }))
   };
 
   return (
