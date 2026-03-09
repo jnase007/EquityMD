@@ -29,7 +29,7 @@ interface SEOProps {
 export function SEO({ 
   title = 'EquityMD | Real Estate Syndication Platform for Accredited Investors',
   description = 'Connect with verified syndicators and access institutional-quality real estate investments. Browse multifamily, commercial, and industrial deals. Free for investors.',
-  image = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630',
+  image = 'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg',
   url = typeof window !== 'undefined' ? window.location.href : 'https://equitymd.com',
   type = 'website',
   noindex = false,
@@ -59,7 +59,7 @@ export function SEO({
       "width": 512,
       "height": 512
     },
-    "image": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630",
+    "image": "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg",
     "description": "EquityMD is a premier real estate syndication marketplace connecting accredited investors with verified syndicators. Browse multifamily, commercial, and industrial investment opportunities.",
     "foundingDate": "2024",
     "founders": [

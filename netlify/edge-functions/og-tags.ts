@@ -52,7 +52,7 @@ export default async function handler(request: Request, context: Context) {
           const post = posts[0];
           const title = `${post.title} | EquityMD Blog`;
           const description = post.meta_description || post.excerpt || "Read this article on EquityMD";
-          const image = post.image_url || "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630";
+          const image = post.image_url || "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
           const canonicalUrl = `https://equitymd.com/blog/${slug}`;
 
           const html = generateOgHtml({
@@ -100,7 +100,7 @@ export default async function handler(request: Request, context: Context) {
           const canonicalUrl = `https://equitymd.com/deals/${slug}`;
 
           // Try to get deal media
-          let image = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630";
+          let image = "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
           
           const mediaResponse = await fetch(
             `${SUPABASE_URL}/rest/v1/deal_media?deal_id=eq.${deal.id}&is_cover=eq.true&select=url`,
@@ -158,7 +158,7 @@ export default async function handler(request: Request, context: Context) {
           const syndicator = syndicators[0];
           const title = `${syndicator.company_name} | EquityMD`;
           const description = syndicator.tagline || syndicator.bio?.substring(0, 160) || `Real estate syndicator on EquityMD`;
-          const image = syndicator.logo_url || "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200&h=630";
+          const image = syndicator.logo_url || "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
           const canonicalUrl = `https://equitymd.com/syndicators/${slug}`;
 
           const html = generateOgHtml({
