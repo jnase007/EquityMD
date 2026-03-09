@@ -1,251 +1,22 @@
 import type { Context } from "https://edge.netlify.com";
 
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL") || "https://fzacguhxadpvjrmycwes.supabase.co";
-const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_ANON_KEY") || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6YWNndWh4YWRwdmpybXljd2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUzMzU4MzksImV4cCI6MjA1MDkxMTgzOX0.fWkFRqtASBU8iyA5N_5cSMIlak8uwDKCTbcmGRQqL0M";
+const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_ANON_KEY") || "";
+const SITE_URL = "https://equitymd.com";
+const DEFAULT_IMAGE = "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
 
 const USER_AGENTS = [
-  "linkedinbot",
-  "facebookexternalhit",
-  "twitterbot",
-  "slackbot",
-  "whatsapp",
-  "telegrambot",
-  "discordbot",
-  "pinterest",
-  "googlebot",
-  "bingbot",
+  "linkedinbot", "facebookexternalhit", "twitterbot", "slackbot",
+  "whatsapp", "telegrambot", "discordbot", "pinterest",
+  "googlebot", "bingbot",
 ];
 
 function isBot(userAgent: string): boolean {
-  const ua = userAgent.toLowerCase();
-  return USER_AGENTS.some((bot) => ua.includes(bot));
-}
-
-export default async function handler(request: Request, context: Context) {
-  const userAgent = request.headers.get("user-agent") || "";
-  
-  if (!isBot(userAgent)) {
-    return context.next();
-  }
-
-  const url = new URL(request.url);
-  const pathname = url.pathname;
-
-  // Handle blog posts
-  if (pathname.startsWith("/blog/") && pathname !== "/blog/") {
-    const slug = pathname.replace("/blog/", "").replace(/\/$/, "");
-    
-    try {
-      const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/blog_posts?slug=eq.${encodeURIComponent(slug)}&select=title,excerpt,image_url,published_at,author,category,meta_description`,
-        {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const posts = await response.json();
-        if (posts && posts.length > 0) {
-          const post = posts[0];
-          const title = `${post.title} | EquityMD Blog`;
-          const description = post.meta_description || post.excerpt || "Read this article on EquityMD";
-          const image = post.image_url || "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
-          const canonicalUrl = `https://equitymd.com/blog/${slug}`;
-
-          const html = generateOgHtml({
-            title,
-            description,
-            image,
-            url: canonicalUrl,
-            type: "article",
-            publishedTime: post.published_at,
-            author: post.author,
-            section: post.category,
-          });
-
-          return new Response(html, {
-            headers: { "content-type": "text/html; charset=utf-8" },
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching blog post:", error);
-    }
-  }
-
-  // Handle deal pages
-  if (pathname.startsWith("/deals/") && pathname !== "/deals/") {
-    const slug = pathname.replace("/deals/", "").replace(/\/$/, "");
-    
-    try {
-      const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/deals?slug=eq.${encodeURIComponent(slug)}&select=id,name,tagline,description,city,state,property_type`,
-        {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const deals = await response.json();
-        if (deals && deals.length > 0) {
-          const deal = deals[0];
-          const title = `${deal.name} | EquityMD`;
-          const description = deal.tagline || deal.description?.substring(0, 160) || `${deal.property_type} investment in ${deal.city}, ${deal.state}`;
-          const canonicalUrl = `https://equitymd.com/deals/${slug}`;
-
-          // Try to get deal media
-          let image = "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
-          
-          const mediaResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/deal_media?deal_id=eq.${deal.id}&is_cover=eq.true&select=url`,
-            {
-              headers: {
-                apikey: SUPABASE_ANON_KEY,
-                Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-              },
-            }
-          );
-          
-          if (mediaResponse.ok) {
-            const media = await mediaResponse.json();
-            if (media && media.length > 0 && media[0].url) {
-              image = media[0].url;
-            }
-          }
-
-          const html = generateOgHtml({
-            title,
-            description,
-            image,
-            url: canonicalUrl,
-            type: "website",
-          });
-
-          return new Response(html, {
-            headers: { "content-type": "text/html; charset=utf-8" },
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching deal:", error);
-    }
-  }
-
-  // Handle syndicator pages
-  if (pathname.startsWith("/syndicators/") && pathname !== "/syndicators/") {
-    const slug = pathname.replace("/syndicators/", "").replace(/\/$/, "");
-    
-    try {
-      const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/syndicators?slug=eq.${encodeURIComponent(slug)}&select=company_name,tagline,bio,logo_url,city,state`,
-        {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const syndicators = await response.json();
-        if (syndicators && syndicators.length > 0) {
-          const syndicator = syndicators[0];
-          const title = `${syndicator.company_name} | EquityMD`;
-          const description = syndicator.tagline || syndicator.bio?.substring(0, 160) || `Real estate syndicator on EquityMD`;
-          const image = syndicator.logo_url || "https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg";
-          const canonicalUrl = `https://equitymd.com/syndicators/${slug}`;
-
-          const html = generateOgHtml({
-            title,
-            description,
-            image,
-            url: canonicalUrl,
-            type: "profile",
-          });
-
-          return new Response(html, {
-            headers: { "content-type": "text/html; charset=utf-8" },
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching syndicator:", error);
-    }
-  }
-
-  return context.next();
-}
-
-interface OgParams {
-  title: string;
-  description: string;
-  image: string;
-  url: string;
-  type: string;
-  publishedTime?: string;
-  author?: string;
-  section?: string;
-}
-
-function generateOgHtml(params: OgParams): string {
-  const { title, description, image, url, type, publishedTime, author, section } = params;
-  
-  const articleTags = type === "article" ? `
-    ${publishedTime ? `<meta property="article:published_time" content="${publishedTime}" />` : ""}
-    ${author ? `<meta property="article:author" content="${author}" />` : ""}
-    ${section ? `<meta property="article:section" content="${section}" />` : ""}
-  ` : "";
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${escapeHtml(title)}</title>
-  <meta name="description" content="${escapeHtml(description)}" />
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="${escapeHtml(title)}" />
-  <meta property="og:description" content="${escapeHtml(description)}" />
-  <meta property="og:image" content="${escapeHtml(image)}" />
-  <meta property="og:image:secure_url" content="${escapeHtml(image)}" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${escapeHtml(title)}" />
-  <meta property="og:url" content="${escapeHtml(url)}" />
-  <meta property="og:type" content="${type === 'article' ? 'article' : 'website'}" />
-  <meta property="og:site_name" content="EquityMD" />
-  <meta property="og:locale" content="en_US" />
-  ${articleTags}
-  
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@equitymd" />
-  <meta name="twitter:title" content="${escapeHtml(title)}" />
-  <meta name="twitter:description" content="${escapeHtml(description)}" />
-  <meta name="twitter:image" content="${escapeHtml(image)}" />
-  <meta name="twitter:image:alt" content="${escapeHtml(title)}" />
-  
-  <link rel="canonical" href="${escapeHtml(url)}" />
-</head>
-<body>
-  <h1>${escapeHtml(title)}</h1>
-  <p>${escapeHtml(description)}</p>
-  <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" />
-  <p>View full content at <a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>
-</body>
-</html>`;
+  return USER_AGENTS.some((bot) => userAgent.toLowerCase().includes(bot));
 }
 
 function escapeHtml(str: string): string {
-  return str
+  return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -253,6 +24,351 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
-export const config = {
-  path: ["/blog/*", "/deals/*", "/syndicators/*"],
+async function fetchSupabase(query: string) {
+  const url = `${SUPABASE_URL}/rest/v1${query}`;
+  const res = await fetch(url, {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+  });
+  return res.ok ? res.json() : null;
+}
+
+interface PageMeta {
+  title: string;
+  description: string;
+  canonical: string;
+  image?: string;
+  bodyContent: string;
+  jsonLd?: object | object[];
+}
+
+function generateFullHtml(meta: PageMeta): string {
+  const jsonLdScript = meta.jsonLd
+    ? Array.isArray(meta.jsonLd)
+      ? meta.jsonLd.map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join("\n  ")
+      : `<script type="application/ld+json">${JSON.stringify(meta.jsonLd)}</script>`
+    : "";
+  const image = meta.image || DEFAULT_IMAGE;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escapeHtml(meta.title)}</title>
+  <meta name="description" content="${escapeHtml(meta.description)}">
+  <link rel="canonical" href="${escapeHtml(meta.canonical)}">
+  <meta property="og:title" content="${escapeHtml(meta.title)}">
+  <meta property="og:description" content="${escapeHtml(meta.description)}">
+  <meta property="og:image" content="${escapeHtml(image)}">
+  <meta property="og:image:secure_url" content="${escapeHtml(image)}">
+  <meta property="og:url" content="${escapeHtml(meta.canonical)}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="EquityMD">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeHtml(meta.title)}">
+  <meta name="twitter:description" content="${escapeHtml(meta.description)}">
+  <meta name="twitter:image" content="${escapeHtml(image)}">
+  ${jsonLdScript ? `  ${jsonLdScript}` : ""}
+</head>
+<body>
+  <main>
+    ${meta.bodyContent}
+  </main>
+  <noscript>
+    <p>Please enable JavaScript to view the full experience at <a href="${escapeHtml(meta.canonical)}">${escapeHtml(meta.canonical)}</a></p>
+  </noscript>
+</body>
+</html>`;
+}
+
+const STATIC_PAGES: Record<string, PageMeta> = {
+  "/": {
+    title: "EquityMD — Real Estate Syndication Platform for Accredited Investors",
+    description: "EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse verified syndicators, discover curated deals, and build passive income through commercial real estate.",
+    canonical: SITE_URL,
+    bodyContent: `
+<h1>EquityMD — Connect with Verified Real Estate Syndicators</h1>
+<p>EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse verified syndicators, discover curated deals, and build passive income through commercial real estate.</p>
+<h2>Why EquityMD?</h2>
+<ul>
+<li>Verified syndicator directory with track records</li>
+<li>Curated multifamily and commercial real estate deals</li>
+<li>Due diligence tools and market reports</li>
+<li>Free for investors — browse deals and connect directly</li>
+</ul>
+<p><a href="${SITE_URL}">View full site</a></p>`,
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "EquityMD",
+        "url": SITE_URL,
+        "description": "EquityMD connects accredited investors with institutional-quality real estate investment opportunities through verified syndicators.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": `${SITE_URL}/find?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "EquityMD",
+        "url": SITE_URL,
+        "logo": `${SITE_URL}/favicon.svg`,
+      },
+    ],
+  },
+  "/find": {
+    title: "Browse Real Estate Deals | Multifamily & CRE Investments | EquityMD",
+    description: "Browse curated real estate syndication deals. Multifamily, commercial, industrial — find passive income opportunities from verified syndicators.",
+    canonical: `${SITE_URL}/find`,
+    bodyContent: `
+<h1>Browse Real Estate Deals</h1>
+<p>Discover multifamily and commercial real estate syndication opportunities from verified syndicators. Filter by property type, location, and investment terms.</p>
+<p><a href="${SITE_URL}/find">Browse deals</a></p>`,
+  },
+  "/directory": {
+    title: "Real Estate Syndicator Directory | Verified CRE Sponsors | EquityMD",
+    description: "Browse 400+ verified real estate syndicators. Compare track records, reviews, minimum investments, and specialties. Free for investors.",
+    canonical: `${SITE_URL}/directory`,
+    bodyContent: ``,
+    jsonLd: { "@context": "https://schema.org", "@type": "CollectionPage", "name": "Real Estate Syndicator Directory", "url": `${SITE_URL}/directory` },
+  },
+  "/how-it-works": {
+    title: "How Real Estate Syndication Works | EquityMD",
+    description: "Learn how real estate syndication works. From discovery to investment — understand the process and start building passive income.",
+    canonical: `${SITE_URL}/how-it-works`,
+    bodyContent: `
+<h1>How Real Estate Syndication Works</h1>
+<p>Real estate syndication pools capital from multiple investors to purchase properties. Syndicators find and manage deals; investors receive passive returns.</p>
+<p><a href="${SITE_URL}/how-it-works">Learn more</a></p>`,
+  },
+  "/about": {
+    title: "About EquityMD | Connecting Investors with Syndicators",
+    description: "EquityMD is the premier marketplace connecting accredited investors with verified real estate syndicators. Learn about our mission and team.",
+    canonical: `${SITE_URL}/about`,
+    bodyContent: `
+<h1>About EquityMD</h1>
+<p>EquityMD connects accredited investors with verified real estate syndicators. We provide a transparent marketplace for commercial real estate investments.</p>
+<p><a href="${SITE_URL}/about">About us</a></p>`,
+  },
+  "/contact": {
+    title: "Contact EquityMD | Get in Touch",
+    description: "Contact EquityMD for investor or syndicator support. We typically respond within 24-48 hours.",
+    canonical: `${SITE_URL}/contact`,
+    bodyContent: `
+<h1>Contact EquityMD</h1>
+<p>Get in touch with our team. We respond to all inquiries within 24-48 business hours.</p>
+<p><a href="${SITE_URL}/contact">Contact us</a></p>`,
+  },
+  "/pricing": {
+    title: "Syndicator Pricing & Plans | EquityMD",
+    description: "Pricing plans for syndicators to list deals on EquityMD. Reach thousands of accredited investors.",
+    canonical: `${SITE_URL}/pricing`,
+    bodyContent: `
+<h1>Syndicator Pricing & Plans</h1>
+<p>List your deals on EquityMD and reach accredited investors. Flexible plans for syndicators.</p>
+<p><a href="${SITE_URL}/pricing">View pricing</a></p>`,
+  },
 };
+
+export default async function handler(request: Request, context: Context) {
+  const userAgent = request.headers.get("user-agent") || "";
+  if (!isBot(userAgent)) return context.next();
+
+  const url = new URL(request.url);
+  const pathname = url.pathname.replace(/\/$/, "") || "/";
+
+  // Static page
+  const staticMeta = STATIC_PAGES[pathname];
+  if (staticMeta) {
+    let meta = { ...staticMeta };
+    if (pathname === "/directory" && SUPABASE_ANON_KEY) {
+      const syndicators = await fetchSupabase("/syndicators?select=company_name,city,state,active_deals&verification_status=in.(verified,premier)&limit=30") as any[] | null;
+      if (syndicators && syndicators.length > 0) {
+        const list = syndicators.slice(0, 30).map((s) =>
+          `${escapeHtml(s.company_name || "")} — ${escapeHtml(s.city || "")}, ${escapeHtml(s.state || "")} (${s.active_deals || 0} deals)`
+        ).join("; ");
+        meta.bodyContent = `
+<h1>Real Estate Syndicator Directory</h1>
+<p>Browse verified real estate syndicators. Compare track records, reviews, and specialties.</p>
+<h2>Featured Syndicators</h2>
+<p>${list}</p>
+<p><a href="${SITE_URL}/directory">View full directory</a></p>`;
+      }
+    }
+    return new Response(generateFullHtml(meta), {
+      headers: { "content-type": "text/html; charset=utf-8" },
+    });
+  }
+
+  // Blog listing
+  if (pathname === "/blog") {
+    const posts = await fetchSupabase("/blog_posts?is_published=eq.true&order=published_at.desc&limit=10&select=slug,title,excerpt") as any[] | null;
+    let body = `<h1>Real Estate Investing Blog | Syndication Insights | EquityMD</h1><p>Educational articles on real estate syndication, deal analysis, and passive investing.</p>`;
+    if (posts && posts.length > 0) {
+      body += "<h2>Recent Articles</h2><ul>";
+      for (const p of posts) {
+        body += `<li><a href="${SITE_URL}/blog/${escapeHtml(p.slug || "")}">${escapeHtml(p.title || "")}</a> — ${escapeHtml((p.excerpt || "").substring(0, 120))}...</li>`;
+      }
+      body += "</ul>";
+    }
+    body += `<p><a href="${SITE_URL}/blog">View all posts</a></p>`;
+    return new Response(generateFullHtml({
+      title: "Real Estate Investing Blog | Syndication Insights | EquityMD",
+      description: "Educational articles on real estate syndication, deal analysis, market trends, and passive investing.",
+      canonical: `${SITE_URL}/blog`,
+      bodyContent: body,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  // Blog post
+  if (pathname.startsWith("/blog/") && pathname !== "/blog") {
+    const slug = pathname.replace("/blog/", "").replace(/\/$/, "");
+    const posts = await fetchSupabase(`/blog_posts?slug=eq.${encodeURIComponent(slug)}&select=title,excerpt,image_url,published_at,author,category,meta_description`) as any[] | null;
+    if (posts && posts.length > 0) {
+      const post = posts[0];
+      const title = `${post.title} | EquityMD Blog`;
+      const desc = post.meta_description || post.excerpt || "Read this article on EquityMD";
+      const img = post.image_url || DEFAULT_IMAGE;
+      const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "description": desc,
+        "image": img,
+        "datePublished": post.published_at,
+        "author": { "@type": "Person", "name": post.author || "EquityMD" },
+      };
+      return new Response(generateFullHtml({
+        title,
+        description: desc.substring(0, 160),
+        canonical: `${SITE_URL}/blog/${slug}`,
+        image: img,
+        bodyContent: `
+<h1>${escapeHtml(post.title)}</h1>
+<p><em>By ${escapeHtml(post.author || "EquityMD")}${post.published_at ? ` · ${new Date(post.published_at).toLocaleDateString()}` : ""}</em></p>
+<p>${escapeHtml((post.excerpt || desc).substring(0, 500))}</p>
+<p><a href="${SITE_URL}/blog/${slug}">Read full article</a></p>`,
+        jsonLd: articleSchema,
+      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }
+  }
+
+  // Deal page
+  if (pathname.startsWith("/deals/") && pathname !== "/deals") {
+    const slug = pathname.replace("/deals/", "").replace(/\/$/, "");
+    const deals = await fetchSupabase(`/deals?slug=eq.${encodeURIComponent(slug)}&select=id,name,tagline,description,city,state,property_type`) as any[] | null;
+    if (deals && deals.length > 0) {
+      const deal = deals[0];
+      let image = DEFAULT_IMAGE;
+      const media = await fetchSupabase(`/deal_media?deal_id=eq.${deal.id}&is_cover=eq.true&select=url`) as any[] | null;
+      if (media && media[0]?.url) image = media[0].url;
+      const title = `${deal.name} | EquityMD`;
+      const desc = deal.tagline || (deal.description || "").substring(0, 160) || `${deal.property_type} in ${deal.city}, ${deal.state}`;
+      const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": deal.name,
+        "description": desc,
+        "image": image,
+      };
+      return new Response(generateFullHtml({
+        title,
+        description: desc,
+        canonical: `${SITE_URL}/deals/${slug}`,
+        image,
+        bodyContent: `
+<h1>${escapeHtml(deal.name)}</h1>
+<p>${escapeHtml(desc)}</p>
+<p>${escapeHtml(deal.property_type || "")} investment in ${escapeHtml(deal.city || "")}, ${escapeHtml(deal.state || "")}</p>
+<p><a href="${SITE_URL}/deals/${slug}">View deal details</a></p>`,
+        jsonLd: productSchema,
+      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }
+  }
+
+  // Syndicator profile (use company_name, company_description, company_logo_url)
+  if (pathname.startsWith("/syndicators/") && pathname !== "/syndicators") {
+    const slug = pathname.replace("/syndicators/", "").replace(/\/$/, "");
+    const syndicators = await fetchSupabase(`/syndicators?slug=eq.${encodeURIComponent(slug)}&select=company_name,company_description,company_logo_url,city,state,years_in_business`) as any[] | null;
+    if (syndicators && syndicators.length > 0) {
+      const s = syndicators[0];
+      const title = `${s.company_name} Reviews & Ratings 2026 | EquityMD`;
+      const desc = (s.company_description || `${s.company_name} is a verified real estate syndicator`).substring(0, 160);
+      const img = s.company_logo_url || DEFAULT_IMAGE;
+      const orgSchema = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": s.company_name,
+        "description": desc,
+        "image": img,
+      };
+      return new Response(generateFullHtml({
+        title,
+        description: desc,
+        canonical: `${SITE_URL}/syndicators/${slug}`,
+        image: img,
+        bodyContent: `
+<h1>${escapeHtml(s.company_name)}</h1>
+<p>${escapeHtml((s.company_description || "").substring(0, 400))}</p>
+<p>${s.city || ""}, ${s.state || ""} · ${s.years_in_business || "—"} years in business</p>
+<p><a href="${SITE_URL}/syndicators/${slug}">View full profile</a></p>`,
+        jsonLd: orgSchema,
+      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }
+  }
+
+  // City page
+  if (pathname.startsWith("/cities/")) {
+    const citySlug = pathname.replace("/cities/", "").replace(/\/$/, "");
+    const cities = await fetchSupabase(`/cities?slug=eq.${encodeURIComponent(citySlug)}&select=name,state,median_price,sales_change,market_trends`) as any[] | null;
+    if (cities && cities.length > 0) {
+      const c = cities[0];
+      const title = `${c.name} Real Estate Market | EquityMD`;
+      const desc = `Market data for ${c.name}, ${c.state}. Median price, sales trends, and investment insights.`;
+      return new Response(generateFullHtml({
+        title,
+        description: desc,
+        canonical: `${SITE_URL}/cities/${citySlug}`,
+        bodyContent: `
+<h1>${escapeHtml(c.name)} Real Estate Market</h1>
+<p>${escapeHtml(c.market_trends || desc)}</p>
+<p><a href="${SITE_URL}/cities/${citySlug}">View full market report</a></p>`,
+      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }
+  }
+
+  // Resources (glossary, due-diligence, etc.)
+  if (pathname.startsWith("/resources/")) {
+    const resource = pathname.replace("/resources/", "").replace(/\/$/, "") || "glossary";
+    const titles: Record<string, string> = {
+      glossary: "Real Estate Syndication Glossary | EquityMD",
+      "due-diligence": "Due Diligence Guide | EquityMD",
+      calculator: "Investment Calculator | EquityMD",
+    };
+    const title = titles[resource] || `Resources | EquityMD`;
+    return new Response(generateFullHtml({
+      title,
+      description: `EquityMD resources for real estate investors. ${resource === "glossary" ? "Glossary of syndication terms." : "Tools and guides."}`,
+      canonical: `${SITE_URL}/resources/${resource}`,
+      bodyContent: `<h1>${escapeHtml(title)}</h1><p><a href="${SITE_URL}/resources/${resource}">View full page</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  // Rankings
+  if (pathname.startsWith("/rankings")) {
+    const cat = pathname.replace("/rankings", "").replace(/^\//, "").replace(/\/$/, "");
+    const title = cat ? `Best ${cat.replace(/-/g, " ")} 2026 | EquityMD` : "Best Real Estate Syndicators 2026 | EquityMD";
+    return new Response(generateFullHtml({
+      title,
+      description: `Compare top real estate syndicators. Ranked by reviews, track record, and deal volume.`,
+      canonical: `${SITE_URL}/rankings${cat ? `/${cat}` : ""}`,
+      bodyContent: `<h1>${escapeHtml(title)}</h1><p><a href="${SITE_URL}/rankings${cat ? `/${cat}` : ""}">View rankings</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  return context.next();
+}

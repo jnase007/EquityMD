@@ -147,8 +147,8 @@ export function Pricing() {
 
   return (
     <div className="min-h-screen">
-      <SEO 
-        title="Syndicator Pricing | EquityMD"
+      <SEO
+        title="Syndicator Pricing & Plans | EquityMD"
         description="List your real estate deals and reach 7,400+ accredited investors. Choose from Starter, Pro, or Premium plans."
         keywords="syndicator pricing, real estate listing, investor access, deal listing platform"
         canonical="https://equitymd.com/pricing"

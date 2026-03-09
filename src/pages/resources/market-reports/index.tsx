@@ -159,6 +159,7 @@ export function MarketReportsHub() {
         title="Market Reports - Real Estate Investment Data by State | EquityMD"
         description="Comprehensive real estate market data for all 50 states. View median home prices, sales trends, and months of supply to make informed investment decisions."
         keywords="real estate market reports, state housing data, median home prices by state, real estate investment data, housing market trends, property market analysis, real estate statistics"
+        canonical="https://equitymd.com/resources/market-reports"
       />
       
       <div className="min-h-screen bg-gray-50">

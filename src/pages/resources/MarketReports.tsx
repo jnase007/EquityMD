@@ -44,6 +44,7 @@ export function MarketReports() {
         title="Real Estate Market Reports & Investment Analysis | EquityMD"
         description="Research top US multifamily markets with real data on cap rates, rent growth, job growth, and investment scores. Data-driven market analysis for accredited investors."
         keywords="multifamily market data, cap rates by city, rent growth, real estate investment analysis, commercial real estate markets"
+        canonical="https://equitymd.com/resources/market-reports"
       />
       <Navbar />
 

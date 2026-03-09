@@ -249,6 +249,7 @@ export function StateMarketReport() {
         title={`${stateData.name} Real Estate Market Report 2025 | EquityMD`}
         description={`Comprehensive ${stateData.name} real estate market data. Median home price: ${formatPrice(stateData.median_price)}, Sales change: ${formatPercentage(stateData.sales_change)}, Market supply: ${stateData.months_supply} months.`}
         keywords={`${stateData.name} real estate market, ${stateData.name} home prices, ${stateData.name} property investment, ${stateData.name} housing market trends, real estate ${stateData.name}`}
+        canonical={`https://equitymd.com/resources/market-reports/${state}`}
       />
       
       <div className="min-h-screen bg-gray-50">

@@ -37,8 +37,8 @@ export function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <SEO 
-        title="About Equitymd.com | Premier CRE Syndication Hub"
-        description="Equitymd.com empowers CRE syndicators to reach 7,400+ elite investors for $149/month. Discover our mission to simplify syndication—join free as an investor today!"
+        title="About EquityMD | Connecting Investors with Syndicators"
+        description="EquityMD is the premier marketplace connecting accredited investors with verified real estate syndicators. Learn about our mission and team."
         keywords="about EquityMD, CRE syndication platform, commercial real estate marketplace, real estate investment platform"
         canonical="https://equitymd.com/about"
       />

@@ -82,8 +82,8 @@ export function Contact() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-cyan-50">
-      <SEO 
-        title="Contact Us | EquityMD"
+      <SEO
+        title="Contact EquityMD | Get in Touch"
         description="Get in touch with EquityMD. Questions about real estate syndication, investing, or listing your deals? We're here to help."
         canonical="https://equitymd.com/contact"
       />

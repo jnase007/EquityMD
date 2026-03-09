@@ -207,10 +207,11 @@ export function CityMarketReport() {
 
   return (
     <>
-      <SEO 
+      <SEO
         title={`${cityData.name} Real Estate Market Report 2025 | EquityMD`}
         description={`Comprehensive ${cityData.name} real estate market analysis. Median home price: ${formatPrice(cityData.median_price)}, Sales change: ${formatPercentage(cityData.sales_change)}, Market supply: ${cityData.months_supply} months. Investment insights and market trends.`}
         keywords={`${cityData.name} real estate market, ${cityData.name} home prices, ${cityData.name} property investment, ${cityData.name} housing market trends, real estate ${cityData.name}, ${cityData.state} real estate`}
+        canonical={`https://equitymd.com/cities/${cityData.slug}`}
       />
       
       <div className="min-h-screen bg-gray-50">

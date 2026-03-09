@@ -6,7 +6,43 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# Edge Functions for social media OG tags
+# Edge Functions for SEO prerendering (bots get full HTML, users get SPA)
+[[edge_functions]]
+  function = "og-tags"
+  path = "/"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/find"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/directory"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/how-it-works"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/about"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/contact"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/pricing"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/resources/*"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/cities/*"
+
 [[edge_functions]]
   function = "og-tags"
   path = "/blog/*"
@@ -18,6 +54,10 @@
 [[edge_functions]]
   function = "og-tags"
   path = "/syndicators/*"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/rankings/*"
 
 # SEO: Redirect www to non-www (canonical domain)
 [[redirects]]

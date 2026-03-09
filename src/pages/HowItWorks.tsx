@@ -124,8 +124,8 @@ export function HowItWorks() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SEO 
-        title="How It Works | EquityMD - Real Estate Investment Platform"
+      <SEO
+        title="How Real Estate Syndication Works | EquityMD"
         description="Learn how EquityMD connects accredited investors with verified real estate syndicators. Simple 3-step process to start investing in commercial real estate."
         canonical="https://equitymd.com/how-it-works"
       />

@@ -225,8 +225,8 @@ export function Home() {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="Real Estate Syndication Platform for Accredited Investors | EquityMD"
-        description="Browse 100+ real estate syndication deals from verified sponsors. Invest in multifamily, commercial & industrial properties. Free for investors. $25K minimum."
+        title="EquityMD — Real Estate Syndication Platform for Accredited Investors"
+        description="EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse verified syndicators, discover curated deals, and build passive income through commercial real estate."
         keywords="real estate syndication, accredited investor, commercial real estate investing, multifamily investment, passive income real estate, syndication deals, real estate crowdfunding"
         canonical="https://equitymd.com"
       />

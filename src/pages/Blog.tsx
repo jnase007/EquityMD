@@ -223,9 +223,9 @@ export function Blog() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
-      <SEO 
-        title="CRE Syndication Tips & Insights | Equitymd.com Blog"
-        description="Master CRE syndication with expert tips! Learn to list deals or invest with 7,400+ elite investors on Equitymd.com's blog. Start your journey free—read now!"
+      <SEO
+        title="Real Estate Investing Blog | Syndication Insights | EquityMD"
+        description="Educational articles on real estate syndication, deal analysis, market trends, and passive investing. New content weekly."
         keywords="CRE syndication tips, real estate investment insights, commercial real estate blog, syndication strategies, investor education"
         canonical="https://equitymd.com/blog"
       />

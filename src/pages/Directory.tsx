@@ -226,8 +226,8 @@ export function Directory() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
         <SEO
-          title="Find Real Estate Syndicators - Verified Sponsor Directory | EquityMD"
-          description="Browse 75+ verified real estate syndicators. View track records, AUM, years in business & active deals."
+          title="Real Estate Syndicator Directory | Verified CRE Sponsors | EquityMD"
+          description="Browse 400+ verified real estate syndicators. Compare track records, reviews, minimum investments, and specialties. Free for investors."
           canonical="https://equitymd.com/directory"
         />
         <Navbar />
@@ -257,7 +257,7 @@ export function Directory() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
       <SEO
-        title="400+ Real Estate Syndicators — Compare Reviews & Ratings | EquityMD"
+        title="Real Estate Syndicator Directory | Verified CRE Sponsors | EquityMD"
         description="Browse 400+ verified real estate syndicators. Compare track records, reviews, minimum investments, and specialties. Free for investors."
         keywords="real estate syndicators, syndication sponsors, verified syndicators, multifamily sponsors, commercial real estate syndicators, syndication directory"
         canonical="https://equitymd.com/directory"

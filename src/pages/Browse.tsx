@@ -197,7 +197,7 @@ export function Browse() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 animate-fade-in">
       <SEO
-        title="Browse Real Estate Syndication Deals - Multifamily, Commercial, Industrial | EquityMD"
+        title="Browse Real Estate Deals | Multifamily & CRE Investments | EquityMD"
         description="Explore 50+ active real estate syndication deals. Filter by property type, location, IRR & minimum investment. Compare multifamily, industrial & medical office investments."
         canonical="https://equitymd.com/find"
         keywords="real estate deals, syndication opportunities, multifamily investments, commercial real estate, industrial properties, passive income investing"
