@@ -1235,7 +1235,7 @@ export function EmailPreview() {
 
                 <div class="footer">
                   <p>You received this email because you've been selected as a qualified investor candidate. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
-                  <p>Questions? Contact us at hello@equitymd.com</p>
+                  <p>Questions? Contact us at <a href="mailto:hello@equitymd.com" style="color: #2563eb;">hello@equitymd.com</a></p>
                   <p>© 2026 EquityMD. All rights reserved.</p>
                 </div>
               </div>

@@ -29,6 +29,7 @@ const Discover = lazy(() => import('./pages/Discover').then(module => ({ default
 const Calendar = lazy(() => import('./pages/Calendar').then(module => ({ default: module.Calendar })));
 const Goals = lazy(() => import('./pages/Goals').then(module => ({ default: module.Goals })));
 const SyndicatorSetup = lazy(() => import('./pages/SyndicatorSetup').then(module => ({ default: module.SyndicatorSetup })));
+const GoToMarket = lazy(() => import('./pages/GoToMarket').then(module => ({ default: module.default })));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -389,7 +390,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review'];
+  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review', '/gtm'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -433,6 +434,7 @@ export default function App() {
         <Route path="/new-pricing" element={<NewPricing />} />
         <Route path="/email-preview" element={<EmailPreview />} />
         <Route path="/email-test" element={<EmailTest />} />
+        <Route path="/gtm" element={<GoToMarket />} />
         <Route path="/loader-demo" element={<LoaderDemo />} />
         <Route path="/legal/privacy" element={<Privacy />} />
         <Route path="/legal/terms" element={<Terms />} />

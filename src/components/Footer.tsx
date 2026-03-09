@@ -199,6 +199,14 @@ export function Footer() {
                 Brand Guidelines
               </button>
             </li>
+            <li>
+              <button
+                onClick={() => handleNavigation('/gtm')}
+                className="hover:text-white transition"
+              >
+                Go-To-Market
+              </button>
+            </li>
           </ul>
         </div>
 
