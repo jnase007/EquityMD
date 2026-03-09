@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { trackUserLogin } from '../lib/analytics';
@@ -223,7 +224,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
 
   // Check Email / Magic Link Sent State
   if (mode === 'check_email') {
-    return (
+    return createPortal(
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] p-8 text-center" onClick={e => e.stopPropagation()}>
           <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
@@ -237,13 +238,14 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
             Got it
           </button>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
   // Magic Link State
   if (mode === 'magic_link') {
-    return (
+    return createPortal(
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px]" onClick={e => e.stopPropagation()}>
           <div className="p-6">
@@ -293,13 +295,14 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
             </button>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
   // Forgot Password State
   if (mode === 'forgot') {
-    return (
+    return createPortal(
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px]" onClick={e => e.stopPropagation()}>
           <div className="p-6">
@@ -344,11 +347,12 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
             </button>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] relative overflow-hidden" onClick={e => e.stopPropagation()}>
         {/* Close */}
@@ -563,6 +567,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
