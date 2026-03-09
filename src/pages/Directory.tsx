@@ -361,8 +361,10 @@ export function Directory() {
                           className="w-16 h-16 object-contain rounded-xl border bg-white p-1"
                         />
                       ) : (
-                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center">
-                          <Building2 className="w-8 h-8 text-emerald-600" />
+                        <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
+                          <span className="text-white font-bold text-lg">
+                            {syndicator.company_name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                          </span>
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
@@ -539,8 +541,10 @@ export function Directory() {
                       className="w-14 h-14 object-contain rounded-xl"
                     />
                   ) : (
-                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center">
-                      <Building2 className="w-7 h-7 text-emerald-600" />
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">
+                        {syndicator.company_name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                      </span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
@@ -619,8 +623,10 @@ export function Directory() {
                       className="w-24 h-24 object-contain rounded-xl flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Building2 className="w-12 h-12 text-emerald-600" />
+                    <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold text-lg">
+                        {syndicator.company_name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                      </span>
                     </div>
                   )}
                   
