@@ -28,11 +28,11 @@ interface CityData {
   name: string;
   state: string;
   slug: string;
-  median_price: number;
-  sales_change: number;
-  months_supply: number;
-  market_trends: string;
-  investment_tips: string;
+  median_price: number | null;
+  sales_change: number | null;
+  months_supply: number | null;
+  market_trends: string | null;
+  investment_tips: string | null;
   created_at: string;
 }
 
@@ -106,10 +106,15 @@ export function CityMarketReport() {
         .from('cities')
         .select('*')
         .eq('slug', city)
-        .single();
+        .maybeSingle();
 
       if (cityError) {
         console.error('Error fetching city data:', cityError);
+        setError('City not found');
+        return;
+      }
+
+      if (!cityResult) {
         setError('City not found');
         return;
       }
@@ -124,7 +129,8 @@ export function CityMarketReport() {
     }
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | null | undefined) => {
+    if (price == null || Number.isNaN(price)) return 'N/A';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -133,12 +139,16 @@ export function CityMarketReport() {
     }).format(price);
   };
 
-  const formatPercentage = (value: number) => {
+  const formatPercentage = (value: number | null | undefined) => {
+    if (value == null || Number.isNaN(value)) return 'N/A';
     const sign = value >= 0 ? '+' : '';
     return `${sign}${value.toFixed(1)}%`;
   };
 
-  const getMarketCondition = (monthsSupply: number) => {
+  const getMarketCondition = (monthsSupply: number | null | undefined) => {
+    if (monthsSupply == null || Number.isNaN(monthsSupply)) {
+      return { label: 'N/A', color: 'text-gray-600', bg: 'bg-gray-100' };
+    }
     if (monthsSupply < 3) return { label: 'Seller\'s Market', color: 'text-red-600', bg: 'bg-red-100' };
     if (monthsSupply < 4) return { label: 'Balanced Market', color: 'text-yellow-600', bg: 'bg-yellow-100' };
     return { label: 'Buyer\'s Market', color: 'text-green-600', bg: 'bg-green-100' };
@@ -209,7 +219,7 @@ export function CityMarketReport() {
     <>
       <SEO
         title={`${cityData.name} Real Estate Market Report 2025 | EquityMD`}
-        description={`Comprehensive ${cityData.name} real estate market analysis. Median home price: ${formatPrice(cityData.median_price)}, Sales change: ${formatPercentage(cityData.sales_change)}, Market supply: ${cityData.months_supply} months. Investment insights and market trends.`}
+        description={`Comprehensive ${cityData.name} real estate market analysis. Median home price: ${formatPrice(cityData.median_price)}, Sales change: ${formatPercentage(cityData.sales_change)}, Market supply: ${cityData.months_supply != null && !Number.isNaN(cityData.months_supply) ? `${cityData.months_supply} months` : 'N/A'}. Investment insights and market trends.`}
         keywords={`${cityData.name} real estate market, ${cityData.name} home prices, ${cityData.name} property investment, ${cityData.name} housing market trends, real estate ${cityData.name}, ${cityData.state} real estate`}
         canonical={`https://equitymd.com/cities/${cityData.slug}`}
       />
@@ -260,9 +270,9 @@ export function CityMarketReport() {
               
               <div className="text-center">
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                  cityData.sales_change >= 0 ? 'bg-green-100' : 'bg-red-100'
+                  (cityData.sales_change ?? 0) >= 0 ? 'bg-green-100' : 'bg-red-100'
                 }`}>
-                  {cityData.sales_change >= 0 ? (
+                  {(cityData.sales_change ?? 0) >= 0 ? (
                     <TrendingUp className="h-8 w-8 text-green-600" />
                   ) : (
                     <TrendingDown className="h-8 w-8 text-red-600" />
@@ -270,7 +280,7 @@ export function CityMarketReport() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Annual Sales Change</h3>
                 <p className={`text-3xl font-bold ${
-                  cityData.sales_change >= 0 ? 'text-green-600' : 'text-red-600'
+                  (cityData.sales_change ?? 0) >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
                   {formatPercentage(cityData.sales_change)}
                 </p>
@@ -282,7 +292,11 @@ export function CityMarketReport() {
                   <Calendar className="h-8 w-8 text-purple-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Months of Supply</h3>
-                <p className="text-3xl font-bold text-purple-600">{cityData.months_supply}</p>
+                <p className="text-3xl font-bold text-purple-600">
+                  {cityData.months_supply != null && !Number.isNaN(cityData.months_supply)
+                    ? cityData.months_supply
+                    : 'N/A'}
+                </p>
                 <p className="text-sm text-gray-600 mt-1">Current inventory</p>
               </div>
             </div>
@@ -299,9 +313,15 @@ export function CityMarketReport() {
                 <h3 className="text-xl font-bold text-gray-900">Market Trends</h3>
               </div>
               <div className="prose prose-gray max-w-none">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {cityData.market_trends}
-                </p>
+                {(cityData.market_trends ?? '').split('\n').filter(Boolean).length > 0 ? (
+                  (cityData.market_trends ?? '').split('\n').filter(Boolean).map((para, i) => (
+                    <p key={i} className="text-gray-700 leading-relaxed mb-4 last:mb-0">
+                      {para.trim()}
+                    </p>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic">No market trends data available.</p>
+                )}
               </div>
             </div>
 
@@ -314,9 +334,15 @@ export function CityMarketReport() {
                 <h3 className="text-xl font-bold text-gray-900">Investment Tips</h3>
               </div>
               <div className="prose prose-gray max-w-none">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {cityData.investment_tips}
-                </p>
+                {(cityData.investment_tips ?? '').split('\n').filter(Boolean).length > 0 ? (
+                  (cityData.investment_tips ?? '').split('\n').filter(Boolean).map((para, i) => (
+                    <p key={i} className="text-gray-700 leading-relaxed mb-4 last:mb-0">
+                      {para.trim()}
+                    </p>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic">No investment tips available.</p>
+                )}
               </div>
             </div>
           </div>
@@ -334,11 +360,13 @@ export function CityMarketReport() {
                 "addressRegion": cityData.state,
                 "addressCountry": "US"
               },
-              "price": {
-                "@type": "MonetaryAmount",
-                "currency": "USD",
-                "value": cityData.median_price
-              },
+              ...(cityData.median_price != null && !Number.isNaN(cityData.median_price) && {
+                price: {
+                  "@type": "MonetaryAmount",
+                  currency: "USD",
+                  value: cityData.median_price
+                }
+              }),
               "datePosted": cityData.created_at,
               "url": `https://equitymd.com/cities/${cityData.slug}`,
               "provider": {
