@@ -15,12 +15,13 @@ import { ClaimRequests } from '../../components/admin/ClaimRequests';
 import { SyndicatorVerificationAdmin } from '../../components/SyndicatorVerificationAdmin';
 import { SystemManagement } from '../../components/admin/SystemManagement';
 import { DeactivatedAccountsManagement } from '../../components/admin/DeactivatedAccountsManagement';
+import { MessagesAdmin } from '../../components/admin/MessagesAdmin';
 import { useAuthStore } from '../../lib/store';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool, MessageCircle } from 'lucide-react';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system'>('command');
+  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system' | 'messages'>('command');
 
   if (!profile) return (
     <div style={{ padding: '24px', textAlign: 'center' }}>
@@ -77,6 +78,8 @@ export function AdminDashboard() {
         return <SyndicatorVerificationAdmin />;
       case 'system':
         return <SystemManagement />;
+      case 'messages':
+        return <MessagesAdmin />;
       default:
         return null;
     }
@@ -138,6 +141,18 @@ export function AdminDashboard() {
             >
               <Users className="h-5 w-5 mr-2" />
               Users
+            </button>
+
+            <button
+              onClick={() => setActiveTab('messages')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'messages'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <MessageCircle className="h-5 w-5 mr-2" />
+              Messages
             </button>
 
             {/* <button
