@@ -154,6 +154,13 @@ After configuring all providers:
 ### Issue: "OAuth redirect URI mismatch"
 **Solution:** Make sure your redirect URLs exactly match in both the OAuth provider settings and are included in your Supabase allowed redirect URLs.
 
+### Issue: Google works in normal browser but fails in Incognito / strict mode
+**Solution:** In **Supabase → Authentication → URL Configuration**, add your **site root** to **Redirect URLs**, e.g. `https://equitymd.com` and `https://equitymd.com/` (and `http://localhost:5173` for dev). The app sends users back to the **root** after Google, then routes to `/dashboard` in the client so you do not need every deep path listed. You can also add a wildcard like `https://equitymd.com/**` if your project supports it.
+
+**Google Cloud Console:** Authorized redirect URI must remain exactly  
+`https://<YOUR-PROJECT-REF>.supabase.co/auth/v1/callback`  
+(not your app domain—that is only for Supabase’s allowlist above).
+
 ### Issue: "Invalid client" error
 **Solution:** Double-check that your Client ID and Client Secret are copied correctly with no extra spaces.
 

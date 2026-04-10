@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { setOAuthNextPath, clearOAuthNextPath } from '../lib/oauthRedirect';
 import { trackUserLogin } from '../lib/analytics';
 import { 
   X, Mail, Lock, User, Loader2, Check, AlertCircle, 
@@ -15,7 +16,9 @@ interface AuthModalProps {
   redirectPath?: string; // Optional path to redirect after successful auth
 }
 
-export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: AuthModalProps) {
+export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defaultType }: AuthModalProps) {
+  const resolvedRedirectPath = redirectPath ?? (defaultType === 'syndicator' ? '/syndicator-setup' : '/dashboard');
+  const signUpRedirectPath = redirectPath ?? (defaultType === 'syndicator' ? '/syndicator-setup' : '/welcome');
   const [mode, setMode] = useState<'sign_in' | 'sign_up' | 'magic_link' | 'forgot' | 'check_email'>(defaultView);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
@@ -71,11 +74,14 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
     setError(null);
     try {
       console.log(`[Social Auth] Attempting ${provider} login...`);
+      // Always land OAuth on site root — must match Supabase "Redirect URLs" (often only https://equitymd.com).
+      // Deep paths like /dashboard are rejected unless explicitly whitelisted; breaks in incognito / strict setups.
+      setOAuthNextPath(resolvedRedirectPath);
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { 
-          redirectTo: `${window.location.origin}${redirectPath || '/dashboard'}`,
-          skipBrowserRedirect: false
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          skipBrowserRedirect: false,
         },
       });
       console.log(`[Social Auth] ${provider} response:`, { data, error });
@@ -111,7 +117,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
       const { data, error } = await supabase.auth.signInWithOtp({
         email,
         options: { 
-          emailRedirectTo: `${window.location.origin}${redirectPath || '/dashboard'}`,
+          emailRedirectTo: `${window.location.origin}${resolvedRedirectPath}`,
           shouldCreateUser: true, // Allow new user creation via magic link
           data: firstName ? { full_name: firstName } : undefined
         },
@@ -186,9 +192,10 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
           });
 
           if (data.session) {
+            clearOAuthNextPath();
             trackUserLogin('investor', data.user.id);
             onClose();
-            navigate(redirectPath || '/welcome');
+            navigate(signUpRedirectPath);
           } else {
             setMode('check_email');
           }
@@ -198,6 +205,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
         if (error) throw error;
 
         if (data.user) {
+          clearOAuthNextPath();
           const { data: profile } = await supabase
             .from('profiles')
             .select('user_type')
@@ -205,7 +213,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath }: Au
             .single();
           trackUserLogin(profile?.user_type || 'investor', data.user.id);
           onClose();
-          navigate(redirectPath || '/dashboard');
+          navigate(resolvedRedirectPath);
         }
       }
     } catch (err: any) {

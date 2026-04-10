@@ -326,8 +326,24 @@ export function DealDetails() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading deal details...</div>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="animate-pulse space-y-6">
+            <div className="h-[450px] bg-gray-200 rounded-lg" />
+            <div className="h-12 bg-gray-200 rounded w-3/4 max-w-2xl" />
+            <div className="h-4 bg-gray-200 rounded w-1/2" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-24 bg-gray-200 rounded-lg" />
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+              <div className="h-48 bg-gray-200 rounded-lg" />
+              <div className="h-48 bg-gray-200 rounded-lg" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -382,9 +398,9 @@ export function DealDetails() {
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-7xl mx-auto px-4 text-white">
             <nav className="flex items-center text-sm mb-6">
-              <span className="text-white/70 hover:text-white cursor-pointer">Deals</span>
+              <Link to="/find" className="text-white/70 hover:text-white transition">Deals</Link>
               <ChevronRight className="h-4 w-4 mx-2 text-white/50" />
-              <span className="text-white/70 hover:text-white cursor-pointer">{deal.property_type}</span>
+              <Link to={`/find?type=${encodeURIComponent(deal.property_type)}`} className="text-white/70 hover:text-white transition">{deal.property_type}</Link>
               <ChevronRight className="h-4 w-4 mx-2 text-white/50" />
               <span className="text-white">{deal.title}</span>
             </nav>

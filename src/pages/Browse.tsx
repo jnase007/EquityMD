@@ -77,7 +77,7 @@ export function Browse() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState<string>('All');
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -109,16 +109,21 @@ export function Browse() {
 
   useEffect(() => {
     fetchDeals();
-  }, []);
+  }, [selectedStatus]);
 
   async function fetchDeals() {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('deals')
         .select('*')
-        .eq('status', 'active')
         .order('highlighted', { ascending: false })
         .order('created_at', { ascending: false });
+      if (selectedStatus !== 'All') {
+        query = query.eq('status', selectedStatus.toLowerCase());
+      } else {
+        query = query.in('status', ['active', 'draft']);
+      }
+      const { data, error } = await query;
 
       if (error || !data) {
         console.error('Error fetching deals:', error);
@@ -147,7 +152,7 @@ export function Browse() {
     const matchesSearch = deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          deal.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = selectedType === 'All' || deal.property_type === selectedType;
-    const matchesStatus = selectedStatus === 'All' || deal.status === selectedStatus;
+    const matchesStatus = selectedStatus === 'All' || deal.status?.toLowerCase() === selectedStatus.toLowerCase();
     
     return matchesSearch && matchesType && matchesStatus;
   }).sort((a, b) => {
@@ -166,7 +171,7 @@ export function Browse() {
   const regularDeals = filteredDeals.filter(deal => !deal.highlighted);
 
   const types = ['All', 'Office', 'Multi-Family', 'Medical', 'Student Housing', 'Industrial', 'Preferred Equity', 'Residential'];
-  const statuses = ['All', 'Active', 'Coming Soon'];
+  const statuses = ['All', 'Active', 'Draft', 'Archived'];
 
   // Calculate stats
   const avgIRR = deals.length > 0 ? (deals.reduce((sum, d) => sum + (d.target_irr || 0), 0) / deals.length).toFixed(1) : '0';
@@ -284,7 +289,7 @@ export function Browse() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                 >
                   {statuses.map(status => (
-                    <option key={status} value={status} className="text-gray-900">{status === 'All' ? 'All Status' : status}</option>
+                    <option key={status} value={status} className="text-gray-900">{status === 'All' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}</option>
                   ))}
                 </select>
               </div>
@@ -553,8 +558,9 @@ export function Browse() {
       </div>
 
       {showAuthModal && (
-        <AuthModal 
-          onClose={() => setShowAuthModal(false)} 
+        <AuthModal
+          onClose={() => setShowAuthModal(false)}
+          defaultType="investor"
           defaultView={authModalView}
           redirectPath={authRedirectPath}
         />

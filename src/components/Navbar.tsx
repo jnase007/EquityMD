@@ -240,6 +240,14 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             >
               Blog
             </Link>
+            {user && (
+              <Link 
+                to="/inbox"
+                className={`font-medium transition flex items-center gap-1.5 ${navTextClass}`}
+              >
+                Messages
+              </Link>
+            )}
           </div>
 
           {/* Right Side */}

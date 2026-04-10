@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Navigate, Link } from 'react-router-dom';
-import { Search, ArrowLeft, Building2, Mail, Filter, Bell, Settings, MessageSquarePlus, Inbox as InboxIcon, Archive, Star, MoreVertical, RefreshCw, CheckCheck } from 'lucide-react';
+import { Search, ArrowLeft, Building2, User, Mail, Filter, Bell, Settings, MessageSquarePlus, Inbox as InboxIcon, Archive, Star, MoreVertical, RefreshCw, CheckCheck } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { ConversationList } from '../components/ConversationList';
@@ -440,6 +440,7 @@ export function Inbox() {
                     { id: 'all', label: 'All', icon: InboxIcon },
                     { id: 'unread', label: 'Unread', icon: Bell },
                     { id: 'syndicators', label: 'Syndicators', icon: Building2 },
+                    { id: 'investors', label: 'Investors', icon: User },
                   ].map((tab) => (
                     <button
                       key={tab.id}

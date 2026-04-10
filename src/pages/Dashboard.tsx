@@ -688,7 +688,7 @@ export function Dashboard() {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {deals.map((deal) => {
-                  const dealSlug = deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                  const dealSlug = deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
                   return (
                     <tr key={deal.id}>
                       <td className="px-6 py-4 whitespace-nowrap">

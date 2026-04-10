@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense, lazy, useCallback } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
@@ -78,6 +78,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 // import { CookieConsent } from './components/CookieConsent';
 import { ExitIntentPopup } from './components/ExitIntentPopup';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { consumeOAuthNextPath, clearOAuthNextPath } from './lib/oauthRedirect';
 
 // Minimal loading fallback for Suspense boundaries
 const MinimalLoadingFallback = () => (
@@ -109,6 +110,7 @@ function LogoutRoute() {
 export default function App() {
   const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [requireAuth, setRequireAuth] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
@@ -334,6 +336,24 @@ export default function App() {
       clearTimeout(fallbackTimeout);
     };
   }, [clearAuth, setUser, fetchProfile]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.location.hash.includes('error=')) {
+      clearOAuthNextPath();
+      authLogger.log('OAuth error in URL hash; cleared pending redirect');
+    }
+  }, []);
+
+  // After Google/OAuth, Supabase redirects to site root (see AuthModal) so redirect URLs match dashboard allowlist.
+  // Apply the intended path (e.g. /dashboard) once session exists.
+  useEffect(() => {
+    if (!user) return;
+    const next = consumeOAuthNextPath();
+    if (!next) return;
+    if (next === location.pathname + (location.search || '')) return;
+    navigate(next, { replace: true });
+  }, [user, navigate, location.pathname, location.search]);
 
   // Session recovery on tab resume (handles iOS suspension and network reconnection)
   useEffect(() => {

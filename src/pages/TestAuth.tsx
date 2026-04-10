@@ -24,7 +24,7 @@ export function TestAuth() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider as any,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`
+          redirectTo: `${window.location.origin}/`,
         }
       });
 
@@ -129,7 +129,7 @@ export function TestAuth() {
             const { data, error } = await supabase.auth.signInWithOAuth({
               provider: provider as any,
               options: {
-                redirectTo: `${window.location.origin}/dashboard`,
+                redirectTo: `${window.location.origin}/`,
                 queryParams: {
                   user_type: userType,
                   view: view

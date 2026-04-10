@@ -66,10 +66,7 @@ export function ConversationList({
           key={conv.userId}
           onClick={() => onSelectConversation(conv.userId)}
           onMouseEnter={() => setHoveredId(conv.userId)}
-          onMouseLeave={() => {
-            setHoveredId(null);
-            setShowActionsId(null);
-          }}
+          onMouseLeave={() => setHoveredId(null)}
           className={`relative p-4 cursor-pointer transition-all duration-150 border-b border-gray-100 ${
             selectedUserId === conv.userId 
               ? 'bg-blue-50 border-l-4 border-l-blue-600' 
