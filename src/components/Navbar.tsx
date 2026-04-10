@@ -310,7 +310,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                       isDarkTheme 
                         ? 'bg-[var(--card-bg)] border-[var(--border-color)]' 
                         : 'bg-white border-gray-200'
-                    }`} style={{ position: 'fixed', top: '60px', right: '16px' }}>
+                    }`}>
                       <div className={`px-4 py-3 border-b ${isDarkTheme ? 'border-[var(--border-color)]' : 'border-gray-200'}`}>
                         <p className={`font-medium ${isDarkTheme ? 'text-white' : 'text-gray-900'}`}>{profile?.full_name || 'User'}</p>
                         <p className={`text-sm truncate ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>{profile?.email}</p>

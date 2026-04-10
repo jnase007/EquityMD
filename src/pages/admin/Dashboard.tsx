@@ -23,12 +23,38 @@ export function AdminDashboard() {
   const { profile } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system' | 'messages'>('command');
 
+  const [loadTimeout, setLoadTimeout] = useState(false);
+
+  useEffect(() => {
+    if (!profile) {
+      const timer = setTimeout(() => setLoadTimeout(true), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [profile]);
+
   if (!profile) return (
     <div style={{ padding: '24px', textAlign: 'center' }}>
-      <i>Loading... </i>
-      <br />
-      <br />
-      <a href="/">Return to home</a>
+      {loadTimeout ? (
+        <>
+          <p style={{ marginBottom: '16px', color: '#dc2626' }}>Session expired or profile unavailable.</p>
+          <button
+            onClick={() => {
+              localStorage.removeItem('sb-frtxsynlvwhpnzzgfgbt-auth-token');
+              localStorage.clear();
+              window.location.href = '/';
+            }}
+            style={{ padding: '8px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
+          >
+            Sign Out &amp; Return Home
+          </button>
+        </>
+      ) : (
+        <>
+          <i>Loading...</i>
+          <br /><br />
+          <a href="/">Return to home</a>
+        </>
+      )}
     </div>
   )
 
@@ -39,8 +65,13 @@ export function AdminDashboard() {
   const quickClearCache = async () => {
     if (confirm('Clear browser cache? This will refresh the page.')) {
       try {
+        // Preserve Supabase auth session while clearing everything else
+        const authToken = localStorage.getItem('sb-frtxsynlvwhpnzzgfgbt-auth-token');
         localStorage.clear();
         sessionStorage.clear();
+        if (authToken) {
+          localStorage.setItem('sb-frtxsynlvwhpnzzgfgbt-auth-token', authToken);
+        }
         alert('Cache cleared successfully!');
         window.location.reload();
       } catch (error) {
