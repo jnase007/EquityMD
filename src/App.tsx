@@ -90,6 +90,22 @@ const MinimalLoadingFallback = () => (
   </div>
 );
 
+// Emergency logout route — always accessible, clears everything
+function LogoutRoute() {
+  useEffect(() => {
+    supabase.auth.signOut().finally(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/';
+    });
+  }, []);
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="text-gray-600">Signing out...</p>
+    </div>
+  );
+}
+
 export default function App() {
   const { user, profile, setUser, setProfile, clearAuth } = useAuthStore();
   const location = useLocation();
@@ -576,6 +592,8 @@ export default function App() {
         {/* Onboarding Demo Route */}
         <Route path="/onboarding-demo" element={<OnboardingDemo />} />
 
+        {/* Emergency logout route */}
+        <Route path="/logout" element={<LogoutRoute />} />
         {/* 404 Route */}
         <Route path="*" element={<NotFound />} />
           </Routes>
