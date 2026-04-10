@@ -66,6 +66,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const navigate = useNavigate();
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileTimeout, setProfileTimeout] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<'investor' | 'syndicator'>(initialView || 'investor');
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
@@ -85,6 +86,15 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     
     return () => clearTimeout(checkAuth);
   }, [user, loading, navigate]);
+
+  // Safety net: if profile doesn't load within 8 seconds, offer clean logout
+  useEffect(() => {
+    if (!profile && user) {
+      const timer = setTimeout(() => setProfileTimeout(true), 8000);
+      return () => clearTimeout(timer);
+    }
+    if (profile) setProfileTimeout(false);
+  }, [profile, user]);
 
   // Show loading state while checking auth
   if (loading && !user) {
@@ -291,11 +301,32 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600" />
-              <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-blue-600 animate-pulse" />
-            </div>
-            <p className="text-gray-600 mt-6 font-medium">Preparing your dashboard...</p>
+            {profileTimeout ? (
+              <>
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                  <X className="h-8 w-8 text-red-600" />
+                </div>
+                <p className="text-gray-800 text-lg font-medium mb-2">Session expired</p>
+                <p className="text-gray-500 mb-6">Your session couldn't be restored. Please sign in again.</p>
+                <button
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = '/';
+                  }}
+                  className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+                >
+                  Return to Home
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-blue-200 rounded-full animate-spin border-t-blue-600" />
+                  <Sparkles className="absolute inset-0 m-auto h-6 w-6 text-blue-600 animate-pulse" />
+                </div>
+                <p className="text-gray-600 mt-6 font-medium">Preparing your dashboard...</p>
+              </>
+            )}
           </div>
         </div>
         <Footer />
