@@ -27,39 +27,60 @@ export function AdminDashboard() {
   const [loadTimeout, setLoadTimeout] = useState(false);
   const [retrying, setRetrying] = useState(false);
 
+  // Self-healing: if profile is missing on mount, actively fetch it
+  const fetchProfileDirect = useCallback(async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        // No session at all — try refreshing
+        const { data: refreshed } = await supabase.auth.refreshSession();
+        if (!refreshed.session?.user) return false;
+        const userId = refreshed.session.user.id;
+        const { data } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
+        if (data) {
+          useAuthStore.getState().setUser(refreshed.session.user);
+          useAuthStore.getState().setProfile(data);
+          return true;
+        }
+        return false;
+      }
+      const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+      if (data) {
+        useAuthStore.getState().setUser(session.user);
+        useAuthStore.getState().setProfile(data);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }, []);
+
   useEffect(() => {
     if (!profile) {
-      const timer = setTimeout(() => setLoadTimeout(true), 8000);
-      return () => clearTimeout(timer);
+      // Immediately try to fetch profile ourselves (don't just wait for App.tsx)
+      fetchProfileDirect().then((success) => {
+        if (!success) {
+          // If that didn't work, give App.tsx a few more seconds
+          const timer = setTimeout(() => setLoadTimeout(true), 5000);
+          return () => clearTimeout(timer);
+        }
+      });
     }
-  }, [profile]);
+  }, [profile, fetchProfileDirect]);
 
   const handleRetry = useCallback(async () => {
     setRetrying(true);
     setLoadTimeout(false);
     try {
-      // Try refreshing the session first
-      const { data: { session }, error } = await supabase.auth.refreshSession();
-      if (session?.user) {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .maybeSingle();
-        if (data) {
-          useAuthStore.getState().setUser(session.user);
-          useAuthStore.getState().setProfile(data);
-          return;
-        }
-      }
-      // If refresh failed, show timeout again
-      setLoadTimeout(true);
+      const success = await fetchProfileDirect();
+      if (!success) setLoadTimeout(true);
     } catch {
       setLoadTimeout(true);
     } finally {
       setRetrying(false);
     }
-  }, []);
+  }, [fetchProfileDirect]);
 
   const handleSignOut = useCallback(async () => {
     try {
