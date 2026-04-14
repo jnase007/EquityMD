@@ -245,9 +245,22 @@ export default function App() {
 
       authLogger.log('Profile found:', data);
       setProfile(data);
-    } catch (error) {
+    } catch (error: any) {
       authLogger.error('Error in fetchProfile:', error);
-      clearAuth();
+      const msg = error?.message || '';
+      // Only clear auth for definitive auth failures — not transient network errors
+      if (
+        msg.includes('JWT') ||
+        msg.includes('not authenticated') ||
+        msg.includes('refresh_token') ||
+        msg.includes('expired') ||
+        msg.includes('invalid claim')
+      ) {
+        authLogger.log('Auth error detected — clearing session');
+        clearAuth();
+      } else {
+        authLogger.log('Transient error — keeping session, profile may load on retry');
+      }
     }
   }, [clearAuth, setProfile]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -17,6 +17,7 @@ import { SystemManagement } from '../../components/admin/SystemManagement';
 import { DeactivatedAccountsManagement } from '../../components/admin/DeactivatedAccountsManagement';
 import { MessagesAdmin } from '../../components/admin/MessagesAdmin';
 import { useAuthStore } from '../../lib/store';
+import { supabase } from '../../lib/supabase';
 import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool, MessageCircle } from 'lucide-react';
 
 export function AdminDashboard() {
@@ -24,29 +25,73 @@ export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system' | 'messages'>('command');
 
   const [loadTimeout, setLoadTimeout] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
   useEffect(() => {
     if (!profile) {
-      const timer = setTimeout(() => setLoadTimeout(true), 5000);
+      const timer = setTimeout(() => setLoadTimeout(true), 8000);
       return () => clearTimeout(timer);
     }
   }, [profile]);
+
+  const handleRetry = useCallback(async () => {
+    setRetrying(true);
+    setLoadTimeout(false);
+    try {
+      // Try refreshing the session first
+      const { data: { session }, error } = await supabase.auth.refreshSession();
+      if (session?.user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        if (data) {
+          useAuthStore.getState().setUser(session.user);
+          useAuthStore.getState().setProfile(data);
+          return;
+        }
+      }
+      // If refresh failed, show timeout again
+      setLoadTimeout(true);
+    } catch {
+      setLoadTimeout(true);
+    } finally {
+      setRetrying(false);
+    }
+  }, []);
+
+  const handleSignOut = useCallback(async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Ignore errors — we're clearing everything anyway
+    }
+    useAuthStore.getState().clearAuth();
+    localStorage.clear();
+    window.location.href = '/';
+  }, []);
 
   if (!profile) return (
     <div style={{ padding: '24px', textAlign: 'center' }}>
       {loadTimeout ? (
         <>
           <p style={{ marginBottom: '16px', color: '#dc2626' }}>Session expired or profile unavailable.</p>
-          <button
-            onClick={() => {
-              localStorage.removeItem('sb-frtxsynlvwhpnzzgfgbt-auth-token');
-              localStorage.clear();
-              window.location.href = '/';
-            }}
-            style={{ padding: '8px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
-          >
-            Sign Out &amp; Return Home
-          </button>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            <button
+              onClick={handleRetry}
+              disabled={retrying}
+              style={{ padding: '8px 20px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', opacity: retrying ? 0.6 : 1 }}
+            >
+              {retrying ? 'Retrying...' : 'Retry'}
+            </button>
+            <button
+              onClick={handleSignOut}
+              style={{ padding: '8px 20px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px' }}
+            >
+              Sign Out &amp; Return Home
+            </button>
+          </div>
         </>
       ) : (
         <>
