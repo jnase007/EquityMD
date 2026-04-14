@@ -77,6 +77,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 // CookieConsent removed per user request
 // import { CookieConsent } from './components/CookieConsent';
 import { ExitIntentPopup } from './components/ExitIntentPopup';
+import { FeedbackWedge } from './components/FeedbackWedge';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { consumeOAuthNextPath, clearOAuthNextPath } from './lib/oauthRedirect';
 
@@ -644,6 +645,7 @@ export default function App() {
       <ScrollToTop />
       {/* <CookieConsent /> */}
       <ExitIntentPopup />
+      <FeedbackWedge />
     </div>
   );
 }
