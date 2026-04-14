@@ -137,9 +137,14 @@ export function HowItWorks() {
   return (
     <div className="min-h-screen bg-white">
       <SEO
-        title="How Real Estate Syndication Works | EquityMD"
-        description="Learn how EquityMD connects accredited investors with verified real estate syndicators. Simple 3-step process to start investing in commercial real estate."
+        title="How Real Estate Syndication Works | Beginner's Guide 2026 | EquityMD"
+        description="Learn how real estate syndication works step by step. From finding deals to earning passive income — a complete guide for accredited investors new to syndication."
         canonical="https://equitymd.com/how-it-works"
+        keywords="how does real estate syndication work, syndication for beginners, passive real estate investing guide, accredited investor guide, syndication process explained"
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'How It Works', url: 'https://equitymd.com/how-it-works' }
+        ]}
       />
       <Navbar />
 

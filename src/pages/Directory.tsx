@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Building2, Star, MapPin, Search, Filter, TrendingUp, Globe, LayoutGrid, List, ChevronRight, Users, Award, Sparkles, ArrowRight, Briefcase } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
-import { SEO, ItemListSchema } from '../components/SEO';
+import { SEO, ItemListSchema, Breadcrumbs } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { AuthModal } from '../components/AuthModal';
 import { getSyndicatorLogo, getSyndicatorLocation } from '../lib/syndicator-logos';
@@ -269,10 +269,14 @@ export function Directory() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
       <SEO
-        title="Real Estate Syndicator Directory | Verified CRE Sponsors | EquityMD"
-        description="Browse 400+ verified real estate syndicators. Compare track records, reviews, minimum investments, and specialties. Free for investors."
-        keywords="real estate syndicators, syndication sponsors, verified syndicators, multifamily sponsors, commercial real estate syndicators, syndication directory"
+        title="Best Real Estate Syndicators 2026 | Verified Sponsors Directory | EquityMD"
+        description="Browse 400+ verified real estate syndicators. Compare track records, reviews, deal volume & specialties. Find the best syndication sponsors for passive investing."
+        keywords="best real estate syndicators, top syndication sponsors 2026, verified syndicators, multifamily sponsors, commercial real estate syndicators directory"
         canonical="https://equitymd.com/directory"
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'Syndicator Directory', url: 'https://equitymd.com/directory' }
+        ]}
       />
       <ItemListSchema
         name="Top Real Estate Syndicators"

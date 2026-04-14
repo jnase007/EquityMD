@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { DealCard, DealListItem } from '../components/Cards';
 import { Footer } from '../components/Footer';
-import { SEO } from '../components/SEO';
+import { SEO, Breadcrumbs } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
@@ -214,10 +214,14 @@ export function Browse() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 animate-fade-in">
       <SEO
-        title="Browse Real Estate Deals | Multifamily & CRE Investments | EquityMD"
-        description="Explore 50+ active real estate syndication deals. Filter by property type, location, IRR & minimum investment. Compare multifamily, industrial & medical office investments."
+        title="Browse Real Estate Syndication Deals | Find Passive Income Investments | EquityMD"
+        description="Browse active real estate syndication deals from verified sponsors. Filter by property type, location, target IRR & minimum investment. Multifamily, industrial, medical office & more."
         canonical="https://equitymd.com/find"
-        keywords="real estate deals, syndication opportunities, multifamily investments, commercial real estate, industrial properties, passive income investing"
+        keywords="real estate syndication deals, passive income real estate, multifamily investments, commercial real estate investing, syndication opportunities, accredited investor deals"
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'Browse Deals', url: 'https://equitymd.com/find' }
+        ]}
       />
       <Navbar />
 

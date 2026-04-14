@@ -224,10 +224,14 @@ export function Blog() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
       <SEO
-        title="Real Estate Investing Blog | Syndication Insights | EquityMD"
-        description="Educational articles on real estate syndication, deal analysis, market trends, and passive investing. New content weekly."
-        keywords="CRE syndication tips, real estate investment insights, commercial real estate blog, syndication strategies, investor education"
+        title="Real Estate Syndication Blog | Investing Guides & Market Analysis | EquityMD"
+        description="Expert articles on real estate syndication, passive income strategies, deal analysis, and market trends for accredited investors. Updated weekly."
+        keywords="real estate syndication blog, passive income investing guide, commercial real estate analysis, syndication strategies, accredited investor education"
         canonical="https://equitymd.com/blog"
+        breadcrumbs={[
+          { name: 'Home', url: 'https://equitymd.com' },
+          { name: 'Blog', url: 'https://equitymd.com/blog' }
+        ]}
       />
       <Navbar />
 

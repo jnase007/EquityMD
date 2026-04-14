@@ -88,16 +88,28 @@ const STATIC_PAGES: Record<string, PageMeta> = {
     description: "EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse verified syndicators, discover curated deals, and build passive income through commercial real estate.",
     canonical: SITE_URL,
     bodyContent: `
-<h1>EquityMD — Connect with Verified Real Estate Syndicators</h1>
-<p>EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse verified syndicators, discover curated deals, and build passive income through commercial real estate.</p>
-<h2>Why EquityMD?</h2>
+<h1>EquityMD — The Marketplace for Real Estate Syndication Deals</h1>
+<p>EquityMD connects accredited investors with verified real estate syndicators and institutional-quality investment opportunities. Browse curated deals, compare sponsors, and build passive income through commercial real estate.</p>
+<h2>Why Investors Choose EquityMD</h2>
 <ul>
-<li>Verified syndicator directory with track records</li>
-<li>Curated multifamily and commercial real estate deals</li>
-<li>Due diligence tools and market reports</li>
-<li>Free for investors — browse deals and connect directly</li>
+<li><strong>400+ Verified Syndicators</strong> — browse the largest directory of real estate syndication sponsors with track records, reviews, and deal history</li>
+<li><strong>Curated Syndication Deals</strong> — multifamily apartments, industrial, medical office, self-storage, and more</li>
+<li><strong>Due Diligence Tools</strong> — investment calculator, market reports by state, and educational resources</li>
+<li><strong>Free for Investors</strong> — browse deals and connect with syndicators at no cost</li>
 </ul>
-<p><a href="${SITE_URL}">View full site</a></p>`,
+<h2>How Real Estate Syndication Works</h2>
+<p>Real estate syndication pools capital from multiple accredited investors to acquire commercial properties. A professional syndicator (sponsor) manages the property while investors receive quarterly distributions and a share of profits at sale. Typical returns target 15-20% IRR over 3-7 year hold periods.</p>
+<h2>Explore EquityMD</h2>
+<ul>
+<li><a href="${SITE_URL}/find">Browse Syndication Deals</a></li>
+<li><a href="${SITE_URL}/directory">Syndicator Directory</a></li>
+<li><a href="${SITE_URL}/rankings">Top Syndicators 2026</a></li>
+<li><a href="${SITE_URL}/how-it-works">How Syndication Works</a></li>
+<li><a href="${SITE_URL}/blog">Investing Blog</a></li>
+<li><a href="${SITE_URL}/resources/market-reports">Market Reports by State</a></li>
+<li><a href="${SITE_URL}/resources/glossary">Syndication Glossary</a></li>
+<li><a href="${SITE_URL}/resources/calculator">Returns Calculator</a></li>
+</ul>`,
     jsonLd: [
       {
         "@context": "https://schema.org",
@@ -121,13 +133,22 @@ const STATIC_PAGES: Record<string, PageMeta> = {
     ],
   },
   "/find": {
-    title: "Browse Real Estate Deals | Multifamily & CRE Investments | EquityMD",
-    description: "Browse curated real estate syndication deals. Multifamily, commercial, industrial — find passive income opportunities from verified syndicators.",
+    title: "Browse Real Estate Syndication Deals | Find Passive Income Investments | EquityMD",
+    description: "Browse active real estate syndication deals from verified sponsors. Filter by property type, location, target IRR & minimum investment. Multifamily, industrial & more.",
     canonical: `${SITE_URL}/find`,
     bodyContent: `
-<h1>Browse Real Estate Deals</h1>
-<p>Discover multifamily and commercial real estate syndication opportunities from verified syndicators. Filter by property type, location, and investment terms.</p>
-<p><a href="${SITE_URL}/find">Browse deals</a></p>`,
+<h1>Browse Real Estate Syndication Deals</h1>
+<p>Discover active real estate syndication opportunities from verified syndicators on EquityMD. Filter by property type, location, target IRR, and minimum investment amount.</p>
+<h2>Property Types Available</h2>
+<ul>
+<li>Multifamily Apartments — Value-add and stabilized</li>
+<li>Industrial & Logistics — Warehouses and distribution centers</li>
+<li>Medical Office — Healthcare real estate investments</li>
+<li>Self-Storage — Recession-resistant asset class</li>
+<li>Retail & Mixed-Use — Commercial and residential blends</li>
+</ul>
+<p>Minimum investments typically range from $25,000 to $100,000. Most deals target 15-20% IRR with 3-7 year hold periods and quarterly cash distributions.</p>
+<p><a href="${SITE_URL}/find">Browse all deals</a> | <a href="${SITE_URL}/directory">View syndicators</a> | <a href="${SITE_URL}/how-it-works">How it works</a></p>`,
   },
   "/directory": {
     title: "Real Estate Syndicator Directory | Verified CRE Sponsors | EquityMD",
