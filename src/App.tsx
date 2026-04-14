@@ -7,31 +7,54 @@ import { authLogger } from './lib/logger';
 import { initGA, trackPageView } from './lib/gtag';
 
 // Force deployment refresh - production loading fix
-// Lazy load heavy components
-const Home = lazy(() => import('./pages/Home').then(module => ({ default: module.Home })));
-const Browse = lazy(() => import('./pages/Browse').then(module => ({ default: module.Browse })));
-const Profile = lazy(() => import('./pages/ProfileNew').then(module => ({ default: module.ProfileNew })));
-const Dashboard = lazy(() => import('./pages/UnifiedDashboard').then(module => ({ default: module.UnifiedDashboard })));
-const Welcome = lazy(() => import('./pages/Welcome').then(module => ({ default: module.Welcome })));
-const DealDetails = lazy(() => import('./pages/DealDetails').then(module => ({ default: module.DealDetails })));
-const NewDeal = lazy(() => import('./pages/NewDeal').then(module => ({ default: module.NewDeal })));
-const EditDeal = lazy(() => import('./pages/EditDeal').then(module => ({ default: module.EditDeal })));
-const SyndicatorProfile = lazy(() => import('./pages/SyndicatorProfile').then(module => ({ default: module.SyndicatorProfile })));
-const Directory = lazy(() => import('./pages/Directory').then(module => ({ default: module.Directory })));
-const Compare = lazy(() => import('./pages/Compare').then(module => ({ default: module.Compare })));
-const Rankings = lazy(() => import('./pages/Rankings').then(module => ({ default: module.Rankings })));
-const MarketMap = lazy(() => import('./pages/MarketMap').then(module => ({ default: module.MarketMap })));
-const Inbox = lazy(() => import('./pages/Inbox').then(module => ({ default: module.Inbox })));
-const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
-const Favorites = lazy(() => import('./pages/Favorites').then(module => ({ default: module.Favorites })));
-const Portfolio = lazy(() => import('./pages/Portfolio').then(module => ({ default: module.Portfolio })));
-const BrandingGuide = lazy(() => import('./pages/BrandingGuide').then(module => ({ default: module.BrandingGuide })));
-const Leaderboard = lazy(() => import('./pages/Leaderboard').then(module => ({ default: module.Leaderboard })));
-const Discover = lazy(() => import('./pages/Discover').then(module => ({ default: module.Discover })));
-const Calendar = lazy(() => import('./pages/Calendar').then(module => ({ default: module.Calendar })));
-const Goals = lazy(() => import('./pages/Goals').then(module => ({ default: module.Goals })));
-const SyndicatorSetup = lazy(() => import('./pages/SyndicatorSetup').then(module => ({ default: module.SyndicatorSetup })));
-const GoToMarket = lazy(() => import('./pages/GoToMarket').then(module => ({ default: module.default })));
+// Lazy load with chunk-error recovery: if a deploy nukes old chunks,
+// retry once (auto-reload) instead of showing a blank page forever.
+function lazyRetry<T extends React.ComponentType<any>>(
+  importFn: () => Promise<{ default: T } | { [key: string]: T }>,
+  namedExport?: string
+): React.LazyExoticComponent<T> {
+  return lazy(() =>
+    (importFn() as Promise<any>)
+      .then((module: any) => ({ default: namedExport ? module[namedExport] : module.default }))
+      .catch((err: any) => {
+        // Chunk load failed — likely a new deploy. Reload once.
+        const key = 'chunk_reload_' + window.location.pathname;
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, '1');
+          window.location.reload();
+          // Return a never-resolving promise to prevent React from rendering the error
+          return new Promise(() => {});
+        }
+        // Already reloaded once — let ErrorBoundary handle it
+        throw err;
+      })
+  );
+}
+
+const Home = lazyRetry(() => import('./pages/Home'), 'Home');
+const Browse = lazyRetry(() => import('./pages/Browse'), 'Browse');
+const Profile = lazyRetry(() => import('./pages/ProfileNew'), 'ProfileNew');
+const Dashboard = lazyRetry(() => import('./pages/UnifiedDashboard'), 'UnifiedDashboard');
+const Welcome = lazyRetry(() => import('./pages/Welcome'), 'Welcome');
+const DealDetails = lazyRetry(() => import('./pages/DealDetails'), 'DealDetails');
+const NewDeal = lazyRetry(() => import('./pages/NewDeal'), 'NewDeal');
+const EditDeal = lazyRetry(() => import('./pages/EditDeal'), 'EditDeal');
+const SyndicatorProfile = lazyRetry(() => import('./pages/SyndicatorProfile'), 'SyndicatorProfile');
+const Directory = lazyRetry(() => import('./pages/Directory'), 'Directory');
+const Compare = lazyRetry(() => import('./pages/Compare'), 'Compare');
+const Rankings = lazyRetry(() => import('./pages/Rankings'), 'Rankings');
+const MarketMap = lazyRetry(() => import('./pages/MarketMap'), 'MarketMap');
+const Inbox = lazyRetry(() => import('./pages/Inbox'), 'Inbox');
+const AdminDashboard = lazyRetry(() => import('./pages/admin/Dashboard'));
+const Favorites = lazyRetry(() => import('./pages/Favorites'), 'Favorites');
+const Portfolio = lazyRetry(() => import('./pages/Portfolio'), 'Portfolio');
+const BrandingGuide = lazyRetry(() => import('./pages/BrandingGuide'), 'BrandingGuide');
+const Leaderboard = lazyRetry(() => import('./pages/Leaderboard'), 'Leaderboard');
+const Discover = lazyRetry(() => import('./pages/Discover'), 'Discover');
+const Calendar = lazyRetry(() => import('./pages/Calendar'), 'Calendar');
+const Goals = lazyRetry(() => import('./pages/Goals'), 'Goals');
+const SyndicatorSetup = lazyRetry(() => import('./pages/SyndicatorSetup'), 'SyndicatorSetup');
+const GoToMarket = lazyRetry(() => import('./pages/GoToMarket'));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
