@@ -57,7 +57,35 @@
 
 [[edge_functions]]
   function = "og-tags"
+  path = "/rankings"
+
+[[edge_functions]]
+  function = "og-tags"
   path = "/rankings/*"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/blog"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/success-stories"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/market-map"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/compare"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/new-pricing"
+
+[[edge_functions]]
+  function = "og-tags"
+  path = "/legal/*"
 
 # SEO: Redirect www to non-www (canonical domain)
 [[redirects]]

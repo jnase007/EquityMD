@@ -34,6 +34,18 @@ const howItWorksFaqs = [
   {
     question: "Is EquityMD a crowdfunding platform?",
     answer: "EquityMD is a marketplace that connects accredited investors with verified syndicators. We don't pool investments ourselves - instead, we help you discover quality syndication opportunities and connect directly with experienced sponsors."
+  },
+  {
+    question: "What does it mean to be an accredited investor?",
+    answer: "An accredited investor meets SEC financial thresholds: net worth over $1 million (excluding primary residence), annual income over $200,000 individually ($300,000 with spouse) for the past two years, or certain professional certifications (Series 7, 65, or 82). Most real estate syndications require accredited investor status under Regulation D."
+  },
+  {
+    question: "How is passive real estate investing different from buying rental property?",
+    answer: "With syndications, you invest capital but have zero management responsibilities — no tenants, toilets, or maintenance calls. A professional syndicator handles everything. You also get access to larger commercial properties ($5-50M+) that you couldn't buy alone, with institutional-quality management and built-in diversification across units."
+  },
+  {
+    question: "What returns can I expect from real estate syndication?",
+    answer: "Typical syndication returns include 6-10% annual cash-on-cash distributions plus profit at sale, targeting 15-20% total IRR over a 3-7 year hold. Returns vary by deal type — value-add deals target higher returns with more risk, while stabilized assets offer lower but more predictable income. Past performance doesn't guarantee future results."
   }
 ];
 

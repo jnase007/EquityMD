@@ -358,6 +358,65 @@ export default async function handler(request: Request, context: Context) {
     }), { headers: { "content-type": "text/html; charset=utf-8" } });
   }
 
+  // Success stories
+  if (pathname === "/success-stories") {
+    return new Response(generateFullHtml({
+      title: "Real Estate Investing Success Stories | EquityMD",
+      description: "Read real success stories from investors who built passive income through real estate syndication on EquityMD.",
+      canonical: `${SITE_URL}/success-stories`,
+      bodyContent: `<h1>Real Estate Investing Success Stories</h1><p>Discover how investors are building passive income through real estate syndication.</p><p><a href="${SITE_URL}/success-stories">Read stories</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  // Market map
+  if (pathname === "/market-map") {
+    return new Response(generateFullHtml({
+      title: "Real Estate Investment Market Map | EquityMD",
+      description: "Interactive map showing real estate syndication deals and syndicators across the US. Find investment opportunities near you.",
+      canonical: `${SITE_URL}/market-map`,
+      bodyContent: `<h1>Real Estate Investment Market Map</h1><p>Explore syndication opportunities across the US on our interactive market map.</p><p><a href="${SITE_URL}/market-map">View map</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  // Compare syndicators
+  if (pathname === "/compare") {
+    return new Response(generateFullHtml({
+      title: "Compare Real Estate Syndicators | EquityMD",
+      description: "Side-by-side comparison of real estate syndicators. Compare track records, fees, minimum investments, and reviews.",
+      canonical: `${SITE_URL}/compare`,
+      bodyContent: `<h1>Compare Real Estate Syndicators</h1><p>Compare syndicators side-by-side to find the best fit for your investment goals.</p><p><a href="${SITE_URL}/compare">Compare now</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  // New pricing
+  if (pathname === "/new-pricing") {
+    return new Response(generateFullHtml({
+      title: "Syndicator Plans & Pricing 2026 | EquityMD",
+      description: "Affordable plans for syndicators to list deals on EquityMD and reach thousands of accredited investors.",
+      canonical: `${SITE_URL}/new-pricing`,
+      bodyContent: `<h1>Syndicator Plans & Pricing</h1><p>List your deals on EquityMD. Free to start, premium plans for more visibility.</p><p><a href="${SITE_URL}/new-pricing">View plans</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
+  // Legal pages
+  if (pathname.startsWith("/legal/")) {
+    const page = pathname.replace("/legal/", "").replace(/\/$/, "");
+    const legalTitles: Record<string, string> = {
+      privacy: "Privacy Policy | EquityMD",
+      terms: "Terms of Service | EquityMD",
+      disclaimer: "Investment Disclaimer | EquityMD",
+      accreditation: "Accreditation Requirements | EquityMD",
+      compliance: "Compliance & Regulatory | EquityMD",
+    };
+    const title = legalTitles[page] || "Legal | EquityMD";
+    return new Response(generateFullHtml({
+      title,
+      description: `${title.replace(" | EquityMD", "")} for EquityMD real estate syndication platform.`,
+      canonical: `${SITE_URL}/legal/${page}`,
+      bodyContent: `<h1>${escapeHtml(title.replace(" | EquityMD", ""))}</h1><p><a href="${SITE_URL}/legal/${page}">Read full document</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+
   // Rankings
   if (pathname.startsWith("/rankings")) {
     const cat = pathname.replace("/rankings", "").replace(/^\//, "").replace(/\/$/, "");

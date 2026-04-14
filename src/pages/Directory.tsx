@@ -37,6 +37,18 @@ const syndicatorFaqs = [
   {
     question: "Are syndicators regulated by the SEC?",
     answer: "Yes, most syndications are securities offerings regulated by the SEC under Regulation D (506b or 506c). Syndicators must follow securities laws, though most offerings are exempt from registration. This doesn't mean they're SEC-approved."
+  },
+  {
+    question: "What is the difference between a syndicator and a REIT?",
+    answer: "A syndicator raises capital for specific properties you choose to invest in, giving you direct ownership and larger tax benefits through depreciation. REITs are publicly traded funds that own portfolios of properties — they're more liquid but offer less control and fewer tax advantages. Syndications typically target higher returns (15-20% IRR) compared to REITs (8-12%)."
+  },
+  {
+    question: "How do I verify a syndicator's track record?",
+    answer: "Ask for a complete deal history including full-cycle deals (purchased and sold), not just current holdings. Request audited financials, actual vs. projected returns, and references from past investors. On EquityMD, verified syndicators have undergone background and track record checks. Look for consistent performance across multiple market cycles."
+  },
+  {
+    question: "Can I invest with multiple syndicators at once?",
+    answer: "Yes, and diversification across syndicators is encouraged. Investing with 3-5 different syndicators across different markets and property types reduces your risk. Each investment is a separate legal entity (typically an LLC), so your liability is limited to each individual investment."
   }
 ];
 

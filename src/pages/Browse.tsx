@@ -34,6 +34,18 @@ const dealsFaqs = [
   {
     question: "How are syndication returns taxed?",
     answer: "Syndication returns receive favorable tax treatment. You'll receive a K-1 form annually showing your share of income, depreciation, and deductions. Depreciation often creates paper losses that offset income, and long-term capital gains rates apply at sale."
+  },
+  {
+    question: "How much money do I need to invest in a real estate syndication?",
+    answer: "Minimum investments typically range from $25,000 to $100,000, with most deals requiring $50,000. Some syndicators offer lower minimums for repeat investors or through funds. You generally need to be an accredited investor, meaning a net worth over $1M (excluding primary residence) or annual income over $200K ($300K jointly)."
+  },
+  {
+    question: "What is a real estate syndication deal?",
+    answer: "A real estate syndication is a partnership where a sponsor (syndicator) pools capital from multiple passive investors to acquire, manage, and eventually sell a property. Investors receive quarterly distributions and a share of profits at sale, while the syndicator handles all day-to-day operations. Common property types include multifamily apartments, self-storage, industrial, and medical office."
+  },
+  {
+    question: "How long does it take to get my money back from a syndication?",
+    answer: "Most syndications have a hold period of 3 to 7 years, during which your capital is locked. You'll typically receive quarterly cash distributions (6-10% annually), but the bulk of your return comes when the property is sold or refinanced. Some syndications offer early refinancing events that return part of your initial investment sooner."
   }
 ];
 
