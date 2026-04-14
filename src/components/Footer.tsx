@@ -111,148 +111,39 @@ export function Footer() {
         <div>
           <h3 className="font-bold mb-4">Platform</h3>
           <ul className="space-y-2 text-gray-400">
-            <li>
-              <button
-                onClick={() => handleNavigation('/how-it-works')}
-                className="hover:text-white transition"
-              >
-                How It Works
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/find')}
-                className="hover:text-white transition"
-              >
-                Find Deals
-              </button>
-            </li>
-
-
-            <li>
-              <button
-                onClick={() => handleNavigation('/success-stories')}
-                className="hover:text-white transition"
-              >
-                Success Stories
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/pricing')}
-                className="hover:text-white transition"
-              >
-                Pricing
-              </button>
-            </li>
+            <li><Link to="/how-it-works" className="hover:text-white transition">How It Works</Link></li>
+            <li><Link to="/find" className="hover:text-white transition">Browse Deals</Link></li>
+            <li><Link to="/directory" className="hover:text-white transition">Syndicator Directory</Link></li>
+            <li><Link to="/rankings" className="hover:text-white transition">Top Syndicators 2026</Link></li>
+            <li><Link to="/compare" className="hover:text-white transition">Compare Syndicators</Link></li>
+            <li><Link to="/market-map" className="hover:text-white transition">Investment Market Map</Link></li>
+            <li><Link to="/success-stories" className="hover:text-white transition">Success Stories</Link></li>
+            <li><Link to="/pricing" className="hover:text-white transition">Pricing</Link></li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-bold mb-4">Resources</h3>
           <ul className="space-y-2 text-gray-400">
-            <li>
-              <button
-                onClick={() => handleNavigation('/blog')}
-                className="hover:text-white transition"
-              >
-                Blog
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/resources/due-diligence')}
-                className="hover:text-white transition"
-              >
-                Due Diligence Guide
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/resources/calculator')}
-                className="hover:text-white transition"
-              >
-                Investment Calculator
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/resources/market-reports')}
-                className="hover:text-white transition"
-              >
-                Market Reports
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/resources/glossary')}
-                className="hover:text-white transition"
-              >
-                Glossary
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/branding')}
-                className="hover:text-white transition"
-              >
-                Brand Guidelines
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/gtm')}
-                className="hover:text-white transition"
-              >
-                Go-To-Market
-              </button>
-            </li>
+            <li><Link to="/blog" className="hover:text-white transition">Investing Blog</Link></li>
+            <li><Link to="/resources/due-diligence" className="hover:text-white transition">Due Diligence Guide</Link></li>
+            <li><Link to="/resources/calculator" className="hover:text-white transition">Returns Calculator</Link></li>
+            <li><Link to="/resources/market-reports" className="hover:text-white transition">Market Reports</Link></li>
+            <li><Link to="/resources/education" className="hover:text-white transition">Investor Education</Link></li>
+            <li><Link to="/resources/glossary" className="hover:text-white transition">Syndication Glossary</Link></li>
+            <li><Link to="/about" className="hover:text-white transition">About EquityMD</Link></li>
+            <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-bold mb-4">Legal</h3>
           <ul className="space-y-2 text-gray-400">
-            <li>
-              <button
-                onClick={() => handleNavigation('/legal/privacy')}
-                className="hover:text-white transition"
-              >
-                Privacy Policy
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/legal/terms')}
-                className="hover:text-white transition"
-              >
-                Terms of Service
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/legal/disclaimer')}
-                className="hover:text-white transition"
-              >
-                Disclaimer
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/legal/accreditation')}
-                className="hover:text-white transition"
-              >
-                Accreditation Requirements
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavigation('/legal/compliance')}
-                className="hover:text-white transition"
-              >
-                SEC Compliance
-              </button>
-            </li>
+            <li><Link to="/legal/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
+            <li><Link to="/legal/terms" className="hover:text-white transition">Terms of Service</Link></li>
+            <li><Link to="/legal/disclaimer" className="hover:text-white transition">Investment Disclaimer</Link></li>
+            <li><Link to="/legal/accreditation" className="hover:text-white transition">Accreditation Requirements</Link></li>
+            <li><Link to="/legal/compliance" className="hover:text-white transition">SEC Compliance</Link></li>
           </ul>
         </div>
       </div>

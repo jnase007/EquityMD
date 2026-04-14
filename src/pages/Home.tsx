@@ -41,6 +41,18 @@ const homeFaqs = [
   {
     question: "What is the minimum investment amount?",
     answer: "Minimum investments vary by deal, typically ranging from $25,000 to $100,000. Each listing displays the minimum investment required, expected returns, hold period, and other key terms upfront."
+  },
+  {
+    question: "What is real estate syndication?",
+    answer: "Real estate syndication is a partnership where a sponsor (syndicator) pools capital from multiple investors to purchase, renovate, and manage a property. Investors are passive limited partners who receive quarterly cash distributions and a share of profits when the property is sold, typically targeting 15-20% annualized returns over 3-7 years."
+  },
+  {
+    question: "Do I need to be an accredited investor to use EquityMD?",
+    answer: "Most syndication deals on EquityMD are offered under SEC Regulation D and require accredited investor status — meaning a net worth over $1 million (excluding primary residence), annual income over $200,000 ($300,000 jointly), or certain professional certifications. Some offerings may be available to sophisticated non-accredited investors."
+  },
+  {
+    question: "How is EquityMD different from real estate crowdfunding?",
+    answer: "Unlike crowdfunding platforms that pool your money into funds, EquityMD is a marketplace where you connect directly with verified syndicators and choose specific deals. You get direct ownership in the property's LLC, larger tax benefits through depreciation, and a direct relationship with the sponsor managing your investment."
   }
 ];
 
@@ -602,6 +614,58 @@ export function Home() {
                   SEC compliant
                 </span>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SEO Internal Links Section */}
+      <section className="py-16 bg-white border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Explore EquityMD</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">For Investors</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/find" className="text-blue-600 hover:underline">Browse Syndication Deals</Link></li>
+                <li><Link to="/directory" className="text-blue-600 hover:underline">Syndicator Directory</Link></li>
+                <li><Link to="/rankings" className="text-blue-600 hover:underline">Top Rated Syndicators 2026</Link></li>
+                <li><Link to="/compare" className="text-blue-600 hover:underline">Compare Syndicators</Link></li>
+                <li><Link to="/market-map" className="text-blue-600 hover:underline">Investment Market Map</Link></li>
+                <li><Link to="/resources/calculator" className="text-blue-600 hover:underline">Returns Calculator</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Resources</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/how-it-works" className="text-blue-600 hover:underline">How Syndication Works</Link></li>
+                <li><Link to="/resources/due-diligence" className="text-blue-600 hover:underline">Due Diligence Guide</Link></li>
+                <li><Link to="/resources/glossary" className="text-blue-600 hover:underline">Syndication Glossary</Link></li>
+                <li><Link to="/resources/education" className="text-blue-600 hover:underline">Investor Education</Link></li>
+                <li><Link to="/resources/market-reports" className="text-blue-600 hover:underline">Market Reports by State</Link></li>
+                <li><Link to="/blog" className="text-blue-600 hover:underline">Investing Blog</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">Popular Markets</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/resources/market-reports/texas" className="text-blue-600 hover:underline">Texas Real Estate</Link></li>
+                <li><Link to="/resources/market-reports/florida" className="text-blue-600 hover:underline">Florida Real Estate</Link></li>
+                <li><Link to="/resources/market-reports/california" className="text-blue-600 hover:underline">California Real Estate</Link></li>
+                <li><Link to="/resources/market-reports/arizona" className="text-blue-600 hover:underline">Arizona Real Estate</Link></li>
+                <li><Link to="/resources/market-reports/georgia" className="text-blue-600 hover:underline">Georgia Real Estate</Link></li>
+                <li><Link to="/resources/market-reports/north-carolina" className="text-blue-600 hover:underline">North Carolina Real Estate</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-3">For Syndicators</h3>
+              <ul className="space-y-2 text-sm">
+                <li><Link to="/new-pricing" className="text-blue-600 hover:underline">List Your Deals</Link></li>
+                <li><Link to="/pricing" className="text-blue-600 hover:underline">Syndicator Pricing</Link></li>
+                <li><Link to="/success-stories" className="text-blue-600 hover:underline">Success Stories</Link></li>
+                <li><Link to="/about" className="text-blue-600 hover:underline">About EquityMD</Link></li>
+                <li><Link to="/contact" className="text-blue-600 hover:underline">Contact Us</Link></li>
+              </ul>
             </div>
           </div>
         </div>

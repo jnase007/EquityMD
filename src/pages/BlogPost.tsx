@@ -1246,6 +1246,26 @@ export function BlogPost() {
               </div>
             </div>
           )}
+          {/* SEO Internal Links CTA */}
+          <div className="mt-12 pt-8 border-t">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+              <h3 className="text-lg font-bold text-gray-900 mb-3">Ready to Start Investing?</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                EquityMD connects accredited investors with verified real estate syndicators. Browse deals, compare sponsors, and build passive income.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/find" className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+                  Browse Deals <TrendingUp className="h-3.5 w-3.5" />
+                </Link>
+                <Link to="/directory" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                  View Syndicators <Shield className="h-3.5 w-3.5" />
+                </Link>
+                <Link to="/how-it-works" className="inline-flex items-center gap-1.5 px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition">
+                  How It Works <BookOpen className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
 
