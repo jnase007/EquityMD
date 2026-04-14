@@ -95,7 +95,7 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user, profile, unreadCount, setNotifications, setUser, setProfile } = useAuthStore();
+  const { user, profile, unreadCount, setNotifications, setUser, setProfile, clearAuth } = useAuthStore();
   const { theme, resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -163,11 +163,15 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setProfile(null);
     setIsMenuOpen(false);
     setIsDropdownOpen(false);
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Ignore — we're nuking everything anyway
+    }
+    clearAuth();
+    localStorage.removeItem('sb-frtxsynlvwhpnzzgfgbt-auth-token');
     navigate('/');
   };
 
