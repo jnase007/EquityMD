@@ -40,8 +40,8 @@ export function FeedbackWedge() {
         .from('feedback')
         .insert([{
           user_id: user?.id || null,
-          name: form.name || 'Anonymous',
-          email: form.email || null,
+          name: form.name || profile?.full_name || 'Anonymous',
+          email: form.email || profile?.email || 'noreply@equitymd.com',
           subject: `[${form.type.toUpperCase()}] Website Feedback`,
           message: form.message,
           type: form.type,
