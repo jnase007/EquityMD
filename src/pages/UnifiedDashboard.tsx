@@ -72,6 +72,21 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Auto-refresh session when user returns to tab (prevents "session expired" on idle)
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible' && user) {
+        try {
+          await supabase.auth.refreshSession();
+        } catch (err) {
+          console.warn('[Dashboard] Background refresh failed:', err);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [user]);
   const [hoveredView, setHoveredView] = useState<'investor' | 'syndicator' | null>(null);
   const [hasInitialViewOverride] = useState(!!initialView); // Track if URL specified a view
 
@@ -87,11 +102,23 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     return () => clearTimeout(checkAuth);
   }, [user, loading, navigate]);
 
-  // Safety net: if profile doesn't load within 8 seconds, offer clean logout
+  // Safety net: if profile doesn't load, try refreshing session first before giving up
   useEffect(() => {
     if (!profile && user) {
-      const timer = setTimeout(() => setProfileTimeout(true), 8000);
-      return () => clearTimeout(timer);
+      // First attempt: refresh session and retry profile after 8 seconds
+      const retryTimer = setTimeout(async () => {
+        try {
+          console.log('[Dashboard] Profile not loaded after 8s — refreshing session...');
+          await supabase.auth.refreshSession();
+          // Give it another 10 seconds after refresh before showing error
+          const finalTimer = setTimeout(() => setProfileTimeout(true), 10000);
+          return () => clearTimeout(finalTimer);
+        } catch (err) {
+          console.error('[Dashboard] Session refresh failed:', err);
+          setProfileTimeout(true);
+        }
+      }, 8000);
+      return () => clearTimeout(retryTimer);
     }
     if (profile) setProfileTimeout(false);
   }, [profile, user]);
