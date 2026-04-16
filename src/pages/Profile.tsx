@@ -44,8 +44,8 @@ import { useDropzone } from 'react-dropzone';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Select from 'react-select';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 import toast, { Toaster } from 'react-hot-toast';
 
 // Set the app element for react-modal accessibility

@@ -20,16 +20,15 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
       },
       output: {
-        manualChunks: {
-          // Vendor chunks
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['lucide-react'],
-          'supabase-vendor': ['@supabase/supabase-js'],
-          'stripe-vendor': ['@stripe/stripe-js'],
-          'mapbox-vendor': ['mapbox-gl'],
-          'chart-vendor': ['recharts'],
-          'date-vendor': ['date-fns'],
-          'utils-vendor': ['papaparse', 'zustand']
+        manualChunks(id: string) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router-dom')) return 'react-vendor';
+          if (id.includes('node_modules/lucide-react')) return 'ui-vendor';
+          if (id.includes('node_modules/@supabase')) return 'supabase-vendor';
+          if (id.includes('node_modules/@stripe')) return 'stripe-vendor';
+          if (id.includes('node_modules/mapbox-gl')) return 'mapbox-vendor';
+          if (id.includes('node_modules/recharts')) return 'chart-vendor';
+          if (id.includes('node_modules/date-fns')) return 'date-vendor';
+          if (id.includes('node_modules/papaparse') || id.includes('node_modules/zustand')) return 'utils-vendor';
         }
       },
     },
