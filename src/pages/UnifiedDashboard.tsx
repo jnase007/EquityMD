@@ -102,43 +102,40 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     return () => clearTimeout(checkAuth);
   }, [user, loading, navigate]);
 
-  // On mount: immediately verify session is valid. If token expired, redirect fast.
+  // Safety net: if profile doesn't load within 8s, verify session then show escape hatch
   useEffect(() => {
-    if (!user) return;
-    let cancelled = false;
-    
-    (async () => {
-      try {
-        const { data, error } = await supabase.auth.refreshSession();
-        if (cancelled) return;
-        if (error || !data?.session) {
-          console.warn('[Dashboard] Session expired on load:', error?.message);
-          setProfileTimeout(true);
-          return;
-        }
-        console.log('[Dashboard] Session valid, token refreshed');
-      } catch (err) {
-        if (!cancelled) {
-          console.error('[Dashboard] Session check failed:', err);
-          setProfileTimeout(true);
-        }
-      }
-    })();
-    
-    return () => { cancelled = true; };
-  }, [user]);
-
-  // Safety net: if profile doesn't load within 5s, show escape hatch
-  useEffect(() => {
-    if (!profile && user && !profileTimeout) {
-      const timer = setTimeout(() => {
-        console.warn('[Dashboard] Profile not loaded after 5s — showing escape hatch');
-        setProfileTimeout(true);
-      }, 5000);
-      return () => clearTimeout(timer);
+    if (!user || profile) {
+      setProfileTimeout(false);
+      return;
     }
-    if (profile) setProfileTimeout(false);
-  }, [profile, user, profileTimeout]);
+    
+    const timer = setTimeout(async () => {
+      // Profile hasn't loaded — check if session is actually expired
+      try {
+        console.log('[Dashboard] Profile not loaded after 8s — checking session...');
+        const { data, error } = await supabase.auth.getSession();
+        if (error || !data?.session) {
+          console.warn('[Dashboard] Session expired:', error?.message);
+          setProfileTimeout(true);
+        } else {
+          // Session is valid but profile didn't load — try refreshing
+          console.log('[Dashboard] Session valid, refreshing...');
+          await supabase.auth.refreshSession();
+          // Give it 4 more seconds after refresh
+          setTimeout(() => {
+            if (!useAuthStore.getState().profile) {
+              setProfileTimeout(true);
+            }
+          }, 4000);
+        }
+      } catch (err) {
+        console.error('[Dashboard] Session check failed:', err);
+        setProfileTimeout(true);
+      }
+    }, 8000);
+    
+    return () => clearTimeout(timer);
+  }, [profile, user]);
 
   // Show loading state while checking auth
   if (loading && !user) {
