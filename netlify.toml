@@ -4,7 +4,7 @@
 
 # Force fresh deployment - clear cache
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
 
 # Edge Functions for SEO prerendering (bots get full HTML, users get SPA)
 [[edge_functions]]
