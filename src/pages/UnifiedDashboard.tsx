@@ -102,26 +102,43 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     return () => clearTimeout(checkAuth);
   }, [user, loading, navigate]);
 
-  // Safety net: if profile doesn't load, try refreshing session first before giving up
+  // On mount: immediately verify session is valid. If token expired, redirect fast.
   useEffect(() => {
-    if (!profile && user) {
-      // First attempt: refresh session and retry profile after 8 seconds
-      const retryTimer = setTimeout(async () => {
-        try {
-          console.log('[Dashboard] Profile not loaded after 8s — refreshing session...');
-          await supabase.auth.refreshSession();
-          // Give it another 10 seconds after refresh before showing error
-          const finalTimer = setTimeout(() => setProfileTimeout(true), 10000);
-          return () => clearTimeout(finalTimer);
-        } catch (err) {
-          console.error('[Dashboard] Session refresh failed:', err);
+    if (!user) return;
+    let cancelled = false;
+    
+    (async () => {
+      try {
+        const { data, error } = await supabase.auth.refreshSession();
+        if (cancelled) return;
+        if (error || !data?.session) {
+          console.warn('[Dashboard] Session expired on load:', error?.message);
+          setProfileTimeout(true);
+          return;
+        }
+        console.log('[Dashboard] Session valid, token refreshed');
+      } catch (err) {
+        if (!cancelled) {
+          console.error('[Dashboard] Session check failed:', err);
           setProfileTimeout(true);
         }
-      }, 8000);
-      return () => clearTimeout(retryTimer);
+      }
+    })();
+    
+    return () => { cancelled = true; };
+  }, [user]);
+
+  // Safety net: if profile doesn't load within 5s, show escape hatch
+  useEffect(() => {
+    if (!profile && user && !profileTimeout) {
+      const timer = setTimeout(() => {
+        console.warn('[Dashboard] Profile not loaded after 5s — showing escape hatch');
+        setProfileTimeout(true);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
     if (profile) setProfileTimeout(false);
-  }, [profile, user]);
+  }, [profile, user, profileTimeout]);
 
   // Show loading state while checking auth
   if (loading && !user) {
@@ -336,13 +353,16 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
                 <p className="text-gray-800 text-lg font-medium mb-2">Session expired</p>
                 <p className="text-gray-500 mb-6">Your session couldn't be restored. Please sign in again.</p>
                 <button
-                  onClick={() => {
-                    localStorage.clear();
+                  onClick={async () => {
+                    try {
+                      await supabase.auth.signOut();
+                    } catch (_) {}
+                    useAuthStore.getState().clearAuth();
                     window.location.href = '/';
                   }}
                   className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
                 >
-                  Return to Home
+                  Sign In Again
                 </button>
               </>
             ) : (
