@@ -11,7 +11,8 @@ import {
   getDealAlertTemplate,
   getWeeklyDigestTemplate,
   getProfileIncompleteTemplate,
-  getDealClosingSoonTemplate
+  getDealClosingSoonTemplate,
+  getDealAlertSignupTemplate
 } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
@@ -213,6 +214,18 @@ serve(async (req) => {
         });
         emailTo = to;
         emailSubject = `🏢 New Deal Alert: ${data.dealTitle}`;
+        break;
+
+      case 'deal_alert_signup':
+        if (!data?.userName || !data?.searchName || !to) {
+          return new Response(
+            JSON.stringify({ error: 'Missing required data for deal alert signup' }),
+            { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+          );
+        }
+        html = getDealAlertSignupTemplate(data.userName, data.searchName, data.filters || {});
+        emailTo = to;
+        emailSubject = '🔔 Deal Alerts Activated - EquityMD';
         break;
 
       case 'weekly_digest':

@@ -29,8 +29,12 @@ export function Footer() {
         await supabase.functions.invoke('send-email', {
           body: {
             to: email,
-            subject: '🏢 Welcome to EquityMD Deal Alerts!',
-            content: `Thanks for subscribing to EquityMD Deal Alerts!\n\nYou'll now receive notifications when new investment opportunities are listed on our platform.\n\nIn the meantime, you can:\n• Browse current deals at equitymd.com/find\n• Learn how syndication works at equitymd.com/how-it-works\n• Read our investor blog at equitymd.com/blog\n\nHappy investing!\n\nThe EquityMD Team`
+            type: 'deal_alert_signup',
+            data: {
+              userName: 'there',
+              searchName: 'Weekly Deal Digest',
+              filters: {},
+            }
           }
         });
       } catch (emailErr) {

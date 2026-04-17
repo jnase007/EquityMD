@@ -1221,3 +1221,42 @@ export function getDealClosingSoonTemplate({
     buttonUrl: `https://equitymd.com/deals/${dealSlug}`
   });
 }
+
+export function getDealAlertSignupTemplate(userName: string, searchName: string, filters: any): string {
+  const filterSummary = [];
+  if (filters?.location) filterSummary.push(`📍 Location: ${filters.location}`);
+  if (filters?.propertyType) filterSummary.push(`🏢 Property Type: ${filters.propertyType}`);
+  if (filters?.minInvestment) filterSummary.push(`💰 Min Investment: $${parseInt(filters.minInvestment).toLocaleString()}`);
+  if (filters?.maxInvestment) filterSummary.push(`💰 Max Investment: $${parseInt(filters.maxInvestment).toLocaleString()}`);
+  if (filters?.minIrr) filterSummary.push(`📈 Min Target IRR: ${filters.minIrr}%`);
+
+  const filtersHtml = filterSummary.length > 0 
+    ? filterSummary.map(f => `<p style="margin: 4px 0;">${f}</p>`).join('')
+    : '<p>All investment opportunities</p>';
+
+  const content = `
+    <p>Hi ${userName}! 🎉</p>
+    
+    <p>You're all set! We've saved your deal alert preferences and will notify you when new investment opportunities match your criteria.</p>
+    
+    <div class="info-box" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-left-color: #3b82f6;">
+      <h4 style="color: #2563eb;">🔔 Your Alert: ${searchName}</h4>
+      ${filtersHtml}
+    </div>
+    
+    <p><strong>What happens next?</strong></p>
+    <p>• When a new deal matches your criteria, we'll send you an email alert</p>
+    <p>• You can manage your alerts anytime from your dashboard</p>
+    <p>• Browse current opportunities while you wait</p>
+    
+    <p>Happy investing!</p>
+    <p><strong>The EquityMD Team</strong></p>
+  `;
+
+  return getBaseTemplate({
+    title: '🔔 Deal Alerts Activated!',
+    content,
+    buttonText: 'Browse Current Deals',
+    buttonUrl: 'https://equitymd.com/find'
+  });
+}

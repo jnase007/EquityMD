@@ -148,6 +148,31 @@ export function SavedSearches() {
 
         if (error) throw error;
         toast.success('Search saved! You\'ll get alerts for matching deals.');
+
+        // Send thank you email for new alert signup
+        try {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('email, full_name')
+            .eq('id', user.id)
+            .single();
+          
+          if (profileData?.email) {
+            await supabase.functions.invoke('send-email', {
+              body: {
+                to: profileData.email,
+                type: 'deal_alert_signup',
+                data: {
+                  userName: profileData.full_name || 'Investor',
+                  searchName: name.trim(),
+                  filters: searchData.filters,
+                }
+              }
+            });
+          }
+        } catch (emailErr) {
+          console.warn('Deal alert signup email failed:', emailErr);
+        }
       }
 
       setShowNewSearch(false);
