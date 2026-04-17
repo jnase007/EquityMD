@@ -363,6 +363,9 @@ export function PropertyListingWizard() {
       const location = formData.address.city && formData.address.state 
         ? `${formData.address.city}, ${formData.address.state}`
         : formData.location;
+
+      // Convert 'active' status to 'pending_review' for moderation
+      const finalStatus = status === 'active' ? 'pending_review' : status;
       
       // Create the deal data object
       const dealData: any = {
@@ -380,7 +383,7 @@ export function PropertyListingWizard() {
         preferred_return: formData.preferredReturn ? parseFloat(formData.preferredReturn) : null,
         equity_multiple: formData.equityMultiple ? parseFloat(formData.equityMultiple) : null,
         closing_date: formData.closingDate ? new Date(formData.closingDate).toISOString() : null,
-        status,
+        status: finalStatus,
         cover_image_url: null
       };
       
@@ -429,8 +432,8 @@ export function PropertyListingWizard() {
       // Clear draft from localStorage
       localStorage.removeItem(`deal_draft_${user.id}`);
       
-      // Send admin notification for new active deals
-      if (status === 'active') {
+      // Send admin notification for new deals pending review
+      if (finalStatus === 'pending_review') {
         try {
           // Get syndicator info for notification
           const syndicator = userSyndicators.find(s => s.id === formData.syndicatorId);
@@ -442,18 +445,10 @@ export function PropertyListingWizard() {
           
           await supabase.functions.invoke('send-email', {
             body: {
-              type: 'new_deal_listed',
-              data: {
-                syndicatorName: syndicator?.company_name || 'Unknown',
-                syndicatorEmail: userProfile?.email || user.email,
-                dealTitle: formData.title,
-                dealSlug: deal.slug,
-                propertyType: formData.propertyType,
-                location: location,
-                minimumInvestment: `$${parseInt(formData.minimumInvestment).toLocaleString()}`,
-                targetIrr: formData.targetIrr,
-                listedDate: new Date().toLocaleDateString()
-              }
+              to: 'justin@brandastic.com',
+              type: 'custom',
+              subject: `🔔 New Deal Pending Review: ${formData.title}`,
+              content: `A new deal has been submitted and needs your approval.\n\nDeal: ${formData.title}\nLocation: ${location}\nSyndicator: ${syndicator?.company_name || 'Unknown'}\nProperty Type: ${formData.propertyType}\n\nLog in to the admin dashboard to review and approve: https://equitymd.com/admin`
             }
           });
           console.log('Admin notification sent for new deal');
@@ -515,7 +510,7 @@ export function PropertyListingWizard() {
       }
       
       // Success!
-      toast.success(status === 'active' ? 'Deal published successfully!' : 'Draft saved!');
+      toast.success(finalStatus === 'pending_review' ? 'Deal submitted for review! Our team will review it shortly.' : 'Draft saved!');
       
       // Stop spinner before navigating
       setPublishing(false);

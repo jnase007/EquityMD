@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
 import {
   Search,
   Filter,
@@ -17,6 +18,7 @@ import {
   Eye,
   Save,
   X,
+  AlertCircle,
 } from "lucide-react";
 
 interface Deal {
@@ -39,7 +41,7 @@ export function PropertyManagement() {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState<"all" | "active" | "draft" | "archived">(
+  const [filter, setFilter] = useState<"all" | "active" | "draft" | "pending_review" | "archived">(
     "all"
   );
   const [editingDeal, setEditingDeal] = useState<string | null>(null);
@@ -63,6 +65,8 @@ export function PropertyManagement() {
     setDeals(data);
     setLoading(false);
   }
+
+  const pendingCount = deals.filter(d => d.status === 'pending_review').length;
 
   const filteredDeals = deals.filter((deal) => {
     const matchesSearch =
@@ -92,6 +96,31 @@ export function PropertyManagement() {
     } catch (error) {
       console.error("Error updating deal:", error);
     }
+  };
+
+  const approveDeal = async (deal: Deal) => {
+    await updateDealStatus(deal.id, 'active');
+    
+    // Send admin notification
+    try {
+      await supabase.functions.invoke('send-email', {
+        body: {
+          to: deal.syndicator?.company_name ? undefined : undefined, // We don't have syndicator email easily
+          type: 'custom',
+          subject: `✅ Your deal "${deal.title}" has been approved!`,
+          content: `Your deal "${deal.title}" is now live on EquityMD and visible to investors.`
+        }
+      });
+    } catch (e) {
+      console.warn('Notification email failed:', e);
+    }
+    
+    toast.success(`Deal "${deal.title}" approved and now live!`);
+  };
+
+  const rejectDeal = async (deal: Deal, reason?: string) => {
+    await updateDealStatus(deal.id, 'rejected');
+    toast.success(`Deal "${deal.title}" rejected.`);
   };
 
   const startEdit = (deal: Deal) => {
@@ -180,11 +209,28 @@ export function PropertyManagement() {
           className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="all">All Properties</option>
+          <option value="pending_review">Pending Review {pendingCount > 0 && `(${pendingCount})`}</option>
           <option value="active">Active</option>
           <option value="draft">Draft</option>
           <option value="archived">Archived</option>
         </select>
       </div>
+
+      {pendingCount > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex items-center gap-3">
+          <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-800">{pendingCount} deal{pendingCount !== 1 ? 's' : ''} pending review</p>
+            <p className="text-sm text-amber-600">New deals submitted by syndicators need your approval before going live.</p>
+          </div>
+          <button 
+            onClick={() => setFilter('pending_review')}
+            className="ml-auto px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-medium"
+          >
+            Review Now
+          </button>
+        </div>
+      )}
 
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -338,12 +384,16 @@ export function PropertyManagement() {
                         ? "bg-green-100 text-green-800"
                         : deal.status === "draft"
                         ? "bg-yellow-100 text-yellow-800"
+                        : deal.status === "pending_review"
+                        ? "bg-amber-100 text-amber-800"
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
                     <option value="draft">Draft</option>
+                    <option value="pending_review">Pending Review</option>
                     <option value="active">Active</option>
                     <option value="archived">Archived</option>
+                    <option value="rejected">Rejected</option>
                   </select>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -377,13 +427,32 @@ export function PropertyManagement() {
                         >
                           <Eye className="h-5 w-5" />
                         </Link>
-                        <button
-                          onClick={() => startEdit(deal)}
-                          className="text-gray-600 hover:text-blue-900"
-                          title="Edit deal"
-                        >
-                          <Edit className="h-5 w-5" />
-                        </button>
+                        {deal.status === 'pending_review' ? (
+                          <>
+                            <button
+                              onClick={() => approveDeal(deal)}
+                              className="text-green-600 hover:text-green-900"
+                              title="Approve deal"
+                            >
+                              <CheckCircle className="h-5 w-5" />
+                            </button>
+                            <button
+                              onClick={() => rejectDeal(deal)}
+                              className="text-red-600 hover:text-red-900"
+                              title="Reject deal"
+                            >
+                              <XCircle className="h-5 w-5" />
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => startEdit(deal)}
+                            className="text-gray-600 hover:text-blue-900"
+                            title="Edit deal"
+                          >
+                            <Edit className="h-5 w-5" />
+                          </button>
+                        )}
                         <button
                           onClick={() =>
                             updateDealStatus(
