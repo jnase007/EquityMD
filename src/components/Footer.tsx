@@ -115,8 +115,7 @@ export function Footer() {
             <li><Link to="/find" className="hover:text-white transition">Browse Deals</Link></li>
             <li><Link to="/directory" className="hover:text-white transition">Syndicator Directory</Link></li>
             <li><Link to="/rankings" className="hover:text-white transition">Top Syndicators 2026</Link></li>
-            <li><Link to="/compare" className="hover:text-white transition">Compare Syndicators</Link></li>
-            <li><Link to="/market-map" className="hover:text-white transition">Investment Market Map</Link></li>
+
             <li><Link to="/success-stories" className="hover:text-white transition">Success Stories</Link></li>
             <li><Link to="/pricing" className="hover:text-white transition">Pricing</Link></li>
           </ul>
@@ -129,7 +128,7 @@ export function Footer() {
             <li><Link to="/resources/due-diligence" className="hover:text-white transition">Due Diligence Guide</Link></li>
             <li><Link to="/resources/calculator" className="hover:text-white transition">Returns Calculator</Link></li>
             <li><Link to="/resources/market-reports" className="hover:text-white transition">Market Reports</Link></li>
-            <li><Link to="/resources/education" className="hover:text-white transition">Investor Education</Link></li>
+
             <li><Link to="/resources/glossary" className="hover:text-white transition">Syndication Glossary</Link></li>
             <li><Link to="/about" className="hover:text-white transition">About EquityMD</Link></li>
             <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
