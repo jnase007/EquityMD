@@ -165,14 +165,12 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
   const handleSignOut = async () => {
     setIsMenuOpen(false);
     setIsDropdownOpen(false);
-    try {
-      await supabase.auth.signOut();
-    } catch {
-      // Ignore — we're nuking everything anyway
-    }
+    // Clear local state FIRST — user sees immediate logout even if Supabase hangs
     clearAuth();
     localStorage.removeItem('sb-frtxsynlvwhpnzzgfgbt-auth-token');
     navigate('/');
+    // Fire-and-forget server-side cleanup
+    supabase.auth.signOut().catch(() => {});
   };
 
   const firstName = profile?.full_name?.split(' ')[0] || 'User';

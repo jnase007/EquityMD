@@ -137,6 +137,17 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     return () => clearTimeout(timer);
   }, [profile, user]);
 
+  // Hard ceiling: if loading hasn't resolved in 10s, force it
+  useEffect(() => {
+    const hardCeiling = setTimeout(() => {
+      if (loading) {
+        console.warn('[Dashboard] Hard ceiling hit — forcing loading=false');
+        setLoading(false);
+      }
+    }, 10000);
+    return () => clearTimeout(hardCeiling);
+  }, [loading]);
+
   // Show loading state while checking auth
   if (loading && !user) {
     return (
