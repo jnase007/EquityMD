@@ -1,4 +1,8 @@
 import React, { useEffect, useState, Suspense, lazy, useCallback } from 'react';
+
+// Build version check — type in console: window.__EQUITYMD_BUILD__
+declare const __BUILD_TIME__: string;
+(window as any).__EQUITYMD_BUILD__ = __BUILD_TIME__;
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
