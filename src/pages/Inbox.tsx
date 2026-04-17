@@ -435,7 +435,7 @@ export function Inbox() {
                 </div>
 
                 {/* Filter Tabs */}
-                <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
+                <div className="flex gap-1 p-1 bg-gray-100 rounded-xl overflow-hidden">
                   {[
                     { id: 'all', label: 'All', icon: InboxIcon },
                     { id: 'unread', label: 'Unread', icon: Bell },
@@ -445,14 +445,14 @@ export function Inbox() {
                     <button
                       key={tab.id}
                       onClick={() => setFilter(tab.id as FilterType)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-all ${
+                      className={`flex-1 flex items-center justify-center gap-1 px-2 py-2 text-xs font-medium rounded-lg transition-all min-w-0 ${
                         filter === tab.id 
                           ? 'bg-white text-blue-600 shadow-sm' 
                           : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
-                      <tab.icon className="h-4 w-4" />
-                      <span className="hidden sm:inline">{tab.label}</span>
+                      <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="hidden sm:inline truncate">{tab.label}</span>
                       {tab.id === 'unread' && totalUnread > 0 && (
                         <span className="ml-1 text-xs bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">
                           {totalUnread}
