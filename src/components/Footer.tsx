@@ -115,7 +115,7 @@ export function Footer() {
             <li><Link to="/find" className="hover:text-white transition">Browse Deals</Link></li>
             <li><Link to="/directory" className="hover:text-white transition">Syndicator Directory</Link></li>
             <li><Link to="/rankings" className="hover:text-white transition">Top Syndicators 2026</Link></li>
-
+            <li><Link to="/market-map" className="hover:text-white transition">Investment Market Map</Link></li>
             <li><Link to="/success-stories" className="hover:text-white transition">Success Stories</Link></li>
             <li><Link to="/pricing" className="hover:text-white transition">Pricing</Link></li>
           </ul>

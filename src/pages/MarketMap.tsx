@@ -147,7 +147,7 @@ export function MarketMap() {
             {...viewState}
             onMove={evt => setViewState(evt.viewState)}
             mapStyle="mapbox://styles/mapbox/light-v11"
-            mapboxAccessToken={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
           >
             <NavigationControl />
 
