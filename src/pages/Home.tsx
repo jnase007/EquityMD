@@ -13,6 +13,7 @@ import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
+import { useTheme } from '../contexts/ThemeContext';
 import { useScrollFix } from '../hooks/useScrollFix';
 import type { Deal } from '../types/database';
 
@@ -88,6 +89,8 @@ const getPropertyImage = (propertyType: string, index: number) => {
 const heroImageUrl = 'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg';
 
 export function Home() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark' || resolvedTheme === 'dim';
   const { user } = useAuthStore();
   const [featuredDeals, setFeaturedDeals] = useState<Deal[]>([]);
   const [totalDealVolume, setTotalDealVolume] = useState<string>('$450M+');
@@ -274,8 +277,8 @@ export function Home() {
             alt="Modern Apartment Building"
             className="w-full h-full object-cover"
           />
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/60 to-slate-900/80" />
+          {/* Gradient Overlay — lighter in dark mode so hero image shows through */}
+          <div className={`absolute inset-0 bg-gradient-to-b ${isDark ? 'from-slate-900/50 via-slate-900/40 to-slate-900/60' : 'from-slate-900/70 via-slate-900/60 to-slate-900/80'}`} />
           {/* Pattern Overlay */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
         </div>
