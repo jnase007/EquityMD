@@ -292,37 +292,21 @@
   status = 200
   force = true
 
+# Default: no-cache for ALL routes (SPA — every route serves index.html)
 [[headers]]
   for = "/*"
     [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
 
-# Cache static assets
+# Override: cache static assets aggressively (Vite hash-busts these automatically)
 [[headers]]
   for = "/assets/*"
     [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-# Don't cache HTML or SPA root
-[[headers]]
-  for = "/*.html"
-    [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-
-[[headers]]
-  for = "/"
-    [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-
-[[headers]]
-  for = "/index.html"
-    [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
 
 # Cache sitemap and robots
 [[headers]]
