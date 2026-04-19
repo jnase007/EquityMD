@@ -1579,13 +1579,13 @@ export function EmailPreview() {
     <div class="card">
       <div class="hero-section">
         <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 16px;">Equity<span style="color: #fbbf24;">MD</span></div>
-        <div class="hero-title">369+ CRE Syndicators. One Search.</div>
-        <div class="hero-subtitle">Research operators, compare track records, and find your next deal source.</div>
+        <div class="hero-title">See More Deals. Review More Operators.</div>
+        <div class="hero-subtitle">369+ syndicators with reviews, deal details, and track records — all in one place.</div>
       </div>
       <div style="color: #4b5563;">
         <p><strong>Hi *|FNAME|*,</strong></p>
-        <p>Finding CRE syndicators usually means scattered Google searches, conference intros, and word of mouth. EquityMD puts them all in one searchable directory.</p>
-        <p><strong>369+ syndicators</strong> — with published track records, asset focus, markets served, and deal history. Browse and filter in seconds.</p>
+        <p>Most investors only have access to deals from a few syndicators or firms they already know. That means you're only seeing a fraction of what's out there.</p>
+        <p>EquityMD changes that. <strong>One site with 369+ syndicators</strong> — browse deals, read investor reviews, and dig into the details. All on your own time.</p>
 
         <div class="operator-grid">
           <div class="operator-card">
@@ -1606,22 +1606,22 @@ export function EmailPreview() {
           </div>
         </div>
 
-        <p>Three ways investors are using EquityMD:</p>
+        <p>What you get on EquityMD:</p>
         <ol style="padding-left: 20px;">
-          <li style="margin-bottom: 8px;"><strong>Discovering operators</strong> they didn't know existed — across markets and asset classes</li>
-          <li style="margin-bottom: 8px;"><strong>Comparing track records</strong> side by side before reaching out</li>
-          <li style="margin-bottom: 8px;"><strong>Getting notified</strong> when operators post new deals</li>
+          <li style="margin-bottom: 8px;"><strong>More deals</strong> — from operators across the country, not just the ones in your network</li>
+          <li style="margin-bottom: 8px;"><strong>Investor reviews</strong> — see what other investors say about each syndicator</li>
+          <li style="margin-bottom: 8px;"><strong>Deal details</strong> — returns, minimums, timelines, documents — all in one place to browse anytime</li>
         </ol>
 
         <div class="highlight">
-          <strong>🏗️ Deal flow is building:</strong> As syndicators claim their profiles and list active deals, you'll see them here first. The earlier you're on the platform, the more deal flow you'll catch.
+          <strong>🏗️ New syndicators and deals are being added every week.</strong> The earlier you're on the platform, the more you'll see.
         </div>
 
         <div style="text-align: center; margin: 32px 0;">
-          <a href="https://equitymd.com/directory" class="button">Browse the Directory — Free</a>
+          <a href="https://equitymd.com/directory" class="button">Browse Syndicators & Deals — Free</a>
         </div>
 
-        <p style="font-size: 14px; color: #6b7280;">Syndicators list their own profiles and deals on EquityMD. You browse, research, and connect with them directly. Free to explore — sign up with Google or LinkedIn for full access.</p>
+        <p style="font-size: 14px; color: #6b7280;">Syndicators list their own profiles and deals. You browse, review, and connect with them directly. Free to explore — sign up with Google or LinkedIn for full access.</p>
       </div>
     </div>
     <div class="footer">
@@ -1663,25 +1663,26 @@ export function EmailPreview() {
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
       <p>Hi *|FNAME|*,</p>
-      <p>Most investors know 5-10 syndicators. There are hundreds more actively operating across the country — and most of them you've never heard of.</p>
-      <p>EquityMD has <strong>369+ operators listed</strong> with track records, asset focus, and markets served. Here's what a quick search looks like:</p>
+      <p>If you're like most CRE investors, you have access to deals from maybe 3-5 firms you know. That's a small window into a massive market.</p>
+      <p>EquityMD opens that up. <strong>369+ syndicators</strong>, searchable by market and asset class. Each profile has deal details, track records, and investor reviews — so you can browse and evaluate on your own time.</p>
+      <p>Here's what a quick search looks like:</p>
 
       <div class="search-example">
         <div class="search-query">🔍 "Multifamily · Texas"</div>
-        <div class="search-result">47 operators found — value-add, ground-up, ADU conversions</div>
+        <div class="search-result">47 operators — value-add, ground-up, ADU conversions</div>
       </div>
 
       <div class="search-example">
         <div class="search-query">🔍 "Industrial · Southeast"</div>
-        <div class="search-result">23 operators found — logistics, flex space, cold storage</div>
+        <div class="search-result">23 operators — logistics, flex space, cold storage</div>
       </div>
 
       <div class="search-example">
         <div class="search-query">🔍 "Medical Office · West Coast"</div>
-        <div class="search-result">12 operators found — MOBs, urgent care, dental portfolios</div>
+        <div class="search-result">12 operators — MOBs, urgent care, dental portfolios</div>
       </div>
 
-      <p>Every profile includes the operator's track record, asset focus, and deal history. When they list active deals, you'll see those too.</p>
+      <p>You keep your existing relationships. EquityMD just makes sure you're seeing <strong>everything else</strong> that's out there.</p>
 
       <div class="cta-block">
         <a href="https://equitymd.com/directory" class="cta-btn">Search the Directory →</a>
@@ -1691,7 +1692,7 @@ export function EmailPreview() {
         <p>— The EquityMD Team</p>
       </div>
       <div class="ps">
-        <p>P.S. As operators claim their profiles and post deals, you'll be first to see them. The directory is free to browse — sign up with Google or LinkedIn for full access.</p>
+        <p>P.S. New syndicators and deals are being added every week. Free to browse — sign up with Google or LinkedIn for full access.</p>
       </div>
     </div>
     <div class="footer">
@@ -1730,24 +1731,24 @@ export function EmailPreview() {
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
       <p>Hi *|FNAME|*,</p>
-      <p>Last note on this — then we'll let the platform speak for itself.</p>
-      <p>You probably already have operators you work with. That's great. But most investors tell us the same thing: <strong>"I only know a handful of syndicators, and I'm probably missing deals because of it."</strong></p>
-      <p>That's exactly why EquityMD exists. One directory, 369+ operators, all searchable by market, asset class, and track record. When they post deals, you see them.</p>
+      <p>Last note — then we'll let the site speak for itself.</p>
+      <p>Here's the problem we keep hearing from investors: <strong>"I only see deals from the 2-3 firms I already know. I'm sure I'm missing opportunities."</strong></p>
+      <p>You probably are. Most deal flow happens through closed networks. By the time you hear about a deal from someone outside your circle, it's already subscribed.</p>
+      <p>EquityMD gives you one place to see it all — deals, reviews, syndicator track records — and browse whenever works for you. No calls, no pressure, no middleman.</p>
 
       <div class="highlight">
-        <strong>What's happening right now:</strong><br>
-        New syndicators are claiming their profiles and starting to list active deals. The directory is growing every week — and investors who are already on the platform will see that deal flow first.
+        <strong>What's on the platform:</strong><br>
+        369+ syndicators across multifamily, industrial, retail, medical, and mixed-use. Investor reviews. Deal details. All searchable. Growing every week.
       </div>
 
-      <p>No cost to browse. No sales pitch. You find an operator that looks interesting, you reach out to them directly.</p>
+      <p class="cta">→ <a href="https://equitymd.com/directory">Browse deals & reviews</a></p>
 
-      <p class="cta">→ <a href="https://equitymd.com/directory">Browse the directory</a></p>
-
+      <p>Free to use. When you see something interesting, you reach out to the operator directly.</p>
       <div class="signature">
         <p>— The EquityMD Team</p>
       </div>
       <div class="ps">
-        <p>P.S. Bookmark <a href="https://equitymd.com/directory" style="font-weight: normal;">equitymd.com/directory</a> — as deal flow builds, you'll want to be watching.</p>
+        <p>P.S. Bookmark <a href="https://equitymd.com" style="font-weight: normal;">equitymd.com</a> — new syndicators and deals are being added every week.</p>
       </div>
     </div>
     <div class="footer">
