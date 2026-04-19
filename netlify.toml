@@ -281,12 +281,11 @@
   status = 301
   force = true
 
-# SPA fallback - must be last
+# SPA fallback - must be last (no force — let Netlify serve real files first)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  force = true
 
 # Default: no-cache for ALL routes (SPA — every route serves index.html)
 [[headers]]
