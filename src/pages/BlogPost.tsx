@@ -1181,7 +1181,7 @@ export function BlogPost() {
               </h3>
               
               <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-8">
-                Get exclusive access to vetted real estate syndication opportunities. 
+                Get exclusive access to real estate syndication opportunities. 
                 No landlord headaches. Truly passive income.
               </p>
 

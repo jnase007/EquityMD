@@ -336,7 +336,7 @@ export function Welcome() {
                     I Want to Invest
                   </h3>
                   <p className="text-gray-600 text-sm mb-4">
-                    Browse exclusive real estate syndication deals from vetted sponsors
+                    Browse exclusive real estate syndication deals from sponsors
                   </p>
                   <div className="flex items-center text-emerald-600 font-medium group-hover:translate-x-1 transition-transform">
                     Get Started <ArrowRight className="ml-2 h-4 w-4" />

@@ -44,7 +44,7 @@ const syndicatorFaqs = [
   },
   {
     question: "How do I verify a syndicator's track record?",
-    answer: "Ask for a complete deal history including full-cycle deals (purchased and sold), not just current holdings. Request audited financials, actual vs. projected returns, and references from past investors. On EquityMD, verified syndicators have undergone background and track record checks. Look for consistent performance across multiple market cycles."
+    answer: "Ask for a complete deal history including full-cycle deals (purchased and sold), not just current holdings. Request audited financials, actual vs. projected returns, and references from past investors. Look for consistent performance across multiple market cycles and conduct your own due diligence on any operator you're considering."
   },
   {
     question: "Can I invest with multiple syndicators at once?",
@@ -269,9 +269,9 @@ export function Directory() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50 animate-fade-in">
       <SEO
-        title="Best Real Estate Syndicators 2026 | Verified Sponsors Directory | EquityMD"
-        description="Browse 400+ verified real estate syndicators. Compare track records, reviews, deal volume & specialties. Find the best syndication sponsors for passive investing."
-        keywords="best real estate syndicators, top syndication sponsors 2026, verified syndicators, multifamily sponsors, commercial real estate syndicators directory"
+        title="Best Real Estate Syndicators 2026 | Sponsors Directory | EquityMD"
+        description="Browse 400+ real estate syndicators. Compare track records, reviews, deal volume & specialties. Find the best syndication sponsors for passive investing."
+        keywords="best real estate syndicators, top syndication sponsors 2026, syndicators, multifamily sponsors, commercial real estate syndicators directory"
         canonical="https://equitymd.com/directory"
         breadcrumbs={[
           { name: 'Home', url: 'https://equitymd.com' },
@@ -321,7 +321,7 @@ export function Directory() {
           {/* Stats Row */}
           <div className="flex flex-wrap gap-4 mt-6 mb-8">
             <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
-              <span className="text-white/70 text-sm">Verified Syndicators</span>
+              <span className="text-white/70 text-sm">Listed Syndicators</span>
               <p className="text-white font-bold text-xl">{syndicators.length}</p>
             </div>
             <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">

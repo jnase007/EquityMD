@@ -91,8 +91,8 @@ export function About() {
               <h2 className="text-3xl font-bold text-gray-900">Our Mission</h2>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              EquityMD simplifies commercial real estate syndication by connecting verified syndicators 
-              with a curated network of 7,400+ accredited investors, creating opportunities for 
+              EquityMD simplifies commercial real estate syndication by connecting syndicators 
+              with a network of 7,400+ accredited investors, creating opportunities for 
               sustainable wealth building through institutional-quality real estate investments.
             </p>
           </div>

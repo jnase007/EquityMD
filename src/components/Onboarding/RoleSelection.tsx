@@ -108,7 +108,7 @@ export function RoleSelection({ onSelect }: RoleSelectionProps) {
                 {/* Features */}
                 <div className="space-y-3 mb-6">
                   {[
-                    { icon: BarChart3, text: 'Browse vetted investment opportunities' },
+                    { icon: BarChart3, text: 'Browse investment opportunities' },
                     { icon: Shield, text: 'Accredited investor verification' },
                     { icon: DollarSign, text: 'Track your portfolio performance' },
                     { icon: Users, text: 'Connect directly with syndicators' },

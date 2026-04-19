@@ -232,7 +232,7 @@ export function CityDeals() {
             Premium Multifamily Deals in {cityName}
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl">
-            Discover AI-curated investment opportunities in one of America's fastest-growing markets. 
+            Discover investment opportunities in one of America's fastest-growing markets. 
             Access exclusive multifamily deals with superior cap rates and appreciation potential.
           </p>
         </div>

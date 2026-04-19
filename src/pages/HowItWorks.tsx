@@ -33,7 +33,7 @@ const howItWorksFaqs = [
   },
   {
     question: "Is EquityMD a crowdfunding platform?",
-    answer: "EquityMD is a marketplace that connects accredited investors with verified syndicators. We don't pool investments ourselves - instead, we help you discover quality syndication opportunities and connect directly with experienced sponsors."
+    answer: "EquityMD is a marketplace that connects accredited investors with syndicators. We don't pool investments ourselves - instead, we help you discover quality syndication opportunities and connect directly with experienced sponsors."
   },
   {
     question: "What does it mean to be an accredited investor?",
@@ -587,7 +587,7 @@ export function HowItWorks() {
             </span>
             <span className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-emerald-400" />
-              Verified syndicators
+              Listed syndicators
             </span>
             <span className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-emerald-400" />

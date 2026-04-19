@@ -21,7 +21,7 @@ import type { Deal } from '../types/database';
 const homeFaqs = [
   {
     question: "What is EquityMD and how does it work?",
-    answer: "EquityMD is a marketplace connecting accredited investors with verified real estate syndicators. Investors browse curated commercial real estate deals, review syndicator track records, and connect directly with sponsors to invest. Syndicators list their offerings to reach 7,400+ qualified investors."
+    answer: "EquityMD is a marketplace connecting accredited investors with real estate syndicators. Investors browse commercial real estate deals, review syndicator track records, and connect directly with sponsors to invest. Syndicators list their offerings to reach 7,400+ qualified investors."
   },
   {
     question: "Is EquityMD free for investors?",
@@ -53,7 +53,7 @@ const homeFaqs = [
   },
   {
     question: "How is EquityMD different from real estate crowdfunding?",
-    answer: "Unlike crowdfunding platforms that pool your money into funds, EquityMD is a marketplace where you connect directly with verified syndicators and choose specific deals. You get direct ownership in the property's LLC, larger tax benefits through depreciation, and a direct relationship with the sponsor managing your investment."
+    answer: "Unlike crowdfunding platforms that pool your money into funds, EquityMD is a marketplace where you connect directly with syndicators and choose specific deals. You get direct ownership in the property's LLC, larger tax benefits through depreciation, and a direct relationship with the sponsor managing your investment."
   }
 ];
 
@@ -241,7 +241,7 @@ export function Home() {
     <div className="min-h-screen bg-white">
       <SEO
         title="EquityMD — Real Estate Syndication Platform for Accredited Investors"
-        description="EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse verified syndicators, discover curated deals, and build passive income through commercial real estate."
+        description="EquityMD connects accredited investors with institutional-quality real estate investment opportunities. Browse syndicators, discover available deals, and build passive income through commercial real estate."
         keywords="real estate syndication, accredited investor, commercial real estate investing, multifamily investment, passive income real estate, syndication deals, real estate crowdfunding"
         canonical="https://equitymd.com"
       />
@@ -357,7 +357,7 @@ export function Home() {
               <span className="text-blue-600">Real Estate Syndication</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Connect with verified syndicators and access exclusive investment opportunities
+              Connect with syndicators and access exclusive investment opportunities
             </p>
           </div>
           
@@ -366,9 +366,9 @@ export function Home() {
               <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <ShieldCheck className="h-7 w-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Verified Opportunities</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Investment Opportunities</h3>
               <p className="text-gray-600 leading-relaxed">
-                Every syndication deal undergoes thorough due diligence and verification before listing on our platform.
+                Browse syndication deals from real estate operators across various markets and asset classes.
               </p>
             </div>
             
@@ -410,7 +410,7 @@ export function Home() {
               <h2 className="text-3xl font-bold text-gray-900">
                 Investment Opportunities
               </h2>
-              <p className="text-gray-600 mt-2">Curated deals from verified syndicators</p>
+              <p className="text-gray-600 mt-2">Available deals from syndicators</p>
             </div>
             {!user ? (
               <button
@@ -579,7 +579,7 @@ export function Home() {
                 </span>
               </h2>
               <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">
-                Join EquityMD today to access exclusive real estate syndication opportunities and connect with verified syndicators.
+                Join EquityMD today to access exclusive real estate syndication opportunities and connect with syndicators.
               </p>
               
               <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -610,7 +610,7 @@ export function Home() {
                 </span>
                 <span className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-emerald-400" />
-                  Verified syndicators
+                  Listed syndicators
                 </span>
                 <span className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-emerald-400" />

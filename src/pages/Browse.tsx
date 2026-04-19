@@ -215,7 +215,7 @@ export function Browse() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 animate-fade-in">
       <SEO
         title="Browse Real Estate Syndication Deals | Find Passive Income Investments | EquityMD"
-        description="Browse active real estate syndication deals from verified sponsors. Filter by property type, location, target IRR & minimum investment. Multifamily, industrial, medical office & more."
+        description="Browse active real estate syndication deals from sponsors. Filter by property type, location, target IRR & minimum investment. Multifamily, industrial, medical office & more."
         canonical="https://equitymd.com/find"
         keywords="real estate syndication deals, passive income real estate, multifamily investments, commercial real estate investing, syndication opportunities, accredited investor deals"
         breadcrumbs={[

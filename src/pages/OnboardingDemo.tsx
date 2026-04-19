@@ -39,7 +39,7 @@ export function OnboardingDemo() {
       description: 'Join thousands of investors building wealth through real estate syndications',
       icon: <Shield className="h-8 w-8" />,
       benefits: [
-        'Exclusive vetted investment opportunities',
+        'Exclusive investment opportunities',
         'Minimum investments starting at $25,000',
         'Average returns of 15-22% IRR'
       ]
@@ -61,7 +61,7 @@ export function OnboardingDemo() {
       description: 'Start investing in real estate in minutes, not months',
       icon: <CheckCircle className="h-8 w-8" />,
       benefits: [
-        '1. Browse vetted investment opportunities',
+        '1. Browse investment opportunities',
         '2. Review detailed property analysis',
         '3. Invest securely online'
       ]
@@ -182,7 +182,7 @@ export function OnboardingDemo() {
               <span className="block text-blue-600">Made Simple</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              The premier platform connecting accredited investors with vetted real estate 
+              The premier platform connecting accredited investors with real estate 
               syndication opportunities.
             </p>
           </div>

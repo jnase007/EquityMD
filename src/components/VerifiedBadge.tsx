@@ -71,7 +71,7 @@ export function VerifiedBadge({
           textColor: 'text-white',
           borderColor: 'border-green-600',
           shadow: 'shadow-sm',
-          tooltip: 'Verified Syndicator - Identity and credentials confirmed by EquityMD. Licensed and compliant real estate professional'
+          tooltip: 'Verified Identity - Company identity and credentials confirmed. This badge does not indicate EquityMD endorsement of investment opportunities'
         };
       case 'unverified':
         return {
@@ -81,7 +81,7 @@ export function VerifiedBadge({
           textColor: 'text-white',
           borderColor: 'border-gray-400',
           shadow: 'shadow-sm',
-          tooltip: 'Pending Verification - To be verified, the company must claim this profile and complete background checks and credential verification by EquityMD'
+          tooltip: 'Pending Verification - Company can claim this profile to verify their identity and credentials'
         };
       default:
         return {
@@ -91,7 +91,7 @@ export function VerifiedBadge({
           textColor: 'text-white',
           borderColor: 'border-green-600',
           shadow: 'shadow-sm',
-          tooltip: 'Verified Syndicator - Identity and credentials confirmed by EquityMD. Licensed and compliant real estate professional'
+          tooltip: 'Verified Identity - Company identity and credentials confirmed. This badge does not indicate EquityMD endorsement of investment opportunities'
         };
     }
   };

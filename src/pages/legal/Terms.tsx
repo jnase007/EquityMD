@@ -84,7 +84,7 @@ export function Terms() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">We Provide:</h4>
                   <ul className="list-disc list-inside text-gray-600 ml-4 space-y-1">
-                    <li>Listing of real estate investment opportunities by verified syndicators</li>
+                    <li>Listing of real estate investment opportunities by syndicators</li>
                     <li>Tools for investors to discover and evaluate opportunities</li>
                     <li>Communication platform between investors and syndicators</li>
                     <li>Document sharing and management capabilities</li>

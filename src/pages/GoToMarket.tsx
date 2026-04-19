@@ -165,7 +165,7 @@ Founder, EquityMD.com`,
     title: 'Investor Waitlist Blast',
     body: `Subject: New Investment Opportunities Dropping on EquityMD
 
-We're adding new vetted syndication deals to EquityMD every week — multifamily, value-add, ground-up across top US markets.
+We're adding new syndication deals to EquityMD every week — multifamily, value-add, ground-up across top US markets.
 
 If you want early access before deals fill up:
 → Join the waitlist: equitymd.com

@@ -309,7 +309,7 @@ export function EmailPreview() {
                     <div class="info-box">
                       <h4>What's Next?</h4>
                       <p>• Complete your investor profile and accreditation verification</p>
-                      <p>• Browse our curated investment opportunities</p>
+                      <p>• Browse our investment opportunities</p>
                       <p>• Connect with experienced syndicators</p>
                       <p>• Start building your real estate portfolio</p>
                     </div>
@@ -1221,7 +1221,7 @@ export function EmailPreview() {
                     </div>
                     
                     <p style="margin-top: 32px;"><strong>About EquityMD:</strong></p>
-                    <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. We partner with top-tier syndicators to bring you carefully vetted deals with strong return potential.</p>
+                    <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. Syndicators list their deals directly on our marketplace to reach qualified investors.</p>
                     
                     <p>Our platform provides transparency, professional due diligence, and direct access to syndicators - everything you need to make informed investment decisions.</p>
                   </div>
@@ -1679,7 +1679,7 @@ export function EmailPreview() {
           <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;">Sign Up Free with Google or LinkedIn</a>
         </div>
         <p style="margin-top: 32px;"><strong>About EquityMD:</strong></p>
-        <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. We partner with top-tier syndicators to bring you carefully vetted deals with strong return potential.</p>
+        <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. Syndicators list their deals directly on our marketplace to reach qualified investors.</p>
         <p>Our platform provides transparency, professional due diligence, and direct access to syndicators — everything you need to make informed investment decisions.</p>
       </div>
       <div style="text-align: center; margin-top: 32px;">

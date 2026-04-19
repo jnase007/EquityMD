@@ -146,7 +146,7 @@ export function Favorites() {
               </div>
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold text-white">My Favorites</h1>
-                <p className="text-white/80 mt-1">Your curated collection of investment opportunities</p>
+                <p className="text-white/80 mt-1">Your saved investment opportunities</p>
               </div>
             </div>
             

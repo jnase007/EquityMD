@@ -32,7 +32,7 @@ export function Discover() {
                 Find Your Next Investment
               </h1>
               <p className="text-gray-500">
-                Swipe through curated deals matched to your preferences
+                Swipe through deals matched to your preferences
               </p>
             </div>
           </div>

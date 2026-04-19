@@ -393,7 +393,7 @@ export function StateMarketReport() {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 text-center text-white">
             <h2 className="text-2xl font-bold mb-4">Explore Investment Opportunities in {stateData.name}</h2>
             <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Discover available real estate deals and connect with verified syndicators operating in {stateData.name}.
+              Discover available real estate deals and connect with syndicators operating in {stateData.name}.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

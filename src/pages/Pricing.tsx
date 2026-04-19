@@ -33,7 +33,7 @@ const pricingFaqs = [
   },
   {
     question: "What types of real estate can I list on EquityMD?",
-    answer: "You can list multifamily apartments, commercial properties, industrial assets, medical office buildings, retail centers, and other commercial real estate syndications. We focus on quality deals from verified syndicators."
+    answer: "You can list multifamily apartments, commercial properties, industrial assets, medical office buildings, retail centers, and other commercial real estate syndications. We feature quality deals from experienced syndicators."
   }
 ];
 

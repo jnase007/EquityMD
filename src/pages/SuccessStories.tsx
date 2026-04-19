@@ -20,7 +20,7 @@ const testimonials = [
     highlight: "Multifamily"
   },
   {
-    quote: "EquityMD made it easy to connect with Starboard Realty. Professional platform with verified syndicators.",
+    quote: "EquityMD made it easy to connect with Starboard Realty. Professional marketplace platform.",
     name: "Michael R.",
     location: "California Investor",
     rating: 5,

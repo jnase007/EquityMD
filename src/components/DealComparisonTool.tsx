@@ -148,7 +148,7 @@ export function DealComparisonTool({ isOpen, onClose, initialDealId }: DealCompa
                     {deal.syndicators?.verification_status === 'verified' && (
                       <div className="flex items-center gap-1 mt-2 text-blue-600 text-xs">
                         <CheckCircle className="h-3 w-3" />
-                        Verified Syndicator
+                        Verified Identity
                       </div>
                     )}
                   </div>

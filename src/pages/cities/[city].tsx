@@ -381,7 +381,7 @@ export function CityMarketReport() {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-8 text-center text-white">
             <h2 className="text-2xl font-bold mb-4">Ready to Invest in {cityData.name}?</h2>
             <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-              Explore available real estate deals in {cityData.name} and connect with verified syndicators 
+              Explore available real estate deals in {cityData.name} and connect with syndicators 
               who specialize in this market.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

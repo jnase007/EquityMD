@@ -280,10 +280,10 @@ export const SYNDICATOR_ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'syn_verified',
-    title: 'Verified Syndicator',
+    title: 'Verified Identity',
     description: 'Get your syndicator profile verified',
     celebrationTitle: "Verified! ✔️",
-    celebrationMessage: "You now have the trusted verification badge. Investors love verified syndicators!",
+    celebrationMessage: "You now have the trusted verification badge. Your identity has been confirmed!",
     icon: '✔️',
     category: 'profile',
     points: 250,
