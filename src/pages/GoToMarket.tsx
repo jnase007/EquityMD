@@ -320,7 +320,7 @@ export default function GoToMarket() {
               <ul className="text-gray-400 text-sm space-y-2 flex-1">
                 <li>• Approach with RECEIPTS: &quot;We have $X million in investor demand&quot;</li>
                 <li>• Founding Syndicator Program: first listing FREE</li>
-                <li>• Co-GP on select deals (operating agreement, not finder&apos;s fees)</li>
+                <li>• Revenue share on select deals (operating agreement, not finder&apos;s fees)</li>
                 <li>• They provide: photos, PPMs, underwriting, legal</li>
               </ul>
             </div>
@@ -480,15 +480,15 @@ export default function GoToMarket() {
               </p>
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-2">Layer 2 — Co-GP</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">Layer 2 — Revenue Share</h3>
               <p className="text-gray-400 text-sm">
-                Select deals where Justin joins as Co-General Partner. Compensation through operating agreement (issuer exemption). Typical split: 1-5% of GP economics. Must disclose on deal page.
+                Select deals where EquityMD earns a revenue share for capital raised. Compensation through operating agreement. Must disclose on deal page.
               </p>
             </div>
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
               <h3 className="text-lg font-semibold text-white mb-2">Layer 3 — Own Deals</h3>
               <p className="text-gray-400 text-sm">
-                Justin as full GP on local OC properties. Full GP split + management fees. Deal scanner feeds pipeline.
+                EquityMD-originated local OC properties. Full management fees. Deal scanner feeds pipeline.
               </p>
             </div>
           </div>

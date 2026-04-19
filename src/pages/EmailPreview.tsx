@@ -1730,7 +1730,7 @@ export function EmailPreview() {
       <p>It takes 30 seconds to browse: <a href="https://equitymd.com">equitymd.com</a></p>
       <p>Free to explore. Sign up with Google or LinkedIn to unlock full profiles and deal documents.</p>
       <div class="signature">
-        <p>— Justin Nassie<br>Capital GP, EquityMD</p>
+        <p>— Justin Nassie<br>Founder, EquityMD</p>
       </div>
       <div class="ps">
         <p>P.S. Two new deals went live this week — a multifamily ADU play in SoCal and an apartment complex in Greenville, SC. Worth a look if either market is in your buy box.</p>
