@@ -1556,25 +1556,21 @@ export function EmailPreview() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live CRE deals you can browse right now</title>
+  <title>369+ CRE syndicators — all in one place</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f9fafb; }
     .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
     .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 32px; }
-    .button { display: inline-block; background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 500; }
+    .button { display: inline-block; background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; }
     .footer { margin-top: 32px; text-align: center; font-size: 14px; color: #6b7280; }
     .hero-section { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 40px 32px; border-radius: 8px 8px 0 0; text-align: center; margin: -32px -32px 32px -32px; }
     .hero-title { font-size: 26px; font-weight: 700; margin-bottom: 12px; }
     .hero-subtitle { font-size: 16px; opacity: 0.9; }
-    .deal-card { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .deal-content { padding: 20px; }
-    .deal-title { font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 4px; }
-    .deal-location { color: #6b7280; font-size: 14px; margin-bottom: 12px; }
-    .deal-cta { background: #2563eb; color: white; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center; }
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px; }
-    .stat-label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
-    .stat-value { font-size: 16px; font-weight: 600; color: #2563eb; }
-    .section-label { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 16px; margin: 24px 0; color: #0c4a6e; font-size: 14px; }
+    .operator-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+    .operator-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; text-align: center; }
+    .operator-type { font-size: 13px; color: #6b7280; margin-top: 4px; }
+    .operator-count { font-size: 20px; font-weight: 700; color: #2563eb; }
+    .highlight { background: #f0f9ff; border-left: 4px solid #2563eb; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0; font-size: 14px; color: #0c4a6e; }
     a { color: #2563eb; }
   </style>
 </head>
@@ -1583,54 +1579,49 @@ export function EmailPreview() {
     <div class="card">
       <div class="hero-section">
         <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 16px;">Equity<span style="color: #fbbf24;">MD</span></div>
-        <div class="hero-title">Live CRE Deals — Browse Now</div>
-        <div class="hero-subtitle">Multifamily, industrial, and commercial syndication opportunities listed by operators across the U.S.</div>
+        <div class="hero-title">369+ CRE Syndicators. One Search.</div>
+        <div class="hero-subtitle">Research operators, compare track records, and find your next deal source.</div>
       </div>
       <div style="color: #4b5563;">
         <p><strong>Hi *|FNAME|*,</strong></p>
-        <p>EquityMD is a marketplace where syndicators list their deals and you browse them directly — no middleman, no gatekeepers. Here's what's live right now:</p>
+        <p>Finding CRE syndicators usually means scattered Google searches, conference intros, and word of mouth. EquityMD puts them all in one searchable directory.</p>
+        <p><strong>369+ syndicators</strong> — with published track records, asset focus, markets served, and deal history. Browse and filter in seconds.</p>
 
-        <div class="deal-card">
-          <div style="position: relative; height: 200px; overflow: hidden;">
-            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="operator-grid">
+          <div class="operator-card">
+            <div class="operator-count">150+</div>
+            <div class="operator-type">Multifamily</div>
           </div>
-          <div class="deal-content">
-            <div class="deal-title">Multifamily ADU Opportunity</div>
-            <div class="deal-location">📍 Southern California</div>
-            <div class="stats-row">
-              <div><div class="stat-label">Target Return</div><div class="stat-value">22% IRR</div></div>
-              <div><div class="stat-label">Minimum</div><div class="stat-value">$50,000</div></div>
-              <div><div class="stat-label">Term</div><div class="stat-value">3 years</div></div>
-            </div>
-            <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta">View Deal Details →</a>
+          <div class="operator-card">
+            <div class="operator-count">80+</div>
+            <div class="operator-type">Commercial / Mixed-Use</div>
           </div>
-        </div>
-
-        <div class="deal-card">
-          <div style="position: relative; height: 200px; overflow: hidden;">
-            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover;">
+          <div class="operator-card">
+            <div class="operator-count">60+</div>
+            <div class="operator-type">Industrial / Retail</div>
           </div>
-          <div class="deal-content">
-            <div class="deal-title">Greenville Apartment Complex</div>
-            <div class="deal-location">📍 Travelers Rest, SC</div>
-            <div class="stats-row">
-              <div><div class="stat-label">Target Return</div><div class="stat-value">17.19% IRR</div></div>
-              <div><div class="stat-label">Minimum</div><div class="stat-value">$50,000</div></div>
-              <div><div class="stat-label">Term</div><div class="stat-value">5 years</div></div>
-            </div>
-            <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta">View Deal Details →</a>
+          <div class="operator-card">
+            <div class="operator-count">79+</div>
+            <div class="operator-type">Medical / Specialty</div>
           </div>
         </div>
 
-        <div class="section-label">
-          <strong>📊 Plus:</strong> Browse 369+ syndicators, compare track records, and discover new operators — all in one searchable directory. <a href="https://equitymd.com/directory">Browse the directory →</a>
-        </div>
+        <p>Three ways investors are using EquityMD:</p>
+        <ol style="padding-left: 20px;">
+          <li style="margin-bottom: 8px;"><strong>Discovering operators</strong> they didn't know existed — across markets and asset classes</li>
+          <li style="margin-bottom: 8px;"><strong>Comparing track records</strong> side by side before reaching out</li>
+          <li style="margin-bottom: 8px;"><strong>Getting notified</strong> when operators post new deals</li>
+        </ol>
 
-        <p>New deals are listed every week by syndicators across the country. Sign up free to get full access to deal documents, financials, and direct contact with operators.</p>
+        <div class="highlight">
+          <strong>🏗️ Deal flow is building:</strong> As syndicators claim their profiles and list active deals, you'll see them here first. The earlier you're on the platform, the more deal flow you'll catch.
+        </div>
 
         <div style="text-align: center; margin: 32px 0;">
-          <a href="https://equitymd.com" class="button">Browse All Deals — Free</a>
+          <a href="https://equitymd.com/directory" class="button">Browse the Directory — Free</a>
         </div>
+
+        <p style="font-size: 14px; color: #6b7280;">Syndicators list their own profiles and deals on EquityMD. You browse, research, and connect with them directly. Free to explore — sign up with Google or LinkedIn for full access.</p>
       </div>
     </div>
     <div class="footer">
@@ -1648,21 +1639,20 @@ export function EmailPreview() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New deals just listed on EquityMD</title>
+  <title>Operators you probably haven't found yet</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; margin: 0; padding: 0; background-color: #f9fafb; color: #1f2937; }
     .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
     .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 32px; }
     p { margin-bottom: 16px; font-size: 15px; }
     a { color: #2563eb; }
-    .deal-row { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-    .deal-name { font-weight: 600; color: #1f2937; font-size: 16px; }
-    .deal-meta { color: #6b7280; font-size: 13px; margin-top: 4px; }
-    .deal-stats { display: flex; gap: 16px; margin-top: 8px; font-size: 13px; }
-    .deal-stats span { color: #2563eb; font-weight: 600; }
+    .search-example { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .search-query { font-weight: 600; color: #1f2937; font-size: 15px; }
+    .search-result { color: #6b7280; font-size: 13px; margin-top: 4px; }
     .cta-block { text-align: center; margin: 28px 0; }
     .cta-btn { display: inline-block; background: #2563eb; color: white; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 600; font-size: 15px; }
     .signature { color: #6b7280; margin-top: 24px; }
+    .ps { color: #6b7280; margin-top: 16px; font-style: italic; font-size: 14px; }
     .footer { margin-top: 32px; text-align: center; font-size: 13px; color: #9ca3af; }
   </style>
 </head>
@@ -1673,33 +1663,35 @@ export function EmailPreview() {
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
       <p>Hi *|FNAME|*,</p>
-      <p>Quick update — new deals were just listed on EquityMD by syndicators across the country. Here's a sample of what's live:</p>
+      <p>Most investors know 5-10 syndicators. There are hundreds more actively operating across the country — and most of them you've never heard of.</p>
+      <p>EquityMD has <strong>369+ operators listed</strong> with track records, asset focus, and markets served. Here's what a quick search looks like:</p>
 
-      <div class="deal-row">
-        <div class="deal-name">🏢 Multifamily ADU Opportunity</div>
-        <div class="deal-meta">Southern California · Multifamily</div>
-        <div class="deal-stats">Target: <span>22% IRR</span> · Min: <span>$50K</span> · Term: <span>3 yrs</span></div>
+      <div class="search-example">
+        <div class="search-query">🔍 "Multifamily · Texas"</div>
+        <div class="search-result">47 operators found — value-add, ground-up, ADU conversions</div>
       </div>
 
-      <div class="deal-row">
-        <div class="deal-name">🏠 Greenville Apartment Complex</div>
-        <div class="deal-meta">Travelers Rest, SC · Multifamily</div>
-        <div class="deal-stats">Target: <span>17.19% IRR</span> · Min: <span>$50K</span> · Term: <span>5 yrs</span></div>
+      <div class="search-example">
+        <div class="search-query">🔍 "Industrial · Southeast"</div>
+        <div class="search-result">23 operators found — logistics, flex space, cold storage</div>
       </div>
 
-      <div class="deal-row" style="background: #f8fafc; border-style: dashed;">
-        <div class="deal-name" style="color: #6b7280;">+ More deals across multifamily, industrial, retail, and mixed-use</div>
-        <div class="deal-meta">New listings added weekly by syndicators</div>
+      <div class="search-example">
+        <div class="search-query">🔍 "Medical Office · West Coast"</div>
+        <div class="search-result">12 operators found — MOBs, urgent care, dental portfolios</div>
       </div>
+
+      <p>Every profile includes the operator's track record, asset focus, and deal history. When they list active deals, you'll see those too.</p>
 
       <div class="cta-block">
-        <a href="https://equitymd.com/find" class="cta-btn">Browse All Live Deals →</a>
+        <a href="https://equitymd.com/directory" class="cta-btn">Search the Directory →</a>
       </div>
-
-      <p style="font-size: 14px; color: #6b7280;">Operators list their own deals on EquityMD. You browse, do your own diligence, and connect with them directly. Free to explore — sign up with Google or LinkedIn for full access.</p>
 
       <div class="signature">
         <p>— The EquityMD Team</p>
+      </div>
+      <div class="ps">
+        <p>P.S. As operators claim their profiles and post deals, you'll be first to see them. The directory is free to browse — sign up with Google or LinkedIn for full access.</p>
       </div>
     </div>
     <div class="footer">
@@ -1716,7 +1708,7 @@ export function EmailPreview() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deals move fast — bookmark this</title>
+  <title>New operators are joining every week</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; margin: 0; padding: 0; background-color: #f9fafb; color: #1f2937; }
     .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
@@ -1738,24 +1730,24 @@ export function EmailPreview() {
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
       <p>Hi *|FNAME|*,</p>
-      <p>Last note — then we'll let the deals speak for themselves.</p>
-      <p>Good CRE deals get fully subscribed fast. The investors who see them first have the advantage. That's why we built EquityMD — <strong>one place to see deal flow from syndicators across the country, the moment it goes live.</strong></p>
+      <p>Last note on this — then we'll let the platform speak for itself.</p>
+      <p>You probably already have operators you work with. That's great. But most investors tell us the same thing: <strong>"I only know a handful of syndicators, and I'm probably missing deals because of it."</strong></p>
+      <p>That's exactly why EquityMD exists. One directory, 369+ operators, all searchable by market, asset class, and track record. When they post deals, you see them.</p>
 
       <div class="highlight">
-        <strong>What's on EquityMD right now:</strong><br>
-        Multifamily, industrial, retail, and mixed-use deals listed by operators in markets from Southern California to the Carolinas. New listings every week.
+        <strong>What's happening right now:</strong><br>
+        New syndicators are claiming their profiles and starting to list active deals. The directory is growing every week — and investors who are already on the platform will see that deal flow first.
       </div>
 
-      <p>You probably already have operators you work with. EquityMD isn't here to replace them — it's here to make sure you're <strong>not missing deal flow</strong> from operators you haven't found yet.</p>
+      <p>No cost to browse. No sales pitch. You find an operator that looks interesting, you reach out to them directly.</p>
 
-      <p class="cta">→ <a href="https://equitymd.com/find">Browse live deals</a></p>
+      <p class="cta">→ <a href="https://equitymd.com/directory">Browse the directory</a></p>
 
-      <p>Free to browse. No sales pitch. When you see something interesting, you connect with the operator directly.</p>
       <div class="signature">
         <p>— The EquityMD Team</p>
       </div>
       <div class="ps">
-        <p>P.S. Bookmark <a href="https://equitymd.com/find" style="font-weight: normal;">equitymd.com/find</a> — new deals land every week. The earlier you're watching, the more you'll catch.</p>
+        <p>P.S. Bookmark <a href="https://equitymd.com/directory" style="font-weight: normal;">equitymd.com/directory</a> — as deal flow builds, you'll want to be watching.</p>
       </div>
     </div>
     <div class="footer">
@@ -1841,9 +1833,9 @@ Msg & data rates may apply.`;
     { id: 'deal_closing_soon', label: 'Deal Closing Soon (NEW)', icon: '⏰' },
     { id: 'sms_deal_alert', label: 'SMS Deal Alert', icon: '📱' },
     { id: 'sms_welcome', label: 'SMS Welcome', icon: '📲' },
-    { id: 'mailchimp_drip1', label: 'Mailchimp Drip 1 — Live Deals', icon: '📧' },
-    { id: 'mailchimp_drip2', label: 'Mailchimp Drip 2 — New Deals', icon: '📧' },
-    { id: 'mailchimp_drip3', label: 'Mailchimp Drip 3 — Deal Flow', icon: '📧' }
+    { id: 'mailchimp_drip1', label: 'Mailchimp Drip 1 — Directory', icon: '📧' },
+    { id: 'mailchimp_drip2', label: 'Mailchimp Drip 2 — Discovery', icon: '📧' },
+    { id: 'mailchimp_drip3', label: 'Mailchimp Drip 3 — Early Access', icon: '📧' }
   ];
 
   return (
