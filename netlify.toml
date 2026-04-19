@@ -94,12 +94,8 @@
   status = 301
   force = true
 
-# SEO: Remove trailing slashes for consistency
-[[redirects]]
-  from = "/*/"
-  to = "/:splat"
-  status = 301
-  force = false
+# NOTE: Trailing slash redirect removed — was causing redirect loops with Netlify Pretty URLs
+# If Pretty URLs is OFF in Netlify dashboard, this is not needed anyway (SPA handles all routes)
 
 # 301 Permanent redirects for old/changed URLs
 [[redirects]]
