@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EquityMD Email Sequence — Preview & Download</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; }
+    
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid #334155;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .header h1 span { color: #2563eb; }
+    .header p { color: #94a3b8; font-size: 16px; }
+    
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav button {
+      padding: 12px 24px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav button:hover { border-color: #2563eb; color: #e2e8f0; }
+    .nav button.active { background: #2563eb; color: white; border-color: #2563eb; }
+    
+    .email-section { display: none; padding: 32px 24px; max-width: 800px; margin: 0 auto; }
+    .email-section.active { display: block; }
+    
+    .email-meta {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .email-meta h2 { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #f8fafc; }
+    .meta-grid { display: grid; grid-template-columns: 120px 1fr; gap: 8px 16px; font-size: 14px; }
+    .meta-label { color: #64748b; font-weight: 600; }
+    .meta-value { color: #cbd5e1; }
+    .meta-value.highlight { color: #fbbf24; font-weight: 600; }
+    
+    .email-preview-frame {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .email-preview-frame iframe {
+      width: 100%;
+      border: none;
+      min-height: 600px;
+    }
+    
+    .text-email-preview {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      color: #1f2937;
+      font-size: 15px;
+      line-height: 1.7;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .text-email-preview p { margin-bottom: 16px; }
+    .text-email-preview ol { margin: 16px 0; padding-left: 24px; }
+    .text-email-preview ol li { margin-bottom: 8px; }
+    .text-email-preview a { color: #2563eb; }
+    .text-email-preview .signature { color: #6b7280; margin-top: 24px; }
+    .text-email-preview .ps { color: #6b7280; margin-top: 16px; font-style: italic; }
+    
+    .download-bar {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #059669;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .download-btn:hover { background: #047857; }
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover { background: #1d4ed8; }
+    
+    .changes-list {
+      background: #1a2e05;
+      border: 1px solid #365314;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+    .changes-list h3 { color: #84cc16; font-size: 14px; margin-bottom: 8px; }
+    .changes-list ul { padding-left: 20px; color: #a3e635; }
+    .changes-list li { margin-bottom: 4px; }
+    
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #059669;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Equity<span>MD</span> — Email Sequence Preview</h1>
+  <p>3-email investor drip campaign • Review, copy, and download for Mailchimp</p>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="showEmail(1)">📧 Email 1 — Launch</button>
+  <button onclick="showEmail(2)">📧 Email 2 — Nudge</button>
+  <button onclick="showEmail(3)">📧 Email 3 — Close</button>
+</div>
+
+<!-- EMAIL 1 -->
+<div class="email-section active" id="email1">
+  <div class="email-meta">
+    <h2>📧 Email 1 — The Launch (Day 0)</h2>
+    <div class="meta-grid">
+      <span class="meta-label">Subject:</span>
+      <span class="meta-value highlight">You've been selected — exclusive CRE deal access</span>
+      <span class="meta-label">Preview text:</span>
+      <span class="meta-value">369+ vetted syndicators. Institutional-quality deals. Free to browse.</span>
+      <span class="meta-label">From:</span>
+      <span class="meta-value">Justin Nassie, EquityMD &lt;hello@equitymd.com&gt;</span>
+      <span class="meta-label">Send to:</span>
+      <span class="meta-value">Full list (7,400)</span>
+      <span class="meta-label">Format:</span>
+      <span class="meta-value">HTML (designed template)</span>
+      <span class="meta-label">Timing:</span>
+      <span class="meta-value">Immediate — Tue or Thu, 7-9 AM</span>
+    </div>
+  </div>
+  
+  <div class="changes-list">
+    <h3>✅ Changes applied to your existing template:</h3>
+    <ul>
+      <li><strong>"3+ Syndicators"</strong> → <strong>"369+ Syndicators"</strong></li>
+      <li><strong>"18.5% Average IRR"</strong> → <strong>"22% Target IRR"</strong> (matches ADU deal, avoids unverified average)</li>
+      <li>Subject line updated with benefit text</li>
+      <li>⚠️ Still need to update: Mailchimp footer address (currently Sutera Properties)</li>
+    </ul>
+  </div>
+  
+  <div class="download-bar">
+    <button class="copy-btn" onclick="copyHTML(1)">📋 Copy HTML</button>
+    <button class="download-btn" onclick="downloadHTML(1)">⬇️ Download HTML</button>
+  </div>
+  
+  <div class="email-preview-frame">
+    <iframe id="frame1" srcdoc=""></iframe>
+  </div>
+</div>
+
+<!-- EMAIL 2 -->
+<div class="email-section" id="email2">
+  <div class="email-meta">
+    <h2>📧 Email 2 — The Nudge (Day 3)</h2>
+    <div class="meta-grid">
+      <span class="meta-label">Subject:</span>
+      <span class="meta-value highlight">Quick question about CRE deal flow</span>
+      <span class="meta-label">Preview text:</span>
+      <span class="meta-value">I wanted to make sure this got to you</span>
+      <span class="meta-label">From:</span>
+      <span class="meta-value">Justin Nassie, EquityMD &lt;hello@equitymd.com&gt;</span>
+      <span class="meta-label">Send to:</span>
+      <span class="meta-value">People who did NOT click Email 1</span>
+      <span class="meta-label">Format:</span>
+      <span class="meta-value">Plain text (no images — feels personal)</span>
+      <span class="meta-label">Timing:</span>
+      <span class="meta-value">3 days after Email 1</span>
+    </div>
+  </div>
+  
+  <div class="download-bar">
+    <button class="copy-btn" onclick="copyHTML(2)">📋 Copy HTML</button>
+    <button class="download-btn" onclick="downloadHTML(2)">⬇️ Download HTML</button>
+  </div>
+  
+  <div class="text-email-preview" id="email2-preview">
+    <p>Hi *|FNAME|*,</p>
+    <p>I sent you a note a few days ago about EquityMD and wanted to make sure it landed.</p>
+    <p>We've built a directory of <strong>369+ vetted CRE syndicators</strong> — operators with published track records across multifamily, industrial, retail, and mixed-use. All in one searchable platform.</p>
+    <p>Three things investors are using it for:</p>
+    <ol>
+      <li><strong>Comparing operators</strong> side by side — returns, asset focus, markets served</li>
+      <li><strong>Discovering new markets</strong> they weren't sourcing from before</li>
+      <li><strong>Getting first look</strong> at deals before they're fully subscribed</li>
+    </ol>
+    <p>It takes 30 seconds to browse: <a href="https://equitymd.com">equitymd.com</a></p>
+    <p>Free to explore. Sign up with Google or LinkedIn to unlock full profiles and deal documents.</p>
+    <div class="signature">
+      <p>— Justin Nassie<br>Capital GP, EquityMD</p>
+    </div>
+    <div class="ps">
+      <p>P.S. Two new deals went live this week — a multifamily ADU play in SoCal and an apartment complex in Greenville, SC. Worth a look if either market is in your buy box.</p>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL 3 -->
+<div class="email-section" id="email3">
+  <div class="email-meta">
+    <h2>📧 Email 3 — The Close (Day 7)</h2>
+    <div class="meta-grid">
+      <span class="meta-label">Subject:</span>
+      <span class="meta-value highlight">Last note on this (then I'll leave you alone)</span>
+      <span class="meta-label">Preview text:</span>
+      <span class="meta-value">If you're allocating to CRE this year, bookmark this</span>
+      <span class="meta-label">From:</span>
+      <span class="meta-value">Justin Nassie, EquityMD &lt;hello@equitymd.com&gt;</span>
+      <span class="meta-label">Send to:</span>
+      <span class="meta-value">People who did NOT click Email 1 or 2</span>
+      <span class="meta-label">Format:</span>
+      <span class="meta-value">Plain text (short, low-pressure)</span>
+      <span class="meta-label">Timing:</span>
+      <span class="meta-value">4 days after Email 2 (Day 7 total)</span>
+    </div>
+  </div>
+  
+  <div class="download-bar">
+    <button class="copy-btn" onclick="copyHTML(3)">📋 Copy HTML</button>
+    <button class="download-btn" onclick="downloadHTML(3)">⬇️ Download HTML</button>
+  </div>
+  
+  <div class="text-email-preview" id="email3-preview">
+    <p>Hi *|FNAME|*,</p>
+    <p>I'll keep this short.</p>
+    <p>EquityMD exists because finding quality CRE operators is harder than it should be.</p>
+    <p>We've done the legwork — <strong>369 syndicators vetted, track records published, all searchable in one place.</strong> No minimums to browse. No sales pitch on the other end.</p>
+    <p>If now isn't the right time, no worries. But if you're allocating capital to commercial real estate this year, bookmark this:</p>
+    <p style="text-align: center; font-size: 18px; margin: 24px 0;">→ <a href="https://equitymd.com" style="font-weight: 700;">equitymd.com</a></p>
+    <p>When you're ready, the deal flow will be there.</p>
+    <div class="signature">
+      <p>— Justin</p>
+    </div>
+    <div class="ps">
+      <p>P.S. We're on track to have syndicators in every major U.S. market by year-end. The earlier you're on the platform, the more deal flow you'll see.</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<script>
+// Email 1 HTML (your existing template with fixes applied)
+const email1HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You've Been Selected - Welcome to EquityMD</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f9fafb; }
+    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 32px; }
+    .logo { font-size: 24px; font-weight: 800; color: #1e293b; margin-bottom: 24px; text-align: center; }
+    .logo span { color: #2563eb; }
+    .content { color: #4b5563; margin-bottom: 24px; }
+    .button { display: inline-block; background-color: #2563eb; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; margin-top: 24px; font-weight: 500; }
+    .footer { margin-top: 32px; text-align: center; font-size: 14px; color: #6b7280; }
+    .hero-section { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 40px 32px; border-radius: 8px 8px 0 0; text-align: center; margin: -32px -32px 32px -32px; }
+    .hero-title { font-size: 28px; font-weight: 700; margin-bottom: 16px; }
+    .hero-subtitle { font-size: 18px; opacity: 0.9; margin-bottom: 24px; }
+    .deal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin: 32px 0; }
+    .deal-card { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; }
+    .deal-content { padding: 20px; }
+    .deal-title { font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 8px; }
+    .deal-location { color: #6b7280; font-size: 14px; margin-bottom: 12px; }
+    .deal-cta { background: #2563eb; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; }
+    .stats-section { background: #f8fafc; border-radius: 12px; padding: 24px; margin: 32px 0; text-align: center; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 24px; margin-top: 20px; }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 24px; font-weight: 700; color: #2563eb; display: block; }
+    .stat-label { font-size: 14px; color: #6b7280; margin-top: 4px; }
+    .feature-list { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 20px; margin: 24px 0; }
+    .feature-list h3 { color: #0369a1; margin-bottom: 12px; font-size: 16px; font-weight: 600; }
+    .feature-list ul { margin: 0; padding-left: 20px; }
+    .feature-list li { margin-bottom: 6px; color: #0c4a6e; }
+    .urgent-cta { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 24px; border-radius: 12px; text-align: center; margin: 32px 0; }
+    .urgent-cta h3 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    .urgent-cta p { opacity: 0.9; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="hero-section">
+        <div class="logo" style="color: white; margin-bottom: 16px;">Equity<span style="color: #fbbf24;">MD</span></div>
+        <div class="hero-title">🚀 You've Been Selected!</div>
+        <div class="hero-subtitle">Welcome to EquityMD — The Premier Platform for Accredited Real Estate Investors</div>
+      </div>
+      <div class="content">
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" alt="EquityMD Commercial Video" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          </a>
+          <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
+        </div>
+        <p><strong>Congratulations *|FNAME|*!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
+        <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
+        <div class="stats-section">
+          <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-number">369+</span>
+              <span class="stat-label">Syndicators</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">22%</span>
+              <span class="stat-label">Target IRR</span>
+            </div>
+          </div>
+        </div>
+        <h3 style="color: #1f2937; margin: 32px 0 16px 0;">See How EquityMD Works</h3>
+        <p style="margin-bottom: 24px; color: #6b7280;">Watch our commercial to learn how we connect accredited investors with institutional-quality real estate opportunities:</p>
+        <div style="text-align: center; margin: 32px 0;">
+          <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+            <div style="position: relative; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <div style="position: relative; padding-bottom: 56.25%; background: linear-gradient(45deg, #2563eb, #1d4ed8);">
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white;">
+                  <div style="text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">▶️</div>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">EquityMD Commercial</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Click to watch and learn more</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+        <h3 style="color: #1f2937; margin: 32px 0 16px 0;">Featured Investment Opportunities</h3>
+        <p>Take a look at some of the premium deals currently available on our platform. <strong>Sign up or log in with Google or LinkedIn</strong> to view full details, documents, and contact syndicators.</p>
+        <div class="deal-grid">
+          <div class="deal-card" style="box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="position: relative; height: 200px; overflow: hidden;">
+              <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="deal-content">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div class="deal-title">Multifamily ADU Opportunity</div>
+                <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">👑 Premier</div>
+              </div>
+              <div class="deal-location">Southern California</div>
+              <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                  <div>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #2563eb;">22% IRR</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #2563eb;">3 years</div>
+                  </div>
+                </div>
+              </div>
+              <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="width: 100%; text-align: center; padding: 12px 20px;">Sign Up to View Deal →</a>
+            </div>
+          </div>
+          <div class="deal-card" style="box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="position: relative; height: 200px; overflow: hidden;">
+              <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <div class="deal-content">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div class="deal-title">Greenville Apartment Complex</div>
+                <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">👑 Premier</div>
+              </div>
+              <div class="deal-location">Travelers Rest, SC</div>
+              <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                  <div>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #2563eb;">17.19% IRR</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                    <div style="font-size: 16px; font-weight: 600; color: #2563eb;">5 years</div>
+                  </div>
+                </div>
+              </div>
+              <a href="https://equitymd.com/deals/greenville-apartment-complex" class="deal-cta" style="width: 100%; text-align: center; padding: 12px 20px;">Sign Up to View Deal →</a>
+            </div>
+          </div>
+        </div>
+        <div class="feature-list">
+          <h3>🎯 Why Complete Your Profile?</h3>
+          <ul>
+            <li><strong>Exclusive Access:</strong> View detailed deal documentation and financial projections</li>
+            <li><strong>Direct Communication:</strong> Connect directly with syndicators and ask questions</li>
+            <li><strong>Portfolio Tracking:</strong> Monitor your investments and track performance</li>
+            <li><strong>New Deals Monthly:</strong> Get early access to fresh opportunities hitting the market</li>
+            <li><strong>Professional Network:</strong> Build relationships with top-tier real estate professionals</li>
+          </ul>
+        </div>
+        <div class="urgent-cta">
+          <h3>⏰ Limited Time Opportunity</h3>
+          <p>New deals are hitting the market every month. Sign up free with Google or LinkedIn to get access to full deal details and connect with syndicators.</p>
+          <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;">Sign Up Free with Google or LinkedIn</a>
+        </div>
+        <p style="margin-top: 32px;"><strong>About EquityMD:</strong></p>
+        <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. We partner with top-tier syndicators to bring you carefully vetted deals with strong return potential.</p>
+        <p>Our platform provides transparency, professional due diligence, and direct access to syndicators — everything you need to make informed investment decisions.</p>
+      </div>
+      <div style="text-align: center; margin-top: 32px;">
+        <a href="https://equitymd.com" class="button">Sign Up Free with Google or LinkedIn</a>
+      </div>
+    </div>
+    <div class="footer">
+      <p>You received this email because you've been selected as a qualified investor candidate. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
+      <p>Questions? Contact us at <a href="mailto:hello@equitymd.com" style="color: #2563eb;">hello@equitymd.com</a></p>
+      <p>© 2026 EquityMD. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+const email2HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick question about CRE deal flow</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; margin: 0; padding: 0; background-color: #f9fafb; color: #1f2937; }
+    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 32px; }
+    p { margin-bottom: 16px; font-size: 15px; }
+    ol { margin: 16px 0; padding-left: 24px; }
+    ol li { margin-bottom: 8px; font-size: 15px; }
+    a { color: #2563eb; }
+    .signature { color: #6b7280; margin-top: 24px; }
+    .ps { color: #6b7280; margin-top: 16px; font-style: italic; font-size: 14px; }
+    .footer { margin-top: 32px; text-align: center; font-size: 13px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <p>Hi *|FNAME|*,</p>
+      <p>I sent you a note a few days ago about EquityMD and wanted to make sure it landed.</p>
+      <p>We've built a directory of <strong>369+ vetted CRE syndicators</strong> — operators with published track records across multifamily, industrial, retail, and mixed-use. All in one searchable platform.</p>
+      <p>Three things investors are using it for:</p>
+      <ol>
+        <li><strong>Comparing operators</strong> side by side — returns, asset focus, markets served</li>
+        <li><strong>Discovering new markets</strong> they weren't sourcing from before</li>
+        <li><strong>Getting first look</strong> at deals before they're fully subscribed</li>
+      </ol>
+      <p>It takes 30 seconds to browse: <a href="https://equitymd.com">equitymd.com</a></p>
+      <p>Free to explore. Sign up with Google or LinkedIn to unlock full profiles and deal documents.</p>
+      <div class="signature">
+        <p>— Justin Nassie<br>Capital GP, EquityMD</p>
+      </div>
+      <div class="ps">
+        <p>P.S. Two new deals went live this week — a multifamily ADU play in SoCal and an apartment complex in Greenville, SC. Worth a look if either market is in your buy box.</p>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Questions? <a href="mailto:hello@equitymd.com" style="color: #6b7280;">hello@equitymd.com</a> · <a href="https://equitymd.com" style="color: #6b7280;">equitymd.com</a></p>
+      <p>© 2026 EquityMD. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+const email3HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Last note on this</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; margin: 0; padding: 0; background-color: #f9fafb; color: #1f2937; }
+    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 32px; }
+    p { margin-bottom: 16px; font-size: 15px; }
+    a { color: #2563eb; font-weight: 700; }
+    .cta { text-align: center; font-size: 18px; margin: 24px 0; }
+    .signature { color: #6b7280; margin-top: 24px; }
+    .ps { color: #6b7280; margin-top: 16px; font-style: italic; font-size: 14px; }
+    .footer { margin-top: 32px; text-align: center; font-size: 13px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <p>Hi *|FNAME|*,</p>
+      <p>I'll keep this short.</p>
+      <p>EquityMD exists because finding quality CRE operators is harder than it should be.</p>
+      <p>We've done the legwork — <strong>369 syndicators vetted, track records published, all searchable in one place.</strong> No minimums to browse. No sales pitch on the other end.</p>
+      <p>If now isn't the right time, no worries. But if you're allocating capital to commercial real estate this year, bookmark this:</p>
+      <p class="cta">→ <a href="https://equitymd.com">equitymd.com</a></p>
+      <p>When you're ready, the deal flow will be there.</p>
+      <div class="signature">
+        <p>— Justin</p>
+      </div>
+      <div class="ps">
+        <p>P.S. We're on track to have syndicators in every major U.S. market by year-end. The earlier you're on the platform, the more deal flow you'll see.</p>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Questions? <a href="mailto:hello@equitymd.com" style="color: #6b7280; font-weight: normal;">hello@equitymd.com</a> · <a href="https://equitymd.com" style="color: #6b7280; font-weight: normal;">equitymd.com</a></p>
+      <p>© 2026 EquityMD. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+const emails = { 1: email1HTML, 2: email2HTML, 3: email3HTML };
+
+function showEmail(num) {
+  document.querySelectorAll('.email-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('email' + num).classList.add('active');
+  document.querySelectorAll('.nav button')[num - 1].classList.add('active');
+  
+  if (num === 1) {
+    const frame = document.getElementById('frame1');
+    if (!frame.srcdoc) frame.srcdoc = email1HTML;
+  }
+}
+
+function downloadHTML(num) {
+  const blob = new Blob([emails[num]], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'equitymd-email-' + num + '.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function copyHTML(num) {
+  navigator.clipboard.writeText(emails[num]).then(() => {
+    const toast = document.getElementById('toast');
+    toast.textContent = 'Email ' + num + ' HTML copied!';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  });
+}
+
+// Load Email 1 iframe on page load
+window.addEventListener('load', () => {
+  document.getElementById('frame1').srcdoc = email1HTML;
+});
+</script>
+
+</body>
+</html>
