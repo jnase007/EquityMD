@@ -1718,6 +1718,9 @@ export function EmailPreview() {
 <body>
   <div class="container">
     <div class="card">
+      <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+        <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
+      </div>
       <p>Hi *|FNAME|*,</p>
       <p>Just a quick follow-up on EquityMD — wanted to make sure this landed.</p>
       <p>EquityMD is a directory of <strong>369+ CRE syndicators</strong> — operators with published track records across multifamily, industrial, retail, and mixed-use. All in one searchable platform.</p>
@@ -1766,6 +1769,9 @@ export function EmailPreview() {
 <body>
   <div class="container">
     <div class="card">
+      <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
+        <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
+      </div>
       <p>Hi *|FNAME|*,</p>
       <p>One last note on this.</p>
       <p>EquityMD exists because finding quality CRE operators is harder than it should be.</p>
