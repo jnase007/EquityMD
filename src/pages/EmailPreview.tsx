@@ -1095,9 +1095,9 @@ export function EmailPreview() {
                       <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
                     </div>
                     
-                    <p><strong>Congratulations *|FNAME|*!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
+                    <p><strong>Hi *|FNAME|*!</strong> Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
                     
-                    <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
+                    <p>Syndicators list their own deals and track records. You browse, research, and connect with them directly. We're the marketplace — not the middleman.</p>
                     
                                          <div class="stats-section">
                        <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
@@ -1234,7 +1234,7 @@ export function EmailPreview() {
                 </div>
 
                 <div class="footer">
-                  <p>You received this email because you've been selected as a qualified investor candidate. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
+                  <p>You received this email because you signed up at equitymd.com. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
                   <p>Questions? Contact us at <a href="mailto:hello@equitymd.com" style="color: #2563eb;">hello@equitymd.com</a></p>
                   <p>© 2026 EquityMD. All rights reserved.</p>
                 </div>
@@ -1556,7 +1556,7 @@ export function EmailPreview() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>You've been selected — exclusive CRE deal access</title>
+  <title>Welcome to EquityMD — browse CRE syndicators</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f9fafb; }
     .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
@@ -1594,8 +1594,8 @@ export function EmailPreview() {
     <div class="card">
       <div class="hero-section">
         <div class="logo" style="color: white; margin-bottom: 16px;">Equity<span style="color: #fbbf24;">MD</span></div>
-        <div class="hero-title">🚀 You've Been Selected!</div>
-        <div class="hero-subtitle">Welcome to EquityMD — The Premier Platform for Accredited Real Estate Investors</div>
+        <div class="hero-title">🚀 Welcome to EquityMD</div>
+        <div class="hero-subtitle">The Premier Directory for Accredited Real Estate Investors</div>
       </div>
       <div class="content">
         <div style="text-align: center; margin: 32px 0;">
@@ -1604,8 +1604,8 @@ export function EmailPreview() {
           </a>
           <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
         </div>
-        <p><strong>Congratulations *|FNAME|*!</strong> You've been selected as a candidate for our exclusive real estate investment platform, EquityMD.</p>
-        <p>We've identified you as a qualified accredited investor and are excited to invite you to join our growing community of sophisticated real estate investors.</p>
+        <p><strong>Hi *|FNAME|*!</strong> Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
+        <p>Syndicators list their own deals and track records. You browse, research, and connect with them directly. We're the marketplace — not the middleman.</p>
         <div class="stats-section">
           <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
           <div class="stats-grid">
@@ -1687,7 +1687,7 @@ export function EmailPreview() {
       </div>
     </div>
     <div class="footer">
-      <p>You received this email because you've been selected as a qualified investor candidate. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
+      <p>You received this email because you signed up at equitymd.com. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
       <p>Questions? Contact us at <a href="mailto:hello@equitymd.com" style="color: #2563eb;">hello@equitymd.com</a></p>
       <p>© 2026 EquityMD. All rights reserved.</p>
     </div>
@@ -1719,21 +1719,21 @@ export function EmailPreview() {
   <div class="container">
     <div class="card">
       <p>Hi *|FNAME|*,</p>
-      <p>I sent you a note a few days ago about EquityMD and wanted to make sure it landed.</p>
-      <p>We've built a directory of <strong>369+ vetted CRE syndicators</strong> — operators with published track records across multifamily, industrial, retail, and mixed-use. All in one searchable platform.</p>
+      <p>Just a quick follow-up on EquityMD — wanted to make sure this landed.</p>
+      <p>EquityMD is a directory of <strong>369+ CRE syndicators</strong> — operators with published track records across multifamily, industrial, retail, and mixed-use. All in one searchable platform.</p>
       <p>Three things investors are using it for:</p>
       <ol>
         <li><strong>Comparing operators</strong> side by side — returns, asset focus, markets served</li>
         <li><strong>Discovering new markets</strong> they weren't sourcing from before</li>
-        <li><strong>Getting first look</strong> at deals before they're fully subscribed</li>
+        <li><strong>Browsing new listings</strong> as syndicators publish them</li>
       </ol>
       <p>It takes 30 seconds to browse: <a href="https://equitymd.com">equitymd.com</a></p>
       <p>Free to explore. Sign up with Google or LinkedIn to unlock full profiles and deal documents.</p>
       <div class="signature">
-        <p>— Justin Nassie<br>Founder, EquityMD</p>
+        <p>— The EquityMD Team</p>
       </div>
       <div class="ps">
-        <p>P.S. Two new deals went live this week — a multifamily ADU play in SoCal and an apartment complex in Greenville, SC. Worth a look if either market is in your buy box.</p>
+        <p>P.S. New listings go live every week from syndicators across the country. Browse what's current at <a href="https://equitymd.com/find">equitymd.com/find</a>.</p>
       </div>
     </div>
     <div class="footer">
@@ -1767,17 +1767,17 @@ export function EmailPreview() {
   <div class="container">
     <div class="card">
       <p>Hi *|FNAME|*,</p>
-      <p>I'll keep this short.</p>
+      <p>One last note on this.</p>
       <p>EquityMD exists because finding quality CRE operators is harder than it should be.</p>
-      <p>We've done the legwork — <strong>369 syndicators vetted, track records published, all searchable in one place.</strong> No minimums to browse. No sales pitch on the other end.</p>
+      <p>The platform has <strong>369 syndicators listed, track records published, all searchable in one place.</strong> No minimums to browse. No sales pitch on the other end.</p>
       <p>If now isn't the right time, no worries. But if you're allocating capital to commercial real estate this year, bookmark this:</p>
       <p class="cta">→ <a href="https://equitymd.com">equitymd.com</a></p>
       <p>When you're ready, the deal flow will be there.</p>
       <div class="signature">
-        <p>— Justin</p>
+        <p>— The EquityMD Team</p>
       </div>
       <div class="ps">
-        <p>P.S. We're on track to have syndicators in every major U.S. market by year-end. The earlier you're on the platform, the more deal flow you'll see.</p>
+        <p>P.S. New syndicators are joining every week across major U.S. markets. The earlier you're on the platform, the more deal flow you'll see.</p>
       </div>
     </div>
     <div class="footer">
