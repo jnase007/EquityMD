@@ -1556,7 +1556,7 @@ export function EmailPreview() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>369+ CRE syndicators — all in one place</title>
+  <title>295+ CRE syndicators — all in one place</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; margin: 0; padding: 0; background-color: #f9fafb; }
     .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
@@ -1580,12 +1580,12 @@ export function EmailPreview() {
       <div class="hero-section">
         <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 16px;">Equity<span style="color: #fbbf24;">MD</span></div>
         <div class="hero-title">See More Deals. Review More Operators.</div>
-        <div class="hero-subtitle">369+ syndicators with reviews, deal details, and track records — all in one place.</div>
+        <div class="hero-subtitle">295+ syndicators with reviews, deal details, and track records — all in one place.</div>
       </div>
       <div style="color: #4b5563;">
         <p><strong>Hi *|FNAME|*,</strong></p>
         <p>Most investors only have access to deals from a few syndicators or firms they already know. That means you're only seeing a fraction of what's out there.</p>
-        <p>EquityMD changes that. <strong>One site with 369+ syndicators</strong> — browse deals, read investor reviews, and dig into the details. All on your own time.</p>
+        <p>EquityMD changes that. <strong>One site with 295+ syndicators</strong> — browse deals, read investor reviews, and dig into the details. All on your own time.</p>
 
         <div class="operator-grid">
           <div class="operator-card">
@@ -1664,7 +1664,7 @@ export function EmailPreview() {
       </div>
       <p>Hi *|FNAME|*,</p>
       <p>If you're like most CRE investors, you have access to deals from maybe 3-5 firms you know. That's a small window into a massive market.</p>
-      <p>EquityMD opens that up. <strong>369+ syndicators</strong>, searchable by market and asset class. Each profile has deal details, track records, and investor reviews — so you can browse and evaluate on your own time.</p>
+      <p>EquityMD opens that up. <strong>295+ syndicators</strong>, searchable by market and asset class. Each profile has deal details, track records, and investor reviews — so you can browse and evaluate on your own time.</p>
       <p>Here's what a quick search looks like:</p>
 
       <div class="search-example">
@@ -1738,7 +1738,7 @@ export function EmailPreview() {
 
       <div class="highlight">
         <strong>What's on the platform:</strong><br>
-        369+ syndicators across multifamily, industrial, retail, medical, and mixed-use. Investor reviews. Deal details. All searchable. Growing every week.
+        295+ syndicators across multifamily, industrial, retail, medical, and mixed-use. Investor reviews. Deal details. All searchable. Growing every week.
       </div>
 
       <p class="cta">→ <a href="https://equitymd.com/directory">Browse deals & reviews</a></p>
