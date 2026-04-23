@@ -1,10 +1,17 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import mapboxgl from 'mapbox-gl';
 import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
 import { MapPin, Building2, TrendingUp, DollarSign, ChevronRight, Search, Loader } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { supabase } from '../lib/supabase';
 import 'mapbox-gl/dist/mapbox-gl.css';
+
+// Fix "r is not a constructor" — Vite/Rolldown code-splitting breaks the
+// inline worker blob. Use the CSP worker as a Web Worker instead.
+// @ts-ignore
+import MapboxWorker from 'mapbox-gl/dist/mapbox-gl-csp-worker?worker';
+(mapboxgl as any).workerClass = MapboxWorker;
 
 interface Deal {
   id: string;
