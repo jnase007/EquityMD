@@ -1103,7 +1103,7 @@ export function EmailPreview() {
                        <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
                        <div class="stats-grid">
                          <div class="stat-item">
-                           <span class="stat-number">3+</span>
+                           <span class="stat-number">295+</span>
                            <span class="stat-label">Syndicators</span>
                          </div>
                          <div class="stat-item">

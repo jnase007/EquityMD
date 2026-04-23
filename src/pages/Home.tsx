@@ -336,7 +336,7 @@ export function Home() {
               </div>
               <div className="hidden sm:block w-px h-12 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white">3+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white">295+</p>
                 <p className="text-white/60 text-sm">Syndicators</p>
               </div>
             </div>
@@ -548,7 +548,7 @@ export function Home() {
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="h-8 w-8 text-white" />
               </div>
-              <p className="text-4xl font-bold text-white mb-2">3+</p>
+              <p className="text-4xl font-bold text-white mb-2">295+</p>
               <p className="text-blue-100">Featured Syndicators</p>
             </div>
           </div>

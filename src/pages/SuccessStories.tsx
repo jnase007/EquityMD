@@ -99,7 +99,7 @@ export function SuccessStories() {
               <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <Users className="h-6 w-6 text-amber-600" />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">3+</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">295+</div>
               <div className="text-gray-500">Syndicators</div>
             </div>
             <div className="text-center">
