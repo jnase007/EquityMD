@@ -1,15 +1,10 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import mapboxgl from 'mapbox-gl';
-import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
+import MapGL, { Marker, Popup, NavigationControl } from 'react-map-gl';
 import { MapPin, Building2, TrendingUp, DollarSign, ChevronRight, Search, Loader } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { supabase } from '../lib/supabase';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
-// Fix Mapbox GL worker for Vite production builds — use CDN-hosted worker
-// @ts-ignore
-mapboxgl.workerUrl = `https://unpkg.com/mapbox-gl@${mapboxgl.version}/dist/mapbox-gl-csp-worker.js`;
 
 interface Deal {
   id: string;
@@ -627,7 +622,7 @@ export function MarketMap() {
               </div>
             </div>
           ) : (
-            <Map
+            <MapGL
               {...viewState}
               onMove={evt => setViewState(evt.viewState)}
               mapStyle="mapbox://styles/mapbox/light-v11"
@@ -760,7 +755,7 @@ export function MarketMap() {
                   </div>
                 </Popup>
               )}
-            </Map>
+            </MapGL>
           )}
         </div>
 
