@@ -28,7 +28,9 @@ export default defineConfig({
           if (id.includes('node_modules/lucide-react')) return 'ui-vendor';
           if (id.includes('node_modules/@supabase')) return 'supabase-vendor';
           if (id.includes('node_modules/@stripe')) return 'stripe-vendor';
-          if (id.includes('node_modules/mapbox-gl')) return 'mapbox-vendor';
+          // DO NOT split mapbox-gl — its inline worker blob breaks when
+          // the shared/worker chunks are in different files.
+          // if (id.includes('node_modules/mapbox-gl')) return 'mapbox-vendor';
           if (id.includes('node_modules/recharts')) return 'chart-vendor';
           if (id.includes('node_modules/date-fns')) return 'date-vendor';
           if (id.includes('node_modules/papaparse') || id.includes('node_modules/zustand')) return 'utils-vendor';
@@ -40,12 +42,6 @@ export default defineConfig({
     copyPublicDir: true,
     chunkSizeWarningLimit: 1000,
     sourcemap: false, // Disable sourcemaps in production
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.logs in production
-        drop_debugger: true
-      }
-    }
+    minify: 'esbuild' // terser breaks mapbox-gl & native Map/Set constructors
   },
 });
