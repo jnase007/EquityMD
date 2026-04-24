@@ -8,12 +8,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 interface Deal {
   id: string;
-  city: string;
-  state: string;
+  location: string;
   property_type: string;
   target_irr: number;
   minimum_investment: number;
-  equity_required: number;
   status: string;
   cover_image_url: string;
   title: string;
@@ -22,6 +20,15 @@ interface Deal {
   syndicators: {
     company_name: string;
   };
+}
+
+function parseLocation(location: string): { city: string; state: string } {
+  if (!location) return { city: 'Unknown', state: '' };
+  const parts = location.split(', ');
+  if (parts.length >= 2) {
+    return { city: parts[0].trim(), state: parts[parts.length - 1].trim() };
+  }
+  return { city: location.trim(), state: '' };
 }
 
 interface MarketCluster {
@@ -61,6 +68,13 @@ const cityCoordinates: { [key: string]: { lat: number; lng: number } } = {
   'Costa Mesa, CA': { lat: 33.6411, lng: -117.9187 },
   'Fullerton, CA': { lat: 33.8704, lng: -117.9243 },
   'Long Beach, CA': { lat: 33.7701, lng: -118.1937 },
+  'Newport Beach, CA': { lat: 33.6189, lng: -117.9289 },
+  'Visalia, CA': { lat: 36.3302, lng: -119.2921 },
+  'Southern California': { lat: 34.0522, lng: -118.2437 },
+  
+  // South Carolina (extra)
+  'Travelers Rest, SC': { lat: 34.9676, lng: -82.4418 },
+  'Spartanburg, SC': { lat: 34.9496, lng: -81.9320 },
   
   // Texas
   'Houston, TX': { lat: 29.7604, lng: -95.3698 },
@@ -407,8 +421,8 @@ export function MarketMap() {
         const { data: deals, error: dealsError } = await supabase
           .from('deals')
           .select(`
-            *,
-            syndicators!inner(company_name, city, state)
+            id, title, slug, location, property_type, target_irr, minimum_investment, status, cover_image_url, syndicator_id,
+            syndicators(company_name)
           `)
           .eq('status', 'active');
 
@@ -422,15 +436,16 @@ export function MarketMap() {
           return;
         }
 
-        // Group deals by city/state
+        // Group deals by parsed city/state from location
         const marketMap = new Map<string, Deal[]>();
         deals.forEach((deal) => {
-          if (deal.city && deal.state) {
-            const marketKey = `${deal.city}, ${deal.state}`;
+          if (deal.location) {
+            const { city, state } = parseLocation(deal.location);
+            const marketKey = state ? `${city}, ${state}` : city;
             if (!marketMap.has(marketKey)) {
               marketMap.set(marketKey, []);
             }
-            marketMap.get(marketKey)!.push(deal);
+            marketMap.get(marketKey)!.push(deal as Deal);
           }
         });
 
