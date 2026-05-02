@@ -18,6 +18,7 @@ import {
   ArrowRight,
   ArrowDown,
   Zap,
+  Phone,
 } from 'lucide-react';
 
 export function Strategy() {
