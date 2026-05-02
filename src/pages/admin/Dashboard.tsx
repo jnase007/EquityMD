@@ -215,200 +215,65 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="mb-8 border-b overflow-x-auto">
-          <div className="flex space-x-6 min-w-max">
-            <button
-              onClick={() => setActiveTab('command')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'command'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Zap className="h-5 w-5 mr-2" />
-              Command Center
-            </button>
+        {/* Tab Navigation — Primary tabs + More dropdown */}
+        <div className="mb-8 border-b">
+          <div className="flex items-center gap-6">
+            {/* Primary tabs */}
+            {[
+              { id: 'command', label: 'Overview', icon: Zap },
+              { id: 'users', label: 'Users', icon: Users },
+              { id: 'properties', label: 'Deals', icon: Building2 },
+              { id: 'subscriptions', label: 'Subscriptions', icon: DollarSign },
+              { id: 'verification', label: 'Verification', icon: Shield },
+              { id: 'blog', label: 'Blog', icon: PenTool },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`pb-4 flex items-center text-sm font-medium transition ${
+                  activeTab === tab.id
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <tab.icon className="h-4 w-4 mr-1.5" />
+                {tab.label}
+              </button>
+            ))}
 
-            <button
-              onClick={() => setActiveTab('analytics')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'analytics'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
+            {/* More dropdown */}
+            <div className="relative ml-auto pb-4 group">
+              <button className={`flex items-center text-sm font-medium ${
+                ['analytics', 'messages', 'claims', 'import-syndicators', 'deal-approval', 'system', 'settings', 'deactivated', 'import-investors', 'credits'].includes(activeTab)
+                  ? 'text-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <BarChart className="h-5 w-5 mr-2" />
-              Analytics
-            </button>
-
-            <button
-              onClick={() => setActiveTab('users')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'users'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Users className="h-5 w-5 mr-2" />
-              Users
-            </button>
-
-            <button
-              onClick={() => setActiveTab('messages')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'messages'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <MessageCircle className="h-5 w-5 mr-2" />
-              Messages
-            </button>
-
-            {/* <button
-              onClick={() => setActiveTab('deactivated')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'deactivated'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <UserX className="h-5 w-5 mr-2" />
-              Deactivated Users
-            </button> */}
-            
-            <button
-              onClick={() => setActiveTab('properties')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'properties'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Building2 className="h-5 w-5 mr-2" />
-              Properties
-            </button>
-
-            {/* <button
-              onClick={() => setActiveTab('credits')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'credits'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <CreditCard className="h-5 w-5 mr-2" />
-              Credits
-            </button> */}
-
-            <button
-              onClick={() => setActiveTab('claims')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'claims'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <CheckCircle className="h-5 w-5 mr-2" />
-              Claim Requests
-            </button>
-
-            {/* <button
-              onClick={() => setActiveTab('import-investors')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'import-investors'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Upload className="h-5 w-5 mr-2" />
-              Import Investors
-            </button> */}
-
-            <button
-              onClick={() => setActiveTab('import-syndicators')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'import-syndicators'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Upload className="h-5 w-5 mr-2" />
-              Import Syndicators
-            </button>
-
-            <button
-              onClick={() => setActiveTab('verification')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'verification'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Shield className="h-5 w-5 mr-2" />
-              Syndicator Verification
-            </button>
-
-            <button
-              onClick={() => setActiveTab('deal-approval')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'deal-approval'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <ClipboardCheck className="h-5 w-5 mr-2" />
-              Deal Approval
-            </button>
-
-            <button
-              onClick={() => setActiveTab('subscriptions')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'subscriptions'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <DollarSign className="h-5 w-5 mr-2" />
-              Subscriptions
-            </button>
-
-            <button
-              onClick={() => setActiveTab('blog')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'blog'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <PenTool className="h-5 w-5 mr-2" />
-              Blog
-            </button>
-
-            <button
-              onClick={() => setActiveTab('system')}
-              className={`pb-4 flex items-center ${
-                activeTab === 'system'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Database className="h-5 w-5 mr-2" />
-              System Management
-            </button>
-
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`pb-4 flex items-center ml-auto ${
-                activeTab === 'settings'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              <Settings className="h-5 w-5 mr-2" />
-              Settings
-            </button>
+              }`}>
+                More
+                <svg className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50 hidden group-hover:block">
+                {[
+                  { id: 'analytics', label: 'Analytics', icon: BarChart },
+                  { id: 'messages', label: 'Messages', icon: MessageCircle },
+                  { id: 'claims', label: 'Claim Requests', icon: CheckCircle },
+                  { id: 'deal-approval', label: 'Deal Approval', icon: ClipboardCheck },
+                  { id: 'import-syndicators', label: 'Import Syndicators', icon: FileText },
+                  { id: 'system', label: 'System', icon: Database },
+                  { id: 'settings', label: 'Settings', icon: Settings },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                      activeTab === tab.id ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <tab.icon className="h-4 w-4" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
