@@ -353,8 +353,6 @@ export default function App() {
           try {
             await fetchProfile(session.user.id);
             await syncGuestFavorites(session.user.id);
-            // Track login timestamp
-            supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', session.user.id).then(() => {});
           } catch (profileError) {
             console.error('Profile fetch error:', profileError);
           }
