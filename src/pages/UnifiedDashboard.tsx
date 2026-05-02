@@ -112,27 +112,40 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     const timer = setTimeout(async () => {
       // Profile hasn't loaded — check if session is actually expired
       try {
-        console.log('[Dashboard] Profile not loaded after 8s — checking session...');
+        console.log('[Dashboard] Profile not loaded after 3s — checking session...');
         const { data, error } = await supabase.auth.getSession();
         if (error || !data?.session) {
           console.warn('[Dashboard] Session expired:', error?.message);
           setProfileTimeout(true);
         } else {
-          // Session is valid but profile didn't load — try refreshing
+          // Session is valid but profile didn't load — try refreshing and re-fetching
           console.log('[Dashboard] Session valid, refreshing...');
-          await supabase.auth.refreshSession();
-          // Give it 4 more seconds after refresh
+          const { data: refreshData } = await supabase.auth.refreshSession();
+          if (refreshData?.session?.user) {
+            // Try fetching profile directly
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', refreshData.session.user.id)
+              .maybeSingle();
+            if (profileData) {
+              useAuthStore.getState().setProfile(profileData);
+              setLoading(false);
+              return;
+            }
+          }
+          // Still no profile after retry
           setTimeout(() => {
             if (!useAuthStore.getState().profile) {
               setProfileTimeout(true);
             }
-          }, 4000);
+          }, 2000);
         }
       } catch (err) {
         console.error('[Dashboard] Session check failed:', err);
         setProfileTimeout(true);
       }
-    }, 8000);
+    }, 3000);
     
     return () => clearTimeout(timer);
   }, [profile, user]);
@@ -144,7 +157,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
         console.warn('[Dashboard] Hard ceiling hit — forcing loading=false');
         setLoading(false);
       }
-    }, 10000);
+    }, 5000);
     return () => clearTimeout(hardCeiling);
   }, [loading]);
 
@@ -347,7 +360,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     return <Navigate to="/" replace />;
   }
 
-  if (loading || !profile) {
+  if (loading || (!profile && !profileTimeout)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
         <Navbar />
