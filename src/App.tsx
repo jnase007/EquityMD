@@ -348,7 +348,10 @@ export default function App() {
         setAuthLoading(false);
       } else if (event === 'TOKEN_REFRESHED') {
         authLogger.log('Token refreshed');
-        setUser(session?.user ?? null);
+        // Only update user if session is valid — never set to null on refresh
+        if (session?.user) {
+          setUser(session.user);
+        }
       }
     });
 
