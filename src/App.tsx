@@ -58,7 +58,7 @@ const Discover = lazyRetry(() => import('./pages/Discover'), 'Discover');
 const Calendar = lazyRetry(() => import('./pages/Calendar'), 'Calendar');
 const Goals = lazyRetry(() => import('./pages/Goals'), 'Goals');
 const SyndicatorSetup = lazyRetry(() => import('./pages/SyndicatorSetup'), 'SyndicatorSetup');
-const GoToMarket = lazyRetry(() => import('./pages/GoToMarket'));
+// GoToMarket merged into Strategy — /gtm redirects to /strategy
 const Strategy = lazyRetry(() => import('./pages/Strategy'));
 
 // Keep lightweight components as regular imports
@@ -514,7 +514,7 @@ export default function App() {
         <Route path="/new-pricing" element={<NewPricing />} />
         <Route path="/email-preview" element={<EmailPreview />} />
         <Route path="/email-test" element={<EmailTest />} />
-        <Route path="/gtm" element={<GoToMarket />} />
+        <Route path="/gtm" element={<Navigate to="/strategy" replace />} />
         <Route path="/strategy" element={<Strategy />} />
         <Route path="/loader-demo" element={<LoaderDemo />} />
         <Route path="/legal/privacy" element={<Privacy />} />

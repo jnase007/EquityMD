@@ -13,16 +13,17 @@ import { CommandCenter } from '../../components/admin/CommandCenter';
 import { BlogManagement } from '../../components/admin/BlogManagement';
 import { ClaimRequests } from '../../components/admin/ClaimRequests';
 import { SyndicatorVerificationAdmin } from '../../components/SyndicatorVerificationAdmin';
+import { DealApprovalQueue } from '../../components/DealApprovalQueue';
 import { SystemManagement } from '../../components/admin/SystemManagement';
 import { DeactivatedAccountsManagement } from '../../components/admin/DeactivatedAccountsManagement';
 import { MessagesAdmin } from '../../components/admin/MessagesAdmin';
 import { useAuthStore } from '../../lib/store';
 import { supabase } from '../../lib/supabase';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool, MessageCircle } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool, MessageCircle, ClipboardCheck } from 'lucide-react';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'system' | 'messages'>('command');
+  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'deal-approval' | 'system' | 'messages'>('command');
 
   const [loadTimeout, setLoadTimeout] = useState(false);
   const [retrying, setRetrying] = useState(false);
@@ -173,6 +174,8 @@ export function AdminDashboard() {
         return <ClaimRequests />;
       case 'verification':
         return <SyndicatorVerificationAdmin />;
+      case 'deal-approval':
+        return <DealApprovalQueue />;
       case 'system':
         return <SystemManagement />;
       case 'messages':
@@ -334,6 +337,18 @@ export function AdminDashboard() {
             >
               <Shield className="h-5 w-5 mr-2" />
               Syndicator Verification
+            </button>
+
+            <button
+              onClick={() => setActiveTab('deal-approval')}
+              className={`pb-4 flex items-center ${
+                activeTab === 'deal-approval'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <ClipboardCheck className="h-5 w-5 mr-2" />
+              Deal Approval
             </button>
 
             <button

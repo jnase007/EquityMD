@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, ShieldCheck, Crown, Info } from 'lucide-react';
 
-export type VerificationStatus = 'unverified' | 'verified' | 'premier';
+export type VerificationStatus = 'unverified' | 'pending' | 'verified' | 'featured' | 'premium' | 'premier';
 
 interface VerificationBadgeProps {
   status: VerificationStatus;
@@ -9,7 +9,7 @@ interface VerificationBadgeProps {
   showTooltip?: boolean;
 }
 
-const verificationConfig = {
+const verificationConfig: Record<VerificationStatus, { color: string; textColor: string; borderColor: string; icon: any; text: string; tooltip: string; description: string }> = {
   unverified: {
     color: 'bg-gray-500',
     textColor: 'text-white',
@@ -19,6 +19,15 @@ const verificationConfig = {
     tooltip: 'Not reviewed. Contact directly. EquityMD does not endorse.',
     description: 'This syndicator has not yet been reviewed by our team.'
   },
+  pending: {
+    color: 'bg-yellow-500',
+    textColor: 'text-white',
+    borderColor: 'border-yellow-500',
+    icon: Shield,
+    text: 'Pending Review',
+    tooltip: 'Verification documents submitted and under review.',
+    description: 'This syndicator has submitted verification documents and is awaiting review.'
+  },
   verified: {
     color: 'bg-blue-600',
     textColor: 'text-white',
@@ -27,6 +36,24 @@ const verificationConfig = {
     text: 'Verified',
     tooltip: 'Identity confirmed. Contact for details. EquityMD does not endorse.',
     description: 'This syndicator\'s identity and basic information have been confirmed.'
+  },
+  featured: {
+    color: 'bg-purple-600',
+    textColor: 'text-white',
+    borderColor: 'border-purple-600',
+    icon: Crown,
+    text: 'Featured',
+    tooltip: 'Featured syndicator with verified track record. EquityMD does not endorse.',
+    description: 'This syndicator is featured for their verified experience and track record.'
+  },
+  premium: {
+    color: 'bg-gradient-to-r from-yellow-400 to-yellow-600',
+    textColor: 'text-white',
+    borderColor: 'border-yellow-500',
+    icon: Crown,
+    text: 'Premium Partner',
+    tooltip: 'Premium partner with extensive track record. EquityMD does not endorse.',
+    description: 'This syndicator is a premium partner with extensive experience.'
   },
   premier: {
     color: 'bg-gradient-to-r from-yellow-400 to-yellow-600',

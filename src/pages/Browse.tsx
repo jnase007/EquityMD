@@ -135,6 +135,8 @@ export function Browse() {
       } else {
         query = query.in('status', ['active', 'draft']);
       }
+      // Only show approved deals on public browse page
+      query = query.eq('approval_status', 'approved');
       const { data, error } = await query;
 
       if (error || !data) {

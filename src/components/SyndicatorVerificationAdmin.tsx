@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, ShieldCheck, Crown, Search, Save, AlertCircle, ExternalLink, Trash2 } from 'lucide-react';
+import { Shield, ShieldCheck, Crown, Search, Save, AlertCircle, ExternalLink, Trash2, Clock, CheckCircle, XCircle, FileText, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VerificationBadge, VerificationStatus } from './VerificationBadge';
 import { supabase } from '../lib/supabase';
@@ -20,12 +20,17 @@ interface SyndicatorAdmin {
   } | null;
 }
 
+type FilterTab = 'all' | 'pending' | 'unverified' | 'verified' | 'premier';
+
 export function SyndicatorVerificationAdmin() {
   const [syndicators, setSyndicators] = useState<SyndicatorAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterTab, setFilterTab] = useState<FilterTab>('all');
   const [updating, setUpdating] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [denyNotesId, setDenyNotesId] = useState<string | null>(null);
+  const [denyNotes, setDenyNotes] = useState('');
 
   useEffect(() => {
     fetchSyndicators();
@@ -54,18 +59,14 @@ export function SyndicatorVerificationAdmin() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      console.log('syndicators data', data);
 
-      // Transform data and get deal counts
       const transformedData = await Promise.all(
         (data || []).map(async (syndicator) => {
-          // Get deal count for each syndicator
           const { count } = await supabase
             .from('deals')
             .select('*', { count: 'exact', head: true })
             .eq('syndicator_id', syndicator.id);
 
-          // supabase reduces this to a single object, but typescript thinks its always an array
           const profile = syndicator.claimed_by_profile as any as { email: any; full_name: any; user_type: any; is_admin: any; };
           
           return {
@@ -95,13 +96,12 @@ export function SyndicatorVerificationAdmin() {
     }
   };
 
-  const updateVerificationStatus = async (syndicatorId: string, newStatus: VerificationStatus) => {
-    console.log('Updating verification status for syndicator:', syndicatorId, 'to:', newStatus);
+  const updateVerificationStatus = async (syndicatorId: string, newStatus: VerificationStatus, notes?: string) => {
     setUpdating(syndicatorId);
     setMessage(null);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('syndicators')
         .update({
           verification_status: newStatus,
@@ -110,21 +110,58 @@ export function SyndicatorVerificationAdmin() {
         .eq('id', syndicatorId);
 
       if (error) throw error;
-      console.log('Updated data:', data);
 
-      // Update local state
+      // Insert history record
+      const { data: { user } } = await supabase.auth.getUser();
+      const oldStatus = syndicators.find(s => s.id === syndicatorId)?.verification_status;
+      await supabase
+        .from('syndicator_verification_history')
+        .insert({
+          syndicator_id: syndicatorId,
+          old_status: oldStatus || 'unverified',
+          new_status: newStatus,
+          changed_by: user?.id,
+          notes: notes || undefined
+        });
+
       setSyndicators(prev => prev.map(syndicator =>
         syndicator.id === syndicatorId
-          ? { ...syndicator, verification_status: newStatus, last_updated: new Date().toISOString() }
+          ? { ...syndicator, verification_status: newStatus }
           : syndicator
       ));
 
-      setMessage({ type: 'success', text: 'Verification status updated successfully' });
+      setMessage({ type: 'success', text: `Verification status updated to ${newStatus}` });
+      setDenyNotesId(null);
+      setDenyNotes('');
     } catch (error) {
       console.error('Error updating verification status:', error);
       setMessage({ type: 'error', text: 'Failed to update verification status' });
     } finally {
       setUpdating(null);
+    }
+  };
+
+  const getDocUrl = async (syndicatorId: string, docName: string) => {
+    // Try common extensions
+    for (const ext of ['pdf', 'jpg', 'jpeg', 'png']) {
+      const path = `${syndicatorId}/${docName}.${ext}`;
+      const { data } = await supabase.storage
+        .from('verification-docs')
+        .createSignedUrl(path, 3600); // 1 hour
+      if (data?.signedUrl) return data.signedUrl;
+    }
+    return null;
+  };
+
+  const viewDocs = async (syndicatorId: string) => {
+    const govIdUrl = await getDocUrl(syndicatorId, 'gov-id');
+    const entityUrl = await getDocUrl(syndicatorId, 'entity-docs');
+    
+    if (govIdUrl) window.open(govIdUrl, '_blank');
+    if (entityUrl) window.open(entityUrl, '_blank');
+    
+    if (!govIdUrl && !entityUrl) {
+      setMessage({ type: 'error', text: 'No verification documents found for this syndicator' });
     }
   };
 
@@ -144,7 +181,6 @@ export function SyndicatorVerificationAdmin() {
 
       if (error) throw error;
 
-      // Update local state
       setSyndicators(prev => prev.filter(syndicator => syndicator.id !== syndicatorId));
       setMessage({ type: 'success', text: 'Syndicator deleted successfully' });
     } catch (error) {
@@ -156,19 +192,28 @@ export function SyndicatorVerificationAdmin() {
   };
 
   const filteredSyndicators = syndicators.filter(syndicator => {
+    // Filter by tab
+    if (filterTab === 'pending' && syndicator.verification_status !== 'pending') return false;
+    if (filterTab === 'unverified' && syndicator.verification_status !== 'unverified') return false;
+    if (filterTab === 'verified' && syndicator.verification_status !== 'verified') return false;
+    if (filterTab === 'premier' && !['premier', 'featured', 'premium'].includes(syndicator.verification_status)) return false;
+
+    // Filter by search
     const searchLower = searchTerm.toLowerCase();
+    if (!searchLower) return true;
     return (
       syndicator.company_name.toLowerCase().includes(searchLower) ||
       syndicator.email.toLowerCase().includes(searchLower) ||
-      (syndicator.claimed_by_profile?.full_name?.toLowerCase().includes(searchLower)) ||
-      (syndicator.claimed_by_profile?.user_type.toLowerCase().includes(searchLower))
+      (syndicator.claimed_by_profile?.full_name?.toLowerCase().includes(searchLower))
     );
   });
 
   const statusCounts = {
+    total: syndicators.length,
+    pending: syndicators.filter(s => s.verification_status === 'pending').length,
     unverified: syndicators.filter(s => s.verification_status === 'unverified').length,
     verified: syndicators.filter(s => s.verification_status === 'verified').length,
-    premier: syndicators.filter(s => s.verification_status === 'premier').length
+    premier: syndicators.filter(s => ['premier', 'featured', 'premium'].includes(s.verification_status)).length,
   };
 
   if (loading) {
@@ -186,10 +231,24 @@ export function SyndicatorVerificationAdmin() {
         <h2 className="text-2xl font-bold text-blue-900 mb-4">Syndicator Verification Management</h2>
         
         {/* Status Overview */}
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
+        <div className="grid md:grid-cols-5 gap-4 mb-6">
           <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-2xl font-bold text-gray-900">{syndicators.length}</div>
-            <div className="text-sm text-gray-600">Total Syndicators</div>
+            <div className="text-2xl font-bold text-gray-900">{statusCounts.total}</div>
+            <div className="text-sm text-gray-600">Total</div>
+          </div>
+          <div 
+            className={`rounded-lg p-4 cursor-pointer transition-colors ${filterTab === 'pending' ? 'bg-yellow-100 ring-2 ring-yellow-400' : 'bg-yellow-50 hover:bg-yellow-100'}`}
+            onClick={() => setFilterTab(filterTab === 'pending' ? 'all' : 'pending')}
+          >
+            <div className="text-2xl font-bold text-yellow-600 flex items-center gap-2">
+              {statusCounts.pending}
+              {statusCounts.pending > 0 && (
+                <span className="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+                  !
+                </span>
+              )}
+            </div>
+            <div className="text-sm text-yellow-700 font-medium">Pending Review</div>
           </div>
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="text-2xl font-bold text-gray-500">{statusCounts.unverified}</div>
@@ -203,6 +262,28 @@ export function SyndicatorVerificationAdmin() {
             <div className="text-2xl font-bold text-yellow-600">{statusCounts.premier}</div>
             <div className="text-sm text-yellow-600">Premier Partners</div>
           </div>
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex gap-2 mb-4 flex-wrap">
+          {(['all', 'pending', 'unverified', 'verified', 'premier'] as FilterTab[]).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setFilterTab(tab)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filterTab === tab 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab === 'pending' && statusCounts.pending > 0 && (
+                <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                  {statusCounts.pending}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
 
         {/* Search */}
@@ -236,105 +317,165 @@ export function SyndicatorVerificationAdmin() {
         )}
       </div>
 
+      {/* Pending Review Section - shown when filtering pending */}
+      {filterTab === 'pending' && filteredSyndicators.length > 0 && (
+        <div className="p-6 bg-yellow-50 border-b border-yellow-200">
+          <h3 className="text-lg font-semibold text-yellow-900 mb-2 flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Awaiting Verification Review ({filteredSyndicators.length})
+          </h3>
+          <p className="text-sm text-yellow-700 mb-4">
+            These syndicators have submitted verification documents. Review their docs and approve or deny.
+          </p>
+        </div>
+      )}
+
       {/* Syndicators Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Company
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Claimed By
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Current Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Deals
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Update Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Joined
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Claimed By</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deals</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredSyndicators.map((syndicator) => (
-              <tr key={syndicator.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Link 
-                    to={`/syndicators/${syndicator.slug}`}
-                    className="font-medium text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
-                  >
-                    {syndicator.company_name}
-                    <ExternalLink className="h-3 w-3" />
-                  </Link>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-600">{syndicator.email}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {syndicator.claimed_by_profile ? (
-                    <div className="text-sm">
-                      <div className="font-medium text-gray-900">
-                        {syndicator.claimed_by_profile.full_name || 'No name'}
+              <React.Fragment key={syndicator.id}>
+                <tr className={`hover:bg-gray-50 ${syndicator.verification_status === 'pending' ? 'bg-yellow-50/50' : ''}`}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <Link 
+                      to={`/syndicators/${syndicator.slug}`}
+                      className="font-medium text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+                    >
+                      {syndicator.company_name}
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-600">{syndicator.email}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {syndicator.claimed_by_profile ? (
+                      <div className="text-sm">
+                        <div className="font-medium text-gray-900">
+                          {syndicator.claimed_by_profile.full_name || 'No name'}
+                        </div>
+                        {syndicator.claimed_by_profile.is_admin && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                            Admin
+                          </span>
+                        )}
                       </div>
-                      {syndicator.claimed_by_profile.is_admin && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                          Admin
-                        </span>
+                    ) : (
+                      <div className="text-sm text-gray-400 italic">Unclaimed</div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <VerificationBadge status={syndicator.verification_status} size="sm" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{syndicator.deal_count}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      {syndicator.verification_status === 'pending' ? (
+                        <>
+                          <button
+                            onClick={() => viewDocs(syndicator.id)}
+                            disabled={updating === syndicator.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm transition-colors"
+                            title="View uploaded documents"
+                          >
+                            <Eye className="h-3.5 w-3.5 mr-1" />
+                            Docs
+                          </button>
+                          <button
+                            onClick={() => updateVerificationStatus(syndicator.id, 'verified')}
+                            disabled={updating === syndicator.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium transition-colors"
+                          >
+                            <CheckCircle className="h-3.5 w-3.5 mr-1" />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => setDenyNotesId(denyNotesId === syndicator.id ? null : syndicator.id)}
+                            disabled={updating === syndicator.id}
+                            className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium transition-colors"
+                          >
+                            <XCircle className="h-3.5 w-3.5 mr-1" />
+                            Deny
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <select
+                            value={syndicator.verification_status}
+                            onChange={(e) => updateVerificationStatus(syndicator.id, e.target.value as VerificationStatus)}
+                            disabled={updating === syndicator.id}
+                            className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                          >
+                            <option value="unverified">Unverified</option>
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="featured">Featured</option>
+                            <option value="premium">Premium</option>
+                            <option value="premier">Premier Partner</option>
+                          </select>
+                          <button
+                            onClick={() => deleteSyndicator(syndicator.id, syndicator.company_name)}
+                            disabled={updating === syndicator.id}
+                            className="text-red-600 hover:text-red-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                            title="Delete syndicator"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </>
+                      )}
+                      {updating === syndicator.id && (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                       )}
                     </div>
-                  ) : (
-                    <div className="text-sm text-gray-400 italic">Unclaimed</div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <VerificationBadge status={syndicator.verification_status} size="sm" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{syndicator.deal_count}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <select
-                    value={syndicator.verification_status}
-                    onChange={(e) => updateVerificationStatus(syndicator.id, e.target.value as VerificationStatus)}
-                    disabled={updating === syndicator.id}
-                    className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
-                  >
-                    <option value="unverified">Unverified</option>
-                    <option value="verified">Verified</option>
-                    <option value="premier">Premier Partner</option>
-                  </select>
-                  {updating === syndicator.id && (
-                    <div className="inline-block ml-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                    </div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(syndicator.created_at).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => deleteSyndicator(syndicator.id, syndicator.company_name)}
-                    disabled={updating === syndicator.id}
-                    className="text-red-600 hover:text-red-800 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    title="Delete syndicator"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(syndicator.created_at).toLocaleDateString()}
+                  </td>
+                </tr>
+                {/* Deny notes row */}
+                {denyNotesId === syndicator.id && (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-3 bg-red-50">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="text"
+                          value={denyNotes}
+                          onChange={(e) => setDenyNotes(e.target.value)}
+                          placeholder="Reason for denial (optional)..."
+                          className="flex-1 px-3 py-2 border border-red-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500"
+                        />
+                        <button
+                          onClick={() => updateVerificationStatus(syndicator.id, 'unverified', denyNotes)}
+                          disabled={updating === syndicator.id}
+                          className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+                        >
+                          Confirm Deny
+                        </button>
+                        <button
+                          onClick={() => { setDenyNotesId(null); setDenyNotes(''); }}
+                          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
@@ -342,7 +483,11 @@ export function SyndicatorVerificationAdmin() {
         {filteredSyndicators.length === 0 && (
           <div className="text-center py-12">
             <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No syndicators found matching your search.</p>
+            <p className="text-gray-600">
+              {filterTab === 'pending' 
+                ? 'No pending verifications to review.' 
+                : 'No syndicators found matching your search.'}
+            </p>
           </div>
         )}
       </div>
@@ -359,4 +504,4 @@ export function SyndicatorVerificationAdmin() {
       </div>
     </div>
   );
-} 
+}

@@ -71,6 +71,7 @@ export function CityDeals() {
         .select('*')
         .ilike('location', `%${cityData.name.split(',')[0]}%`) // Match city name
         .eq('status', 'active')
+        .eq('approval_status', 'approved')
         .order('cap_rate', { ascending: false })
         .limit(5);
 
