@@ -92,11 +92,11 @@ export function NewDeal() {
   return (
     <>
       {!isVerified && (
-        <div className="bg-yellow-900/30 border-b border-yellow-500/30">
-          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-            <AlertCircle className="h-5 w-5 text-yellow-400 flex-shrink-0" />
-            <p className="text-yellow-300 text-sm">
-              Your deal will be saved as <strong>Pending Approval</strong>. An admin will review and approve it before it goes live to investors.
+        <div className="bg-amber-50 dark:bg-amber-900/60 border-b-2 border-amber-400 dark:border-amber-500">
+          <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+            <AlertCircle className="h-6 w-6 text-amber-600 dark:text-amber-300 flex-shrink-0" />
+            <p className="text-amber-800 dark:text-amber-100 text-sm font-medium">
+              Your deal will be saved as <strong className="font-bold">Pending Approval</strong>. An admin will review and approve it before it goes live to investors.
               {verificationStatus !== 'pending' && (
                 <Link to="/dashboard" className="text-blue-400 hover:text-blue-300 ml-2 underline">
                   Submit verification docs →
