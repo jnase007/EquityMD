@@ -157,6 +157,17 @@ export default function InvestorFeed() {
   const [isSyndicator, setIsSyndicator] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Hard ceiling — never spin longer than 5 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (loading) {
+        console.warn('[InvestorFeed] Hard ceiling — forcing loading=false');
+        setLoading(false);
+      }
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [loading]);
+
   useEffect(() => {
     if (!user) {
       setLoading(false);

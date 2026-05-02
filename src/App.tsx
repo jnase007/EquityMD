@@ -411,6 +411,31 @@ export default function App() {
     navigate(next, { replace: true });
   }, [user, navigate, location.pathname, location.search]);
 
+  // Safety net: if user exists but profile is still null after 3s, retry profile fetch
+  useEffect(() => {
+    if (!user || profile) return;
+    const retryTimer = setTimeout(async () => {
+      if (useAuthStore.getState().profile) return; // Already loaded
+      authLogger.log('Profile still null after 3s — retrying fetch');
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (data) {
+          setProfile(data);
+          authLogger.log('Profile loaded on retry');
+        } else {
+          authLogger.log('Profile still not found on retry');
+        }
+      } catch (err) {
+        authLogger.error('Profile retry failed:', err);
+      }
+    }, 3000);
+    return () => clearTimeout(retryTimer);
+  }, [user, profile, setProfile]);
+
   // Session recovery on tab resume (handles iOS suspension and network reconnection)
   // Just refresh silently — never clear auth from here. Let onAuthStateChange handle SIGNED_OUT.
   useEffect(() => {
