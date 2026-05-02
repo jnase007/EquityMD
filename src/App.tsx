@@ -412,40 +412,30 @@ export default function App() {
   }, [user, navigate, location.pathname, location.search]);
 
   // Session recovery on tab resume (handles iOS suspension and network reconnection)
+  // Just refresh silently — never clear auth from here. Let onAuthStateChange handle SIGNED_OUT.
   useEffect(() => {
     const handleResume = async () => {
       if (document.visibilityState !== 'visible') return;
       
-      // Only attempt recovery if we had a user before
       const currentUser = useAuthStore.getState().user;
       if (!currentUser) return;
       
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          authLogger.log('Session lost on resume — attempting refresh');
-          const { error } = await supabase.auth.refreshSession();
-          if (error) {
-            authLogger.log('Session refresh failed:', error.message);
-            // Only clear auth if refresh definitively failed
-            if (error.message.includes('refresh_token') || error.message.includes('expired')) {
-              clearAuth();
-            }
-          }
-        }
+        authLogger.log('Tab resumed — refreshing session silently');
+        await supabase.auth.refreshSession();
+        // If refresh fails, onAuthStateChange will fire SIGNED_OUT and clearAuth there
       } catch (err) {
-        console.error('Resume recovery error:', err);
+        authLogger.log('Resume refresh error (non-fatal):', err);
+        // Don't clear auth — let the normal auth flow handle it
       }
     };
 
     document.addEventListener('visibilitychange', handleResume);
-    window.addEventListener('focus', handleResume);
     
     return () => {
       document.removeEventListener('visibilitychange', handleResume);
-      window.removeEventListener('focus', handleResume);
     };
-  }, [clearAuth]);
+  }, []);
 
   // Sync guest favorites from localStorage to database when user logs in
   async function syncGuestFavorites(userId: string) {
