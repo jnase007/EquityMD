@@ -19,6 +19,7 @@ export function SubscriptionManager() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [dateInputs, setDateInputs] = useState<Record<string, string>>({});
   const [migrationMissing, setMigrationMissing] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'pending' | 'active' | 'cancelled'>('all');
 
   const fetchSyndicators = useCallback(async () => {
     setLoading(true);
@@ -175,8 +176,32 @@ export function SubscriptionManager() {
         </button>
       </div>
 
-      {/* Pending Approvals Section */}
-      {!loading && (() => {
+      {/* Filter Tabs */}
+      {!loading && (
+        <div className="flex gap-2 mb-6">
+          {[
+            { id: 'all', label: 'All', count: syndicators.length },
+            { id: 'active', label: 'Active', count: syndicators.filter(s => s.subscription_status === 'active').length },
+            { id: 'pending', label: 'Pending', count: syndicators.filter(s => !s.subscription_status || s.subscription_status === 'none').length },
+            { id: 'cancelled', label: 'Cancelled', count: syndicators.filter(s => s.subscription_status === 'cancelled').length },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setFilter(tab.id as any)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                filter === tab.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {tab.label} ({tab.count})
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Pending Approvals Section — only show in 'all' or 'pending' view */}
+      {!loading && (filter === 'all' || filter === 'pending') && (() => {
         const pending = syndicators.filter(s => !s.subscription_status || s.subscription_status === 'none');
         if (pending.length === 0) {
           return (
@@ -245,7 +270,13 @@ export function SubscriptionManager() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {syndicators.map((s) => (
+              {syndicators.filter(s => {
+                if (filter === 'all') return true;
+                if (filter === 'active') return s.subscription_status === 'active';
+                if (filter === 'pending') return !s.subscription_status || s.subscription_status === 'none';
+                if (filter === 'cancelled') return s.subscription_status === 'cancelled';
+                return true;
+              }).map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <div className="font-medium text-gray-900">{s.company_name}</div>
