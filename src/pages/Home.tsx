@@ -101,82 +101,6 @@ export function Home() {
   const heroImage = heroImageUrl;
   
   useScrollFix();
-  
-  // Featured investor data - Returns range from 11%-22%
-  const featuredInvestors = [
-    {
-      name: "Sarah",
-      title: "Technology Executive",
-      company: "",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300",
-      portfolio: {
-        totalInvested: "$275K",
-        avgReturn: "14.2%"
-      },
-      specialties: ["Multi-Family", "Mixed-Use", "Value-Add"],
-      location: "San Francisco, CA"
-    },
-    {
-      name: "Michael",
-      title: "Business Owner",
-      company: "",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=300&h=300",
-      portfolio: {
-        totalInvested: "$486K",
-        avgReturn: "11.8%"
-      },
-      specialties: ["Multi-Family", "Workforce Housing", "Passive Income"],
-      location: "Nashville, TN"
-    },
-    {
-      name: "Jennifer",
-      title: "Financial Advisor",
-      company: "",
-      image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&q=80&w=300&h=300",
-      portfolio: {
-        totalInvested: "$325K",
-        avgReturn: "19.5%"
-      },
-      specialties: ["Multi-Family", "Student Housing", "Long-term Growth"],
-      location: "Miami, FL"
-    },
-    {
-      name: "David",
-      title: "Attorney",
-      company: "",
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300",
-      portfolio: {
-        totalInvested: "$150K",
-        avgReturn: "22.1%"
-      },
-      specialties: ["Multi-Family", "Tax Benefits", "Passive Income"],
-      location: "Phoenix, AZ"
-    },
-    {
-      name: "Lisa",
-      title: "Healthcare Executive",
-      company: "",
-      image: "https://images.unsplash.com/photo-1551836022-deb4988cc6c0?auto=format&fit=crop&q=80&w=300&h=300",
-      portfolio: {
-        totalInvested: "$625K",
-        avgReturn: "16.7%"
-      },
-      specialties: ["Multi-Family", "Workforce Housing", "Diversification"],
-      location: "Los Angeles, CA"
-    },
-    {
-      name: "James",
-      title: "Engineering Consultant",
-      company: "",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300",
-      portfolio: {
-        totalInvested: "$195K",
-        avgReturn: "13.4%"
-      },
-      specialties: ["Multi-Family", "Value-Add", "Portfolio Growth"],
-      location: "Austin, TX"
-    }
-  ];
 
   useEffect(() => {
     fetchFeaturedDeals();
@@ -247,29 +171,6 @@ export function Home() {
         canonical="https://equitymd.com"
       />
       
-      {/* Activity Banner */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-2.5 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-        <div className="max-w-[1200px] mx-auto relative">
-          <div className="flex items-center justify-center gap-2 sm:gap-6 text-sm sm:text-base flex-wrap">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              <strong>24+ investors</strong> joined today
-            </span>
-            <span className="hidden sm:inline text-white/40">•</span>
-            <span className="flex items-center gap-1.5">
-              <Zap className="h-4 w-4 text-yellow-300" />
-              <strong>3 new deals</strong> this week
-            </span>
-            <span className="hidden sm:inline text-white/40">•</span>
-            <span className="hidden md:flex items-center gap-1.5">
-              <Star className="h-4 w-4 text-yellow-300" />
-              <strong>Active marketplace</strong> for accredited investors
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <div className="relative min-h-[500px] sm:min-h-[580px]">
         <div className="absolute inset-0">
@@ -475,86 +376,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Current Investors Section */}
-      <section className="py-20 px-6 bg-gradient-to-b from-white to-slate-50">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium mb-4">
-              <Users className="h-4 w-4" />
-              Our Community
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Join Successful Investors
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Join a community of successful real estate investors building wealth through strategic property investments.
-            </p>
-          </div>
-          
-          <div className="relative homepage-scroll-section">
-            <div className="horizontal-scroll-container pb-4">
-              <div className="flex gap-4 md:gap-6" style={{ width: 'max-content' }}>
-                {featuredInvestors.map((investor, index) => (
-                  <div key={index} className="w-[300px] md:w-[350px] relative flex-shrink-0 card-container">
-                    <InvestorCard
-                      name={investor.name}
-                      title={investor.title}
-                      company={investor.company}
-                      image={investor.image}
-                      portfolio={investor.portfolio}
-                      specialties={investor.specialties}
-                      location={investor.location}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Gradient Overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 px-6 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 relative overflow-hidden">
-        {/* Pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yem0wLTRoNHYyaC00di0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-        
-        <div className="max-w-[1200px] mx-auto relative">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">Platform Statistics</h2>
-            <p className="text-blue-100">Trusted by investors and syndicators nationwide</p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="h-8 w-8 text-white" />
-              </div>
-              <p className="text-4xl font-bold text-white mb-2">$43M</p>
-              <p className="text-blue-100">Investor Requested Amount</p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-white" />
-              </div>
-              <p className="text-4xl font-bold text-white mb-2">7,400+</p>
-              <p className="text-blue-100">Accredited Investors</p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Briefcase className="h-8 w-8 text-white" />
-              </div>
-              <p className="text-4xl font-bold text-white mb-2">295+</p>
-              <p className="text-blue-100">Featured Syndicators</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Stats section removed — numbers already shown in hero */}
 
       {/* CTA Section */}
       <section className="py-24 px-6 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">

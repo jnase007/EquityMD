@@ -343,76 +343,16 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           <Settings className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
                           Settings
                         </Link>
-                        <Link
-                          to="/how-it-works"
-                          onClick={() => setIsDropdownOpen(false)}
-                          className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
-                        >
-                          <BookOpen className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
-                          How It Works
-                        </Link>
                         
-                        {/* Appearance/Theme Section */}
-                        <div className={`px-4 py-3 ${isDarkTheme ? 'border-t border-[var(--border-color)]' : 'border-t border-gray-100'}`}>
-                          <p className={`text-xs font-medium mb-2 ${isDarkTheme ? 'text-gray-400' : 'text-gray-500'}`}>Appearance</p>
-                          <div className="grid grid-cols-4 gap-1">
-                            <button
-                              onClick={() => setTheme('light')}
-                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
-                                theme === 'light' 
-                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
-                                  : isDarkTheme 
-                                    ? 'text-gray-300 hover:bg-gray-700' 
-                                    : 'text-gray-600 hover:bg-gray-100'
-                              }`}
-                              title="Light mode"
-                            >
-                              <Sun className="h-4 w-4" />
-                              <span>Light</span>
-                            </button>
-                            <button
-                              onClick={() => setTheme('dim')}
-                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
-                                theme === 'dim' 
-                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
-                                  : isDarkTheme 
-                                    ? 'text-gray-300 hover:bg-gray-700' 
-                                    : 'text-gray-600 hover:bg-gray-100'
-                              }`}
-                              title="Dim mode - easier on the eyes"
-                            >
-                              <Monitor className="h-4 w-4" />
-                              <span>Dim</span>
-                            </button>
-                            <button
-                              onClick={() => setTheme('dark')}
-                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
-                                theme === 'dark' 
-                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
-                                  : isDarkTheme 
-                                    ? 'text-gray-300 hover:bg-gray-700' 
-                                    : 'text-gray-600 hover:bg-gray-100'
-                              }`}
-                              title="Dark mode"
-                            >
-                              <Moon className="h-4 w-4" />
-                              <span>Dark</span>
-                            </button>
-                            <button
-                              onClick={() => setTheme('auto')}
-                              className={`flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-lg text-xs font-medium transition ${
-                                theme === 'auto' 
-                                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500' 
-                                  : isDarkTheme 
-                                    ? 'text-gray-300 hover:bg-gray-700' 
-                                    : 'text-gray-600 hover:bg-gray-100'
-                              }`}
-                              title="Follow system preference"
-                            >
-                              <Settings className="h-4 w-4" />
-                              <span>Auto</span>
-                            </button>
-                          </div>
+                        {/* Theme Toggle */}
+                        <div className={`${isDarkTheme ? 'border-t border-[var(--border-color)]' : 'border-t border-gray-100'}`}>
+                          <button
+                            onClick={() => setTheme(isDarkTheme ? 'light' : 'dark')}
+                            className={`flex items-center gap-3 px-4 py-2 w-full ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                          >
+                            {isDarkTheme ? <Sun className="h-4 w-4 text-gray-400" /> : <Moon className="h-4 w-4 text-gray-400" />}
+                            {isDarkTheme ? 'Light Mode' : 'Dark Mode'}
+                          </button>
                         </div>
 
                         {/* Messages - shown for all logged-in users */}
