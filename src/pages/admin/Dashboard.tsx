@@ -20,7 +20,8 @@ import { MessagesAdmin } from '../../components/admin/MessagesAdmin';
 import { SubscriptionManager } from '../../components/admin/SubscriptionManager';
 import { useAuthStore } from '../../lib/store';
 import { supabase } from '../../lib/supabase';
-import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool, MessageCircle, ClipboardCheck, DollarSign } from 'lucide-react';
+import { BarChart, Users, Building2, CreditCard, FileText, Settings, Upload, CheckCircle, Shield, Database, UserX, Zap, PenTool, MessageCircle, ClipboardCheck, DollarSign, Rocket } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
@@ -196,6 +197,13 @@ export function AdminDashboard() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <div className="flex items-center gap-3">
+            <Link
+              to="/strategy"
+              className="flex items-center px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-medium"
+            >
+              <Rocket className="h-4 w-4 mr-2" />
+              Strategy
+            </Link>
             <button
               onClick={quickClearCache}
               className="flex items-center px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
