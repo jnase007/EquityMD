@@ -124,10 +124,10 @@ export function VerificationUpload({ syndicatorId, verificationStatus, onStatusC
         .from('syndicator_verification_history')
         .insert({
           syndicator_id: syndicatorId,
-          old_status: verificationStatus || 'unverified',
+          previous_status: verificationStatus || 'unverified',
           new_status: 'pending',
           changed_by: user?.id,
-          notes: `Bio/Track Record: ${bio.substring(0, 500)}`
+          admin_notes: `Bio/Track Record: ${bio.substring(0, 500)}`
         });
 
       setSubmitted(true);
