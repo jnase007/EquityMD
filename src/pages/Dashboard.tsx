@@ -659,6 +659,22 @@ export function Dashboard() {
         </div>
 
         {/* Deals Table */}
+        {deals.length === 0 && !loading && userSyndicators.length > 0 ? (
+          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
+              <Plus className="h-8 w-8 text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">List your first deal in 60 seconds</h2>
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">Get in front of accredited investors today. Create your first deal listing and start raising capital.</p>
+            <Link
+              to="/deals/new"
+              className="inline-flex items-center px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold text-lg"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Create Your First Deal
+            </Link>
+          </div>
+        ) : (
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b">
             <h2 className="text-lg font-semibold text-gray-800">
@@ -786,6 +802,7 @@ export function Dashboard() {
             </table>
           </div>
         </div>
+        )}
 
         {/* Document Manager */}
         {selectedDeal && (

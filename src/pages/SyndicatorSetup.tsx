@@ -28,7 +28,7 @@ export function SyndicatorSetup() {
   const { user, profile, setProfile } = useAuthStore();
   const navigate = useNavigate();
   
-  const [step, setStep] = useState<Step>('welcome');
+  const [step, setStep] = useState<Step>('basics');
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
