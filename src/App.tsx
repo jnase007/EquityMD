@@ -277,33 +277,11 @@ export default function App() {
       setProfile(data);
     } catch (error: any) {
       authLogger.error('Error in fetchProfile:', error);
-      const msg = error?.message || '';
-      // Only clear auth for definitive auth failures — not transient network errors
-      if (
-        msg.includes('JWT') ||
-        msg.includes('not authenticated') ||
-        msg.includes('refresh_token') ||
-        msg.includes('expired') ||
-        msg.includes('invalid claim')
-      ) {
-        // Try refreshing the session before giving up
-        authLogger.log('Auth error detected — attempting session refresh before clearing');
-        try {
-          const { data, error: refreshError } = await supabase.auth.refreshSession();
-          if (refreshError || !data.session) {
-            authLogger.log('Session refresh failed — clearing auth');
-            clearAuth();
-          } else {
-            authLogger.log('Session refreshed successfully — retrying profile fetch');
-            // Don't clear auth — the token was just stale, now it's fresh
-          }
-        } catch {
-          authLogger.log('Session refresh threw — clearing auth');
-          clearAuth();
-        }
-      } else {
-        authLogger.log('Transient error — keeping session, profile may load on retry');
-      }
+      // NEVER clear auth from profile fetch errors.
+      // Only onAuthStateChange SIGNED_OUT should clear auth.
+      // Profile fetch can fail for many transient reasons (deploy, network, stale token)
+      // and the session may still be perfectly valid.
+      authLogger.log('Profile fetch failed — keeping session, will retry on next navigation');
     }
   }, [clearAuth, setProfile]);
 
