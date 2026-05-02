@@ -61,52 +61,52 @@ export function NewDeal() {
     );
   }
 
-  // If verified, show the wizard as normal
-  if (isVerified) {
-    return <PropertyListingWizard />;
+  // No syndicator profile — need to create one first
+  if (!hasSyndicator) {
+    return (
+      <div className="min-h-screen bg-gray-950">
+        <Navbar />
+        <div className="max-w-2xl mx-auto px-4 py-16">
+          <div className="bg-gray-900 border border-gray-700 rounded-xl p-8 text-center">
+            <Shield className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-white mb-3">
+              Create a Syndicator Profile
+            </h1>
+            <p className="text-gray-400 mb-6">
+              You need a syndicator profile before listing deals on EquityMD.
+            </p>
+            <Link 
+              to="/profile" 
+              className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            >
+              Go to Profile Settings →
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
-  // Show verification gate
+  // Has syndicator profile — always show the wizard, with a pending notice if not verified
   return (
-    <div className="min-h-screen bg-gray-950">
-      <Navbar />
-      <div className="max-w-2xl mx-auto px-4 py-16">
-        {/* Blocking message */}
-        <div className="bg-gray-900 border border-gray-700 rounded-xl p-8 mb-8 text-center">
-          <Shield className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-3">
-            Verify Your Account to List Deals
-          </h1>
-          <p className="text-gray-400 mb-6">
-            To protect investors and maintain quality, EquityMD requires syndicator verification before listing deals.
-            Submit your verification documents below to get started.
-          </p>
-          {!hasSyndicator && (
-            <div className="bg-yellow-900/30 border border-yellow-500/30 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2 justify-center">
-                <AlertCircle className="h-5 w-5 text-yellow-400" />
-                <span className="text-yellow-300">You need to create a syndicator profile first.</span>
-              </div>
-              <Link 
-                to="/profile" 
-                className="text-blue-400 hover:text-blue-300 underline mt-2 inline-block"
-              >
-                Go to Profile Settings →
-              </Link>
-            </div>
-          )}
+    <>
+      {!isVerified && (
+        <div className="bg-yellow-900/30 border-b border-yellow-500/30">
+          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-yellow-400 flex-shrink-0" />
+            <p className="text-yellow-300 text-sm">
+              Your deal will be saved as <strong>Pending Approval</strong>. An admin will review and approve it before it goes live to investors.
+              {verificationStatus !== 'pending' && (
+                <Link to="/dashboard" className="text-blue-400 hover:text-blue-300 ml-2 underline">
+                  Submit verification docs →
+                </Link>
+              )}
+            </p>
+          </div>
         </div>
-
-        {/* Show verification upload if they have a syndicator profile */}
-        {hasSyndicator && syndicatorId && (
-          <VerificationUpload
-            syndicatorId={syndicatorId}
-            verificationStatus={verificationStatus}
-            onStatusChange={(newStatus) => setVerificationStatus(newStatus)}
-          />
-        )}
-      </div>
-      <Footer />
-    </div>
+      )}
+      <PropertyListingWizard />
+    </>
   );
 }
