@@ -102,6 +102,7 @@ export function CommandCenter() {
   const [metrics, setMetrics] = useState<RealTimeMetrics | null>(null);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [topDeals, setTopDeals] = useState<TopDeal[]>([]);
+  const [mostActiveUsers, setMostActiveUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month'>('week');
@@ -117,15 +118,17 @@ export function CommandCenter() {
 
   async function fetchAllData() {
     try {
-      const [metricsData, activitiesData, topDealsData] = await Promise.all([
+      const [metricsData, activitiesData, topDealsData, activeUsersData] = await Promise.all([
         fetchMetrics(),
         fetchRecentActivity(),
-        fetchTopDeals()
+        fetchTopDeals(),
+        fetchMostActiveUsers()
       ]);
       
       setMetrics(metricsData);
       setActivities(activitiesData);
       setTopDeals(topDealsData);
+      setMostActiveUsers(activeUsersData);
       setLastRefresh(new Date());
     } catch (error) {
       console.error('Error fetching command center data:', error);
@@ -328,6 +331,75 @@ export function CommandCenter() {
         <div className="h-96 bg-gray-200 rounded-xl"></div>
       </div>
     );
+  }
+
+  async function fetchMostActiveUsers() {
+    try {
+      // Get deal views grouped by user
+      const { data: viewsData } = await supabase
+        .from('deal_views')
+        .select('viewer_id');
+      
+      // Get favorites grouped by user  
+      const { data: favoritesData } = await supabase
+        .from('favorites')
+        .select('investor_id');
+
+      // Get messages grouped by user
+      const { data: messagesData } = await supabase
+        .from('messages')
+        .select('sender_id');
+
+      // Count activity per user
+      const activityMap: Record<string, { views: number; favorites: number; messages: number }> = {};
+      
+      viewsData?.forEach(v => {
+        if (!v.viewer_id) return;
+        if (!activityMap[v.viewer_id]) activityMap[v.viewer_id] = { views: 0, favorites: 0, messages: 0 };
+        activityMap[v.viewer_id].views++;
+      });
+      
+      favoritesData?.forEach(f => {
+        if (!f.investor_id) return;
+        if (!activityMap[f.investor_id]) activityMap[f.investor_id] = { views: 0, favorites: 0, messages: 0 };
+        activityMap[f.investor_id].favorites++;
+      });
+      
+      messagesData?.forEach(m => {
+        if (!m.sender_id) return;
+        if (!activityMap[m.sender_id]) activityMap[m.sender_id] = { views: 0, favorites: 0, messages: 0 };
+        activityMap[m.sender_id].messages++;
+      });
+
+      // Sort by total activity
+      const sorted = Object.entries(activityMap)
+        .map(([userId, counts]) => ({
+          userId,
+          total: counts.views + counts.favorites + counts.messages,
+          ...counts
+        }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 10);
+
+      // Fetch profile info for top users
+      if (sorted.length === 0) return [];
+      
+      const userIds = sorted.map(s => s.userId);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, user_type, avatar_url')
+        .in('id', userIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+      
+      return sorted.map(s => ({
+        ...s,
+        profile: profileMap.get(s.userId) || { full_name: 'Unknown', email: '', user_type: 'investor' }
+      }));
+    } catch (err) {
+      console.error('Error fetching most active users:', err);
+      return [];
+    }
   }
 
   // Generate a new blog post
@@ -634,6 +706,59 @@ export function CommandCenter() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Most Active Users */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <Activity className="h-5 w-5 text-blue-600" />
+          Most Active Users
+        </h3>
+        {mostActiveUsers.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">No activity data yet</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2 text-xs font-medium text-gray-500 uppercase">#</th>
+                  <th className="text-left py-2 text-xs font-medium text-gray-500 uppercase">User</th>
+                  <th className="text-left py-2 text-xs font-medium text-gray-500 uppercase">Type</th>
+                  <th className="text-right py-2 text-xs font-medium text-gray-500 uppercase">Views</th>
+                  <th className="text-right py-2 text-xs font-medium text-gray-500 uppercase">Favorites</th>
+                  <th className="text-right py-2 text-xs font-medium text-gray-500 uppercase">Messages</th>
+                  <th className="text-right py-2 text-xs font-medium text-gray-500 uppercase">Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {mostActiveUsers.map((user, i) => (
+                  <tr key={user.userId} className="hover:bg-gray-50">
+                    <td className="py-3 text-sm font-bold text-gray-400">{i + 1}</td>
+                    <td className="py-3">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{user.profile.full_name}</p>
+                        <p className="text-xs text-gray-500">{user.profile.email}</p>
+                      </div>
+                    </td>
+                    <td className="py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                        user.profile.user_type === 'syndicator' 
+                          ? 'bg-purple-100 text-purple-700' 
+                          : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {user.profile.user_type === 'syndicator' ? 'Syndicator' : 'Investor'}
+                      </span>
+                    </td>
+                    <td className="py-3 text-sm text-right text-gray-700">{user.views}</td>
+                    <td className="py-3 text-sm text-right text-gray-700">{user.favorites}</td>
+                    <td className="py-3 text-sm text-right text-gray-700">{user.messages}</td>
+                    <td className="py-3 text-sm text-right font-bold text-gray-900">{user.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Quick Actions */}
