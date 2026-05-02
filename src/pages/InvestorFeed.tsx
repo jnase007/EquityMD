@@ -58,9 +58,9 @@ const PLACEHOLDER_INVESTORS: InvestorCard[] = [
 
 function InvestorCardComponent({ investor, blurred = false }: { investor: InvestorCard; blurred?: boolean }) {
   return (
-    <div className={`relative bg-gray-900 border border-gray-800 rounded-xl p-6 transition-all hover:border-gray-700 ${blurred ? 'select-none' : ''}`}>
+    <div className={`relative bg-white border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md ${blurred ? 'select-none' : ''}`}>
       {blurred && (
-        <div className="absolute inset-0 backdrop-blur-md bg-gray-900/30 rounded-xl z-10" />
+        <div className="absolute inset-0 backdrop-blur-md bg-white/60 rounded-xl z-10" />
       )}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -68,9 +68,9 @@ function InvestorCardComponent({ investor, blurred = false }: { investor: Invest
             {investor.full_name.charAt(0)}
           </div>
           <div>
-            <h3 className="text-white font-semibold text-lg">{investor.full_name}</h3>
+            <h3 className="text-gray-900 font-semibold text-lg">{investor.full_name}</h3>
             {investor.location && (
-              <div className="flex items-center gap-1 text-gray-400 text-sm">
+              <div className="flex items-center gap-1 text-gray-500 text-sm">
                 <MapPin className="h-3 w-3" />
                 {investor.location}
               </div>
@@ -78,7 +78,7 @@ function InvestorCardComponent({ investor, blurred = false }: { investor: Invest
           </div>
         </div>
         {investor.accredited_status && (
-          <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-medium border border-emerald-500/20">
+          <span className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-medium border border-emerald-200">
             <BadgeCheck className="h-3.5 w-3.5" />
             Accredited
           </span>
@@ -94,7 +94,7 @@ function InvestorCardComponent({ investor, blurred = false }: { investor: Invest
             </div>
             <div className="flex flex-wrap gap-1.5">
               {investor.preferred_property_types.map((type) => (
-                <span key={type} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded text-xs border border-blue-500/20">
+                <span key={type} className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs border border-blue-200">
                   {type}
                 </span>
               ))}
@@ -110,7 +110,7 @@ function InvestorCardComponent({ investor, blurred = false }: { investor: Invest
             </div>
             <div className="flex flex-wrap gap-1.5">
               {investor.preferred_locations.map((loc) => (
-                <span key={loc} className="px-2 py-0.5 bg-gray-800 text-gray-300 rounded text-xs">
+                <span key={loc} className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
                   {loc}
                 </span>
               ))}
@@ -121,20 +121,20 @@ function InvestorCardComponent({ investor, blurred = false }: { investor: Invest
         {investor.risk_tolerance && (
           <div className="flex items-center gap-2">
             <TrendingUp className="h-3.5 w-3.5 text-gray-500" />
-            <span className="text-gray-400 text-sm">Risk: <span className="text-gray-300">{investor.risk_tolerance}</span></span>
+            <span className="text-gray-500 text-sm">Risk: <span className="text-gray-900">{investor.risk_tolerance}</span></span>
           </div>
         )}
 
         <div className="flex items-center gap-2">
           <Clock className="h-3.5 w-3.5 text-gray-500" />
-          <span className="text-gray-400 text-sm">
+          <span className="text-gray-600 text-sm">
             Joined {new Date(investor.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
           </span>
         </div>
       </div>
 
       {!blurred && (
-        <div className="mt-4 pt-4 border-t border-gray-800">
+        <div className="mt-4 pt-4 border-t border-gray-200">
           <a
             href={`mailto:${investor.email}`}
             className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
@@ -258,11 +258,11 @@ export default function InvestorFeed() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950">
+      <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="text-gray-400 mt-4">Loading investor feed...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="text-gray-600 mt-4">Loading investor feed...</p>
         </div>
       </div>
     );
@@ -271,13 +271,13 @@ export default function InvestorFeed() {
   // Non-syndicator view
   if (!isSyndicator) {
     return (
-      <div className="min-h-screen bg-gray-950">
+      <div className="min-h-screen bg-gray-50">
         <Navbar />
         <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-12">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-12">
             <AlertCircle className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-white mb-3">Syndicators Only</h1>
-            <p className="text-gray-400 mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-3">Syndicators Only</h1>
+            <p className="text-gray-600 mb-6">
               The Investor Feed is exclusively available to syndicators on EquityMD.
               If you're a syndicator, claim your profile or list a deal to get started.
             </p>
@@ -297,7 +297,7 @@ export default function InvestorFeed() {
   const isSubscribed = syndicator?.subscription_status === 'active';
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -305,13 +305,13 @@ export default function InvestorFeed() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Users className="h-8 w-8 text-blue-500" />
-            <h1 className="text-3xl font-bold text-white">Investor Feed</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Investor Feed</h1>
           </div>
           {isSubscribed ? (
-            <div className="flex items-center gap-4 text-gray-400">
+            <div className="flex items-center gap-4 text-gray-600">
               <span className="flex items-center gap-1.5">
                 <Shield className="h-4 w-4 text-emerald-500" />
-                <span className="text-emerald-400 font-medium">{investors.length} investor{investors.length !== 1 ? 's' : ''} in your feed</span>
+                <span className="text-emerald-600 font-medium">{investors.length} investor{investors.length !== 1 ? 's' : ''} in your feed</span>
               </span>
               {syndicator?.subscribed_at && (
                 <span className="flex items-center gap-1.5">
@@ -321,12 +321,12 @@ export default function InvestorFeed() {
               )}
             </div>
           ) : (
-            <p className="text-gray-400">Access accredited investors looking for syndication opportunities</p>
+            <p className="text-gray-600">Access accredited investors looking for syndication opportunities</p>
           )}
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
+          <div className="mb-6 p-4 bg-red-50 border border-red-500/20 rounded-lg text-red-600">
             {error}
           </div>
         )}
@@ -341,9 +341,9 @@ export default function InvestorFeed() {
             </div>
           ) : (
             <div className="text-center py-16">
-              <Users className="h-16 w-16 text-gray-700 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-white mb-2">No new investors yet</h2>
-              <p className="text-gray-400 max-w-md mx-auto">
+              <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">No new investors yet</h2>
+              <p className="text-gray-600 max-w-md mx-auto">
                 New investors who join after your subscription date will appear here.
                 Check back soon — new investors join EquityMD every week.
               </p>
@@ -361,14 +361,14 @@ export default function InvestorFeed() {
 
             {/* CTA Overlay */}
             <div className="absolute inset-0 flex items-center justify-center z-20">
-              <div className="bg-gray-900/95 border border-gray-700 rounded-2xl p-10 max-w-lg text-center shadow-2xl backdrop-blur-sm">
-                <div className="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center mx-auto mb-6">
-                  <Lock className="h-8 w-8 text-blue-500" />
+              <div className="bg-white border border-gray-200 rounded-2xl p-10 max-w-lg text-center shadow-2xl">
+                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-6">
+                  <Lock className="h-8 w-8 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-3">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">
                   Join the Investor Program
                 </h2>
-                <p className="text-3xl font-bold text-blue-400 mb-6">$1,000/mo</p>
+                <p className="text-3xl font-bold text-blue-600 mb-6">$1,000/mo</p>
 
                 <ul className="text-left space-y-3 mb-8">
                   {[
@@ -377,7 +377,7 @@ export default function InvestorFeed() {
                     'Founding members see the full investor pool',
                     'Direct contact with qualified investors',
                   ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-gray-300">
+                    <li key={i} className="flex items-start gap-2 text-gray-700">
                       <ChevronRight className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                       {item}
                     </li>
