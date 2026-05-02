@@ -55,6 +55,9 @@ export interface SyndicatorProfile {
   state: string | null;
   city: string | null;
   slug: string;
+  subscription_status?: 'none' | 'active' | 'cancelled';
+  subscribed_at?: string | null;
+  subscription_cancelled_at?: string | null;
 }
 
 // New Syndicator type that aligns with the refactored schema
@@ -87,6 +90,9 @@ export interface Syndicator {
   claimable: boolean;
   claimed_at: string | null;
   claimed_by: string | null; // References profiles.id
+  subscription_status?: 'none' | 'active' | 'cancelled';
+  subscribed_at?: string | null;
+  subscription_cancelled_at?: string | null;
 }
 
 export interface Deal {

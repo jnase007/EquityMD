@@ -60,6 +60,7 @@ const Goals = lazyRetry(() => import('./pages/Goals'), 'Goals');
 const SyndicatorSetup = lazyRetry(() => import('./pages/SyndicatorSetup'), 'SyndicatorSetup');
 // GoToMarket merged into Strategy — /gtm redirects to /strategy
 const Strategy = lazyRetry(() => import('./pages/Strategy'));
+const InvestorFeed = lazyRetry(() => import('./pages/InvestorFeed'));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
@@ -595,6 +596,10 @@ export default function App() {
         <Route
           path="/dashboard/syndicator"
           element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <Dashboard initialView="syndicator" />)}
+        />
+        <Route
+          path="/dashboard/investor-feed"
+          element={authLoading ? <MinimalLoadingFallback /> : (!user ? <Navigate to="/" /> : <InvestorFeed />)}
         />
         <Route 
           path="/deals/new" 

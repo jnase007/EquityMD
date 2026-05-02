@@ -4,7 +4,7 @@ import {
   Building2, Menu, X, ChevronRight, 
   Bell, Search, LayoutDashboard, 
   Settings, LogOut, Plus, Heart, ChevronDown,
-  Sun, Moon, Monitor, BookOpen, MessageSquare
+  Sun, Moon, Monitor, BookOpen, MessageSquare, Users
 } from 'lucide-react';
 import { AuthModal } from './AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
@@ -436,14 +436,24 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
                           </Link>
                         )}
                         {profile?.user_type === 'syndicator' && (
-                          <Link
-                            to="/deals/new"
-                            onClick={() => setIsDropdownOpen(false)}
-                            className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
-                          >
-                            <Plus className="h-4 w-4 text-gray-400" />
-                            Post Deal
-                          </Link>
+                          <>
+                            <Link
+                              to="/deals/new"
+                              onClick={() => setIsDropdownOpen(false)}
+                              className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                            >
+                              <Plus className="h-4 w-4 text-gray-400" />
+                              Post Deal
+                            </Link>
+                            <Link
+                              to="/dashboard/investor-feed"
+                              onClick={() => setIsDropdownOpen(false)}
+                              className={`flex items-center gap-3 px-4 py-2 ${isDarkTheme ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-50'}`}
+                            >
+                              <Users className={`h-4 w-4 ${isDarkTheme ? 'text-gray-400' : 'text-gray-400'}`} />
+                              Investor Feed
+                            </Link>
+                          </>
                         )}
                         {profile?.is_admin && (
                           <Link
