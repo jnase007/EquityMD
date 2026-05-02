@@ -257,13 +257,11 @@ export function Navbar({ isTransparent = false }: NavbarProps) {
             {/* Quick Theme Toggle */}
             {user && (
               <button
-                onClick={() => setTheme(theme === 'light' ? 'dim' : theme === 'dim' ? 'dark' : 'light')}
+                onClick={() => setTheme(isDarkTheme ? 'light' : 'dark')}
                 className={`p-2 rounded-lg transition ${navIconClass}`}
-                title={`Theme: ${theme.charAt(0).toUpperCase() + theme.slice(1)}`}
+                title={isDarkTheme ? 'Light Mode' : 'Dark Mode'}
               >
-                {theme === 'light' && <Sun className="h-5 w-5" />}
-                {theme === 'dim' && <Monitor className="h-5 w-5" />}
-                {theme === 'dark' && <Moon className="h-5 w-5" />}
+                {isDarkTheme ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
             )}
 
