@@ -498,7 +498,13 @@ export function CommandCenter() {
         </div>
 
         {/* Investment Requests */}
-        <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/20">
+        <div
+          onClick={() => {
+            // Navigate to dashboard to review investment requests
+            window.location.href = '/dashboard';
+          }}
+          className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/20 cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all"
+        >
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-amber-100">Investment Requests</p>
