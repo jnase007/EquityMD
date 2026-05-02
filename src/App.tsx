@@ -184,6 +184,18 @@ export default function App() {
 
   const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
     try {
+      // Ensure auth session is attached before querying (RLS requires it)
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        authLogger.log('No session yet — delaying profile fetch');
+        if (retryCount < 5) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return fetchProfile(userId, retryCount + 1);
+        }
+        authLogger.log('No session after 5 retries — giving up');
+        return;
+      }
+
       authLogger.log('Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('profiles')
@@ -192,12 +204,19 @@ export default function App() {
         .maybeSingle();
 
       if (error) {
-        if (error.message.includes('fetch') && retryCount < 3) {
+        if ((error.message.includes('fetch') || error.message.includes('network')) && retryCount < 5) {
           authLogger.log(`Retrying profile fetch... Attempt ${retryCount + 1}`);
           await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
           return fetchProfile(userId, retryCount + 1);
         }
         throw error;
+      }
+      
+      // RLS can return null if session wasn't attached — retry
+      if (!data && retryCount < 3) {
+        authLogger.log('Profile query returned null (possible RLS race) — retrying');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        return fetchProfile(userId, retryCount + 1);
       }
 
       if (!data) {
