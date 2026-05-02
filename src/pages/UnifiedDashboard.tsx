@@ -109,45 +109,39 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
       return;
     }
     
-    const timer = setTimeout(async () => {
-      // Profile hasn't loaded — check if session is actually expired
+    // Profile not loaded yet — retry every 2s up to 3 times
+    let retries = 0;
+    const timer = setInterval(async () => {
+      retries++;
+      if (useAuthStore.getState().profile) {
+        clearInterval(timer);
+        return;
+      }
+      console.log(`[Dashboard] Profile retry ${retries}/3 for user ${user?.id}`);
       try {
-        console.log('[Dashboard] Profile not loaded after 3s — checking session...');
-        const { data, error } = await supabase.auth.getSession();
-        if (error || !data?.session) {
-          console.warn('[Dashboard] Session expired:', error?.message);
-          setProfileTimeout(true);
-        } else {
-          // Session is valid but profile didn't load — try refreshing and re-fetching
-          console.log('[Dashboard] Session valid, refreshing...');
-          const { data: refreshData } = await supabase.auth.refreshSession();
-          if (refreshData?.session?.user) {
-            // Try fetching profile directly
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', refreshData.session.user.id)
-              .maybeSingle();
-            if (profileData) {
-              useAuthStore.getState().setProfile(profileData);
-              setLoading(false);
-              return;
-            }
-          }
-          // Still no profile after retry
-          setTimeout(() => {
-            if (!useAuthStore.getState().profile) {
-              setProfileTimeout(true);
-            }
-          }, 2000);
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user!.id)
+          .maybeSingle();
+        if (profileData) {
+          console.log('[Dashboard] Profile loaded on retry');
+          useAuthStore.getState().setProfile(profileData);
+          setLoading(false);
+          clearInterval(timer);
+          return;
         }
       } catch (err) {
-        console.error('[Dashboard] Session check failed:', err);
-        setProfileTimeout(true);
+        console.error('[Dashboard] Profile retry failed:', err);
       }
-    }, 3000);
+      if (retries >= 3) {
+        console.warn('[Dashboard] Profile not found after 3 retries');
+        setProfileTimeout(true);
+        clearInterval(timer);
+      }
+    }, 2000);
     
-    return () => clearTimeout(timer);
+    return () => clearInterval(timer);
   }, [profile, user]);
 
   // Hard ceiling: if loading hasn't resolved in 10s, force it
