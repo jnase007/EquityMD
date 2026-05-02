@@ -286,8 +286,21 @@ export default function App() {
         msg.includes('expired') ||
         msg.includes('invalid claim')
       ) {
-        authLogger.log('Auth error detected — clearing session');
-        clearAuth();
+        // Try refreshing the session before giving up
+        authLogger.log('Auth error detected — attempting session refresh before clearing');
+        try {
+          const { data, error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError || !data.session) {
+            authLogger.log('Session refresh failed — clearing auth');
+            clearAuth();
+          } else {
+            authLogger.log('Session refreshed successfully — retrying profile fetch');
+            // Don't clear auth — the token was just stale, now it's fresh
+          }
+        } catch {
+          authLogger.log('Session refresh threw — clearing auth');
+          clearAuth();
+        }
       } else {
         authLogger.log('Transient error — keeping session, profile may load on retry');
       }

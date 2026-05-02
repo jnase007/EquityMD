@@ -8,8 +8,16 @@ export function SystemManagement() {
   const clearBrowserCache = async () => {
     setClearing('browser');
     try {
+      // Preserve Supabase auth session while clearing everything else
+      const authToken = localStorage.getItem('sb-frtxsynlvwhpnzzgfgbt-auth-token');
+      
       // Clear localStorage
       localStorage.clear();
+      
+      // Restore auth token so user stays logged in
+      if (authToken) {
+        localStorage.setItem('sb-frtxsynlvwhpnzzgfgbt-auth-token', authToken);
+      }
       
       // Clear sessionStorage
       sessionStorage.clear();
