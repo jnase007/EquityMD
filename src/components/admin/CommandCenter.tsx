@@ -761,6 +761,9 @@ export function CommandCenter() {
         )}
       </div>
 
+      {/* Recent Logins */}
+      <RecentLogins />
+
       {/* Quick Actions */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 rounded-2xl p-6 text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
@@ -826,6 +829,89 @@ export function CommandCenter() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Recent Logins component
+function RecentLogins() {
+  const [logins, setLogins] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRecentLogins();
+  }, []);
+
+  async function fetchRecentLogins() {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, user_type, avatar_url, updated_at')
+        .not('updated_at', 'is', null)
+        .order('updated_at', { ascending: false })
+        .limit(15);
+
+      setLogins(data || []);
+    } catch (err) {
+      console.error('Error fetching recent logins:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function timeAgo(dateStr: string) {
+    const now = new Date();
+    const date = new Date(dateStr);
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return 'Just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr}h ago`;
+    const diffDays = Math.floor(diffHr / 24);
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  if (loading) return null;
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <Clock className="h-5 w-5 text-green-600" />
+        Recent Logins
+      </h3>
+      {logins.length === 0 ? (
+        <p className="text-gray-500 text-center py-4">No login data yet</p>
+      ) : (
+        <div className="divide-y divide-gray-50">
+          {logins.map((user) => (
+            <div key={user.id} className="flex items-center justify-between py-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+                  {user.avatar_url ? (
+                    <img src={user.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    (user.full_name || 'U').charAt(0).toUpperCase()
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{user.full_name || 'Unknown'}</p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                  user.user_type === 'syndicator' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
+                }`}>
+                  {user.user_type === 'syndicator' ? 'Syndicator' : 'Investor'}
+                </span>
+                <span className="text-xs text-gray-500">{timeAgo(user.updated_at)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
