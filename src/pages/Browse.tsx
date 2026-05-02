@@ -135,8 +135,7 @@ export function Browse() {
       } else {
         query = query.in('status', ['active', 'draft']);
       }
-      // Only show approved deals on public browse page
-      query = query.eq('approval_status', 'approved');
+      // Deals are approved by setting status=active in admin — no separate approval_status needed
       const { data, error } = await query;
 
       if (error || !data) {

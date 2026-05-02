@@ -113,7 +113,7 @@ export function Home() {
         .from('deals')
         .select('*')
         .eq('status', 'active')
-        .eq('approval_status', 'approved')
+        
         .order('highlighted', { ascending: false })
         .order('created_at', { ascending: false });
 

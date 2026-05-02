@@ -140,7 +140,7 @@ export function Directory() {
         .from('deals')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'active')
-        .eq('approval_status', 'approved');
+        ;
       
       if (!error && count !== null) {
         setTotalActiveDeals(count);
