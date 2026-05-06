@@ -8,6 +8,7 @@ import {
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { Navbar } from '../components/Navbar';
+import { SEO } from '../components/SEO';
 import toast from 'react-hot-toast';
 
 // US States for dropdown
@@ -271,6 +272,7 @@ export function SyndicatorSetup() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <SEO title="Syndicator Setup | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-3xl mx-auto px-4 py-12">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { RelatedLinks } from '../../components/RelatedLinks';
 import { SEO } from '../../components/SEO';
 import { Helmet } from 'react-helmet-async';
 import { Search, Book, Filter, BookOpen } from 'lucide-react';
@@ -271,6 +272,17 @@ export function Glossary() {
           )}
         </div>
       </div>
+
+      <RelatedLinks
+        title="Related Resources"
+        links={[
+          { to: '/resources/due-diligence', title: 'Due Diligence Guide', description: 'Apply your knowledge to evaluating real deals and syndicators' },
+          { to: '/resources/education', title: 'Education Center', description: 'Comprehensive guides for syndication investors' },
+          { to: '/how-it-works', title: 'How It Works', description: 'A complete overview of the syndication investing process' },
+          { to: '/find', title: 'Browse Deals', description: 'Discover investment opportunities from verified syndicators' },
+        ]}
+        columns={4}
+      />
 
       <Footer />
     </div>

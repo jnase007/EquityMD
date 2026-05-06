@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
+import { SEO } from '../../components/SEO';
 import { Footer } from '../../components/Footer';
 import { LogoManager } from '../../components/admin/LogoManager';
 import { UserManagement } from '../../components/admin/UserManagement';
@@ -191,6 +192,7 @@ export function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Admin Dashboard | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-[1200px] mx-auto px-4 py-8">

@@ -1,11 +1,19 @@
 import React from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { Shield, Lock, UserCheck, FileText, Mail, Globe, Database, AlertTriangle } from 'lucide-react';
 
 export function Privacy() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <SEO
+        title="Privacy Policy | EquityMD"
+        description="EquityMD's privacy policy. Learn how we collect, use, and protect your personal information on our real estate syndication platform."
+        keywords="EquityMD privacy policy, data protection, personal information, real estate platform privacy"
+        canonical="https://equitymd.com/legal/privacy"
+      />
       <Navbar />
 
       {/* Hero Header */}
@@ -173,6 +181,16 @@ export function Privacy() {
           </div>
         </div>
       </div>
+
+      <RelatedLinks
+        title="Explore EquityMD"
+        links={[
+          { to: '/how-it-works', title: 'How It Works', description: 'Learn how real estate syndication investing works' },
+          { to: '/find', title: 'Browse Deals', description: 'Discover investment opportunities from verified syndicators' },
+          { to: '/contact', title: 'Contact Us', description: 'Have questions? Our team is here to help' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

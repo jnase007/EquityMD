@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Tooltip, InfoIcon } from '../components/Tooltip';
+import { SEO } from '../components/SEO';
 
 export function TooltipDemo() {
   const [accreditedStatus, setAccreditedStatus] = useState(false);
@@ -8,6 +9,7 @@ export function TooltipDemo() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <SEO title="Tooltip Demo | EquityMD" noindex={true} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Tooltip Demo</h1>

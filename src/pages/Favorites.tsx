@@ -109,9 +109,10 @@ export function Favorites() {
 
   return (
     <>
-      <SEO 
-        title="My Favorites - EquityMD"
+      <SEO
+        title="My Favorites | EquityMD"
         description="View and manage your favorite real estate investment opportunities."
+        noindex={true}
       />
       
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50">

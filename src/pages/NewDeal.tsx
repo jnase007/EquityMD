@@ -6,6 +6,7 @@ import { PropertyListingWizard } from '../components/PropertyListingWizard';
 import { VerificationUpload } from '../components/VerificationUpload';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 
@@ -91,6 +92,7 @@ export function NewDeal() {
   // Has syndicator profile — always show the wizard, with a pending notice if not verified
   return (
     <>
+      <SEO title="List a New Deal | EquityMD" noindex={true} />
       {!isVerified && (
         <div className="bg-amber-50 dark:bg-amber-900/60 border-b-2 border-amber-400 dark:border-amber-500">
           <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">

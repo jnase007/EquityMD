@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { CTABanner } from '../components/CTABanner';
+import { RelatedLinks } from '../components/RelatedLinks';
+import { SEO } from '../components/SEO';
 import { Star, TrendingUp, Quote, ArrowRight, Sparkles, Users, Building2, Award } from 'lucide-react';
 
 const testimonials = [
@@ -52,6 +55,12 @@ const testimonials = [
 export function SuccessStories() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50">
+      <SEO
+        title="Real Estate Investing Success Stories | EquityMD"
+        description="Read real investor success stories from EquityMD. Discover how accredited investors are building passive income and wealth through real estate syndication deals."
+        keywords="real estate investment success stories, syndication investor results, passive income real estate, accredited investor returns"
+        canonical="https://equitymd.com/success-stories"
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -214,6 +223,18 @@ export function SuccessStories() {
           </div>
         </div>
       </div>
+
+      <CTABanner variant="investor" />
+
+      <RelatedLinks
+        title="Start Your Success Story"
+        links={[
+          { to: '/find', title: 'Browse Deals', description: 'Discover curated investment opportunities from verified syndicators' },
+          { to: '/directory', title: 'Find Syndicators', description: 'Connect with experienced sponsors and their track records' },
+          { to: '/how-it-works', title: 'How It Works', description: 'Learn everything about real estate syndication investing' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

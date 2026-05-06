@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { InvestmentGoals } from '../components/InvestmentGoals';
 import { ArrowLeft, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { Link } from 'react-router-dom';
 export function Goals() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-teal-50">
+      <SEO title="Investment Goals | EquityMD" noindex={true} />
       <Navbar />
       
       <main className="pt-20 pb-16">

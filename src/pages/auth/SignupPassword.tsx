@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { sendSignupEmails } from '../../lib/emailService';
+import { SEO } from '../../components/SEO';
 
 export function SignupPassword() {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ export function SignupPassword() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <SEO title="Sign Up - Create Password | EquityMD" noindex={true} />
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="mb-8">

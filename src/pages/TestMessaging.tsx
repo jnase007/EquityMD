@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { MessageModal } from '../components/MessageModal';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
@@ -101,6 +102,7 @@ export function TestMessaging() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Test Messaging | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 py-8">

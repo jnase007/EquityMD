@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthModal } from '../components/AuthModal';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
+import { SEO } from '../components/SEO';
 import { CheckCircle, XCircle, Loader, RefreshCw, AlertTriangle, ExternalLink } from 'lucide-react';
 
 export function TestAuth() {
@@ -198,6 +199,7 @@ export function TestAuth() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      <SEO title="Test Auth | EquityMD" noindex={true} />
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between mb-6">

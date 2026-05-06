@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
+import { SEO } from '../components/SEO';
 import { Footer } from '../components/Footer';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
@@ -348,6 +349,7 @@ export function ProfileNew() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <SEO title="Edit Profile | EquityMD" noindex={true} />
       <Navbar />
       <Toaster position="top-right" />
 

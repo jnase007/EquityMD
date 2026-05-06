@@ -6,6 +6,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
+import { SEO } from '../components/SEO';
 import { Footer } from '../components/Footer';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
@@ -133,6 +134,7 @@ export function Portfolio() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="My Portfolio | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 py-8">

@@ -1,11 +1,19 @@
 import React from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { AlertTriangle, Info, Scale, Shield, DollarSign, Users, Mail, FileWarning } from 'lucide-react';
 
 export function Disclaimer() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50">
+      <SEO
+        title="Investment Disclaimer | EquityMD"
+        description="Important investment disclaimers for EquityMD. Real estate syndication involves risk. Understand the risks before investing in syndication deals."
+        keywords="investment disclaimer, real estate risk disclosure, syndication investment risks, accredited investor disclaimer"
+        canonical="https://equitymd.com/legal/disclaimer"
+      />
       <Navbar />
 
       {/* Hero Header */}
@@ -132,6 +140,16 @@ export function Disclaimer() {
           </div>
         </div>
       </div>
+
+      <RelatedLinks
+        title="Explore EquityMD"
+        links={[
+          { to: '/how-it-works', title: 'How It Works', description: 'Learn how real estate syndication investing works' },
+          { to: '/find', title: 'Browse Deals', description: 'Discover investment opportunities from verified syndicators' },
+          { to: '/contact', title: 'Contact Us', description: 'Have questions? Our team is here to help' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

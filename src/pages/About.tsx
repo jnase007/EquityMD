@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { CTABanner } from '../components/CTABanner';
+import { RelatedLinks } from '../components/RelatedLinks';
 import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { AuthModal } from '../components/AuthModal';
@@ -277,6 +279,19 @@ export function About() {
           />
         </div>
       </section>
+
+      <CTABanner variant="general" />
+
+      <RelatedLinks
+        title="Learn More About EquityMD"
+        links={[
+          { to: '/how-it-works', title: 'How It Works', description: 'See how our platform connects investors with syndicators' },
+          { to: '/directory', title: 'Syndicator Directory', description: 'Browse our network of verified real estate syndicators' },
+          { to: '/blog', title: 'Investing Blog', description: 'Expert insights and market commentary on syndication' },
+          { to: '/contact', title: 'Contact Us', description: 'Have questions? Our team is ready to help' },
+        ]}
+        columns={4}
+      />
 
       <Footer />
       

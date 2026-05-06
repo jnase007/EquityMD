@@ -1,6 +1,9 @@
 import React from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { CTABanner } from '../../components/CTABanner';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { BookOpen, Play, FileText, Award } from 'lucide-react';
 
 export function Education() {
@@ -63,6 +66,12 @@ export function Education() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Real Estate Investing Education & Learning Center | EquityMD"
+        description="Free real estate investing education for accredited investors. Learn syndication fundamentals, deal analysis, due diligence, and how to evaluate passive income opportunities."
+        keywords="real estate investing education, syndication courses, passive income investing, commercial real estate learning, investor education"
+        canonical="https://equitymd.com/resources/education"
+      />
       <Navbar />
 
       <div className="bg-blue-600 text-white py-20">
@@ -126,6 +135,20 @@ export function Education() {
           </div>
         </div>
       </div>
+
+      <CTABanner variant="investor" />
+
+      <RelatedLinks
+        title="Continue Your Learning"
+        links={[
+          { to: '/resources/due-diligence', title: 'Due Diligence Guide', description: 'Learn how to properly evaluate deals and syndicators' },
+          { to: '/resources/calculator', title: 'Returns Calculator', description: 'Model your investment returns before you commit' },
+          { to: '/resources/glossary', title: 'Syndication Glossary', description: 'Master the terminology used in real estate syndication' },
+          { to: '/how-it-works', title: 'How It Works', description: 'A complete overview of the syndication process' },
+          { to: '/find', title: 'Browse Deals', description: 'Put your knowledge to work with real opportunities' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

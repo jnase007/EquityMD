@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { CTABanner } from '../components/CTABanner';
+import { RelatedLinks } from '../components/RelatedLinks';
 import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { QuickLinksFooter } from '../components/InternalLinks';
@@ -606,6 +608,20 @@ export function HowItWorks() {
           />
         </div>
       </div>
+
+      <CTABanner variant="investor" />
+
+      <RelatedLinks
+        title="Explore More Resources"
+        links={[
+          { to: '/find', title: 'Browse Active Deals', description: 'Discover curated investment opportunities from verified syndicators' },
+          { to: '/directory', title: 'Syndicator Directory', description: 'Compare experienced sponsors and their track records' },
+          { to: '/resources/due-diligence', title: 'Due Diligence Guide', description: 'Learn how to properly evaluate deals before investing' },
+          { to: '/resources/glossary', title: 'Syndication Glossary', description: 'Master the terminology used in real estate syndication' },
+          { to: '/resources/calculator', title: 'Returns Calculator', description: 'Model your potential investment returns' },
+        ]}
+        columns={3}
+      />
 
       {/* Internal Links Section */}
       <QuickLinksFooter exclude={['/how-it-works']} />

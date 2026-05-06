@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, Link, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { MessageModal } from '../components/MessageModal';
 import { AccountTypeBadge } from '../components/AccountTypeBadge';
 import { useAuthStore } from '../lib/store';
@@ -882,6 +883,7 @@ export function Profile() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="My Profile | EquityMD" noindex={true} />
       <style dangerouslySetInnerHTML={{ __html: progressStyles }} />
       <Navbar />
       <Toaster position="top-right" />

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { User, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { sendSignupEmails } from '../../lib/emailService';
+import { SEO } from '../../components/SEO';
 
 export function SignupName() {
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ export function SignupName() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <SEO title="Sign Up - Your Name | EquityMD" noindex={true} />
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="mb-8">

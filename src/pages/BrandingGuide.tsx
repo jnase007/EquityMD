@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { 
   Palette, Type, Layout, Sparkles, Check, Copy, 
   Square, Circle, ArrowRight, Heart, Star, Zap, Paintbrush
@@ -85,6 +86,7 @@ function ColorSwatch({ name, hex, usage }: { name: string; hex: string; usage: s
 export function BrandingGuide() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+      <SEO title="Branding Guide | EquityMD" noindex={true} />
       <Navbar />
       
       {/* Hero Header */}

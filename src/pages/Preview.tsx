@@ -1,12 +1,14 @@
 import React from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { PageBanner } from '../components/PageBanner';
 import { Building2, Star, Users, DollarSign } from 'lucide-react';
 
 export function Preview() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Preview | EquityMD" noindex={true} />
       <Navbar />
 
       <PageBanner 

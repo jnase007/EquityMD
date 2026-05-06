@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
+import { RelatedLinks } from "../components/RelatedLinks";
 import { SEO, DealSchema, Breadcrumbs } from "../components/SEO";
 import { MessageModal } from "../components/MessageModal";
 import { DealMediaGallery } from "../components/DealMediaGallery";
@@ -928,6 +929,18 @@ export function DealDetails() {
 
       {/* Add padding at bottom on mobile to account for sticky CTA */}
       {showStickyInvest && <div className="h-28 lg:hidden" />}
+
+      <RelatedLinks
+        title="Explore More Opportunities"
+        links={[
+          { to: '/directory', title: 'Browse All Syndicators', description: 'Compare verified syndicators by track record and specialty' },
+          { to: '/resources/due-diligence', title: 'Due Diligence Checklist', description: 'Evaluate this deal with our expert due diligence framework' },
+          { to: '/how-it-works', title: 'How Syndication Works', description: 'New to syndication investing? Start here' },
+          { to: '/resources/calculator', title: 'Calculate Returns', description: 'Model your potential returns with our investment calculator' },
+          { to: '/blog', title: 'Investment Insights', description: 'Expert articles on real estate syndication investing' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

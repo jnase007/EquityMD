@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award } from 'lucide-react';
@@ -73,6 +74,12 @@ export function HowItWorksImproved() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SEO
+        title="How Real Estate Syndication Works | Step-by-Step Guide | EquityMD"
+        description="Learn how real estate syndication works step by step. From discovering deals to earning passive income — understand the investment process for accredited investors."
+        canonical="https://equitymd.com/how-it-works"
+        keywords="how real estate syndication works, syndication process, passive real estate investing, accredited investor guide"
+      />
       <Navbar />
 
       {/* Hero Section with Gradient */}

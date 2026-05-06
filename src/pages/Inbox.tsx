@@ -3,6 +3,7 @@ import { Navigate, Link } from 'react-router-dom';
 import { Search, ArrowLeft, Building2, User, Mail, Filter, Bell, Settings, MessageSquarePlus, Inbox as InboxIcon, Archive, Star, MoreVertical, RefreshCw, CheckCheck } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { ConversationList } from '../components/ConversationList';
 import { MessageThread } from '../components/MessageThread';
 import { useAuthStore } from '../lib/store';
@@ -375,6 +376,7 @@ export function Inbox() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <SEO title="Inbox | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-[1400px] mx-auto px-4 py-6">

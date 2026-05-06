@@ -1,11 +1,19 @@
 import React from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { Shield, Scale, FileText, AlertTriangle, Users, Building2, CheckCircle, Gavel, Mail } from 'lucide-react';
 
 export function Compliance() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
+      <SEO
+        title="Compliance & Regulatory Information | EquityMD"
+        description="EquityMD compliance and regulatory information. Understand the SEC regulations, Regulation D exemptions, and compliance standards governing real estate syndication investments."
+        keywords="real estate syndication compliance, Regulation D, SEC compliance, real estate regulatory, investment compliance"
+        canonical="https://equitymd.com/legal/compliance"
+      />
       <Navbar />
 
       {/* Hero Header */}
@@ -148,6 +156,16 @@ export function Compliance() {
           </div>
         </div>
       </div>
+
+      <RelatedLinks
+        title="Explore EquityMD"
+        links={[
+          { to: '/how-it-works', title: 'How It Works', description: 'Learn how real estate syndication investing works' },
+          { to: '/find', title: 'Browse Deals', description: 'Discover investment opportunities from verified syndicators' },
+          { to: '/contact', title: 'Contact Us', description: 'Have questions? Our team is here to help' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

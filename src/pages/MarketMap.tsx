@@ -3,6 +3,9 @@ import MapGL, { Marker, Popup, NavigationControl } from 'react-map-gl';
 import { MapPin, Building2, TrendingUp, DollarSign, ChevronRight, Search, Loader } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { CTABanner } from '../components/CTABanner';
+import { RelatedLinks } from '../components/RelatedLinks';
+import { SEO } from '../components/SEO';
 import { supabase } from '../lib/supabase';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -613,6 +616,12 @@ export function MarketMap() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Real Estate Investment Market Map | Syndication Deals Across the US | EquityMD"
+        description="Interactive map of real estate syndication deals across the United States. Explore active investment opportunities by location, property type, and target returns."
+        keywords="real estate market map, syndication deals map, investment opportunities by location, commercial real estate map, US property investments"
+        canonical="https://equitymd.com/market-map"
+      />
       <Navbar />
 
       <div className="relative">
@@ -855,6 +864,18 @@ export function MarketMap() {
           </div>
         </div>
       </div>
+
+      <CTABanner variant="investor" />
+
+      <RelatedLinks
+        title="Explore Investment Opportunities"
+        links={[
+          { to: '/resources/market-reports', title: 'Detailed Market Reports', description: 'In-depth analysis of real estate markets across the US' },
+          { to: '/find', title: 'Browse Deals', description: 'Find investment opportunities in markets that interest you' },
+          { to: '/directory', title: 'Syndicator Directory', description: 'Connect with experienced syndicators operating in your target markets' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

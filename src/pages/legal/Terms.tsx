@@ -1,11 +1,19 @@
 import React from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { FileText, AlertTriangle, Scale, Shield, Building2, Users, Mail } from 'lucide-react';
 
 export function Terms() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-amber-50">
+      <SEO
+        title="Terms of Service | EquityMD"
+        description="EquityMD terms of service. Read the terms governing use of our real estate syndication marketplace for accredited investors and syndicators."
+        keywords="EquityMD terms of service, user agreement, real estate platform terms, syndication marketplace terms"
+        canonical="https://equitymd.com/legal/terms"
+      />
       <Navbar />
 
       {/* Hero Header */}
@@ -153,6 +161,16 @@ export function Terms() {
           </div>
         </div>
       </div>
+
+      <RelatedLinks
+        title="Explore EquityMD"
+        links={[
+          { to: '/how-it-works', title: 'How It Works', description: 'Learn how real estate syndication investing works' },
+          { to: '/find', title: 'Browse Deals', description: 'Discover investment opportunities from verified syndicators' },
+          { to: '/contact', title: 'Contact Us', description: 'Have questions? Our team is here to help' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

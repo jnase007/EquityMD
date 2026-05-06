@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { AuthModal } from '../../components/AuthModal';
 import { CheckCircle, AlertTriangle, FileText, DollarSign, Award, ArrowRight, Shield, Sparkles } from 'lucide-react';
 
@@ -38,6 +40,12 @@ export function Accreditation() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50">
+      <SEO
+        title="Accreditation Requirements | EquityMD"
+        description="Learn about accredited investor requirements to invest in real estate syndications on EquityMD. Income, net worth, and professional certification thresholds explained."
+        keywords="accredited investor requirements, SEC accreditation, income threshold, net worth investor, real estate syndication eligibility"
+        canonical="https://equitymd.com/legal/accreditation"
+      />
       <Navbar />
 
       {/* Hero Header */}
@@ -136,6 +144,16 @@ export function Accreditation() {
           </div>
         </div>
       </div>
+
+      <RelatedLinks
+        title="Explore EquityMD"
+        links={[
+          { to: '/how-it-works', title: 'How It Works', description: 'Learn how real estate syndication investing works' },
+          { to: '/find', title: 'Browse Deals', description: 'Discover investment opportunities from verified syndicators' },
+          { to: '/contact', title: 'Contact Us', description: 'Have questions? Our team is here to help' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
       

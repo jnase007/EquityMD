@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Building2, Shield, BarChart, Users, TrendingUp, Plus, Edit, Archive, FileText, CreditCard, Share2, DollarSign, ArrowUp, CheckCircle, Upload, Settings, Search, Filter, MoreVertical, Eye, Trash2, Download, UserPlus, Building, MessageSquare, Heart, Target } from 'lucide-react';
 import { InvestmentReadinessFlow } from '../components/InvestmentReadinessFlow';
+import { SEO } from '../components/SEO';
 
 export function DashboardReview() {
   const [activeTab, setActiveTab] = useState<'investor' | 'syndicator' | 'admin'>('investor');
@@ -1391,6 +1392,7 @@ export function DashboardReview() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Dashboard Review | EquityMD" noindex={true} />
       {/* Simple Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">

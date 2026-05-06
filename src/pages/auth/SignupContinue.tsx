@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CheckCircle, ArrowRight } from 'lucide-react';
 import { trackUserSignup } from '../../lib/analytics';
+import { SEO } from '../../components/SEO';
 
 export function SignupContinue() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export function SignupContinue() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <SEO title="Sign Up - Almost Done | EquityMD" noindex={true} />
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="max-w-md w-full text-center">
           <div className="mb-8">

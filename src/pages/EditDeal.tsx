@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 import { Navbar } from '../components/Navbar';
+import { SEO } from '../components/SEO';
 import { DealQualityChecker } from '../components/DealQualityChecker';
 import toast from 'react-hot-toast';
 
@@ -843,6 +844,7 @@ export function EditDeal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <SEO title="Edit Deal | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-5xl mx-auto px-4 py-6 lg:py-8">

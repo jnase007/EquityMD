@@ -221,7 +221,7 @@ export default async function handler(request: Request, context: Context) {
       }
     }
     return new Response(generateFullHtml(meta), {
-      headers: { "content-type": "text/html; charset=utf-8" },
+      headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" },
     });
   }
 
@@ -242,7 +242,7 @@ export default async function handler(request: Request, context: Context) {
       description: "Educational articles on real estate syndication, deal analysis, market trends, and passive investing.",
       canonical: `${SITE_URL}/blog`,
       bodyContent: body,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Blog post
@@ -274,7 +274,7 @@ export default async function handler(request: Request, context: Context) {
 <p>${escapeHtml((post.excerpt || desc).substring(0, 500))}</p>
 <p><a href="${SITE_URL}/blog/${slug}">Read full article</a></p>`,
         jsonLd: articleSchema,
-      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+      }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
     }
   }
 
@@ -307,7 +307,7 @@ export default async function handler(request: Request, context: Context) {
 <p>${escapeHtml(deal.property_type || "")} investment in ${escapeHtml(deal.city || "")}, ${escapeHtml(deal.state || "")}</p>
 <p><a href="${SITE_URL}/deals/${slug}">View deal details</a></p>`,
         jsonLd: productSchema,
-      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+      }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
     }
   }
 
@@ -338,7 +338,7 @@ export default async function handler(request: Request, context: Context) {
 <p>${s.city || ""}, ${s.state || ""} · ${s.years_in_business || "—"} years in business</p>
 <p><a href="${SITE_URL}/syndicators/${slug}">View full profile</a></p>`,
         jsonLd: orgSchema,
-      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+      }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
     }
   }
 
@@ -358,8 +358,22 @@ export default async function handler(request: Request, context: Context) {
 <h1>${escapeHtml(c.name)} Real Estate Market</h1>
 <p>${escapeHtml(c.market_trends || desc)}</p>
 <p><a href="${SITE_URL}/cities/${citySlug}">View full market report</a></p>`,
-      }), { headers: { "content-type": "text/html; charset=utf-8" } });
+      }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
     }
+  }
+
+  // State market reports (must be before generic /resources/* handler)
+  if (pathname.startsWith("/resources/market-reports/") && pathname !== "/resources/market-reports" && pathname !== "/resources/market-reports/") {
+    const stateSlug = pathname.replace("/resources/market-reports/", "").replace(/\/$/, "");
+    const stateName = stateSlug.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    const title = `${stateName} Real Estate Market Report 2026 | Investment Trends & Data | EquityMD`;
+    const desc = `${stateName} real estate market analysis for syndication investors. Property trends, cap rates, population growth, and investment opportunities across ${stateName}.`;
+    return new Response(generateFullHtml({
+      title,
+      description: desc,
+      canonical: `${SITE_URL}/resources/market-reports/${stateSlug}`,
+      bodyContent: `<h1>${stateName} Real Estate Market Report 2026</h1><p>${desc}</p><p><a href="${SITE_URL}/resources/market-reports/${stateSlug}">View full report</a></p>`,
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Resources (glossary, due-diligence, etc.)
@@ -376,7 +390,7 @@ export default async function handler(request: Request, context: Context) {
       description: `EquityMD resources for real estate investors. ${resource === "glossary" ? "Glossary of syndication terms." : "Tools and guides."}`,
       canonical: `${SITE_URL}/resources/${resource}`,
       bodyContent: `<h1>${escapeHtml(title)}</h1><p><a href="${SITE_URL}/resources/${resource}">View full page</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Success stories
@@ -386,7 +400,7 @@ export default async function handler(request: Request, context: Context) {
       description: "Read real success stories from investors who built passive income through real estate syndication on EquityMD.",
       canonical: `${SITE_URL}/success-stories`,
       bodyContent: `<h1>Real Estate Investing Success Stories</h1><p>Discover how investors are building passive income through real estate syndication.</p><p><a href="${SITE_URL}/success-stories">Read stories</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Market map
@@ -396,7 +410,7 @@ export default async function handler(request: Request, context: Context) {
       description: "Interactive map showing real estate syndication deals and syndicators across the US. Find investment opportunities near you.",
       canonical: `${SITE_URL}/market-map`,
       bodyContent: `<h1>Real Estate Investment Market Map</h1><p>Explore syndication opportunities across the US on our interactive market map.</p><p><a href="${SITE_URL}/market-map">View map</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Compare syndicators
@@ -406,7 +420,7 @@ export default async function handler(request: Request, context: Context) {
       description: "Side-by-side comparison of real estate syndicators. Compare track records, fees, minimum investments, and reviews.",
       canonical: `${SITE_URL}/compare`,
       bodyContent: `<h1>Compare Real Estate Syndicators</h1><p>Compare syndicators side-by-side to find the best fit for your investment goals.</p><p><a href="${SITE_URL}/compare">Compare now</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // New pricing
@@ -416,7 +430,7 @@ export default async function handler(request: Request, context: Context) {
       description: "Affordable plans for syndicators to list deals on EquityMD and reach thousands of accredited investors.",
       canonical: `${SITE_URL}/new-pricing`,
       bodyContent: `<h1>Syndicator Plans & Pricing</h1><p>List your deals on EquityMD. Free to start, premium plans for more visibility.</p><p><a href="${SITE_URL}/new-pricing">View plans</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Legal pages
@@ -435,7 +449,7 @@ export default async function handler(request: Request, context: Context) {
       description: `${title.replace(" | EquityMD", "")} for EquityMD real estate syndication platform.`,
       canonical: `${SITE_URL}/legal/${page}`,
       bodyContent: `<h1>${escapeHtml(title.replace(" | EquityMD", ""))}</h1><p><a href="${SITE_URL}/legal/${page}">Read full document</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   // Rankings
@@ -447,7 +461,7 @@ export default async function handler(request: Request, context: Context) {
       description: `Compare top real estate syndicators. Ranked by reviews, track record, and deal volume.`,
       canonical: `${SITE_URL}/rankings${cat ? `/${cat}` : ""}`,
       bodyContent: `<h1>${escapeHtml(title)}</h1><p><a href="${SITE_URL}/rankings${cat ? `/${cat}` : ""}">View rankings</a></p>`,
-    }), { headers: { "content-type": "text/html; charset=utf-8" } });
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
   return context.next();

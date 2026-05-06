@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { Mail, Eye, Send, Copy, Check, Download } from 'lucide-react';
 import { MassEmailSender } from '../components/admin/MassEmailSender';
 
@@ -1841,6 +1842,7 @@ Msg & data rates may apply.`;
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Email Preview | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-[1200px] mx-auto px-4 py-8">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { Mail, Send, CheckCircle, AlertCircle, User, Building2 } from 'lucide-react';
 import { sendSignupEmails } from '../lib/emailService';
 
@@ -46,6 +47,7 @@ export function EmailTest() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Email Test | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-4xl mx-auto px-4 py-8">

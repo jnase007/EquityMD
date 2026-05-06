@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { CTABanner } from '../../components/CTABanner';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { Calculator, DollarSign, Percent, Calendar } from 'lucide-react';
 
 export function InvestmentCalculator() {
@@ -59,6 +62,12 @@ export function InvestmentCalculator() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title="Real Estate Investment Returns Calculator | EquityMD"
+        description="Calculate your potential real estate syndication returns. Estimate cash-on-cash yield, IRR, equity multiple, and cash flow projections for passive real estate investments."
+        keywords="real estate investment calculator, syndication returns calculator, IRR calculator, cash-on-cash return, equity multiple calculator"
+        canonical="https://equitymd.com/resources/calculator"
+      />
       <Navbar />
 
       <div className="bg-blue-600 text-white py-20">
@@ -289,6 +298,19 @@ export function InvestmentCalculator() {
           </div>
         </div>
       </div>
+
+      <CTABanner variant="investor" />
+
+      <RelatedLinks
+        title="Take Your Next Step"
+        links={[
+          { to: '/find', title: 'Browse Deals', description: 'Find real investments to apply your calculations to' },
+          { to: '/directory', title: 'Find Syndicators', description: 'Connect with verified syndicators and their track records' },
+          { to: '/resources/due-diligence', title: 'Due Diligence Guide', description: 'Evaluate deals beyond the numbers with our expert guide' },
+          { to: '/resources/market-reports', title: 'Market Reports', description: 'Real estate market data to inform your investment decisions' },
+        ]}
+        columns={4}
+      />
 
       <Footer />
     </div>

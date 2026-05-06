@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { CTABanner } from '../../components/CTABanner';
+import { RelatedLinks } from '../../components/RelatedLinks';
+import { SEO } from '../../components/SEO';
 import { CheckCircle, AlertTriangle, FileText, Building2, Users, DollarSign, TrendingUp, Scale, Search, ArrowRight, Sparkles, Shield } from 'lucide-react';
 
 export function DueDiligence() {
@@ -67,6 +70,12 @@ export function DueDiligence() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <SEO
+        title="Real Estate Syndication Due Diligence Guide | EquityMD"
+        description="Complete due diligence checklist for real estate syndication investments. Evaluate sponsors, property analysis, financial projections, and legal structure before investing."
+        keywords="real estate due diligence, syndication due diligence checklist, evaluate syndicators, CRE investment analysis, deal vetting guide"
+        canonical="https://equitymd.com/resources/due-diligence"
+      />
       <Navbar />
 
       {/* Hero Section */}
@@ -155,6 +164,20 @@ export function DueDiligence() {
           </div>
         </div>
       </div>
+
+      <CTABanner variant="investor" />
+
+      <RelatedLinks
+        title="Related Resources"
+        links={[
+          { to: '/resources/calculator', title: 'Returns Calculator', description: 'Estimate your potential investment returns before committing' },
+          { to: '/resources/glossary', title: 'Syndication Glossary', description: 'Learn the key terms used in real estate syndication' },
+          { to: '/resources/education', title: 'Education Center', description: 'Comprehensive guides for syndication investors' },
+          { to: '/blog', title: 'Latest Articles', description: 'Expert insights and market commentary' },
+          { to: '/find', title: 'Browse Active Deals', description: 'Apply your due diligence skills to live opportunities' },
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

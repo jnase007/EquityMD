@@ -6,6 +6,7 @@ import {
   Medal, Target, Zap
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
+import { SEO } from '../components/SEO';
 import { Footer } from '../components/Footer';
 import { supabase } from '../lib/supabase';
 
@@ -125,6 +126,7 @@ export function Leaderboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      <SEO title="Leaderboard | EquityMD" noindex={true} />
       <Navbar />
 
       {/* Hero Header */}

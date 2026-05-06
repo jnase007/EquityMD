@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { RelatedLinks } from '../components/RelatedLinks';
 import { SEO } from '../components/SEO';
 import { Calendar, User, ArrowLeft, Tag, Loader2, Clock, ExternalLink, BookOpen, CheckCircle2, Quote, TrendingUp, Shield, DollarSign, Share2, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -1268,6 +1269,18 @@ export function BlogPost() {
           </div>
         </div>
       </article>
+
+      <RelatedLinks
+        title="Keep Learning"
+        subtitle="More resources to help you invest with confidence"
+        links={[
+          { to: '/find', title: 'Browse Syndication Deals', description: 'Discover curated investment opportunities from verified syndicators' },
+          { to: '/directory', title: 'Find Verified Syndicators', description: 'Compare track records and connect with top sponsors' },
+          { to: '/resources/due-diligence', title: 'Due Diligence Guide', description: 'How to properly evaluate deals and syndicators' },
+          { to: '/resources/calculator', title: 'Investment Calculator', description: 'Estimate your potential returns before you invest' },
+        ]}
+        columns={4}
+      />
 
       <Footer />
     </div>

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
+import { SEO } from '../components/SEO';
 import toast from 'react-hot-toast';
 
 // Step indicator component
@@ -295,6 +296,7 @@ export function Welcome() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
+      <SEO title="Welcome to EquityMD" noindex={true} />
       {showConfetti && <Confetti />}
       
       <div className="w-full max-w-2xl">

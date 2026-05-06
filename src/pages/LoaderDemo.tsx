@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { LoadingSpinner, PageLoader, InlineLoader } from '../components/LoadingSpinner';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { Play, Eye, Grid, Users } from 'lucide-react';
@@ -40,6 +41,7 @@ export function LoaderDemo() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Loader Demo | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-[1200px] mx-auto px-4 py-8">

@@ -39,6 +39,7 @@ import { LoadingSpinner, PageLoader } from "../components/LoadingSpinner";
 import { useAuthStore } from "../lib/store";
 import { supabase } from "../lib/supabase";
 import { Footer } from "../components/Footer";
+import { RelatedLinks } from "../components/RelatedLinks";
 import {
   getSyndicatorLogo,
   getSyndicatorLocation,
@@ -1036,6 +1037,21 @@ export function SyndicatorProfile() {
           onClose={() => setShowClaimModal(false)}
         />
       )}
+
+      <RelatedLinks
+        title="Explore More"
+        subtitle="Discover more investment opportunities and resources"
+        links={[
+          { to: '/find', title: 'Browse Active Deals', description: 'Discover investment opportunities from verified syndicators' },
+          { to: '/directory', title: 'Syndicator Directory', description: 'Compare track records and find the right sponsor' },
+          { to: '/resources/due-diligence', title: 'Due Diligence Guide', description: 'Learn how to evaluate syndicators before investing' },
+          { to: '/how-it-works', title: 'How Syndication Works', description: 'New to syndication? Start here' },
+          { to: '/blog', title: 'Investing Blog', description: 'Expert insights on real estate syndication' },
+          { to: '/resources/calculator', title: 'Returns Calculator', description: 'Estimate your potential investment returns' },
+          ...(syndicator.state ? [{ to: `/resources/market-reports/${syndicator.state.toLowerCase()}`, title: `View ${syndicator.state} Market Report`, description: `Real estate market data and trends for ${syndicator.state}` }] : []),
+        ]}
+        columns={3}
+      />
 
       <Footer />
     </div>

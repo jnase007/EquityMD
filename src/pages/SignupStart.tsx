@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Building2, User, ArrowRight } from 'lucide-react';
 import { AuthModal } from '../components/AuthModal';
+import { SEO } from '../components/SEO';
 
 export function SignupStart() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export function SignupStart() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <SEO title="Sign Up | EquityMD" noindex={true} />
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { DealDocumentManager } from '../components/DealDocumentManager';
 import { CreditStatus } from '../components/syndicator/CreditStatus';
 import { ReferralModal } from '../components/ReferralModal';
@@ -540,6 +541,7 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Dashboard | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-[1200px] mx-auto px-4 py-8">

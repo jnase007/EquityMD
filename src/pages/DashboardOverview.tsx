@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, Building2, Shield } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
+import { SEO } from '../components/SEO';
 import { Dashboard } from './Dashboard';
 import AdminDashboard from './admin/Dashboard';
 
@@ -49,6 +50,7 @@ export function DashboardOverview() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO title="Dashboard Overview | EquityMD" noindex={true} />
       <Navbar />
       
       <div className="max-w-[1200px] mx-auto px-4 py-8">
