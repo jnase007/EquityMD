@@ -212,6 +212,17 @@ const STATIC_PAGES: Record<string, PageMeta> = {
 <h1>How Real Estate Syndication Works</h1>
 <p>Real estate syndication pools capital from multiple investors to purchase properties. Syndicators find and manage deals; investors receive passive returns.</p>
 <p><a href="${SITE_URL}/how-it-works">Learn more</a></p>`,
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Invest in Real Estate Syndications",
+      "description": "A step-by-step guide to investing in real estate syndications through EquityMD.",
+      "step": [
+        { "@type": "HowToStep", "name": "Browse Deals", "text": "Explore verified syndication opportunities on EquityMD. Filter by property type, location, target returns, and minimum investment." },
+        { "@type": "HowToStep", "name": "Due Diligence", "text": "Review syndicator track records, ratings, deal history, and investor reviews. Compare syndicators side-by-side." },
+        { "@type": "HowToStep", "name": "Invest", "text": "Connect with syndicators directly, review offering documents, and fund your investment to start earning passive income." },
+      ],
+    },
   },
   "/about": {
     title: "About EquityMD | Connecting Investors with Syndicators",
