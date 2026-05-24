@@ -182,6 +182,28 @@ async function generateSitemap() {
   console.log(`✅ Added ${states.length} state market report pages`);
 
   // City pages — pull unique cities from syndicators and deals
+  // Normalize state names to abbreviations to avoid duplicates (e.g. austin-texas AND austin-tx)
+  const stateAbbreviations: Record<string, string> = {
+    'alabama': 'al', 'alaska': 'ak', 'arizona': 'az', 'arkansas': 'ar', 'california': 'ca',
+    'colorado': 'co', 'connecticut': 'ct', 'delaware': 'de', 'florida': 'fl', 'georgia': 'ga',
+    'hawaii': 'hi', 'idaho': 'id', 'illinois': 'il', 'indiana': 'in', 'iowa': 'ia',
+    'kansas': 'ks', 'kentucky': 'ky', 'louisiana': 'la', 'maine': 'me', 'maryland': 'md',
+    'massachusetts': 'ma', 'michigan': 'mi', 'minnesota': 'mn', 'mississippi': 'ms', 'missouri': 'mo',
+    'montana': 'mt', 'nebraska': 'ne', 'nevada': 'nv', 'new hampshire': 'nh', 'new jersey': 'nj',
+    'new mexico': 'nm', 'new york': 'ny', 'north carolina': 'nc', 'north dakota': 'nd', 'ohio': 'oh',
+    'oklahoma': 'ok', 'oregon': 'or', 'pennsylvania': 'pa', 'rhode island': 'ri', 'south carolina': 'sc',
+    'south dakota': 'sd', 'tennessee': 'tn', 'texas': 'tx', 'utah': 'ut', 'vermont': 'vt',
+    'virginia': 'va', 'washington': 'wa', 'west virginia': 'wv', 'wisconsin': 'wi', 'wyoming': 'wy',
+    'district of columbia': 'dc', 'ontario': 'on',
+  };
+
+  function normalizeStateToAbbrev(state: string): string {
+    const lower = state.toLowerCase().trim();
+    // Already an abbreviation (2 chars)?
+    if (lower.length === 2) return lower;
+    return stateAbbreviations[lower] || lower.replace(/[^a-z0-9]+/g, '-');
+  }
+
   const citySet = new Set<string>();
   if (syndicators) {
     // Fetch city data separately
@@ -191,7 +213,9 @@ async function generateSitemap() {
       .not('city', 'is', null);
     syncCities?.forEach(s => {
       if (s.city && s.state) {
-        const slug = `${s.city}-${s.state}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const cityPart = s.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const statePart = normalizeStateToAbbrev(s.state);
+        const slug = `${cityPart}-${statePart}`;
         citySet.add(slug);
       }
     });

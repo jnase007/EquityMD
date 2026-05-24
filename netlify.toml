@@ -245,6 +245,205 @@
   status = 301
   force = true
 
+# 301 redirects for duplicate city pages (full state name → abbreviation)
+[[redirects]]
+  from = "/cities/atlanta-georgia"
+  to = "/cities/atlanta-ga"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/austin-texas"
+  to = "/cities/austin-tx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/aventura-florida"
+  to = "/cities/aventura-fl"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/charlotte-north-carolina"
+  to = "/cities/charlotte-nc"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/chicago-illinois"
+  to = "/cities/chicago-il"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/dallas-texas"
+  to = "/cities/dallas-tx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/denver-colorado"
+  to = "/cities/denver-co"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/houston-texas"
+  to = "/cities/houston-tx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/indianapolis-indiana"
+  to = "/cities/indianapolis-in"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/irvine-california"
+  to = "/cities/irvine-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/jacksonville-florida"
+  to = "/cities/jacksonville-fl"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/kansas-city-missouri"
+  to = "/cities/kansas-city-mo"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/knoxville-tennessee"
+  to = "/cities/knoxville-tn"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/las-vegas-nevada"
+  to = "/cities/las-vegas-nv"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/los-angeles-california"
+  to = "/cities/los-angeles-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/miami-florida"
+  to = "/cities/miami-fl"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/modesto-california"
+  to = "/cities/modesto-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/nashville-tennessee"
+  to = "/cities/nashville-tn"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/new-york-new-york"
+  to = "/cities/new-york-ny"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/newark-new-jersey"
+  to = "/cities/newark-nj"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/orange-county-california"
+  to = "/cities/orange-county-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/phoenix-arizona"
+  to = "/cities/phoenix-az"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/raleigh-north-carolina"
+  to = "/cities/raleigh-nc"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/richmond-virginia"
+  to = "/cities/richmond-va"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/roseville-california"
+  to = "/cities/roseville-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/salt-lake-city-utah"
+  to = "/cities/salt-lake-city-ut"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/san-antonio-texas"
+  to = "/cities/san-antonio-tx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/san-diego-california"
+  to = "/cities/san-diego-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/san-francisco-california"
+  to = "/cities/san-francisco-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/san-luis-obispo-california"
+  to = "/cities/san-luis-obispo-ca"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/seattle-washington"
+  to = "/cities/seattle-wa"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/st-augustine-florida"
+  to = "/cities/st-augustine-fl"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cities/tampa-florida"
+  to = "/cities/tampa-fl"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/signup"
   to = "/"
