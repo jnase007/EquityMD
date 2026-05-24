@@ -676,20 +676,310 @@ ${relatedSection}
     }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
-  // Resources (glossary, due-diligence, etc.)
+  // Resources: Glossary
+  if (pathname === "/resources/glossary" || pathname === "/resources/glossary/") {
+    const glossaryTerms = [
+      { term: "Accredited Investor", definition: "An individual with a net worth exceeding $1 million (excluding primary residence) or annual income above $200,000 ($300,000 jointly) for the past two years. SEC regulations require most real estate syndication investments to be offered only to accredited investors under Regulation D exemptions." },
+      { term: "Capital Call", definition: "A request from the General Partner for Limited Partners to contribute additional capital beyond their initial investment. Capital calls are typically outlined in the operating agreement and may be used to fund unexpected repairs, cover shortfalls, or seize new opportunities within the investment." },
+      { term: "Cap Rate (Capitalization Rate)", definition: "The ratio of a property's Net Operating Income (NOI) to its current market value or purchase price, expressed as a percentage. Cap rates help investors compare the relative value of different properties — a higher cap rate generally indicates higher potential returns but also higher risk." },
+      { term: "Cash-on-Cash Return", definition: "The annual pre-tax cash flow divided by the total cash invested, expressed as a percentage. This metric measures the actual cash income earned on the cash invested and is one of the most common ways to evaluate the ongoing performance of a real estate syndication." },
+      { term: "Preferred Return (Pref)", definition: "A minimum annual return that Limited Partners receive before the General Partner takes any share of profits. Common preferred returns in syndications range from 6% to 10%. This aligns incentives by ensuring investors are compensated before the sponsor profits." },
+      { term: "IRR (Internal Rate of Return)", definition: "A comprehensive return metric that accounts for the timing and magnitude of all cash flows over the life of an investment. IRR reflects both ongoing distributions and the final profit at sale, making it the most widely used metric to compare syndication deals with different hold periods and cash flow patterns." },
+      { term: "Equity Multiple", definition: "The total cash distributions received divided by the total equity invested. An equity multiple of 2.0x means an investor doubled their money over the life of the investment. Unlike IRR, the equity multiple does not account for the time value of money." },
+      { term: "General Partner (GP)", definition: "The sponsor or syndicator who organizes, manages, and operates the real estate investment. The GP is responsible for finding deals, securing financing, managing the property, and executing the business plan. GPs typically invest alongside LPs and earn fees plus a share of profits (the promote)." },
+      { term: "Limited Partner (LP)", definition: "A passive investor in a real estate syndication who contributes capital but does not participate in day-to-day management decisions. LPs have limited liability — their risk is generally capped at the amount of their investment — and they receive distributions according to the waterfall structure." },
+      { term: "Waterfall Distribution", definition: "The hierarchical structure that determines how cash flow and profits are split between General Partners and Limited Partners. A typical waterfall might return all invested capital first, then pay a preferred return, then split remaining profits 70/30 or 80/20 between LPs and GPs." },
+      { term: "Hurdle Rate", definition: "A minimum return threshold that must be achieved before the General Partner receives their promoted interest (profit share). The hurdle rate is typically equal to the preferred return and ensures the sponsor only profits after delivering satisfactory returns to investors." },
+      { term: "Clawback Provision", definition: "A contractual clause that requires the General Partner to return excess distributions if, at the end of the investment, LPs have not received their agreed-upon preferred return and return of capital. This provision protects investors from scenarios where early distributions were overly optimistic." },
+      { term: "Promote (Carried Interest)", definition: "The General Partner's share of profits above the preferred return hurdle. The promote is the primary financial incentive for the sponsor and typically ranges from 20% to 40% of profits after LPs receive their preferred return. It aligns GP and LP interests by rewarding strong performance." },
+      { term: "K-1 Tax Form", definition: "An IRS tax document (Schedule K-1, Form 1065) provided annually to each partner in a real estate syndication. The K-1 reports each investor's share of income, losses, deductions, and credits, which are then reported on the investor's personal tax return. K-1s are often issued in March or April." },
+      { term: "1031 Exchange", definition: "A provision in the U.S. tax code (Section 1031) that allows investors to defer capital gains taxes by reinvesting proceeds from the sale of one investment property into a like-kind replacement property. Strict timelines apply: 45 days to identify replacements and 180 days to close." },
+      { term: "Depreciation", definition: "A non-cash tax deduction that allows real estate investors to write off the cost of a building over its useful life (27.5 years for residential, 39 years for commercial). Depreciation can significantly reduce taxable income from syndication distributions, creating \"phantom losses\" that offset real cash flow." },
+      { term: "Cost Segregation", definition: "An engineering-based tax strategy that accelerates depreciation by identifying building components (carpeting, fixtures, landscaping) that can be depreciated over 5, 7, or 15 years instead of the standard 27.5 or 39 years. This front-loads tax benefits and can dramatically improve after-tax returns in early years." },
+      { term: "Debt Service Coverage Ratio (DSCR)", definition: "The ratio of a property's Net Operating Income to its total debt payments (principal and interest). A DSCR of 1.25x means the property generates 25% more income than needed to cover its debt. Lenders typically require a minimum DSCR of 1.2x to 1.5x." },
+      { term: "Loan-to-Value (LTV)", definition: "The ratio of a property's mortgage balance to its appraised value, expressed as a percentage. An LTV of 70% means the loan represents 70% of the property's value. Lower LTV ratios indicate more equity and less risk, while higher LTV increases leverage and potential returns — but also risk." },
+      { term: "Net Operating Income (NOI)", definition: "A property's total income minus all operating expenses, excluding debt service, capital expenditures, and depreciation. NOI is the foundational metric for commercial real estate valuation and is used to calculate cap rates, DSCR, and overall property performance." },
+      { term: "Value-Add", definition: "An investment strategy focused on acquiring properties below market value that can be improved through renovations, better management, or repositioning to increase rents and property value. Value-add syndications typically target higher returns than core strategies but involve more execution risk and a longer path to stabilization." },
+      { term: "Core / Core-Plus / Opportunistic", definition: "Risk-return categories for real estate investments. Core properties are stabilized, high-quality assets with low risk and modest returns (6-8% IRR). Core-Plus adds light value-add potential (8-12% IRR). Opportunistic strategies involve significant repositioning, development, or distress with the highest return targets (15%+ IRR) and greatest risk." },
+      { term: "Syndication", definition: "A structure where a group of investors pool their capital to acquire real estate assets that would be difficult to purchase individually. The General Partner (sponsor) manages the investment while Limited Partners provide the majority of equity capital. Syndications are typically structured as LLCs and governed by SEC regulations." },
+      { term: "PPM (Private Placement Memorandum)", definition: "The primary legal disclosure document in a real estate syndication, similar to a prospectus. The PPM outlines the investment opportunity, business plan, risk factors, fee structure, projected returns, and the rights and obligations of all parties. Reviewing the PPM thoroughly is essential before investing." },
+      { term: "Subscription Agreement", definition: "The legal contract an investor signs to formally commit capital to a syndication. The subscription agreement confirms the investor's accredited status, investment amount, and acknowledgment of risks. Once signed and accepted by the GP, it creates a binding obligation to fund the investment." },
+      { term: "Operating Agreement", definition: "The governing document of the LLC that holds the syndication property. The operating agreement defines the rights, responsibilities, and economic arrangements between GPs and LPs, including distribution waterfalls, voting rights, reporting requirements, and procedures for major decisions or dissolution." },
+      { term: "Hold Period", definition: "The projected length of time a syndication plans to own and operate the property before selling, typically ranging from 3 to 7 years. The hold period affects overall returns, tax implications, and liquidity — investors should be prepared to have their capital locked up for the full duration." },
+      { term: "Stabilized Property", definition: "A property that has reached a consistent level of occupancy (typically 90%+) and is generating predictable cash flow. Stabilized properties are generally lower risk than properties undergoing lease-up or renovation and are valued based on their current income rather than projected future performance." },
+      { term: "Bridge Loan", definition: "Short-term financing (typically 1-3 years) used to acquire or reposition a property before securing long-term permanent financing. Bridge loans offer flexibility and faster closings but carry higher interest rates and often require interest-only payments. They are common in value-add syndication strategies." },
+      { term: "Mezzanine Debt", definition: "A layer of financing that sits between senior debt (the primary mortgage) and equity in the capital stack. Mezzanine debt carries higher interest rates than senior debt because it is subordinate in the event of default, but it allows sponsors to increase leverage without diluting LP equity." },
+      { term: "Pari Passu", definition: "A Latin term meaning \"on equal footing.\" In syndications, pari passu describes a distribution structure where all investors at the same level receive returns proportionally to their investment amount, without preference given to any single investor over others in the same class." },
+      { term: "Pro Rata", definition: "Proportional allocation based on each investor's ownership percentage. In a syndication, distributions, capital calls, and voting rights are typically allocated pro rata — meaning an investor who contributed 10% of the equity receives 10% of the distributions and bears 10% of any additional capital requests." },
+    ];
+
+    const glossaryHtml = glossaryTerms.map(t =>
+      `<h3>${escapeHtml(t.term)}</h3>\n      <p>${escapeHtml(t.definition)}</p>`
+    ).join("\n      ");
+
+    return new Response(generateFullHtml({
+      title: "Real Estate Syndication Glossary | 30+ Investment Terms Defined | EquityMD",
+      description: "Comprehensive glossary of 30+ real estate syndication and passive investing terms. Learn about IRR, cap rates, waterfall distributions, preferred returns, 1031 exchanges, and more.",
+      canonical: `${SITE_URL}/resources/glossary`,
+      bodyContent: `<h1>Real Estate Syndication Glossary</h1>
+      <p>Understanding real estate syndication terminology is essential for making informed investment decisions. This comprehensive glossary covers 30+ key terms every passive investor should know — from accredited investor requirements to waterfall distribution structures. Whether you're evaluating your first syndication deal or building a diversified portfolio, these definitions will help you navigate offering documents, analyze deal structures, and communicate confidently with sponsors.</p>
+      ${glossaryHtml}
+      <h2>Continue Your Education</h2>
+      <p>Now that you understand the terminology, put your knowledge to work:</p>
+      <ul>
+        <li><a href="${SITE_URL}/resources/due-diligence">Due Diligence Checklist</a> — A step-by-step guide to evaluating syndication deals</li>
+        <li><a href="${SITE_URL}/resources/calculator">Returns Calculator</a> — Model projected returns for any syndication investment</li>
+        <li><a href="${SITE_URL}/find">Browse Active Deals</a> — Explore syndication opportunities on EquityMD</li>
+        <li><a href="${SITE_URL}/directory">Find Syndicators</a> — Connect with vetted sponsors and operators</li>
+      </ul>`,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "DefinedTermSet",
+        "name": "Real Estate Syndication Glossary",
+        "description": "Comprehensive glossary of real estate syndication and passive investing terms including IRR, cap rate, waterfall distributions, preferred returns, and 30+ more investment terms.",
+        "url": `${SITE_URL}/resources/glossary`,
+        "hasDefinedTerm": glossaryTerms.map(t => ({
+          "@type": "DefinedTerm",
+          "name": t.term,
+          "description": t.definition,
+        })),
+      },
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
+  }
+
+  // Resources: Due Diligence
+  if (pathname === "/resources/due-diligence" || pathname === "/resources/due-diligence/") {
+    return new Response(generateFullHtml({
+      title: "Real Estate Syndication Due Diligence Checklist | EquityMD",
+      description: "Complete due diligence checklist for evaluating real estate syndication deals. Covers sponsor vetting, deal structure analysis, property evaluation, financial projections, and legal document review.",
+      canonical: `${SITE_URL}/resources/due-diligence`,
+      bodyContent: `<h1>Real Estate Syndication Due Diligence Checklist</h1>
+      <p>Thorough due diligence is the most important step in real estate syndication investing. Unlike publicly traded REITs, syndication investments are illiquid and involve entrusting your capital to a specific sponsor for years. This comprehensive checklist will guide you through every critical area of evaluation — from vetting the syndicator to reviewing legal documents — so you can invest with confidence and avoid costly mistakes.</p>
+
+      <h2>1. Sponsor and Syndicator Evaluation</h2>
+      <p>The sponsor (General Partner) is the single most important factor in a syndication's success. Even a mediocre deal can succeed with an exceptional operator, while a great property can fail under poor management.</p>
+      <h3>Track Record and Experience</h3>
+      <ul>
+        <li><strong>Deal history:</strong> How many syndications has the sponsor completed? What were the actual returns versus projections? Ask for a full track record showing realized deals, not just current offerings.</li>
+        <li><strong>Asset class expertise:</strong> Does the sponsor specialize in the property type being offered (multifamily, self-storage, office)? Specialists typically outperform generalists.</li>
+        <li><strong>Market knowledge:</strong> How well does the sponsor know the specific market? Local operators with boots-on-the-ground presence often have advantages in deal sourcing, contractor relationships, and tenant management.</li>
+        <li><strong>Full-cycle experience:</strong> Has the sponsor completed full investment cycles (acquisition through disposition)? Sponsors who have only acquired properties during a bull market may lack experience navigating downturns.</li>
+      </ul>
+      <h3>References and Reputation</h3>
+      <ul>
+        <li><strong>Investor references:</strong> Ask to speak with 3-5 current or past investors. Inquire about communication quality, distribution consistency, and how the sponsor handled unexpected challenges.</li>
+        <li><strong>Online presence:</strong> Search for reviews, complaints, and any SEC or state regulatory actions. Check the sponsor's profile on platforms like EquityMD for verified reviews.</li>
+        <li><strong>Skin in the game:</strong> How much of their own capital is the GP investing alongside LPs? Sponsors who co-invest (typically 5-10%+ of equity) demonstrate alignment and confidence in their own deals.</li>
+      </ul>
+
+      <h2>2. Deal Structure Analysis</h2>
+      <p>Understanding how the deal is structured determines how your returns are calculated and when you get paid. No two syndications are identical, so careful comparison is essential.</p>
+      <h3>Equity Split and Waterfall</h3>
+      <ul>
+        <li><strong>LP/GP split:</strong> Common structures include 70/30 or 80/20 splits after preferred return. Understand exactly what percentage of profits you receive at each tier of the waterfall.</li>
+        <li><strong>Preferred return:</strong> What is the preferred return rate (typically 6-10%)? Is it cumulative (accrues if unpaid) or non-cumulative? Cumulative preferred returns offer stronger investor protection.</li>
+        <li><strong>Return of capital:</strong> When do investors receive their initial capital back — before or after the GP takes their promote? Look for structures that return LP capital before GP profit participation.</li>
+      </ul>
+      <h3>Fee Structure</h3>
+      <ul>
+        <li><strong>Acquisition fee:</strong> Typically 1-3% of purchase price. Ensure this is reasonable for the deal size and complexity.</li>
+        <li><strong>Asset management fee:</strong> Usually 1-2% of collected revenue or invested equity. Understand the basis for calculation and whether it's charged on committed or deployed capital.</li>
+        <li><strong>Disposition fee:</strong> Often 1% of the sale price. Some sponsors waive this if return hurdles aren't met.</li>
+        <li><strong>Construction/renovation management fee:</strong> Typically 5-10% of renovation budget for value-add deals. This should be clearly disclosed in the PPM.</li>
+        <li><strong>Refinance fee:</strong> Some sponsors charge 0.5-1% upon refinancing. Excessive fees can erode LP returns.</li>
+      </ul>
+
+      <h2>3. Property Analysis</h2>
+      <p>The underlying real estate fundamentals must support the business plan. Even the best sponsor cannot overcome a fundamentally flawed property or market.</p>
+      <h3>Location and Market Fundamentals</h3>
+      <ul>
+        <li><strong>Population and job growth:</strong> Target markets with above-average population growth, diverse employment bases, and major employers. Avoid markets dependent on a single industry.</li>
+        <li><strong>Supply pipeline:</strong> Research new construction permits and projects under development. Markets with limited new supply and high demand create favorable conditions for rent growth.</li>
+        <li><strong>Landlord-friendly regulations:</strong> Understand state and local laws regarding rent control, eviction processes, and tenant protections. Landlord-friendly states generally offer more predictable cash flows.</li>
+        <li><strong>Submarket analysis:</strong> Drill down beyond the MSA level. Evaluate the specific neighborhood, school districts, crime statistics, and proximity to amenities and transportation.</li>
+      </ul>
+      <h3>Physical Property Condition</h3>
+      <ul>
+        <li><strong>Inspection reports:</strong> Review third-party property condition assessments (PCAs). Understand the age and condition of major systems: roof, HVAC, plumbing, electrical, and structural elements.</li>
+        <li><strong>Deferred maintenance:</strong> Identify any deferred maintenance that could become expensive surprises. Ensure the renovation budget includes adequate reserves.</li>
+        <li><strong>Environmental reports:</strong> Phase I (and Phase II if needed) environmental site assessments should be completed to identify contamination risks, asbestos, lead paint, or other environmental hazards.</li>
+      </ul>
+
+      <h2>4. Financial Projections Review</h2>
+      <p>Every syndication presents projected returns, but the assumptions behind those projections matter far more than the headline numbers. Scrutinize each assumption independently.</p>
+      <h3>Revenue Assumptions</h3>
+      <ul>
+        <li><strong>Current vs. projected rents:</strong> Compare the sponsor's rent projections to current market rents from independent sources (CoStar, RentCafe, local comps). Be skeptical of projections that assume rents significantly above market.</li>
+        <li><strong>Occupancy assumptions:</strong> What stabilized occupancy does the pro forma assume? For most multifamily properties, 93-95% is realistic. Be wary of projections assuming 97%+ occupancy.</li>
+        <li><strong>Rent growth rate:</strong> Annual rent growth projections should be supported by historical market data. Be cautious of projections assuming more than 3-4% annual growth without strong justification.</li>
+        <li><strong>Other income:</strong> Evaluate assumptions for ancillary income (pet fees, parking, storage, RUBS/utility billing). These should be benchmarked against comparable properties in the market.</li>
+      </ul>
+      <h3>Expense and Exit Assumptions</h3>
+      <ul>
+        <li><strong>Operating expenses:</strong> Are expense projections realistic? Compare the expense ratio (expenses as a percentage of revenue) to market averages. Be skeptical of unusually low expense projections.</li>
+        <li><strong>Tax reassessment:</strong> Will the property be reassessed upon purchase? Factor in potential property tax increases, which can significantly impact NOI in states without Proposition 13-style protections.</li>
+        <li><strong>Exit cap rate:</strong> The exit (reversion) cap rate assumption drives a large portion of projected returns. Conservative underwriting should assume an exit cap rate 0.25-0.50% higher than the going-in cap rate to account for potential market softening.</li>
+        <li><strong>Sensitivity analysis:</strong> Ask the sponsor to show returns under different scenarios: base case, downside, and upside. A deal that still returns invested capital in a downside scenario demonstrates appropriate risk management.</li>
+      </ul>
+
+      <h2>5. Legal Document Review</h2>
+      <p>Legal documents govern every aspect of your investment. Never invest without reading — or having an attorney review — the key documents.</p>
+      <h3>PPM (Private Placement Memorandum)</h3>
+      <ul>
+        <li><strong>Risk factors:</strong> Read every risk factor. The PPM is legally required to disclose material risks, and this section reveals what could go wrong.</li>
+        <li><strong>Use of proceeds:</strong> Understand exactly how your investment capital will be deployed — purchase price, closing costs, renovation budget, reserves, and fees.</li>
+        <li><strong>Conflicts of interest:</strong> Review disclosures about related-party transactions, such as GP-affiliated property management companies or construction firms.</li>
+      </ul>
+      <h3>Operating Agreement</h3>
+      <ul>
+        <li><strong>Distribution waterfall:</strong> Confirm the waterfall matches what was presented in marketing materials. Look for any provisions that could alter the split under certain conditions.</li>
+        <li><strong>Major decision rights:</strong> Under what circumstances can LPs vote? Typically, LP consent is required for refinancing, additional capital calls, or early sale. Understand your voting rights.</li>
+        <li><strong>Removal provisions:</strong> Can the GP be removed for cause (fraud, gross negligence)? What is the vote threshold? Strong GP removal provisions protect investors from worst-case scenarios.</li>
+        <li><strong>Transfer restrictions:</strong> Understand the limitations on selling or transferring your interest. Most syndications restrict transfers and require GP approval.</li>
+      </ul>
+
+      <h2>6. Red Flags to Watch For</h2>
+      <p>Experienced investors learn to recognize warning signs that suggest a deal may not be as presented. Walk away if you encounter any of these red flags:</p>
+      <ul>
+        <li><strong>Guaranteed returns:</strong> No real estate investment can guarantee returns. Any sponsor who uses the word \"guaranteed\" is either misleading you or violating securities regulations.</li>
+        <li><strong>Pressure to invest quickly:</strong> Legitimate sponsors provide adequate time for due diligence. High-pressure tactics suggesting you'll \"miss out\" are a red flag.</li>
+        <li><strong>Lack of transparency:</strong> If a sponsor is evasive about their track record, fee structure, or past losses, move on. Reputable sponsors are transparent about both successes and failures.</li>
+        <li><strong>No third-party reports:</strong> Sponsors should provide independent appraisals, property condition assessments, and environmental reports. Relying solely on sponsor-prepared materials is risky.</li>
+        <li><strong>Unrealistic projections:</strong> If projected returns seem too good to be true — especially in a competitive market — they probably are. Compare projections to market benchmarks and recent comparable sales.</li>
+        <li><strong>Excessive fees:</strong> Total fees that exceed 5-6% of invested capital at acquisition should be scrutinized. High fees can significantly erode LP returns, especially in shorter hold periods.</li>
+        <li><strong>No co-investment:</strong> Sponsors who don't invest their own capital alongside LPs may lack alignment. Meaningful GP co-investment demonstrates conviction in the deal.</li>
+        <li><strong>Poor communication history:</strong> Ask existing investors about the sponsor's reporting cadence and quality. Monthly or quarterly updates with financial details are the industry standard.</li>
+      </ul>
+
+      <h2>Your Due Diligence Toolkit</h2>
+      <p>Use these EquityMD resources to support your due diligence process:</p>
+      <ul>
+        <li><a href="${SITE_URL}/resources/glossary">Syndication Glossary</a> — Understand every term in offering documents</li>
+        <li><a href="${SITE_URL}/resources/calculator">Returns Calculator</a> — Model and compare projected returns across deals</li>
+        <li><a href="${SITE_URL}/directory">Syndicator Directory</a> — Research sponsors with verified profiles and reviews</li>
+        <li><a href="${SITE_URL}/find">Browse Active Deals</a> — Find syndication opportunities that match your criteria</li>
+        <li><a href="${SITE_URL}/resources/market-reports">Market Reports</a> — Research market fundamentals by state</li>
+      </ul>`,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Real Estate Syndication Due Diligence Checklist",
+        "description": "A comprehensive step-by-step guide to evaluating real estate syndication investments, covering sponsor evaluation, deal structure, property analysis, financial projections, and legal review.",
+        "url": `${SITE_URL}/resources/due-diligence`,
+        "step": [
+          { "@type": "HowToStep", "name": "Evaluate the Sponsor", "text": "Research the syndicator's track record, experience, references, and co-investment. The sponsor is the most important factor in a syndication's success." },
+          { "@type": "HowToStep", "name": "Analyze Deal Structure", "text": "Review the equity split, waterfall distribution, preferred return, and complete fee structure to understand how returns are calculated." },
+          { "@type": "HowToStep", "name": "Assess the Property", "text": "Evaluate location fundamentals, market conditions, physical property condition, and environmental reports." },
+          { "@type": "HowToStep", "name": "Review Financial Projections", "text": "Scrutinize rent assumptions, occupancy projections, expense ratios, exit cap rates, and sensitivity analysis." },
+          { "@type": "HowToStep", "name": "Review Legal Documents", "text": "Read the PPM, operating agreement, and subscription agreement. Understand risk factors, use of proceeds, voting rights, and transfer restrictions." },
+          { "@type": "HowToStep", "name": "Check for Red Flags", "text": "Watch for guaranteed returns, pressure tactics, lack of transparency, unrealistic projections, excessive fees, and poor communication." },
+        ],
+      },
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
+  }
+
+  // Resources: Calculator
+  if (pathname === "/resources/calculator" || pathname === "/resources/calculator/") {
+    return new Response(generateFullHtml({
+      title: "Real Estate Syndication Returns Calculator | EquityMD",
+      description: "Calculate projected returns for real estate syndication investments. Model IRR, equity multiple, cash-on-cash returns, and total distributions based on your investment amount, hold period, and deal terms.",
+      canonical: `${SITE_URL}/resources/calculator`,
+      bodyContent: `<h1>Real Estate Syndication Returns Calculator</h1>
+      <p>Making informed investment decisions requires understanding exactly how your capital will perform over time. The EquityMD Returns Calculator helps you model projected returns for any real estate syndication deal, compare different investment opportunities side by side, and understand how changes in key variables affect your bottom line.</p>
+
+      <h2>How the Calculator Works</h2>
+      <p>Our syndication returns calculator uses industry-standard financial modeling to project your investment outcomes. Input your deal-specific variables and the calculator will generate projected returns across multiple metrics — giving you a comprehensive view of how your investment may perform.</p>
+
+      <h2>Calculator Inputs Explained</h2>
+
+      <h3>Investment Amount</h3>
+      <p>The total capital you plan to invest in the syndication. Most syndications require minimum investments of $25,000 to $100,000, though some accept lower amounts. Enter your actual planned investment to see personalized projections of dollar-amount returns, not just percentages.</p>
+
+      <h3>Target IRR (Internal Rate of Return)</h3>
+      <p>The annualized return that accounts for the timing of all cash flows — both ongoing distributions and the final payout at sale. IRR is the gold standard metric for comparing syndication deals because it reflects the time value of money. Typical syndication IRR targets range from 12% to 20%+ depending on the risk profile: core deals may target 8-12%, value-add strategies 14-18%, and opportunistic deals 18-25%+.</p>
+
+      <h3>Hold Period</h3>
+      <p>The projected number of years the syndication plans to hold the property before selling, typically 3 to 7 years. The hold period significantly impacts your returns — longer holds generally produce higher equity multiples but may result in lower IRRs due to the time value of money. Consider your personal liquidity needs when evaluating hold periods, as syndication investments are illiquid during this time.</p>
+
+      <h3>Preferred Return</h3>
+      <p>The minimum annual return paid to Limited Partners before the General Partner receives any profit share. Preferred returns typically range from 6% to 10% and may be paid monthly or quarterly. A higher preferred return provides more downside protection and ensures you receive consistent income during the hold period before the sponsor participates in profits.</p>
+
+      <h3>Equity Multiple</h3>
+      <p>The total amount of money you expect to receive (including return of capital) divided by your initial investment. An equity multiple of 2.0x means you expect to receive $2 for every $1 invested — doubling your money. This metric tells you the total return magnitude but doesn't account for how long it takes to achieve. Typical syndication equity multiples range from 1.5x to 2.5x over a 3-7 year hold period.</p>
+
+      <h2>Understanding Your Results</h2>
+
+      <h3>Total Distributions</h3>
+      <p>The sum of all cash payments you'll receive throughout the life of the investment, including ongoing preferred return distributions and the final distribution upon property sale. This represents the total dollars returned to you and is the basis for calculating your equity multiple.</p>
+
+      <h3>Annual Cash Flow</h3>
+      <p>The projected yearly distributions you'll receive during the hold period, before the final sale. This represents your ongoing passive income from the investment and is determined primarily by the property's cash flow and your preferred return rate.</p>
+
+      <h3>Profit Above Investment</h3>
+      <p>Your total distributions minus your original investment amount — this is your actual profit in dollar terms. For a $100,000 investment with a 2.0x equity multiple, your profit above investment would be $100,000.</p>
+
+      <h2>Example Scenarios</h2>
+
+      <h3>Scenario 1: Conservative Multifamily (Core-Plus)</h3>
+      <p>A $50,000 investment in a stabilized 200-unit apartment complex with an 8% preferred return, 5-year hold period, and projected 1.7x equity multiple. Expected annual cash distributions of approximately $4,000 (8% pref) with a projected total return of $85,000 — including $35,000 in profit above the initial investment. Projected IRR: approximately 13%.</p>
+
+      <h3>Scenario 2: Value-Add Multifamily</h3>
+      <p>A $75,000 investment in a 150-unit apartment complex requiring renovation, with a 7% preferred return, 4-year hold period, and projected 2.0x equity multiple. Cash flow may be lower in years 1-2 during renovations, ramping up to full distributions in years 3-4. Projected total return of $150,000 with $75,000 in profit. Projected IRR: approximately 18%.</p>
+
+      <h3>Scenario 3: Opportunistic Self-Storage Development</h3>
+      <p>A $100,000 investment in a ground-up self-storage development with a 10% preferred return, 3-year hold period, and projected 1.8x equity multiple. Limited cash flow during the construction and lease-up phase (year 1), with distributions beginning in year 2. Projected total return of $180,000 with $80,000 in profit. Projected IRR: approximately 22%.</p>
+
+      <h2>Tips for Using the Calculator</h2>
+      <ul>
+        <li><strong>Run multiple scenarios:</strong> Don't just model the sponsor's base case. Create conservative, base, and optimistic projections to understand the range of possible outcomes.</li>
+        <li><strong>Compare deals apples-to-apples:</strong> Use the same investment amount across different deals to directly compare dollar-amount returns, not just percentages.</li>
+        <li><strong>Focus on IRR and equity multiple together:</strong> A high equity multiple with a long hold period may produce a lower IRR than a moderate multiple achieved quickly. Both metrics matter.</li>
+        <li><strong>Account for taxes:</strong> Calculator results show pre-tax returns. Consult a CPA about how depreciation, cost segregation, and K-1 distributions will affect your after-tax returns.</li>
+        <li><strong>Build in a margin of safety:</strong> Reduce the sponsor's projected returns by 15-20% to stress-test the deal. If the investment still meets your return threshold after a haircut, it demonstrates resilience.</li>
+      </ul>
+
+      <h2>Learn More About Syndication Investing</h2>
+      <ul>
+        <li><a href="${SITE_URL}/resources/glossary">Syndication Glossary</a> — Master the terminology used in syndication deals</li>
+        <li><a href="${SITE_URL}/resources/due-diligence">Due Diligence Checklist</a> — Comprehensive guide to evaluating syndication investments</li>
+        <li><a href="${SITE_URL}/find">Browse Active Deals</a> — Apply your knowledge to real syndication opportunities</li>
+        <li><a href="${SITE_URL}/directory">Find Syndicators</a> — Connect with vetted sponsors on EquityMD</li>
+        <li><a href="${SITE_URL}/resources/market-reports">Market Reports</a> — Research real estate market fundamentals by state</li>
+      </ul>`,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Real Estate Syndication Returns Calculator",
+        "description": "Calculate and model projected returns for real estate syndication investments including IRR, equity multiple, cash-on-cash returns, and total distributions.",
+        "url": `${SITE_URL}/resources/calculator`,
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+        },
+      },
+    }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
+  }
+
+  // Resources (generic fallback for other resource pages)
   if (pathname.startsWith("/resources/")) {
-    const resource = pathname.replace("/resources/", "").replace(/\/$/, "") || "glossary";
-    const titles: Record<string, string> = {
-      glossary: "Real Estate Syndication Glossary | EquityMD",
-      "due-diligence": "Due Diligence Guide | EquityMD",
-      calculator: "Investment Calculator | EquityMD",
-    };
-    const title = titles[resource] || `Resources | EquityMD`;
+    const resource = pathname.replace("/resources/", "").replace(/\/$/, "") || "resources";
+    const title = `Resources | EquityMD`;
     return new Response(generateFullHtml({
       title,
-      description: `EquityMD resources for real estate investors. ${resource === "glossary" ? "Glossary of syndication terms." : "Tools and guides."}`,
+      description: "EquityMD resources for real estate syndication investors — glossary, due diligence guides, returns calculator, and market reports.",
       canonical: `${SITE_URL}/resources/${resource}`,
-      bodyContent: `<h1>${escapeHtml(title)}</h1><p><a href="${SITE_URL}/resources/${resource}">View full page</a></p>`,
+      bodyContent: `<h1>Real Estate Syndication Resources</h1>
+      <p>EquityMD provides free educational resources to help passive investors make informed decisions about real estate syndication investments.</p>
+      <ul>
+        <li><a href="${SITE_URL}/resources/glossary">Syndication Glossary</a> — 30+ real estate syndication terms defined</li>
+        <li><a href="${SITE_URL}/resources/due-diligence">Due Diligence Checklist</a> — Step-by-step guide to evaluating deals</li>
+        <li><a href="${SITE_URL}/resources/calculator">Returns Calculator</a> — Model projected investment returns</li>
+        <li><a href="${SITE_URL}/resources/market-reports">Market Reports</a> — Real estate market data by state</li>
+      </ul>
+      <p><a href="${SITE_URL}/find">Browse Active Deals</a> | <a href="${SITE_URL}/directory">Find Syndicators</a></p>`,
     }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
