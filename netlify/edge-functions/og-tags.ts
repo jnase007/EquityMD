@@ -15,6 +15,20 @@ function isBot(userAgent: string): boolean {
   return USER_AGENTS.some((bot) => userAgent.toLowerCase().includes(bot));
 }
 
+const STATE_ABBREVS: Record<string, string> = {
+  'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
+  'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
+  'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
+  'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+  'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
+  'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new-hampshire': 'NH', 'new-jersey': 'NJ',
+  'new-mexico': 'NM', 'new-york': 'NY', 'north-carolina': 'NC', 'north-dakota': 'ND', 'ohio': 'OH',
+  'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode-island': 'RI', 'south-carolina': 'SC',
+  'south-dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
+  'virginia': 'VA', 'washington': 'WA', 'west-virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY',
+  'district-of-columbia': 'DC',
+};
+
 function escapeHtml(str: string): string {
   return String(str)
     .replace(/&/g, "&amp;")
@@ -545,13 +559,120 @@ ${relatedSection}
   if (pathname.startsWith("/resources/market-reports/") && pathname !== "/resources/market-reports" && pathname !== "/resources/market-reports/") {
     const stateSlug = pathname.replace("/resources/market-reports/", "").replace(/\/$/, "");
     const stateName = stateSlug.split("-").map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    const stateAbbrev = STATE_ABBREVS[stateSlug.toLowerCase()] || "";
+
+    // Fetch real data from Supabase in parallel
+    const [cities, syndicators, deals] = await Promise.all([
+      stateAbbrev ? fetchSupabase(`/cities?state=eq.${stateAbbrev}&select=name,slug,median_price,sales_change&limit=10&order=median_price.desc`) as Promise<any[] | null> : Promise.resolve(null),
+      stateAbbrev ? fetchSupabase(`/syndicators?state=eq.${stateAbbrev}&select=company_name,slug,city,active_deals&verification_status=in.(verified,premier)&limit=10`) as Promise<any[] | null> : Promise.resolve(null),
+      stateAbbrev ? fetchSupabase(`/deals?state=eq.${stateAbbrev}&select=name,slug,property_type,city&status=eq.active&limit=10`) as Promise<any[] | null> : Promise.resolve(null),
+    ]);
+
+    const cityCount = cities?.length || 0;
+    const syndCount = syndicators?.length || 0;
+    const dealCount = deals?.length || 0;
+    const hasData = cityCount > 0 || syndCount > 0 || dealCount > 0;
+
+    // Build unique meta description from real data
+    const descParts: string[] = [];
+    if (syndCount > 0) descParts.push(`${syndCount}+ verified syndicators`);
+    if (dealCount > 0) descParts.push(`${dealCount} active investment opportunities`);
+    if (cityCount > 0) descParts.push(`market data for ${cityCount} cities`);
+    const metaDesc = hasData
+      ? `${stateName} real estate syndication: ${descParts.join(", ")} on EquityMD. Explore cap rates, property trends, and investment analysis across ${stateName}.`
+      : `${stateName} real estate market analysis for syndication investors. Property trends, cap rates, population growth, and investment opportunities across ${stateName}. Browse syndicators and deals on EquityMD.`;
+
     const title = `${stateName} Real Estate Market Report 2026 | Investment Trends & Data | EquityMD`;
-    const desc = `${stateName} real estate market analysis for syndication investors. Property trends, cap rates, population growth, and investment opportunities across ${stateName}.`;
+
+    // --- Build rich body content ---
+    let body = `<h1>${escapeHtml(stateName)} Real Estate Market Report 2026</h1>`;
+    body += `<p>${escapeHtml(stateName)} real estate market analysis for syndication investors. Whether you're a seasoned LP or exploring your first passive real estate investment, this report covers property trends, cap rates, population growth, and investment opportunities across ${escapeHtml(stateName)}.</p>`;
+
+    // Top Markets section
+    body += `<h2>Top ${escapeHtml(stateName)} Markets for Real Estate Investment</h2>`;
+    if (cities && cityCount > 0) {
+      body += `<p>These are the leading real estate markets in ${escapeHtml(stateName)} based on median home prices and sales activity:</p><ul>`;
+      for (const c of cities) {
+        const priceStr = c.median_price ? `$${Number(c.median_price).toLocaleString("en-US")}` : "N/A";
+        const changeStr = c.sales_change != null ? ` (${c.sales_change > 0 ? "+" : ""}${c.sales_change}% YoY)` : "";
+        body += `<li><a href="${SITE_URL}/cities/${escapeHtml(c.slug || "")}">${escapeHtml(c.name)}</a> — Median Price: ${priceStr}${changeStr}</li>`;
+      }
+      body += `</ul>`;
+      body += `<p>Tracking local market data helps syndication investors identify emerging opportunities before institutional capital moves in. Cities with strong population growth and employment gains often signal favorable entry points for multifamily and commercial syndications.</p>`;
+    } else {
+      body += `<p>Market data for ${escapeHtml(stateName)} cities is being compiled. In the meantime, explore the <a href="${SITE_URL}/cities">full city directory</a> for real-time median prices, sales trends, and investment scores across the country. Real estate syndication investors should evaluate metro-level employment data, population migration patterns, and rent-to-price ratios when assessing ${escapeHtml(stateName)} markets.</p>`;
+    }
+
+    // Active Syndicators section
+    body += `<h2>Active Syndicators in ${escapeHtml(stateName)}</h2>`;
+    if (syndicators && syndCount > 0) {
+      body += `<p>The following verified syndicators are currently operating in ${escapeHtml(stateName)}:</p><ul>`;
+      for (const s of syndicators) {
+        const dealNote = s.active_deals ? ` — ${s.active_deals} active deal${s.active_deals > 1 ? "s" : ""}` : "";
+        body += `<li><a href="${SITE_URL}/syndicator/${escapeHtml(s.slug || "")}">${escapeHtml(s.company_name)}</a> (${escapeHtml(s.city || stateName)})${dealNote}</li>`;
+      }
+      body += `</ul>`;
+      body += `<p>Choosing the right syndicator is one of the most important decisions for passive investors. Look for a proven track record, transparent reporting, and alignment of interests through co-investment. EquityMD verifies syndicator credentials so you can invest with confidence.</p>`;
+    } else {
+      body += `<p>We're actively onboarding syndicators in ${escapeHtml(stateName)}. Browse the <a href="${SITE_URL}/directory">full syndicator directory</a> to find operators across all 50 states, or <a href="${SITE_URL}/list">list your syndication</a> to reach accredited investors looking to deploy capital in ${escapeHtml(stateName)}.</p>`;
+      body += `<p>Quality syndicators typically have a consistent distribution history, conservative underwriting, and a clear value-add or development strategy. Evaluate general partners based on their exit performance and investor communication track record.</p>`;
+    }
+
+    // Current Investment Opportunities section
+    body += `<h2>Current Investment Opportunities in ${escapeHtml(stateName)}</h2>`;
+    if (deals && dealCount > 0) {
+      body += `<p>Active syndication deals available for investment in ${escapeHtml(stateName)}:</p><ul>`;
+      for (const d of deals) {
+        const locStr = d.city ? ` in ${escapeHtml(d.city)}, ${stateAbbrev}` : "";
+        body += `<li><a href="${SITE_URL}/deal/${escapeHtml(d.slug || "")}">${escapeHtml(d.name)}</a> — ${escapeHtml(d.property_type || "Real Estate")}${locStr}</li>`;
+      }
+      body += `</ul>`;
+      body += `<p>Each deal on EquityMD includes detailed offering documents, projected returns, hold period, minimum investment, and sponsor background. Review the full investment thesis and risk factors before committing capital.</p>`;
+    } else {
+      body += `<p>There are currently no active syndication deals listed in ${escapeHtml(stateName)}. New opportunities are added regularly — <a href="${SITE_URL}/find">browse all active deals</a> or set up alerts to be notified when ${escapeHtml(stateName)} deals launch. Syndicators can <a href="${SITE_URL}/list">list deals for free</a> to reach our investor network.</p>`;
+    }
+
+    // Why Invest section (always unique with state-specific content)
+    body += `<h2>Why Invest in ${escapeHtml(stateName)} Real Estate</h2>`;
+    body += `<p>${escapeHtml(stateName)} presents diverse opportunities for real estate syndication investors. From multifamily apartments and industrial warehouses to retail centers and self-storage facilities, the state's economic fundamentals drive demand across multiple asset classes. Key factors investors should evaluate include:</p>`;
+    body += `<ul>`;
+    body += `<li><strong>Population Growth:</strong> States with net migration gains create sustained housing and commercial real estate demand.</li>`;
+    body += `<li><strong>Employment Trends:</strong> Job creation in technology, healthcare, logistics, and energy sectors supports occupancy rates and rent growth.</li>`;
+    body += `<li><strong>Regulatory Environment:</strong> Landlord-friendly states with lower property taxes and fewer rent control restrictions often provide stronger risk-adjusted returns.</li>`;
+    body += `<li><strong>Cap Rate Spreads:</strong> Compare local cap rates against the 10-year Treasury yield to assess relative value in ${escapeHtml(stateName)} markets.</li>`;
+    body += `<li><strong>Infrastructure Investment:</strong> Federal and state infrastructure spending can catalyze development in specific metros and corridors.</li>`;
+    body += `</ul>`;
+    body += `<p>Syndication allows investors to access institutional-quality real estate in ${escapeHtml(stateName)} with lower minimum commitments than direct ownership. By pooling capital with other accredited investors, you gain professional asset management, portfolio diversification, and potential tax advantages through depreciation and cost segregation.</p>`;
+
+    // Getting Started section
+    body += `<h2>Getting Started with ${escapeHtml(stateName)} Real Estate Syndication</h2>`;
+    body += `<p>Ready to explore passive real estate investment in ${escapeHtml(stateName)}? Here's how to get started on EquityMD:</p>`;
+    body += `<ol>`;
+    body += `<li><strong>Create a free investor account</strong> to access deal details, syndicator profiles, and market data.</li>`;
+    body += `<li><strong>Browse verified syndicators</strong> operating in ${escapeHtml(stateName)} and review their track records.</li>`;
+    body += `<li><strong>Evaluate active deals</strong> with full offering documents, projected returns, and risk disclosures.</li>`;
+    body += `<li><strong>Connect directly</strong> with sponsors to ask questions and complete your due diligence.</li>`;
+    body += `</ol>`;
+    body += `<p>EquityMD is the marketplace connecting real estate syndicators with accredited investors. All syndicators on our platform are verified, and our tools help you compare deals, track distributions, and build a diversified portfolio.</p>`;
+
+    // Navigation links
+    body += `<p><a href="${SITE_URL}/resources/market-reports">View All State Reports</a> | <a href="${SITE_URL}/find">Browse Deals</a> | <a href="${SITE_URL}/directory">Find Syndicators</a></p>`;
+
     return new Response(generateFullHtml({
       title,
-      description: desc,
+      description: metaDesc,
       canonical: `${SITE_URL}/resources/market-reports/${stateSlug}`,
-      bodyContent: `<h1>${stateName} Real Estate Market Report 2026</h1><p>${desc}</p><p><a href="${SITE_URL}/resources/market-reports/${stateSlug}">View full report</a></p>`,
+      bodyContent: body,
+      jsonLd: {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "description": metaDesc,
+        "url": `${SITE_URL}/resources/market-reports/${stateSlug}`,
+        "publisher": { "@type": "Organization", "name": "EquityMD", "url": SITE_URL },
+        "datePublished": "2026-01-01",
+        "dateModified": new Date().toISOString().split("T")[0],
+      },
     }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
   }
 
