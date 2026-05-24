@@ -24,6 +24,53 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
+function markdownToHtml(md: string): string {
+  if (!md) return "";
+  // Split into blocks by double newlines
+  const blocks = md.split(/\n\n+/);
+  const htmlBlocks: string[] = [];
+
+  for (const block of blocks) {
+    const trimmed = block.trim();
+    if (!trimmed) continue;
+
+    // Headings
+    if (trimmed.startsWith("### ")) {
+      htmlBlocks.push(`<h3>${inlineFormat(trimmed.slice(4).trim())}</h3>`);
+      continue;
+    }
+    if (trimmed.startsWith("## ")) {
+      htmlBlocks.push(`<h2>${inlineFormat(trimmed.slice(3).trim())}</h2>`);
+      continue;
+    }
+    if (trimmed.startsWith("# ")) {
+      htmlBlocks.push(`<h2>${inlineFormat(trimmed.slice(2).trim())}</h2>`);
+      continue;
+    }
+
+    // List block
+    const lines = trimmed.split("\n");
+    if (lines.every((l) => /^\s*[-*]\s/.test(l))) {
+      const items = lines.map((l) => `<li>${inlineFormat(l.replace(/^\s*[-*]\s+/, ""))}</li>`).join("\n");
+      htmlBlocks.push(`<ul>${items}</ul>`);
+      continue;
+    }
+
+    // Paragraph (preserve single newlines as <br>)
+    const content = lines.map((l) => inlineFormat(l)).join("<br>\n");
+    htmlBlocks.push(`<p>${content}</p>`);
+  }
+
+  return htmlBlocks.join("\n");
+}
+
+function inlineFormat(text: string): string {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+}
+
 async function fetchSupabase(query: string) {
   const url = `${SUPABASE_URL}/rest/v1${query}`;
   const res = await fetch(url, {
@@ -227,19 +274,55 @@ export default async function handler(request: Request, context: Context) {
 
   // Blog listing
   if (pathname === "/blog") {
-    const posts = await fetchSupabase("/blog_posts?is_published=eq.true&order=published_at.desc&limit=10&select=slug,title,excerpt") as any[] | null;
-    let body = `<h1>Real Estate Investing Blog | Syndication Insights | EquityMD</h1><p>Educational articles on real estate syndication, deal analysis, and passive investing.</p>`;
+    const posts = await fetchSupabase("/blog_posts?is_published=eq.true&order=published_at.desc&limit=50&select=slug,title,excerpt,category,published_at,author") as any[] | null;
+    let body = `<h1>Real Estate Investing Blog — Syndication Insights & Market Analysis</h1>
+<p>Educational articles on real estate syndication, deal analysis, market trends, tax strategies, and passive investing for accredited investors. Written by experienced syndicators and investment professionals.</p>`;
     if (posts && posts.length > 0) {
-      body += "<h2>Recent Articles</h2><ul>";
+      // Group by category
+      const byCategory: Record<string, typeof posts> = {};
+      const uncategorized: typeof posts = [];
       for (const p of posts) {
-        body += `<li><a href="${SITE_URL}/blog/${escapeHtml(p.slug || "")}">${escapeHtml(p.title || "")}</a> — ${escapeHtml((p.excerpt || "").substring(0, 120))}...</li>`;
+        if (p.category) {
+          if (!byCategory[p.category]) byCategory[p.category] = [];
+          byCategory[p.category]!.push(p);
+        } else {
+          uncategorized.push(p);
+        }
       }
-      body += "</ul>";
+      const categories = Object.keys(byCategory).sort();
+      for (const cat of categories) {
+        body += `\n<h2>${escapeHtml(cat)}</h2>`;
+        for (const p of byCategory[cat]!) {
+          const date = p.published_at ? new Date(p.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
+          body += `\n<article>
+<h3><a href="${SITE_URL}/blog/${escapeHtml(p.slug || "")}">${escapeHtml(p.title || "")}</a></h3>
+<p><em>${date}${p.author ? ` · By ${escapeHtml(p.author)}` : ""}</em></p>
+<p>${escapeHtml((p.excerpt || "").substring(0, 300))}</p>
+</article>`;
+        }
+      }
+      if (uncategorized.length > 0) {
+        body += `\n<h2>More Articles</h2>`;
+        for (const p of uncategorized) {
+          const date = p.published_at ? new Date(p.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
+          body += `\n<article>
+<h3><a href="${SITE_URL}/blog/${escapeHtml(p.slug || "")}">${escapeHtml(p.title || "")}</a></h3>
+<p><em>${date}${p.author ? ` · By ${escapeHtml(p.author)}` : ""}</em></p>
+<p>${escapeHtml((p.excerpt || "").substring(0, 300))}</p>
+</article>`;
+        }
+      }
     }
-    body += `<p><a href="${SITE_URL}/blog">View all posts</a></p>`;
+    body += `\n<h2>Explore EquityMD</h2>
+<ul>
+<li><a href="${SITE_URL}/find">Browse Syndication Deals</a></li>
+<li><a href="${SITE_URL}/directory">Syndicator Directory</a></li>
+<li><a href="${SITE_URL}/resources/glossary">Syndication Glossary</a></li>
+<li><a href="${SITE_URL}/resources/calculator">Returns Calculator</a></li>
+</ul>`;
     return new Response(generateFullHtml({
-      title: "Real Estate Investing Blog | Syndication Insights | EquityMD",
-      description: "Educational articles on real estate syndication, deal analysis, market trends, and passive investing.",
+      title: "Real Estate Investing Blog | Syndication Insights & Market Analysis | EquityMD",
+      description: "Educational articles on real estate syndication, deal analysis, market trends, tax strategies, and passive investing for accredited investors.",
       canonical: `${SITE_URL}/blog`,
       bodyContent: body,
     }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
@@ -248,21 +331,102 @@ export default async function handler(request: Request, context: Context) {
   // Blog post
   if (pathname.startsWith("/blog/") && pathname !== "/blog") {
     const slug = pathname.replace("/blog/", "").replace(/\/$/, "");
-    const posts = await fetchSupabase(`/blog_posts?slug=eq.${encodeURIComponent(slug)}&select=title,excerpt,image_url,published_at,author,category,meta_description`) as any[] | null;
+    const posts = await fetchSupabase(`/blog_posts?slug=eq.${encodeURIComponent(slug)}&select=title,excerpt,content,image_url,published_at,author,category,meta_description,faq_schema,key_takeaways,sources`) as any[] | null;
     if (posts && posts.length > 0) {
       const post = posts[0];
       const title = `${post.title} | EquityMD Blog`;
       const desc = post.meta_description || post.excerpt || "Read this article on EquityMD";
       const img = post.image_url || DEFAULT_IMAGE;
-      const articleSchema = {
+      const date = post.published_at ? new Date(post.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
+
+      // Convert markdown content to HTML
+      const convertedMarkdownContent = markdownToHtml(post.content || post.excerpt || "");
+
+      // FAQ section
+      let faqSection = "";
+      let faqItems: { question: string; answer: string }[] = [];
+      if (post.faq_schema) {
+        try {
+          const faqData = typeof post.faq_schema === "string" ? JSON.parse(post.faq_schema) : post.faq_schema;
+          if (Array.isArray(faqData) && faqData.length > 0) {
+            faqItems = faqData;
+            faqSection = `<h2>Frequently Asked Questions</h2>`;
+            for (const faq of faqData) {
+              faqSection += `\n<h3>${escapeHtml(faq.question || faq.q || "")}</h3>\n<p>${escapeHtml(faq.answer || faq.a || "")}</p>`;
+            }
+          }
+        } catch (_e) { /* ignore parse errors */ }
+      }
+
+      // Key takeaways section
+      let keyTakeawaysSection = "";
+      if (post.key_takeaways) {
+        try {
+          const takeaways = typeof post.key_takeaways === "string" ? JSON.parse(post.key_takeaways) : post.key_takeaways;
+          if (Array.isArray(takeaways) && takeaways.length > 0) {
+            keyTakeawaysSection = `<h2>Key Takeaways</h2>\n<ul>${takeaways.map((t: string) => `<li>${escapeHtml(t)}</li>`).join("\n")}</ul>`;
+          }
+        } catch (_e) { /* ignore parse errors */ }
+      }
+
+      // Sources section
+      let sourcesSection = "";
+      if (post.sources) {
+        try {
+          const sources = typeof post.sources === "string" ? JSON.parse(post.sources) : post.sources;
+          if (Array.isArray(sources) && sources.length > 0) {
+            sourcesSection = `<h2>Sources</h2>\n<ol>${sources.map((s: any) => {
+              if (typeof s === "string") return `<li>${escapeHtml(s)}</li>`;
+              return `<li>${s.url ? `<a href="${escapeHtml(s.url)}">${escapeHtml(s.title || s.name || s.url)}</a>` : escapeHtml(s.title || s.name || "")}</li>`;
+            }).join("\n")}</ol>`;
+          }
+        } catch (_e) { /* ignore parse errors */ }
+      }
+
+      // Related articles (same category, different slug)
+      let relatedSection = "";
+      if (post.category) {
+        const related = await fetchSupabase(`/blog_posts?is_published=eq.true&category=eq.${encodeURIComponent(post.category)}&slug=neq.${encodeURIComponent(slug)}&order=published_at.desc&limit=5&select=slug,title,excerpt`) as any[] | null;
+        if (related && related.length > 0) {
+          relatedSection = `<h2>Related Articles</h2>\n<ul>${related.map((r) =>
+            `<li><a href="${SITE_URL}/blog/${escapeHtml(r.slug)}">${escapeHtml(r.title)}</a>${r.excerpt ? ` — ${escapeHtml(r.excerpt.substring(0, 100))}` : ""}</li>`
+          ).join("\n")}</ul>`;
+        }
+      }
+      // If no category matches or too few, fetch recent posts
+      if (!relatedSection) {
+        const recent = await fetchSupabase(`/blog_posts?is_published=eq.true&slug=neq.${encodeURIComponent(slug)}&order=published_at.desc&limit=5&select=slug,title,excerpt`) as any[] | null;
+        if (recent && recent.length > 0) {
+          relatedSection = `<h2>More from EquityMD Blog</h2>\n<ul>${recent.map((r) =>
+            `<li><a href="${SITE_URL}/blog/${escapeHtml(r.slug)}">${escapeHtml(r.title)}</a>${r.excerpt ? ` — ${escapeHtml(r.excerpt.substring(0, 100))}` : ""}</li>`
+          ).join("\n")}</ul>`;
+        }
+      }
+
+      // Schema.org
+      const schemas: object[] = [{
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": post.title,
         "description": desc,
         "image": img,
         "datePublished": post.published_at,
-        "author": { "@type": "Person", "name": post.author || "EquityMD" },
-      };
+        "author": { "@type": "Person", "name": post.author || "EquityMD Team" },
+        "publisher": { "@type": "Organization", "name": "EquityMD", "url": SITE_URL },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": `${SITE_URL}/blog/${slug}` },
+      }];
+      if (faqItems.length > 0) {
+        schemas.push({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqItems.map((f) => ({
+            "@type": "Question",
+            "name": f.question || (f as any).q || "",
+            "acceptedAnswer": { "@type": "Answer", "text": f.answer || (f as any).a || "" },
+          })),
+        });
+      }
+
       return new Response(generateFullHtml({
         title,
         description: desc.substring(0, 160),
@@ -270,10 +434,14 @@ export default async function handler(request: Request, context: Context) {
         image: img,
         bodyContent: `
 <h1>${escapeHtml(post.title)}</h1>
-<p><em>By ${escapeHtml(post.author || "EquityMD")}${post.published_at ? ` · ${new Date(post.published_at).toLocaleDateString()}` : ""}</em></p>
-<p>${escapeHtml((post.excerpt || desc).substring(0, 500))}</p>
-<p><a href="${SITE_URL}/blog/${slug}">Read full article</a></p>`,
-        jsonLd: articleSchema,
+<p><em>By ${escapeHtml(post.author || "EquityMD Team")} · ${date}</em></p>
+${convertedMarkdownContent}
+${faqSection}
+${keyTakeawaysSection}
+${sourcesSection}
+${relatedSection}
+<p><a href="${SITE_URL}/blog">← Back to all articles</a></p>`,
+        jsonLd: schemas,
       }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
     }
   }
