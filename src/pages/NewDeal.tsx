@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, AlertCircle } from 'lucide-react';
 import { PropertyListingWizard } from '../components/PropertyListingWizard';
-import { VerificationUpload } from '../components/VerificationUpload';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';

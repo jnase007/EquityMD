@@ -71,7 +71,7 @@ export interface Syndicator {
   years_in_business: number | null;
   total_deal_volume: number | null;
   verification_documents: Record<string, any>;
-  verification_status: "unverified" | "verified" | "premier";
+  verification_status: "unverified" | "pending" | "verified" | "featured" | "premium" | "premier";
   average_rating: number;
   total_reviews: number;
   active_deals: number;

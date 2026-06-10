@@ -70,6 +70,7 @@ export function DealApprovalQueue() {
         .from('deals')
         .update({
           approval_status: 'approved',
+          status: 'active',
           approved_by: user?.id,
           approved_at: new Date().toISOString(),
           approval_notes: null
@@ -102,6 +103,7 @@ export function DealApprovalQueue() {
         .from('deals')
         .update({
           approval_status: 'rejected',
+          status: 'rejected',
           approved_by: user?.id,
           approved_at: new Date().toISOString(),
           approval_notes: notes || 'Rejected by admin'

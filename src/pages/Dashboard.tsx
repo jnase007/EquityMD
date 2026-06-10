@@ -13,6 +13,7 @@ import { ReferralModal } from '../components/ReferralModal';
 import { ReferralStatus } from '../components/ReferralStatus';
 import { PurchaseCreditsModal } from '../components/PurchaseCreditsModal';
 import { Tooltip } from '../components/Tooltip';
+import { VerificationUpload } from '../components/VerificationUpload';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import type { Deal, Syndicator } from '../types/database';
@@ -600,6 +601,27 @@ export function Dashboard() {
             )}
           </div>
         </div>
+
+        {/* Verification Upload — syndicators must verify to list deals */}
+        {userSyndicators.length > 0 && selectedSyndicator && (() => {
+          const activeSyndicator = userSyndicators.find(s => s.id === selectedSyndicator);
+          if (!activeSyndicator) return null;
+          return (
+            <div className="mb-8">
+              <VerificationUpload
+                syndicatorId={activeSyndicator.id}
+                verificationStatus={activeSyndicator.verification_status}
+                onStatusChange={(newStatus) => {
+                  setUserSyndicators(prev => prev.map(s =>
+                    s.id === activeSyndicator.id
+                      ? { ...s, verification_status: newStatus as Syndicator['verification_status'] }
+                      : s
+                  ));
+                }}
+              />
+            </div>
+          );
+        })()}
 
         {/* Referral Status */}
         {/* <div className="mb-8">

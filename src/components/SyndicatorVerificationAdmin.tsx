@@ -118,10 +118,10 @@ export function SyndicatorVerificationAdmin() {
         .from('syndicator_verification_history')
         .insert({
           syndicator_id: syndicatorId,
-          old_status: oldStatus || 'unverified',
+          previous_status: oldStatus || 'unverified',
           new_status: newStatus,
           changed_by: user?.id,
-          notes: notes || undefined
+          admin_notes: notes || undefined
         });
 
       setSyndicators(prev => prev.map(syndicator =>
