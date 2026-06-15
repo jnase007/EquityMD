@@ -1794,9 +1794,19 @@ Msg & data rates may apply.`;
     }
   };
 
+  // Transforms the preview HTML into a Mailchimp-ready file.
+  // Wraps bare *|FNAME|* merge tags with a conditional default so recipients
+  // without a first name see a graceful fallback ("Hi there!") instead of "Hi !".
+  const mailchimpify = (html: string) => {
+    return html.replace(
+      /\*\|FNAME\|\*/g,
+      '*|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*'
+    );
+  };
+
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(getEmailHTML(selectedEmail));
+      await navigator.clipboard.writeText(mailchimpify(getEmailHTML(selectedEmail)));
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -1805,7 +1815,7 @@ Msg & data rates may apply.`;
   };
 
   const downloadHTML = () => {
-    const html = getEmailHTML(selectedEmail);
+    const html = mailchimpify(getEmailHTML(selectedEmail));
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
