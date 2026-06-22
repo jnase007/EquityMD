@@ -18,9 +18,11 @@ const SITE_URL = 'https://equitymd.com';
 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
+// NOTE: Do NOT process.exit(1) here — a missing creds / Supabase hiccup must never
+// fail the whole deploy. We fall back to the committed public/sitemap.xml instead.
 if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Supabase credentials required');
-  process.exit(1);
+  console.warn('⚠️  Supabase credentials not set — skipping sitemap regeneration, using committed public/sitemap.xml');
+  process.exit(0);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -280,5 +282,9 @@ async function generateSitemap() {
   console.log(`\n🔗 Submit to Google Search Console: ${SITE_URL}/sitemap.xml`);
 }
 
-generateSitemap();
+generateSitemap().catch((err) => {
+  // Never fail the build on a sitemap error — keep the committed public/sitemap.xml.
+  console.warn('⚠️  Sitemap generation failed, falling back to committed public/sitemap.xml:', err?.message || err);
+  process.exit(0);
+});
 
