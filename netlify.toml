@@ -480,6 +480,130 @@
   status = 301
   force = true
 
+# City pages: canonical slugs are bare (e.g. /cities/austin), backed by the cities
+# content table. Redirect the old abbrev-style URLs (/cities/austin-tx) to the real
+# pages so they don't serve thin/empty content (soft-404s).
+[[redirects]]
+  from = "/cities/atlanta-ga"
+  to = "/cities/atlanta"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/austin-tx"
+  to = "/cities/austin"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/boise-id"
+  to = "/cities/boise"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/charlotte-nc"
+  to = "/cities/charlotte"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/chattanooga-tn"
+  to = "/cities/chattanooga"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/columbus-oh"
+  to = "/cities/columbus"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/dallas-tx"
+  to = "/cities/dallas"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/denver-co"
+  to = "/cities/denver"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/houston-tx"
+  to = "/cities/houston"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/huntsville-al"
+  to = "/cities/huntsville"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/indianapolis-in"
+  to = "/cities/indianapolis"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/jacksonville-fl"
+  to = "/cities/jacksonville"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/knoxville-tn"
+  to = "/cities/knoxville"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/las-vegas-nv"
+  to = "/cities/las-vegas"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/miami-fl"
+  to = "/cities/miami"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/nashville-tn"
+  to = "/cities/nashville"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/orlando-fl"
+  to = "/cities/orlando"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/phoenix-az"
+  to = "/cities/phoenix"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/raleigh-nc"
+  to = "/cities/raleigh"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/salt-lake-city-ut"
+  to = "/cities/salt-lake-city"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/san-antonio-tx"
+  to = "/cities/san-antonio"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/scottsdale-az"
+  to = "/cities/scottsdale"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/tampa-fl"
+  to = "/cities/tampa"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/cities/tucson-az"
+  to = "/cities/tucson"
+  status = 301
+  force = true
+
 # SPA fallback - must be last (no force — let Netlify serve real files first)
 [[redirects]]
   from = "/*"

@@ -188,45 +188,18 @@ async function generateSitemap() {
   });
   console.log(`✅ Added ${states.length} state market report pages`);
 
-  // City pages — pull unique cities from syndicators and deals
-  // Normalize state names to abbreviations to avoid duplicates (e.g. austin-texas AND austin-tx)
-  const stateAbbreviations: Record<string, string> = {
-    'alabama': 'al', 'alaska': 'ak', 'arizona': 'az', 'arkansas': 'ar', 'california': 'ca',
-    'colorado': 'co', 'connecticut': 'ct', 'delaware': 'de', 'florida': 'fl', 'georgia': 'ga',
-    'hawaii': 'hi', 'idaho': 'id', 'illinois': 'il', 'indiana': 'in', 'iowa': 'ia',
-    'kansas': 'ks', 'kentucky': 'ky', 'louisiana': 'la', 'maine': 'me', 'maryland': 'md',
-    'massachusetts': 'ma', 'michigan': 'mi', 'minnesota': 'mn', 'mississippi': 'ms', 'missouri': 'mo',
-    'montana': 'mt', 'nebraska': 'ne', 'nevada': 'nv', 'new hampshire': 'nh', 'new jersey': 'nj',
-    'new mexico': 'nm', 'new york': 'ny', 'north carolina': 'nc', 'north dakota': 'nd', 'ohio': 'oh',
-    'oklahoma': 'ok', 'oregon': 'or', 'pennsylvania': 'pa', 'rhode island': 'ri', 'south carolina': 'sc',
-    'south dakota': 'sd', 'tennessee': 'tn', 'texas': 'tx', 'utah': 'ut', 'vermont': 'vt',
-    'virginia': 'va', 'washington': 'wa', 'west virginia': 'wv', 'wisconsin': 'wi', 'wyoming': 'wy',
-    'district of columbia': 'dc', 'ontario': 'on',
-  };
-
-  function normalizeStateToAbbrev(state: string): string {
-    const lower = state.toLowerCase().trim();
-    // Already an abbreviation (2 chars)?
-    if (lower.length === 2) return lower;
-    return stateAbbreviations[lower] || lower.replace(/[^a-z0-9]+/g, '-');
-  }
-
+  // City pages.
+  // IMPORTANT: city landing pages are backed by the `cities` content table and are
+  // resolved by EXACT slug (CityPage does .eq('slug', city)). Previously this sitemap
+  // fabricated slugs from syndicator city+state (e.g. `austin-tx`), but the real content
+  // slugs are bare (e.g. `austin`). That published ~68 phantom URLs that resolved to
+  // empty/thin pages (soft-404s to Google). Pull the real slugs from the cities table.
+  const { data: cityRows } = await supabase
+    .from('cities')
+    .select('slug')
+    .not('slug', 'is', null);
   const citySet = new Set<string>();
-  if (syndicators) {
-    // Fetch city data separately
-    const { data: syncCities } = await supabase
-      .from('syndicators')
-      .select('city, state')
-      .not('city', 'is', null);
-    syncCities?.forEach(s => {
-      if (s.city && s.state) {
-        const cityPart = s.city.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const statePart = normalizeStateToAbbrev(s.state);
-        const slug = `${cityPart}-${statePart}`;
-        citySet.add(slug);
-      }
-    });
-  }
+  cityRows?.forEach(c => { if (c.slug) citySet.add(c.slug); });
   citySet.forEach(citySlug => {
     urls.push({
       loc: `${SITE_URL}/cities/${citySlug}`,
@@ -235,7 +208,7 @@ async function generateSitemap() {
       priority: 0.5,
     });
   });
-  console.log(`✅ Added ${citySet.size} city pages`);
+  console.log(`✅ Added ${citySet.size} city pages (from cities content table)`);
 
   // Resource pages
   const resourcePages = [
