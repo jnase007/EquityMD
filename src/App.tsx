@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense, lazy, useCallback } from 'react';
 declare const __BUILD_TIME__: string;
 (window as any).__EQUITYMD_BUILD__ = __BUILD_TIME__;
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { supabase } from './lib/supabase';
+import { supabase, withTimeout } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
 import { authLogger } from './lib/logger';
@@ -184,7 +184,7 @@ export default function App() {
   const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
     try {
       // Ensure auth session is attached before querying (RLS requires it)
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await withTimeout(supabase.auth.getSession(), 8000, 'getSession');
       if (!session) {
         authLogger.log('No session yet — delaying profile fetch');
         if (retryCount < 5) {
@@ -196,11 +196,11 @@ export default function App() {
       }
 
       authLogger.log('Fetching profile for user:', userId);
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
+      const { data, error } = await withTimeout(
+        supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+        8000,
+        'fetchProfile'
+      );
 
       if (error) {
         if ((error.message.includes('fetch') || error.message.includes('network')) && retryCount < 5) {
@@ -417,11 +417,11 @@ export default function App() {
       if (useAuthStore.getState().profile) return; // Already loaded
       authLogger.log('Profile still null after 3s — retrying fetch');
       try {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .maybeSingle();
+        const { data } = await withTimeout(
+          supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
+          8000,
+          'profileRetry'
+        );
         if (data) {
           setProfile(data);
           authLogger.log('Profile loaded on retry');

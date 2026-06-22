@@ -45,3 +45,32 @@ export const supabase: SupabaseClient =
           // debug: true, // Uncomment to see internal auth logs during testing
         },
       });
+
+/**
+ * Wrap any promise (e.g. a Supabase query) so it REJECTS after `ms` instead of
+ * hanging forever. The Supabase JS client wraps fetch with NO default timeout,
+ * so when an access token goes stale mid-session a PostgREST query can hang
+ * indefinitely. That defeats every retry/escape-hatch in the app and leaves the
+ * user stuck on "Preparing your dashboard...". Racing against a timeout makes the
+ * hung call reject so the existing retry/timeout logic can actually fire.
+ */
+export async function withTimeout<T>(
+  promise: PromiseLike<T>,
+  ms = 8000,
+  label = "request"
+): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`Timed out after ${ms}ms: ${label}`)),
+      ms
+    );
+  });
+  try {
+    // Supabase query builders are thenable but not real Promises; Promise.race
+    // accepts PromiseLike, and the cast keeps TS happy.
+    return await Promise.race([promise as Promise<T>, timeout]);
+  } finally {
+    clearTimeout(timer!);
+  }
+}

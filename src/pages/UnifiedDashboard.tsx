@@ -5,7 +5,7 @@ import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { InvestorDashboard, SyndicatorDashboard } from '../components/Dashboard';
 import { useAuthStore } from '../lib/store';
-import { supabase } from '../lib/supabase';
+import { supabase, withTimeout } from '../lib/supabase';
 import { 
   TrendingUp, 
   Building2, 
@@ -120,11 +120,11 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
       }
       console.log(`[Dashboard] Profile retry ${retries}/3 for user ${user?.id}`);
       try {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user!.id)
-          .maybeSingle();
+        const { data: profileData } = await withTimeout(
+          supabase.from('profiles').select('*').eq('id', user!.id).maybeSingle(),
+          7000,
+          'dashboardProfileRetry'
+        );
         if (profileData) {
           console.log('[Dashboard] Profile loaded on retry');
           useAuthStore.getState().setProfile(profileData);
@@ -145,7 +145,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     return () => clearInterval(timer);
   }, [profile, user]);
 
-  // Hard ceiling: if loading hasn't resolved in 10s, force it
+  // Hard ceiling: if loading hasn't resolved in 5s, force it.
   useEffect(() => {
     const hardCeiling = setTimeout(() => {
       if (loading) {
@@ -155,6 +155,22 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
     }, 5000);
     return () => clearTimeout(hardCeiling);
   }, [loading]);
+
+  // Final fallback: if we have a user but the profile NEVER loads (e.g. a stale
+  // token made every query hang/timeout) and the retry path somehow didn't trip,
+  // force the "Session expired" escape hatch after 20s so the user is never
+  // trapped forever on "Preparing your dashboard...".
+  useEffect(() => {
+    if (!user || profile || profileTimeout) return;
+    const trap = setTimeout(() => {
+      if (!useAuthStore.getState().profile) {
+        console.warn('[Dashboard] Profile never loaded after 20s — showing escape hatch');
+        setProfileTimeout(true);
+        setLoading(false);
+      }
+    }, 20000);
+    return () => clearTimeout(trap);
+  }, [user, profile, profileTimeout]);
 
   // Show loading state while checking auth
   if (loading && !user) {
@@ -303,10 +319,14 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   async function checkUserSyndicators() {
     try {
       setError(null);
-      const { count, error: queryError } = await supabase
-        .from('syndicators')
-        .select('*', { count: 'exact', head: true })
-        .eq('claimed_by', user!.id);
+      const { count, error: queryError } = await withTimeout(
+        supabase
+          .from('syndicators')
+          .select('*', { count: 'exact', head: true })
+          .eq('claimed_by', user!.id),
+        8000,
+        'checkUserSyndicators'
+      );
       
       if (queryError) {
         console.error('Syndicator query error:', queryError);
