@@ -1,0 +1,104 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/browse", "destination": "/find", "permanent": true },
+    { "source": "/browse/:path*", "destination": "/find", "permanent": true },
+    { "source": "/deals/testdeal2", "destination": "/find", "permanent": true },
+    { "source": "/deals/testdeal4", "destination": "/find", "permanent": true },
+    { "source": "/deals/the-evergreen-at-bellevue", "destination": "/find", "permanent": true },
+    { "source": "/deals/evergreen-commons", "destination": "/find", "permanent": true },
+    { "source": "/deals/denver-medical-center", "destination": "/find", "permanent": true },
+    { "source": "/deals/metro-city-center", "destination": "/find", "permanent": true },
+    { "source": "/deals/innovation-square", "destination": "/find", "permanent": true },
+    { "source": "/deals/innovation-medical-plaza", "destination": "/find", "permanent": true },
+    { "source": "/deals/horizon-logistics-center", "destination": "/find", "permanent": true },
+    { "source": "/deals/innovation-medical-campus", "destination": "/find", "permanent": true },
+    { "source": "/deals/silicon-valley-office-plaza", "destination": "/find", "permanent": true },
+    { "source": "/deals/premium-office-complex", "destination": "/find", "permanent": true },
+    { "source": "/deals/the-metropolitan-downtown", "destination": "/find", "permanent": true },
+    { "source": "/deals/the-marina-residences", "destination": "/find", "permanent": true },
+    { "source": "/deals/multi-family-development", "destination": "/find", "permanent": true },
+    { "source": "/syndicators/react", "destination": "/directory", "permanent": true },
+    { "source": "/syndicators/kjh", "destination": "/directory", "permanent": true },
+    { "source": "/syndicators/vdevd", "destination": "/directory", "permanent": true },
+    { "source": "/syndicators/prologis", "destination": "/directory", "permanent": true },
+    { "source": "/syndicators/dlp-capital", "destination": "/directory", "permanent": true },
+    { "source": "/syndicators/cardone-capital", "destination": "/directory", "permanent": true },
+    { "source": "/cities/atlanta-georgia", "destination": "/cities/atlanta-ga", "permanent": true },
+    { "source": "/cities/austin-texas", "destination": "/cities/austin-tx", "permanent": true },
+    { "source": "/cities/aventura-florida", "destination": "/cities/aventura-fl", "permanent": true },
+    { "source": "/cities/charlotte-north-carolina", "destination": "/cities/charlotte-nc", "permanent": true },
+    { "source": "/cities/chicago-illinois", "destination": "/cities/chicago-il", "permanent": true },
+    { "source": "/cities/dallas-texas", "destination": "/cities/dallas-tx", "permanent": true },
+    { "source": "/cities/denver-colorado", "destination": "/cities/denver-co", "permanent": true },
+    { "source": "/cities/houston-texas", "destination": "/cities/houston-tx", "permanent": true },
+    { "source": "/cities/indianapolis-indiana", "destination": "/cities/indianapolis-in", "permanent": true },
+    { "source": "/cities/irvine-california", "destination": "/cities/irvine-ca", "permanent": true },
+    { "source": "/cities/jacksonville-florida", "destination": "/cities/jacksonville-fl", "permanent": true },
+    { "source": "/cities/kansas-city-missouri", "destination": "/cities/kansas-city-mo", "permanent": true },
+    { "source": "/cities/knoxville-tennessee", "destination": "/cities/knoxville-tn", "permanent": true },
+    { "source": "/cities/las-vegas-nevada", "destination": "/cities/las-vegas-nv", "permanent": true },
+    { "source": "/cities/los-angeles-california", "destination": "/cities/los-angeles-ca", "permanent": true },
+    { "source": "/cities/miami-florida", "destination": "/cities/miami-fl", "permanent": true },
+    { "source": "/cities/modesto-california", "destination": "/cities/modesto-ca", "permanent": true },
+    { "source": "/cities/nashville-tennessee", "destination": "/cities/nashville-tn", "permanent": true },
+    { "source": "/cities/new-york-new-york", "destination": "/cities/new-york-ny", "permanent": true },
+    { "source": "/cities/newark-new-jersey", "destination": "/cities/newark-nj", "permanent": true },
+    { "source": "/cities/orange-county-california", "destination": "/cities/orange-county-ca", "permanent": true },
+    { "source": "/cities/phoenix-arizona", "destination": "/cities/phoenix-az", "permanent": true },
+    { "source": "/cities/raleigh-north-carolina", "destination": "/cities/raleigh-nc", "permanent": true },
+    { "source": "/cities/richmond-virginia", "destination": "/cities/richmond-va", "permanent": true },
+    { "source": "/cities/roseville-california", "destination": "/cities/roseville-ca", "permanent": true },
+    { "source": "/cities/salt-lake-city-utah", "destination": "/cities/salt-lake-city-ut", "permanent": true },
+    { "source": "/cities/san-antonio-texas", "destination": "/cities/san-antonio-tx", "permanent": true },
+    { "source": "/cities/san-diego-california", "destination": "/cities/san-diego-ca", "permanent": true },
+    { "source": "/cities/san-francisco-california", "destination": "/cities/san-francisco-ca", "permanent": true },
+    { "source": "/cities/san-luis-obispo-california", "destination": "/cities/san-luis-obispo-ca", "permanent": true },
+    { "source": "/cities/seattle-washington", "destination": "/cities/seattle-wa", "permanent": true },
+    { "source": "/cities/st-augustine-florida", "destination": "/cities/st-augustine-fl", "permanent": true },
+    { "source": "/cities/tampa-florida", "destination": "/cities/tampa-fl", "permanent": true },
+    { "source": "/signup", "destination": "/", "permanent": true },
+    { "source": "/signup/:path*", "destination": "/", "permanent": true },
+    { "source": "/login", "destination": "/", "permanent": true },
+    { "source": "/terms", "destination": "/legal/terms", "permanent": true },
+    { "source": "/privacy", "destination": "/legal/privacy", "permanent": true },
+    { "source": "/faq", "destination": "/how-it-works", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ]
+}
