@@ -1000,18 +1000,18 @@ ${relatedSection}
   // Deal page
   if (pathname.startsWith("/deals/") && pathname !== "/deals") {
     const slug = pathname.replace("/deals/", "").replace(/\/$/, "");
-    const deals = await fetchSupabase(`/deals?slug=eq.${encodeURIComponent(slug)}&select=id,name,tagline,description,city,state,property_type`) as any[] | null;
+    // Schema: deals table has title, description, property_type, location (single field),
+    // cover_image_url, slug. There is NO name/tagline/city/state column.
+    const deals = await fetchSupabase(`/deals?slug=eq.${encodeURIComponent(slug)}&select=id,title,description,property_type,location,cover_image_url`) as any[] | null;
     if (deals && deals.length > 0) {
       const deal = deals[0];
-      let image = DEFAULT_IMAGE;
-      const media = await fetchSupabase(`/deal_media?deal_id=eq.${deal.id}&is_cover=eq.true&select=url`) as any[] | null;
-      if (media && media[0]?.url) image = media[0].url;
-      const title = `${deal.name} | EquityMD`;
-      const desc = deal.tagline || (deal.description || "").substring(0, 160) || `${deal.property_type} in ${deal.city}, ${deal.state}`;
+      const image = deal.cover_image_url || DEFAULT_IMAGE;
+      const title = `${deal.title} | EquityMD`;
+      const desc = (deal.description || `${deal.property_type || "Commercial real estate"} investment opportunity${deal.location ? ` in ${deal.location}` : ""}`).substring(0, 160);
       const productSchema = {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": deal.name,
+        "name": deal.title,
         "description": desc,
         "image": image,
       };
@@ -1021,9 +1021,9 @@ ${relatedSection}
         canonical: `${SITE_URL}/deals/${slug}`,
         image,
         bodyContent: `
-<h1>${escapeHtml(deal.name)}</h1>
+<h1>${escapeHtml(deal.title)}</h1>
 <p>${escapeHtml(desc)}</p>
-<p>${escapeHtml(deal.property_type || "")} investment in ${escapeHtml(deal.city || "")}, ${escapeHtml(deal.state || "")}</p>
+<p>${escapeHtml(deal.property_type || "")}${deal.location ? ` investment in ${escapeHtml(deal.location)}` : ""}</p>
 <p><a href="${SITE_URL}/deals/${slug}">View deal details</a></p>`,
         jsonLd: productSchema,
       }), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, s-maxage=3600, max-age=0" } });
