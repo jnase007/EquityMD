@@ -103,8 +103,7 @@ import { TooltipDemo } from './pages/TooltipDemo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AdminErrorBoundary } from './components/AdminErrorBoundary';
 import { ScrollToTop } from './components/ScrollToTop';
-// CookieConsent removed per user request
-// import { CookieConsent } from './components/CookieConsent';
+import { CookieConsent } from './components/CookieConsent';
 import { ExitIntentPopup } from './components/ExitIntentPopup';
 import { FeedbackWedge } from './components/FeedbackWedge';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -705,7 +704,7 @@ export default function App() {
 
       <PerformanceMonitor />
       <ScrollToTop />
-      {/* <CookieConsent /> */}
+      <CookieConsent />
       <ExitIntentPopup />
       <FeedbackWedge />
     </div>
