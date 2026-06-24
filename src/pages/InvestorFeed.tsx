@@ -6,6 +6,7 @@ import { SEO } from '../components/SEO';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { Users, MapPin, Shield, BadgeCheck, TrendingUp, Clock, Mail, Briefcase, Lock, Star, ChevronRight, AlertCircle } from 'lucide-react';
+import { MessageModal } from '../components/MessageModal';
 
 interface InvestorCard {
   id: string;
@@ -57,7 +58,7 @@ const PLACEHOLDER_INVESTORS: InvestorCard[] = [
   },
 ];
 
-function InvestorCardComponent({ investor, blurred = false }: { investor: InvestorCard; blurred?: boolean }) {
+function InvestorCardComponent({ investor, blurred = false, onContact }: { investor: InvestorCard; blurred?: boolean; onContact?: (investor: InvestorCard) => void }) {
   return (
     <div className={`relative bg-white border border-gray-200 rounded-xl p-6 transition-all hover:shadow-md ${blurred ? 'select-none' : ''}`}>
       {blurred && (
@@ -136,13 +137,14 @@ function InvestorCardComponent({ investor, blurred = false }: { investor: Invest
 
       {!blurred && (
         <div className="mt-4 pt-4 border-t border-gray-200">
-          <a
-            href={`mailto:${investor.email}`}
+          <button
+            type="button"
+            onClick={() => onContact?.(investor)}
             className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
           >
             <Mail className="h-4 w-4" />
             Contact Investor
-          </a>
+          </button>
         </div>
       )}
     </div>
@@ -157,6 +159,7 @@ export default function InvestorFeed() {
   const [syndicator, setSyndicator] = useState<any>(null);
   const [isSyndicator, setIsSyndicator] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [contactInvestor, setContactInvestor] = useState<InvestorCard | null>(null);
 
   // Hard ceiling — never spin longer than 5 seconds
   useEffect(() => {
@@ -349,7 +352,7 @@ export default function InvestorFeed() {
           investors.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {investors.map((investor) => (
-                <InvestorCardComponent key={investor.id} investor={investor} />
+                <InvestorCardComponent key={investor.id} investor={investor} onContact={setContactInvestor} />
               ))}
             </div>
           ) : (
@@ -412,6 +415,15 @@ export default function InvestorFeed() {
           </div>
         )}
       </div>
+
+      {contactInvestor && (
+        <MessageModal
+          receiverId={contactInvestor.id}
+          syndicatorName={contactInvestor.full_name}
+          syndicatorEmail={contactInvestor.email || undefined}
+          onClose={() => setContactInvestor(null)}
+        />
+      )}
 
       <Footer />
     </div>
