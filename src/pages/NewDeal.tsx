@@ -10,7 +10,8 @@ import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 
 export function NewDeal() {
-  const { user } = useAuthStore();
+  const { user, isAdmin } = useAuthStore();
+  const adminMode = isAdmin();
   const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
   const [syndicatorId, setSyndicatorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +49,7 @@ export function NewDeal() {
     checkVerification();
   }, [user]);
 
-  const isVerified = verificationStatus && ['verified', 'featured', 'premium', 'premier'].includes(verificationStatus);
+  const isVerified = adminMode || (verificationStatus && ['verified', 'featured', 'premium', 'premier'].includes(verificationStatus));
 
   if (loading) {
     return (
@@ -61,8 +62,10 @@ export function NewDeal() {
     );
   }
 
-  // No syndicator profile — need to create one first
-  if (!hasSyndicator) {
+  // No syndicator profile — need to create one first.
+  // Admins are exempt: they post deals on behalf of other syndicators and
+  // don't need to own a syndicator profile themselves.
+  if (!hasSyndicator && !adminMode) {
     return (
       <div className="min-h-screen bg-gray-950">
         <Navbar />

@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ChevronLeft, ChevronRight, Check, Save, X, AlertCircle, 
   Sparkles, Building, MapPin, DollarSign, FileText, Camera, 
-  CheckCircle, Loader2, Plus, Trash2, Play, Video, Youtube, Eye
+  CheckCircle, Loader2, Plus, Trash2, Play, Video, Youtube, Eye,
+  Shield, Search
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
@@ -19,13 +20,15 @@ import {
 } from './types';
 
 export function PropertyListingWizard() {
-  const { user, profile } = useAuthStore();
+  const { user, profile, isAdmin } = useAuthStore();
+  const adminMode = isAdmin();
   const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PropertyFormData>(initialFormData);
   const [userSyndicators, setUserSyndicators] = useState<any[]>([]);
   const [loadingSyndicators, setLoadingSyndicators] = useState(true);
+  const [syndicatorSearch, setSyndicatorSearch] = useState('');
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -63,16 +66,26 @@ export function PropertyListingWizard() {
       if (!user) return;
       
       try {
-        const { data, error } = await supabase
+        // Admins can post a deal on behalf of ANY syndicator (so they can onboard
+        // deals for clients without logging into the client's account). Everyone
+        // else only sees the syndicator profiles they own.
+        let query = supabase
           .from('syndicators')
-          .select('id, company_name, verification_status')
-          .eq('claimed_by', user.id)
-          .order('created_at', { ascending: false });
+          .select('id, company_name, verification_status');
+
+        if (adminMode) {
+          query = query.order('company_name', { ascending: true });
+        } else {
+          query = query.eq('claimed_by', user.id).order('created_at', { ascending: false });
+        }
+
+        const { data, error } = await query;
 
         if (error) throw error;
         
         setUserSyndicators(data || []);
-        if (data && data.length > 0 && !formData.syndicatorId) {
+        // Auto-select only for non-admins (admin must consciously pick the owner).
+        if (!adminMode && data && data.length > 0 && !formData.syndicatorId) {
           setFormData(prev => ({ ...prev, syndicatorId: data[0].id }));
         }
       } catch (error) {
@@ -638,8 +651,28 @@ export function PropertyListingWizard() {
                     {/* Syndicator Selection */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Select Your Syndicator Profile
+                        {adminMode ? 'Post Deal On Behalf Of (Syndicator)' : 'Select Your Syndicator Profile'}
                       </label>
+                      {adminMode && (
+                        <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-2">
+                          <Shield className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-blue-800">
+                            <strong>Admin mode:</strong> choose the syndicator this deal belongs to. The deal will be posted and owned by that syndicator — you do not need to log in as them.
+                          </p>
+                        </div>
+                      )}
+                      {adminMode && !loadingSyndicators && userSyndicators.length > 0 && (
+                        <div className="mb-3 relative">
+                          <Search className="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <input
+                            type="text"
+                            value={syndicatorSearch}
+                            onChange={(e) => setSyndicatorSearch(e.target.value)}
+                            placeholder="Search syndicators by company name..."
+                            className="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-blue-500"
+                          />
+                        </div>
+                      )}
                       {loadingSyndicators ? (
                         <div className="animate-pulse h-12 bg-gray-100 rounded-xl" />
                       ) : userSyndicators.length === 0 ? (
@@ -733,8 +766,14 @@ export function PropertyListingWizard() {
                           )}
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 gap-3">
-                          {userSyndicators.map((syndicator) => (
+                        <div className={`grid grid-cols-1 gap-3 ${adminMode ? 'max-h-80 overflow-y-auto pr-1' : ''}`}>
+                          {userSyndicators
+                            .filter((s) =>
+                              !adminMode || !syndicatorSearch.trim()
+                                ? true
+                                : (s.company_name || '').toLowerCase().includes(syndicatorSearch.trim().toLowerCase())
+                            )
+                            .map((syndicator) => (
                             <label
                               key={syndicator.id}
                               className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
