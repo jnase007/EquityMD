@@ -32,9 +32,15 @@ interface Deal {
   status: string;
   cover_image_url: string;
   created_at: string;
+  syndicator_id: string;
   syndicator: {
     company_name: string;
   };
+}
+
+interface SyndicatorOption {
+  id: string;
+  company_name: string;
 }
 
 export function PropertyManagement() {
@@ -46,10 +52,24 @@ export function PropertyManagement() {
   );
   const [editingDeal, setEditingDeal] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<Deal>>({});
+  const [syndicators, setSyndicators] = useState<SyndicatorOption[]>([]);
 
   useEffect(() => {
     fetchDeals();
+    fetchSyndicators();
   }, []);
+
+  async function fetchSyndicators() {
+    const { data, error } = await supabase
+      .from("syndicators")
+      .select("id, company_name")
+      .order("company_name", { ascending: true });
+    if (error) {
+      console.error("Error fetching syndicators:", error);
+      return;
+    }
+    setSyndicators(data || []);
+  }
 
   async function fetchDeals() {
     setLoading(true);
@@ -58,7 +78,7 @@ export function PropertyManagement() {
       syndicator:syndicator_id (
         company_name
       )
-    `);
+    `).order("created_at", { ascending: false });
 
     if (error) throw error;
 
@@ -132,7 +152,8 @@ export function PropertyManagement() {
       minimum_investment: deal.minimum_investment,
       target_irr: deal.target_irr,
       investment_term: deal.investment_term,
-      cover_image_url: deal.cover_image_url
+      cover_image_url: deal.cover_image_url,
+      syndicator_id: deal.syndicator_id,
     });
   };
 
@@ -150,12 +171,26 @@ export function PropertyManagement() {
 
       if (error) throw error;
 
+      // If the syndicator was reassigned, reflect the new company name in the row.
+      const newSyndicator = editForm.syndicator_id
+        ? syndicators.find((s) => s.id === editForm.syndicator_id)
+        : undefined;
+
       setDeals(
-        deals.map((deal) => 
-          deal.id === dealId ? { ...deal, ...editForm } : deal
+        deals.map((deal) =>
+          deal.id === dealId
+            ? {
+                ...deal,
+                ...editForm,
+                syndicator: newSyndicator
+                  ? { company_name: newSyndicator.company_name }
+                  : deal.syndicator,
+              }
+            : deal
         )
       );
-      
+
+      toast.success("Deal updated" + (newSyndicator ? ` — assigned to ${newSyndicator.company_name}` : ""));
       setEditingDeal(null);
       setEditForm({});
     } catch (error) {
@@ -309,10 +344,25 @@ export function PropertyManagement() {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
-                    {deal.syndicator?.company_name}
-                  </div>
-                  <div className="text-sm text-gray-500">
+                  {editingDeal === deal.id ? (
+                    <select
+                      value={editForm.syndicator_id || ""}
+                      onChange={(e) => setEditForm({ ...editForm, syndicator_id: e.target.value })}
+                      className="w-full px-2 py-1 border-2 border-blue-300 rounded text-sm font-medium text-gray-900 bg-blue-50"
+                      title="Assign this deal to a syndicator"
+                    >
+                      {syndicators.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.company_name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="text-sm text-gray-900">
+                      {deal.syndicator?.company_name}
+                    </div>
+                  )}
+                  <div className="text-sm text-gray-500 mt-1">
                     {editingDeal === deal.id ? (
                       <select
                         value={editForm.property_type || ""}
