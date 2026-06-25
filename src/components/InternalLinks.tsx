@@ -194,7 +194,7 @@ export function CTABanner({ variant, className = "" }: CTABannerProps) {
         </h3>
         <p className="text-emerald-100 mb-6 max-w-xl mx-auto">
           List your deals on EquityMD and reach 7,400+ accredited investors. 
-          Free until June 2026!
+          Free until December 2026!
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

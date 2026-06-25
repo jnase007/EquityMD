@@ -11,8 +11,8 @@ import { useTheme } from '../contexts/ThemeContext';
 // FAQ data for schema markup and display
 const pricingFaqs = [
   {
-    question: "Is it really free until June 2026?",
-    answer: "Yes! We're waiving all listing fees for Starter and Pro plans until June 2026 as a launch promotion to help syndicators get started on our platform. No credit card required, no hidden fees. Just sign up and start listing your deals to reach 7,400+ accredited investors.",
+    question: "Is it really free until December 2026?",
+    answer: "Yes! We're waiving all listing fees for Starter and Pro plans until December 2026 as a launch promotion to help syndicators get started on our platform. No credit card required, no hidden fees. Just sign up and start listing your deals to reach 7,400+ accredited investors.",
     highlighted: true
   },
   {
@@ -29,7 +29,7 @@ const pricingFaqs = [
   },
   {
     question: "How much does it cost to list a real estate syndication?",
-    answer: "Our Single Deal plan is $499/month for one active listing. Multi-Deal is $749/month for 2-3 deals. Premium pricing is custom. During our launch promotion, all listing fees are waived until June 2026!"
+    answer: "Our Single Deal plan is $499/month for one active listing. Multi-Deal is $749/month for 2-3 deals. Premium pricing is custom. During our launch promotion, all listing fees are waived until December 2026!"
   },
   {
     question: "What types of real estate can I list on EquityMD?",
@@ -163,7 +163,7 @@ export function Pricing() {
             <span className="font-bold text-lg">🎉 Launch Promotion!</span>
           </div>
           <span className="text-emerald-50">
-            All listing fees waived until <strong>June 2026</strong> — Start listing for FREE!
+            All listing fees waived until <strong>December 2026</strong> — Start listing for FREE!
           </span>
           <Gift className="h-5 w-5 text-yellow-200 hidden sm:block" />
         </div>
@@ -178,14 +178,14 @@ export function Pricing() {
         <div className="max-w-4xl mx-auto text-center px-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/90 backdrop-blur rounded-full mb-6 animate-pulse">
             <Gift className="h-4 w-4 text-white" />
-            <span className="text-sm font-bold">FREE Until June 2026</span>
+            <span className="text-sm font-bold">FREE Until December 2026</span>
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             List Your Deals for Free
           </h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            We're waiving all listing fees until June 2026 to help syndicators get started. Join now and reach 7,400+ accredited investors!
+            We're waiving all listing fees until December 2026 to help syndicators get started. Join now and reach 7,400+ accredited investors!
           </p>
 
           {/* Billing Toggle */}
@@ -289,7 +289,7 @@ export function Pricing() {
                           </div>
                         </div>
                         <div className={`text-sm mt-2 ${tier.popular ? 'text-emerald-200' : 'text-emerald-600'} font-medium`}>
-                          Until June 2026
+                          Until December 2026
                         </div>
                         <div className={`text-xs mt-1 ${tier.popular ? 'text-blue-200' : 'text-gray-500'}`}>
                           Then {formatPrice(perMonth)}/month

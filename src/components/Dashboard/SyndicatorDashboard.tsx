@@ -478,7 +478,7 @@ export function SyndicatorDashboard() {
             <span className="font-bold text-lg">Launch Promotion!</span>
           </div>
           <span className="text-emerald-50">
-            All listing fees waived until <strong>June 2026</strong> — Start listing for FREE!
+            All listing fees waived until <strong>December 2026</strong> — Start listing for FREE!
           </span>
           <span className="text-2xl hidden sm:block">🎁</span>
         </div>
