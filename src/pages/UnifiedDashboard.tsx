@@ -76,6 +76,10 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   // Admin-only: deals others submitted that are awaiting review
   const [pendingDeals, setPendingDeals] = useState<any[]>([]);
   const [pendingLoading, setPendingLoading] = useState(false);
+  // Admin-only: recent interest (who's eyeing my created deals)
+  const [recentInterest, setRecentInterest] = useState<any[]>([]);
+  const [showAllSignups, setShowAllSignups] = useState(false);
+  const [actioningDeal, setActioningDeal] = useState<string | null>(null);
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileTimeout, setProfileTimeout] = useState(false);
@@ -142,8 +146,61 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           setPendingLoading(false);
         }
       })();
+
+      // Recent interest on MY created deals (investment requests)
+      (async () => {
+        try {
+          // First get my deal ids
+          const { data: myDeals } = await supabase
+            .from('deals')
+            .select('id, title, slug')
+            .eq('created_by', user.id);
+          const dealMap = new Map((myDeals || []).map((d: any) => [d.id, d]));
+          const dealIds = (myDeals || []).map((d: any) => d.id);
+          if (dealIds.length === 0) { setRecentInterest([]); return; }
+          const { data: reqs } = await supabase
+            .from('investment_requests')
+            .select('id, deal_id, user_id, amount, status, created_at')
+            .in('deal_id', dealIds)
+            .order('created_at', { ascending: false })
+            .limit(10);
+          // hydrate investor names
+          const userIds = [...new Set((reqs || []).map((r: any) => r.user_id))];
+          const { data: profs } = userIds.length
+            ? await supabase.from('profiles').select('id, full_name, email').in('id', userIds)
+            : { data: [] as any[] };
+          const profMap = new Map((profs || []).map((p: any) => [p.id, p]));
+          setRecentInterest((reqs || []).map((r: any) => ({
+            ...r,
+            deal: dealMap.get(r.deal_id),
+            investor: profMap.get(r.user_id),
+          })));
+        } catch (e) {
+          console.error('Error fetching recent interest:', e);
+        }
+      })();
     }
   }, [user, adminMode]);
+
+  // Inline approve/reject for pending deals
+  async function handleDealAction(dealId: string, action: 'approved' | 'rejected') {
+    setActioningDeal(dealId);
+    try {
+      await supabase
+        .from('deals')
+        .update({
+          approval_status: action,
+          approved_by: user?.id,
+          approved_at: new Date().toISOString(),
+        })
+        .eq('id', dealId);
+      setPendingDeals((prev) => prev.filter((d) => d.id !== dealId));
+    } catch (e) {
+      console.error('Error updating deal approval:', e);
+    } finally {
+      setActioningDeal(null);
+    }
+  }
 
   // Auto-refresh session when user returns to tab (prevents "session expired" on idle)
   useEffect(() => {
@@ -569,6 +626,23 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           </div>
         </div>
 
+        {/* Admin: Needs You summary bar */}
+        {adminMode && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {[
+              { label: 'Pending Review', value: pendingDeals.length, accent: 'text-amber-600', bg: 'bg-amber-50', ring: 'border-amber-200' },
+              { label: 'Recent Interest', value: recentInterest.length, accent: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'border-emerald-200' },
+              { label: 'My Deals', value: adminDeals.length, accent: 'text-blue-600', bg: 'bg-blue-50', ring: 'border-blue-200' },
+              { label: 'New Signups', value: recentSignups.length, accent: 'text-purple-600', bg: 'bg-purple-50', ring: 'border-purple-200' },
+            ].map((t) => (
+              <div key={t.label} className={`${t.bg} border ${t.ring} rounded-2xl p-5`}>
+                <div className={`text-3xl font-bold ${t.accent}`}>{t.value}</div>
+                <div className="text-sm text-gray-600 mt-1">{t.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Admin: Pending Deals to Review */}
         {adminMode && (
           <div className="bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden mb-8">
@@ -611,7 +685,23 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
                             {deal.created_at ? new Date(deal.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <Link to="/admin" className="inline-flex items-center px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-xs font-semibold">Review</Link>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => handleDealAction(deal.id, 'approved')}
+                                disabled={actioningDeal === deal.id}
+                                className="inline-flex items-center px-3 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-xs font-semibold disabled:opacity-50"
+                              >
+                                {actioningDeal === deal.id ? '…' : 'Approve'}
+                              </button>
+                              <button
+                                onClick={() => handleDealAction(deal.id, 'rejected')}
+                                disabled={actioningDeal === deal.id}
+                                className="inline-flex items-center px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-xs font-semibold disabled:opacity-50"
+                              >
+                                Reject
+                              </button>
+                              <Link to={`/deals/${deal.slug || ''}`} className="text-blue-600 hover:text-blue-800 text-xs font-medium">View</Link>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -700,6 +790,39 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           </div>
         )}
 
+        {/* Admin: Recent Interest (who's eyeing my deals) */}
+        {adminMode && recentInterest.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden mb-8">
+            <div className="px-6 py-5 border-b border-gray-100 bg-emerald-50/40">
+              <h2 className="text-xl font-bold text-gray-900">Recent Interest</h2>
+              <p className="text-gray-500 text-sm">People expressing interest in deals you created — give your syndicator a heads-up</p>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {recentInterest.map((r) => (
+                <div key={r.id} className="px-6 py-4 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-gray-900 truncate">
+                      {r.investor?.full_name || 'Someone'} · <span className="text-emerald-700">{r.deal?.title || 'a deal'}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {r.amount ? `$${Number(r.amount).toLocaleString()} interest` : 'Expressed interest'}
+                      {r.created_at ? ` · ${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    {r.investor?.email && (
+                      <a href={`mailto:${r.investor.email}`} className="text-sm text-blue-600 hover:text-blue-800">Email</a>
+                    )}
+                    {r.deal?.slug && (
+                      <Link to={`/deals/${r.deal.slug}`} className="text-sm text-gray-600 hover:text-gray-900">View deal</Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Admin: Recent Signups */}
         {adminMode && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
@@ -726,10 +849,12 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {recentSignups.map((u) => (
+                    {(showAllSignups ? recentSignups : recentSignups.slice(0, 5)).map((u) => (
                       <tr key={u.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{u.full_name || '—'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{u.email || '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {u.email ? <a href={`mailto:${u.email}`} className="text-blue-600 hover:text-blue-800">{u.email}</a> : '—'}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             u.user_type === 'syndicator' ? 'bg-purple-100 text-purple-800' :
@@ -746,6 +871,14 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
                     ))}
                   </tbody>
                 </table>
+                {recentSignups.length > 5 && (
+                  <button
+                    onClick={() => setShowAllSignups((s) => !s)}
+                    className="w-full py-3 text-sm font-medium text-blue-600 hover:bg-gray-50 border-t border-gray-100 transition"
+                  >
+                    {showAllSignups ? 'Show less' : `View all ${recentSignups.length} signups →`}
+                  </button>
+                )}
               </div>
             )}
           </div>
