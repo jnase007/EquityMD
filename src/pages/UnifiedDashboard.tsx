@@ -73,6 +73,9 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   // Admin-only: newest signups to the site
   const [recentSignups, setRecentSignups] = useState<any[]>([]);
   const [signupsLoading, setSignupsLoading] = useState(false);
+  // Admin-only: deals others submitted that are awaiting review
+  const [pendingDeals, setPendingDeals] = useState<any[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileTimeout, setProfileTimeout] = useState(false);
@@ -119,6 +122,24 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           console.error('Error fetching recent signups:', e);
         } finally {
           setSignupsLoading(false);
+        }
+      })();
+
+      // Pending deals awaiting review
+      (async () => {
+        try {
+          setPendingLoading(true);
+          const { data, error } = await supabase
+            .from('deals')
+            .select(`id, title, slug, location, created_at, approval_status, syndicator:syndicator_id ( company_name )`)
+            .eq('approval_status', 'pending')
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          setPendingDeals(data || []);
+        } catch (e) {
+          console.error('Error fetching pending deals:', e);
+        } finally {
+          setPendingLoading(false);
         }
       })();
     }
@@ -547,6 +568,60 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
             </div>
           </div>
         </div>
+
+        {/* Admin: Pending Deals to Review */}
+        {adminMode && (
+          <div className="bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden mb-8">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-amber-50/40">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Pending Deals to Review</h2>
+                <p className="text-gray-500 text-sm">Deals submitted by syndicators awaiting your approval</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className={`text-sm font-bold px-3 py-1 rounded-full ${pendingDeals.length > 0 ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-500'}`}>
+                  {pendingLoading ? 'Loading…' : `${pendingDeals.length} pending`}
+                </span>
+                <Link to="/admin" className="text-sm font-medium text-blue-600 hover:text-blue-800">Review queue →</Link>
+              </div>
+            </div>
+            {pendingDeals.length === 0 && !pendingLoading ? (
+              <div className="p-8 text-center text-sm text-gray-500">Nothing waiting — no deals pending review. 🎉</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deal</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Syndicator</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {pendingDeals.map((deal) => {
+                      const dealSlug = deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                      return (
+                        <tr key={deal.id} className="bg-amber-50/20">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">{deal.title}</div>
+                            <div className="text-sm text-gray-500">{deal.location}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{deal.syndicator?.company_name || '—'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {deal.created_at ? new Date(deal.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <Link to="/admin" className="inline-flex items-center px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition text-xs font-semibold">Review</Link>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Admin: Connected Deals — deals posted on behalf of syndicators (shown on either view) */}
         {adminMode && (
