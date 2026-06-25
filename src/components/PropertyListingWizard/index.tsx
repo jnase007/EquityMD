@@ -407,6 +407,7 @@ export function PropertyListingWizard() {
         equity_multiple: formData.equityMultiple ? parseFloat(formData.equityMultiple) : null,
         closing_date: formData.closingDate ? new Date(formData.closingDate).toISOString() : null,
         status: finalStatus,
+        created_by: user.id, // who actually created the deal (admin or syndicator owner)
         cover_image_url: null
       };
       

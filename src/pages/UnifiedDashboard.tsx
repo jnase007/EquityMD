@@ -79,7 +79,9 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Admin: load all connected deals (posted on behalf of syndicators)
+  // Admin: load deals THIS admin personally created (incl. ones posted on behalf
+  // of syndicators). Scoped to created_by = me, so deals other people created
+  // for other syndicators do NOT appear here.
   useEffect(() => {
     if (user && adminMode) {
       (async () => {
@@ -87,12 +89,13 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           setAdminDealsLoading(true);
           const { data, error } = await supabase
             .from('deals')
-            .select(`id, title, location, status, total_equity, cover_image_url, slug, created_at, syndicator:syndicator_id ( company_name )`)
+            .select(`id, title, location, status, total_equity, cover_image_url, slug, created_at, created_by, syndicator:syndicator_id ( company_name )`)
+            .eq('created_by', user.id)
             .order('created_at', { ascending: false });
           if (error) throw error;
           setAdminDeals(data || []);
         } catch (e) {
-          console.error('Error fetching admin connected deals:', e);
+          console.error('Error fetching admin created deals:', e);
         } finally {
           setAdminDealsLoading(false);
         }
@@ -529,8 +532,8 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Connected Deals</h2>
-                <p className="text-gray-500 text-sm">Deals you posted on behalf of syndicators (admin)</p>
+                <h2 className="text-xl font-bold text-gray-900">My Created Deals</h2>
+                <p className="text-gray-500 text-sm">Deals you created — including ones connected to a syndicator</p>
               </div>
               <span className="text-sm font-medium text-gray-500">
                 {adminDealsLoading ? 'Loading…' : `${adminDeals.length} deal${adminDeals.length !== 1 ? 's' : ''}`}
@@ -538,7 +541,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
             </div>
             {adminDeals.length === 0 && !adminDealsLoading ? (
               <div className="p-8 text-center text-sm text-gray-500">
-                No connected deals yet. Use <span className="font-medium">New Deal</span> to post on behalf of a syndicator.
+                You haven't created any deals yet. Use <span className="font-medium">New Deal</span> to create one (you can connect it to any syndicator).
               </div>
             ) : (
               <div className="overflow-x-auto">
