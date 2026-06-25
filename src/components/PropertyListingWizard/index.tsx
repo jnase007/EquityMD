@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ChevronLeft, ChevronRight, Check, Save, X, AlertCircle, 
@@ -26,6 +26,11 @@ export function PropertyListingWizard() {
   
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PropertyFormData>(initialFormData);
+  // Guard so the localStorage draft is restored EXACTLY ONCE on mount.
+  // Without this, the restore effect re-fires whenever the `user` object
+  // reference changes (token refresh / re-render) and clobbers live edits —
+  // and because it resets images to [], it also silently drops uploaded photos.
+  const hasRestoredDraftRef = useRef(false);
   const [userSyndicators, setUserSyndicators] = useState<any[]>([]);
   const [loadingSyndicators, setLoadingSyndicators] = useState(true);
   const [syndicatorSearch, setSyndicatorSearch] = useState('');
@@ -119,9 +124,12 @@ export function PropertyListingWizard() {
     }
   }, [formData, draftId, user]);
 
-  // Load draft on mount
+  // Load draft on mount (ONCE). Guarded by hasRestoredDraftRef so a changing
+  // `user` reference can never re-run this and overwrite live form state.
   useEffect(() => {
     if (!user) return;
+    if (hasRestoredDraftRef.current) return;
+    hasRestoredDraftRef.current = true;
     
     const draftKey = `deal_draft_${user.id}`;
     const savedDraft = localStorage.getItem(draftKey);
