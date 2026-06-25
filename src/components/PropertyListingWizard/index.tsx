@@ -377,8 +377,10 @@ export function PropertyListingWizard() {
         ? `${formData.address.city}, ${formData.address.state}`
         : formData.location;
 
-      // Convert 'active' status to 'pending_review' for moderation
-      const finalStatus = status === 'active' ? 'pending_review' : status;
+      // Publish goes live as 'active' (a valid deal_status enum value).
+      // NOTE: the previous 'pending_review' mapping caused a DB error because
+      // that value does not exist in the public.deal_status enum.
+      const finalStatus = status;
       
       // Create the deal data object
       const dealData: any = {
@@ -445,8 +447,8 @@ export function PropertyListingWizard() {
       // Clear draft from localStorage
       localStorage.removeItem(`deal_draft_${user.id}`);
       
-      // Send admin notification for new deals pending review
-      if (finalStatus === 'pending_review') {
+      // Send admin notification + investor alerts for newly published (active) deals
+      if (finalStatus === 'active') {
         try {
           // Get syndicator info for notification
           const syndicator = userSyndicators.find(s => s.id === formData.syndicatorId);
@@ -523,7 +525,7 @@ export function PropertyListingWizard() {
       }
       
       // Success!
-      toast.success(finalStatus === 'pending_review' ? 'Deal submitted for review! Our team will review it shortly.' : 'Draft saved!');
+      toast.success(finalStatus === 'active' ? 'Deal published! Your listing is now live.' : 'Draft saved!');
       
       // Stop spinner before navigating
       setPublishing(false);
