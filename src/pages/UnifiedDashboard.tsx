@@ -70,6 +70,9 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const navigate = useNavigate();
   const [adminDeals, setAdminDeals] = useState<any[]>([]);
   const [adminDealsLoading, setAdminDealsLoading] = useState(false);
+  // Admin-only: newest signups to the site
+  const [recentSignups, setRecentSignups] = useState<any[]>([]);
+  const [signupsLoading, setSignupsLoading] = useState(false);
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileTimeout, setProfileTimeout] = useState(false);
@@ -98,6 +101,24 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           console.error('Error fetching admin created deals:', e);
         } finally {
           setAdminDealsLoading(false);
+        }
+      })();
+
+      // Recent signups (newest profiles)
+      (async () => {
+        try {
+          setSignupsLoading(true);
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('id, full_name, email, user_type, created_at')
+            .order('created_at', { ascending: false })
+            .limit(25);
+          if (error) throw error;
+          setRecentSignups(data || []);
+        } catch (e) {
+          console.error('Error fetching recent signups:', e);
+        } finally {
+          setSignupsLoading(false);
         }
       })();
     }
@@ -597,6 +618,57 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
                         </tr>
                       );
                     })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Admin: Recent Signups */}
+        {adminMode && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">New Signups</h2>
+                <p className="text-gray-500 text-sm">Newest users to join the site</p>
+              </div>
+              <span className="text-sm font-medium text-gray-500">
+                {signupsLoading ? 'Loading…' : `${recentSignups.length} recent`}
+              </span>
+            </div>
+            {recentSignups.length === 0 && !signupsLoading ? (
+              <div className="p-8 text-center text-sm text-gray-500">No signups yet.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {recentSignups.map((u) => (
+                      <tr key={u.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{u.full_name || '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{u.email || '—'}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            u.user_type === 'syndicator' ? 'bg-purple-100 text-purple-800' :
+                            u.user_type === 'investor' ? 'bg-blue-100 text-blue-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {u.user_type ? u.user_type.charAt(0).toUpperCase() + u.user_type.slice(1) : 'User'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {u.created_at ? new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
