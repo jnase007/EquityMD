@@ -80,6 +80,10 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const [recentInterest, setRecentInterest] = useState<any[]>([]);
   const [showAllSignups, setShowAllSignups] = useState(false);
   const [actioningDeal, setActioningDeal] = useState<string | null>(null);
+  // Admin-only: investor program (paying syndicators + investor signups)
+  const [paidSyndicators, setPaidSyndicators] = useState<any[]>([]);
+  const [investors, setInvestors] = useState<any[]>([]);
+  const [showAllInvestors, setShowAllInvestors] = useState(false);
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileTimeout, setProfileTimeout] = useState(false);
@@ -177,6 +181,31 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           })));
         } catch (e) {
           console.error('Error fetching recent interest:', e);
+        }
+      })();
+
+      // Investor Program: paying syndicators + investor signups
+      (async () => {
+        try {
+          const { data: subs } = await supabase
+            .from('syndicators')
+            .select('id, company_name, subscription_status, subscribed_at')
+            .eq('subscription_status', 'active')
+            .order('subscribed_at', { ascending: false });
+          setPaidSyndicators(subs || []);
+        } catch (e) {
+          console.error('Error fetching paid syndicators:', e);
+        }
+        try {
+          const { data: invs } = await supabase
+            .from('profiles')
+            .select('id, full_name, email, user_type, created_at')
+            .eq('user_type', 'investor')
+            .order('created_at', { ascending: false })
+            .limit(50);
+          setInvestors(invs || []);
+        } catch (e) {
+          console.error('Error fetching investors:', e);
         }
       })();
     }
@@ -885,6 +914,83 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Admin: Investor Program (paying syndicators + investors) */}
+        {adminMode && (
+          <div id="sec-investor-program" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 scroll-mt-24">
+            <div className="px-6 py-5 border-b border-gray-100">
+              <h2 className="text-xl font-bold text-gray-900">Investor Program</h2>
+              <p className="text-gray-500 text-sm">Paying syndicators + the investors they get access to</p>
+            </div>
+
+            {/* Paying syndicators */}
+            <div className="px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Paying Syndicators</h3>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${paidSyndicators.length > 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
+                  {paidSyndicators.length} active
+                </span>
+              </div>
+              {paidSyndicators.length === 0 ? (
+                <p className="text-sm text-gray-500">No active subscriptions yet.</p>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {paidSyndicators.map((s) => (
+                    <span key={s.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg text-sm text-gray-800">
+                      {s.company_name}
+                      {s.subscribed_at && (
+                        <span className="text-xs text-gray-400">since {new Date(s.subscribed_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Investors */}
+            <div className="px-6 py-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Investors ({investors.length})</h3>
+              </div>
+              {investors.length === 0 ? (
+                <p className="text-sm text-gray-500">No investors yet.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {(showAllInvestors ? investors : investors.slice(0, 5)).map((u) => (
+                        <tr key={u.id}>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{u.full_name || '—'}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            {u.email ? <a href={`mailto:${u.email}`} className="text-blue-600 hover:text-blue-800">{u.email}</a> : '—'}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                            {u.created_at ? new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {investors.length > 5 && (
+                    <button
+                      onClick={() => setShowAllInvestors((s) => !s)}
+                      className="w-full py-3 text-sm font-medium text-blue-600 hover:bg-gray-50 border-t border-gray-100 transition"
+                    >
+                      {showAllInvestors ? 'Show less' : `View all ${investors.length} investors →`}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
