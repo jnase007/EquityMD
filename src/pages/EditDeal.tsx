@@ -130,7 +130,7 @@ interface NewImage {
 
 export function EditDeal() {
   const { slug } = useParams();
-  const { user } = useAuthStore();
+  const { user, isAdmin } = useAuthStore();
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
@@ -189,8 +189,14 @@ export function EditDeal() {
 
       if (error) throw error;
 
-      // Check if user owns this deal through their syndicator
-      if (data.syndicator?.claimed_by !== user?.id) {
+      // Allow editing if: platform admin, OR the syndicator owner, OR the
+      // user who created the deal (admins create deals on behalf of syndicators
+      // they don't own, so claimed_by alone is too strict).
+      const canEdit =
+        isAdmin() ||
+        data.syndicator?.claimed_by === user?.id ||
+        data.created_by === user?.id;
+      if (!canEdit) {
         toast.error('You do not have permission to edit this deal');
         navigate('/dashboard');
         return;
