@@ -19,8 +19,16 @@ import { supabase } from '../lib/supabase';
 import type { Deal, Syndicator } from '../types/database';
 
 export function Dashboard() {
-  const { user, profile } = useAuthStore();
+  const { user, profile, isAdmin } = useAuthStore();
+  const adminMode = isAdmin();
   const [deals, setDeals] = useState<Deal[]>([]);
+  // Admin-only: deals this admin helped post on behalf of syndicators.
+  // There is no created_by column on deals, so for an admin "connected deals"
+  // = every deal (each labeled with its syndicator). This surfaces on-behalf
+  // deals (e.g. Sutera/Crossings) that otherwise only live under the
+  // syndicator's own dashboard.
+  const [adminDeals, setAdminDeals] = useState<any[]>([]);
+  const [adminDealsLoading, setAdminDealsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -49,6 +57,13 @@ export function Dashboard() {
       fetchCreditInfo();
     }
   }, [user]);
+
+  // Admin: load all connected deals (posted on behalf of syndicators)
+  useEffect(() => {
+    if (user && adminMode) {
+      fetchAdminDeals();
+    }
+  }, [user, adminMode]);
 
   useEffect(() => {
     if (user) {
@@ -119,6 +134,25 @@ export function Dashboard() {
       setUserSyndicators([]);
     } finally {
       setSyndicatorsLoading(false);
+    }
+  }
+
+  async function fetchAdminDeals() {
+    try {
+      setAdminDealsLoading(true);
+      const { data, error } = await supabase
+        .from('deals')
+        .select(`
+          id, title, location, status, total_equity, cover_image_url, slug, created_at,
+          syndicator:syndicator_id ( company_name )
+        `)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setAdminDeals(data || []);
+    } catch (error) {
+      console.error('Error fetching admin connected deals:', error);
+    } finally {
+      setAdminDealsLoading(false);
     }
   }
 
@@ -500,8 +534,10 @@ export function Dashboard() {
     );
   }
 
-  // Show message if user has no syndicators created yet
-  if (!syndicatorsLoading && userSyndicators.length === 0) {
+  // Show message if user has no syndicators created yet.
+  // Admins skip this so they can see their Connected Deals (posted on behalf
+  // of syndicators) even without their own syndicator profile.
+  if (!syndicatorsLoading && userSyndicators.length === 0 && !adminMode) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navbar />
@@ -581,7 +617,7 @@ export function Dashboard() {
               <Share2 className="h-5 w-5 mr-2" />
               Refer Friends
             </button> */}
-            {userSyndicators.length > 0 && (
+            {(userSyndicators.length > 0 || adminMode) && (
               <>
                 {/* <button
                   onClick={() => setShowPurchaseModal(true)}
@@ -681,6 +717,93 @@ export function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Admin: Connected Deals — deals you posted on behalf of syndicators */}
+        {adminMode && (
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
+            <div className="px-6 py-4 border-b flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-800">Connected Deals</h2>
+                <p className="text-sm text-gray-500">Deals you posted on behalf of syndicators</p>
+              </div>
+              <span className="text-xs font-medium text-gray-500">
+                {adminDealsLoading ? 'Loading…' : `${adminDeals.length} deal${adminDeals.length === 1 ? '' : 's'}`}
+              </span>
+            </div>
+            {adminDeals.length === 0 && !adminDealsLoading ? (
+              <div className="px-6 py-8 text-center text-sm text-gray-500">
+                No connected deals yet. Use <span className="font-medium">New Deal</span> to post on behalf of a syndicator.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deal</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Syndicator</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Raise</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {adminDeals.map((deal) => {
+                      const dealSlug = deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                      return (
+                        <tr key={deal.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Link to={`/deals/${dealSlug}`} className="flex items-center group">
+                              <div className="h-10 w-10 flex-shrink-0">
+                                <img
+                                  className="h-10 w-10 rounded-lg object-cover"
+                                  src={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
+                                  alt={deal.title}
+                                />
+                              </div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600">{deal.title}</div>
+                                <div className="text-sm text-gray-500">{deal.location}</div>
+                              </div>
+                            </Link>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            {deal.syndicator?.company_name || '—'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              deal.status === 'active' ? 'bg-green-100 text-green-800' :
+                              deal.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${Number(deal.total_equity || 0).toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-3">
+                              <Tooltip content="View deal details">
+                                <Link to={`/deals/${dealSlug}`} className="text-blue-600 hover:text-blue-900">
+                                  <Eye className="h-5 w-5" />
+                                </Link>
+                              </Tooltip>
+                              <Tooltip content="Edit deal">
+                                <Link to={`/deals/${dealSlug}/edit`} className="text-gray-600 hover:text-blue-900">
+                                  <FileText className="h-5 w-5" />
+                                </Link>
+                              </Tooltip>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Deals Table */}
         {deals.length === 0 && !loading && userSyndicators.length > 0 ? (
