@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
@@ -18,7 +18,9 @@ import {
   Users,
   DollarSign,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  Eye,
+  Edit
 } from 'lucide-react';
 
 // Confetti component for celebration
@@ -63,8 +65,11 @@ interface UnifiedDashboardProps {
 }
 
 export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
-  const { user, profile, setProfile } = useAuthStore();
+  const { user, profile, setProfile, isAdmin } = useAuthStore();
+  const adminMode = isAdmin();
   const navigate = useNavigate();
+  const [adminDeals, setAdminDeals] = useState<any[]>([]);
+  const [adminDealsLoading, setAdminDealsLoading] = useState(false);
   const [hasSyndicators, setHasSyndicators] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileTimeout, setProfileTimeout] = useState(false);
@@ -73,6 +78,27 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Admin: load all connected deals (posted on behalf of syndicators)
+  useEffect(() => {
+    if (user && adminMode) {
+      (async () => {
+        try {
+          setAdminDealsLoading(true);
+          const { data, error } = await supabase
+            .from('deals')
+            .select(`id, title, location, status, total_equity, cover_image_url, slug, created_at, syndicator:syndicator_id ( company_name )`)
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          setAdminDeals(data || []);
+        } catch (e) {
+          console.error('Error fetching admin connected deals:', e);
+        } finally {
+          setAdminDealsLoading(false);
+        }
+      })();
+    }
+  }, [user, adminMode]);
 
   // Auto-refresh session when user returns to tab (prevents "session expired" on idle)
   useEffect(() => {
@@ -497,6 +523,83 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
             </div>
           </div>
         </div>
+
+        {/* Admin: Connected Deals — deals posted on behalf of syndicators (shown on either view) */}
+        {adminMode && (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Connected Deals</h2>
+                <p className="text-gray-500 text-sm">Deals you posted on behalf of syndicators (admin)</p>
+              </div>
+              <span className="text-sm font-medium text-gray-500">
+                {adminDealsLoading ? 'Loading…' : `${adminDeals.length} deal${adminDeals.length !== 1 ? 's' : ''}`}
+              </span>
+            </div>
+            {adminDeals.length === 0 && !adminDealsLoading ? (
+              <div className="p-8 text-center text-sm text-gray-500">
+                No connected deals yet. Use <span className="font-medium">New Deal</span> to post on behalf of a syndicator.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deal</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Syndicator</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target Raise</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {adminDeals.map((deal) => {
+                      const dealSlug = deal.slug || deal.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                      return (
+                        <tr key={deal.id}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Link to={`/deals/${dealSlug}`} className="flex items-center group">
+                              <img
+                                className="h-10 w-10 rounded-lg object-cover flex-shrink-0"
+                                src={deal.cover_image_url || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80'}
+                                alt={deal.title}
+                              />
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600">{deal.title}</div>
+                                <div className="text-sm text-gray-500">{deal.location}</div>
+                              </div>
+                            </Link>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{deal.syndicator?.company_name || '—'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              deal.status === 'active' ? 'bg-green-100 text-green-800' :
+                              deal.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${Number(deal.total_equity || 0).toLocaleString()}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-3">
+                              <Link to={`/deals/${dealSlug}`} className="text-blue-600 hover:text-blue-900" title="View deal">
+                                <Eye className="h-5 w-5" />
+                              </Link>
+                              <Link to={`/deals/${dealSlug}/edit`} className="text-gray-600 hover:text-blue-900" title="Edit deal">
+                                <Edit className="h-5 w-5" />
+                              </Link>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Dashboard Content */}
         <div className={`transition-opacity duration-200 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
