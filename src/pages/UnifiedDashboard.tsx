@@ -630,22 +630,26 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
         {adminMode && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {[
-              { label: 'Pending Review', value: pendingDeals.length, accent: 'text-amber-600', bg: 'bg-amber-50', ring: 'border-amber-200' },
-              { label: 'Recent Interest', value: recentInterest.length, accent: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'border-emerald-200' },
-              { label: 'My Deals', value: adminDeals.length, accent: 'text-blue-600', bg: 'bg-blue-50', ring: 'border-blue-200' },
-              { label: 'New Signups', value: recentSignups.length, accent: 'text-purple-600', bg: 'bg-purple-50', ring: 'border-purple-200' },
+              { label: 'Pending Review', value: pendingDeals.length, accent: 'text-amber-600', bg: 'bg-amber-50', ring: 'border-amber-200', anchor: 'sec-pending' },
+              { label: 'Recent Interest', value: recentInterest.length, accent: 'text-emerald-600', bg: 'bg-emerald-50', ring: 'border-emerald-200', anchor: 'sec-interest' },
+              { label: 'My Deals', value: adminDeals.length, accent: 'text-blue-600', bg: 'bg-blue-50', ring: 'border-blue-200', anchor: 'sec-deals' },
+              { label: 'New Signups', value: recentSignups.length, accent: 'text-purple-600', bg: 'bg-purple-50', ring: 'border-purple-200', anchor: 'sec-signups' },
             ].map((t) => (
-              <div key={t.label} className={`${t.bg} border ${t.ring} rounded-2xl p-5`}>
+              <button
+                key={t.label}
+                onClick={() => document.getElementById(t.anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className={`${t.bg} border ${t.ring} rounded-2xl p-5 text-left hover:shadow-md transition cursor-pointer`}
+              >
                 <div className={`text-3xl font-bold ${t.accent}`}>{t.value}</div>
                 <div className="text-sm text-gray-600 mt-1">{t.label}</div>
-              </div>
+              </button>
             ))}
           </div>
         )}
 
         {/* Admin: Pending Deals to Review */}
         {adminMode && (
-          <div className="bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden mb-8">
+          <div id="sec-pending" className="bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden mb-8 scroll-mt-24">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-amber-50/40">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">Pending Deals to Review</h2>
@@ -715,7 +719,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
 
         {/* Admin: Connected Deals — deals posted on behalf of syndicators (shown on either view) */}
         {adminMode && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+          <div id="sec-deals" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 scroll-mt-24">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">My Created Deals</h2>
@@ -792,7 +796,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
 
         {/* Admin: Recent Interest (who's eyeing my deals) */}
         {adminMode && recentInterest.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden mb-8">
+          <div id="sec-interest" className="bg-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden mb-8 scroll-mt-24">
             <div className="px-6 py-5 border-b border-gray-100 bg-emerald-50/40">
               <h2 className="text-xl font-bold text-gray-900">Recent Interest</h2>
               <p className="text-gray-500 text-sm">People expressing interest in deals you created — give your syndicator a heads-up</p>
@@ -825,7 +829,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
 
         {/* Admin: Recent Signups */}
         {adminMode && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+          <div id="sec-signups" className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 scroll-mt-24">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">New Signups</h2>
