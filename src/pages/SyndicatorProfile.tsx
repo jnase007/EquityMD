@@ -136,15 +136,24 @@ export function SyndicatorProfile() {
 
   async function fetchSyndicatorData() {
     try {
-      // Include unverified syndicators so directory listings work
-      let { data: syndicatorData, error: slugError } = await supabase
+      // Include unverified syndicators so directory listings work.
+      // NOTE: use a LIST query (not .single()) because duplicate slugs can exist
+      // (e.g. an admin-created profile + the real owner's profile sharing a name).
+      // .single() throws on multiple rows -> 404. Instead, prefer the CLAIMED
+      // (owner-backed) row, then the newest, so the profile always resolves.
+      let { data: matches, error: slugError } = await supabase
         .from("syndicators")
         .select()
-        .eq("slug", slug)
-        .single();
+        .eq("slug", slug);
 
       if (slugError) {
         console.error("Error fetching syndicator by slug:", slugError);
+        return;
+      }
+      // Prefer the claimed (owner-backed) row; otherwise the first match.
+      const syndicatorData =
+        (matches || []).find((s: any) => s.claimed_by) || (matches || [])[0] || null;
+      if (!syndicatorData) {
         return;
       }
       setSyndicator(syndicatorData);
