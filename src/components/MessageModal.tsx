@@ -178,6 +178,50 @@ export function MessageModal({
             console.error('Error notifying admin:', adminEmailErr);
           }
         }
+
+        // CC the DEAL CREATOR (e.g. admin who built the deal on behalf of a
+        // syndicator) so they can give their syndicator friend a heads-up that
+        // someone's interested — even when the syndicator profile is claimed.
+        try {
+          if (dealId) {
+            const { data: dealRow } = await supabase
+              .from('deals')
+              .select('created_by')
+              .eq('id', dealId)
+              .maybeSingle();
+            const creatorId = dealRow?.created_by;
+            // Skip if no creator, or creator is the recipient, or creator is the sender
+            if (creatorId && creatorId !== receiverId && creatorId !== user?.id) {
+              const { data: creatorProfile } = await supabase
+                .from('profiles')
+                .select('email, full_name')
+                .eq('id', creatorId)
+                .maybeSingle();
+              if (creatorProfile?.email) {
+                await supabase.functions.invoke('send-email', {
+                  body: {
+                    to: creatorProfile.email,
+                    type: 'new_message',
+                    data: {
+                      senderName: 'EquityMD (FYI)',
+                      senderType: 'system',
+                      messagePreview: `👀 Someone is interested in a deal you created.\n\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nFrom: ${profile?.full_name || 'A user'} (${user?.email})\n${isInvestment ? `Investment interest: ${formatCurrency(investmentAmount)}` : 'Sent a message'}\n\nYou may want to give your syndicator a heads-up to follow up.`,
+                      dealTitle: dealTitle,
+                      dealSlug: dealSlug,
+                      timestamp: new Date().toLocaleString('en-US', {
+                        weekday: 'long', year: 'numeric', month: 'long',
+                        day: 'numeric', hour: '2-digit', minute: '2-digit'
+                      })
+                    }
+                  }
+                });
+                console.log('Creator CC notification sent');
+              }
+            }
+          }
+        } catch (creatorErr) {
+          console.error('Error CCing deal creator:', creatorErr);
+        }
       }
     } catch (error) {
       console.error('Error in sendEmailNotification:', error);
