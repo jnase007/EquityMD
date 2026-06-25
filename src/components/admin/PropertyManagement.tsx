@@ -19,6 +19,7 @@ import {
   Save,
   X,
   AlertCircle,
+  PencilLine,
 } from "lucide-react";
 
 interface Deal {
@@ -32,6 +33,7 @@ interface Deal {
   status: string;
   cover_image_url: string;
   created_at: string;
+  slug?: string;
   syndicator_id: string;
   syndicator: {
     company_name: string;
@@ -498,11 +500,21 @@ export function PropertyManagement() {
                           <button
                             onClick={() => startEdit(deal)}
                             className="text-gray-600 hover:text-blue-900"
-                            title="Edit deal"
+                            title="Quick edit (inline fields)"
                           >
                             <Edit className="h-5 w-5" />
                           </button>
                         )}
+                        <Link
+                          to={`/deals/${(deal.slug || deal.title
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g, "-")
+                            .replace(/(^-|-$)/g, ""))}/edit`}
+                          className="text-gray-600 hover:text-blue-900"
+                          title="Full edit (photos, description, all fields)"
+                        >
+                          <PencilLine className="h-5 w-5" />
+                        </Link>
                         <button
                           onClick={() =>
                             updateDealStatus(
