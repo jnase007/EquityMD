@@ -63,6 +63,27 @@ export function Contact() {
 
       if (submitError) throw submitError;
 
+      // Forward the contact submission to Justin's primary inbox (non-blocking)
+      try {
+        await supabase.functions.invoke('send-email', {
+          body: {
+            to: 'justin@brandastic.com',
+            subject: `📩 New Contact Form: ${formData.subject || formData.type || 'Inquiry'}`,
+            content:
+              `New contact form submission on EquityMD:\n\n` +
+              `Name: ${formData.name}\n` +
+              `Email: ${formData.email}\n` +
+              `Type: ${formData.type}\n` +
+              `Subject: ${formData.subject || '—'}\n\n` +
+              `Message:\n${formData.message}\n\n` +
+              `Reply directly to ${formData.email}.`,
+          },
+        });
+      } catch (notifyErr) {
+        // Don't fail the form if the email notification fails
+        console.error('Contact form email notification failed:', notifyErr);
+      }
+
       setSuccess(true);
       setFormData(prev => ({
         ...prev,
