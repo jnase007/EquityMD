@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, ArrowRight, CheckCircle, Facebook, Linkedin } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export function Footer() {
@@ -109,6 +109,31 @@ export function Footer() {
             <p className="text-xs text-gray-500 mt-2">
               Weekly deals. No spam. Unsubscribe anytime.
             </p>
+          </div>
+
+          {/* Social Links */}
+          <div className="mt-6">
+            <h4 className="text-sm font-semibold text-white mb-3">Follow Us</h4>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://www.facebook.com/profile.php?id=61573998452520"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="EquityMD on Facebook"
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-800 text-gray-300 hover:bg-emerald-600 hover:text-white transition"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/106684116/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="EquityMD on LinkedIn"
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-800 text-gray-300 hover:bg-emerald-600 hover:text-white transition"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
         
