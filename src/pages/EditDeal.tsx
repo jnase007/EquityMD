@@ -294,6 +294,18 @@ export function EditDeal() {
     });
   };
 
+  // Format number with commas for display
+  const formatWithCommas = (value: string): string => {
+    const num = (value ?? '').toString().replace(/[^\d]/g, '');
+    return num ? parseInt(num, 10).toLocaleString('en-US') : '';
+  };
+
+  // Handle currency input change (strip commas, store raw number string)
+  const handleCurrencyChange = (field: keyof DealFormData, value: string) => {
+    const numericValue = value.replace(/[^\d]/g, '');
+    updateFormData({ [field]: numericValue } as Partial<DealFormData>);
+  };
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
     
@@ -1177,9 +1189,10 @@ export function EditDeal() {
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                       <input
-                        type="number"
-                        value={formData.minimumInvestment}
-                        onChange={(e) => updateFormData({ minimumInvestment: e.target.value })}
+                        type="text"
+                        inputMode="numeric"
+                        value={formatWithCommas(formData.minimumInvestment)}
+                        onChange={(e) => handleCurrencyChange('minimumInvestment', e.target.value)}
                         placeholder="50,000"
                         className={`w-full pl-8 pr-4 py-3 border-2 rounded-xl focus:ring-0 focus:border-emerald-500 ${
                           errors.minimumInvestment ? 'border-red-300' : 'border-gray-200'
@@ -1195,9 +1208,10 @@ export function EditDeal() {
                     <div className="relative">
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">$</span>
                       <input
-                        type="number"
-                        value={formData.totalEquity}
-                        onChange={(e) => updateFormData({ totalEquity: e.target.value })}
+                        type="text"
+                        inputMode="numeric"
+                        value={formatWithCommas(formData.totalEquity)}
+                        onChange={(e) => handleCurrencyChange('totalEquity', e.target.value)}
                         placeholder="5,000,000"
                         className="w-full pl-8 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-emerald-500"
                       />
