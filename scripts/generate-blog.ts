@@ -26,9 +26,13 @@ dotenv.config();
 
 const XAI_API_KEY = process.env.XAI_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+// Imagen 4.0 (Google) is the PRIMARY blog-image generator — best quality, clean no-text results.
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.IMAGEN_API_KEY;
 const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
 const XAI_IMAGE_URL = 'https://api.x.ai/v1/images/generations';
 const OPENAI_IMAGE_URL = 'https://api.openai.com/v1/images/generations';
+const IMAGEN_MODEL = 'imagen-4.0-generate-001';
+const IMAGEN_URL = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:predict`;
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
@@ -446,16 +450,71 @@ async function generateGrokImage(title: string, category: string): Promise<strin
 }
 
 // Unified image generation with provider selection
+// Generate AI image using Google Imagen 4.0 (PRIMARY — best quality, clean no-text output)
+async function generateImagenImage(title: string, category: string): Promise<string | null> {
+  if (!GEMINI_API_KEY) {
+    console.log('   ⚠️ GEMINI_API_KEY not set, skipping Imagen');
+    return null;
+  }
+  try {
+    const imagePrompt = getImagePromptForCategory(title, category);
+    console.log('   🖼️ Generating image with Google Imagen 4.0...');
+
+    const response = await fetch(`${IMAGEN_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        instances: [{ prompt: imagePrompt }],
+        parameters: { sampleCount: 1, aspectRatio: '16:9', sampleImageSize: '2K' },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log(`   ⚠️ Imagen API error: ${response.status} - ${errorText.substring(0, 120)}`);
+      return null;
+    }
+
+    const data = await response.json();
+    const b64 = data?.predictions?.[0]?.bytesBase64Encoded;
+    if (!b64) {
+      console.log('   ⚠️ No image bytes in Imagen response');
+      return null;
+    }
+    const buffer = Buffer.from(b64, 'base64');
+
+    const fileName = `blog-${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+    const filePath = `blog-images/${fileName}`;
+    const { error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(filePath, buffer, { contentType: 'image/png', upsert: false });
+    if (uploadError) {
+      console.log(`   ⚠️ Upload error: ${uploadError.message}`);
+      return null;
+    }
+    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(filePath);
+    console.log('   🎨 Imagen 4.0 image generated');
+    return publicUrl;
+  } catch (error: any) {
+    console.log(`   ⚠️ Imagen generation failed: ${error.message}`);
+    return null;
+  }
+}
+
+// Unified generator: Imagen 4.0 PRIMARY → OpenAI/Grok fallback → (stock as last resort upstream)
 async function generateAIImage(title: string, category: string, useOpenAI: boolean = false): Promise<string | null> {
+  // 1) Try Imagen 4.0 first (best quality)
+  const imagen = await generateImagenImage(title, category);
+  if (imagen) return imagen;
+  console.log('   ↪️ Imagen unavailable, falling back...');
+
   if (useOpenAI) {
-    // Try OpenAI first, fall back to Grok if it fails
     const openAIImage = await generateOpenAIImage(title, category);
     if (openAIImage) return openAIImage;
     console.log('   ↪️ Falling back to Grok for image generation...');
     return generateGrokImage(title, category);
-  } else {
-    return generateGrokImage(title, category);
   }
+  return generateGrokImage(title, category);
 }
 
 function generateSlug(title: string, addSuffix: boolean = false): string {
@@ -651,7 +710,8 @@ async function saveBlogPost(content: BlogContent, category: string, topic: strin
 async function main() {
   const args = process.argv.slice(2);
   const publish = args.includes('--publish');
-  const useAIImages = args.includes('--ai-images') || args.includes('--openai-images');
+  // AI images are now ON BY DEFAULT (Imagen 4.0). Use --stock-images to opt out.
+  const useAIImages = !args.includes('--stock-images');
   const useOpenAI = args.includes('--openai-images');
   const countIdx = args.indexOf('--count');
   const count = countIdx !== -1 ? parseInt(args[countIdx + 1]) || 1 : 1;
