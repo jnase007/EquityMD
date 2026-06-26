@@ -202,6 +202,9 @@ export function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="text-gray-500 text-sm text-center">
           © {new Date().getFullYear()} EquityMD. All rights reserved.
+          <span className="block text-xs text-gray-500 mt-1">
+            EquityMD is owned and operated by OC Tech Studio LLC.
+          </span>
         </div>
       </div>
     </footer>
