@@ -108,6 +108,7 @@ import { ExitIntentPopup } from './components/ExitIntentPopup';
 import { FeedbackWedge } from './components/FeedbackWedge';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { consumeOAuthNextPath, clearOAuthNextPath } from './lib/oauthRedirect';
+import { sendWelcomeEmail } from './lib/emailService';
 
 // Minimal loading fallback for Suspense boundaries
 const MinimalLoadingFallback = () => (
@@ -251,6 +252,20 @@ export default function App() {
         }
 
         authLogger.log('Profile created successfully:', newProfile);
+
+        // Fire the welcome email exactly once — this branch only runs when a brand-new
+        // profile is created (covers Google/LinkedIn OAuth + email signups). Best-effort:
+        // never block or fail signup if the email send hiccups.
+        try {
+          await sendWelcomeEmail({
+            userEmail: newProfile.email,
+            userName: newProfile.full_name || newProfile.email?.split('@')[0] || 'there',
+            userType: newProfile.user_type,
+          });
+          authLogger.log('Welcome email triggered for new user:', newProfile.email);
+        } catch (welcomeErr) {
+          authLogger.error('Welcome email failed (non-blocking):', welcomeErr);
+        }
 
         // Create type-specific profile
         if (newProfile.user_type === 'investor') {
