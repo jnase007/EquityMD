@@ -74,7 +74,7 @@ interface DealWithSyndicator extends Deal {
 
 export function DealDetails() {
   const { slug } = useParams();
-  const { user } = useAuthStore();
+  const { user, profile } = useAuthStore();
   const [deal, setDeal] = useState<DealWithSyndicator | null>(null);
   const [files, setFiles] = useState<DealFile[]>([]);
   const [media, setMedia] = useState<DealMedia[]>([]);
@@ -358,6 +358,13 @@ export function DealDetails() {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-");
 
+  // Admins can edit any deal; otherwise only the syndicator who claimed it.
+  const canEditDeal = !!user && (
+    profile?.is_admin === true ||
+    (!!deal.syndicator?.claimed_by && deal.syndicator.claimed_by === user.id)
+  );
+  const isOwner = !!user && deal.syndicator?.claimed_by === user.id;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <SEO
@@ -407,8 +414,8 @@ export function DealDetails() {
             </nav>
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-4xl lg:text-5xl font-bold">{deal.title}</h1>
-              {/* Edit Button - Only visible to deal owner */}
-              {user && deal.syndicator?.claimed_by === user.id && (
+              {/* Edit Button - visible to deal owner or any admin */}
+              {canEditDeal && (
                 <Link
                   to={`/deals/${deal.slug}/edit`}
                   className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur text-white rounded-lg transition-colors text-sm font-medium"
@@ -722,10 +729,10 @@ export function DealDetails() {
               </div>
 
               <div className="space-y-3 mt-6">
-                {/* Owner View - Can't invest in your own deal */}
-                {user && deal.syndicator?.claimed_by === user.id ? (
+                {/* Owner/Admin View - Can't invest in your own deal */}
+                {canEditDeal ? (
                   <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
-                    <div className="text-purple-700 font-medium mb-2">This is your listing</div>
+                    <div className="text-purple-700 font-medium mb-2">{isOwner ? 'This is your listing' : 'Admin: manage this listing'}</div>
                     <Link
                       to={`/deals/${deal.slug}/edit`}
                       className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
