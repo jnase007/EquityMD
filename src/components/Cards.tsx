@@ -81,7 +81,7 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
         </div>
         <div className="p-4 pt-3 flex-grow flex flex-col">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-bold text-gray-900 line-clamp-2 flex-grow group-hover:text-blue-700 transition-colors">{title}</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 flex-grow group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">{title}</h3>
             {verificationStatus && (
               <div className="ml-2 flex-shrink-0">
                 <VerificationBadge status={verificationStatus} size="sm" />
@@ -90,18 +90,18 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
           </div>
           
           {isAuthenticated ? (
-            <div className="grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 mt-auto">
-              <div className="text-center rounded-lg bg-blue-50/60 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-gray-500">Target</p>
-                <p className="font-bold text-blue-700 text-sm">{metrics.target}</p>
+            <div className="grid grid-cols-3 gap-2 border-t border-gray-100 dark:border-white/10 pt-3 mt-auto">
+              <div className="text-center rounded-lg bg-blue-50/60 dark:bg-blue-500/10 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Target</p>
+                <p className="font-bold text-blue-700 dark:text-blue-300 text-sm">{metrics.target}</p>
               </div>
-              <div className="text-center rounded-lg bg-blue-50/60 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-gray-500">Minimum</p>
-                <p className="font-bold text-blue-700 text-sm">{metrics.minimum}</p>
+              <div className="text-center rounded-lg bg-blue-50/60 dark:bg-blue-500/10 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Minimum</p>
+                <p className="font-bold text-blue-700 dark:text-blue-300 text-sm">{metrics.minimum}</p>
               </div>
-              <div className="text-center rounded-lg bg-blue-50/60 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-gray-500">Term</p>
-                <p className="font-bold text-blue-700 text-sm">{metrics.term}</p>
+              <div className="text-center rounded-lg bg-blue-50/60 dark:bg-blue-500/10 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Term</p>
+                <p className="font-bold text-blue-700 dark:text-blue-300 text-sm">{metrics.term}</p>
               </div>
             </div>
           ) : (
