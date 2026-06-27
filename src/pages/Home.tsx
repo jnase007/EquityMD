@@ -181,8 +181,17 @@ export function Home() {
             alt="Modern Apartment Building"
             className="w-full h-full object-cover"
           />
-          {/* Gradient Overlay — lighter in dark mode so hero image shows through */}
-          <div className={`absolute inset-0 bg-gradient-to-b ${isDark ? 'from-slate-900/50 via-slate-900/40 to-slate-900/60' : 'from-slate-900/70 via-slate-900/60 to-slate-900/80'}`} />
+          {/* Gradient Overlay — inline style so dark-mode !important class rules
+              can't override the gradient to solid black (that bug hid the hero
+              image in dark mode). Lighter tint in dark so the photo shows through. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: isDark
+                ? 'linear-gradient(to bottom, rgba(15,23,42,0.50), rgba(15,23,42,0.40), rgba(15,23,42,0.62))'
+                : 'linear-gradient(to bottom, rgba(15,23,42,0.70), rgba(15,23,42,0.60), rgba(15,23,42,0.80))',
+            }}
+          />
           {/* Pattern Overlay */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnptMC00aDR2MmgtNHYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-50"></div>
         </div>
