@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../lib/store';
+import { CountUp } from '../ui/CountUp';
 
 export function InvestorDashboard() {
   const { user, profile } = useAuthStore();
@@ -84,60 +85,64 @@ export function InvestorDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Link 
           to="/favorites"
-          className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all group"
+          className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 hover:border-red-200 transition-all duration-300 group overflow-hidden"
         >
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-red-400 to-rose-500" />
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
               <Heart className="h-5 w-5 text-red-500" />
             </div>
-            <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-red-500 transition-colors" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.favoriteDeals}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.favoriteDeals} duration={1100} /></p>
           <p className="text-sm text-gray-500">Saved Deals</p>
         </Link>
 
         <Link 
           to="/dashboard"
-          className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all group"
+          className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 hover:border-emerald-200 transition-all duration-300 group overflow-hidden"
         >
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-emerald-100 rounded-lg group-hover:bg-emerald-200 transition-colors">
               <Target className="h-5 w-5 text-emerald-500" />
             </div>
-            <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-emerald-500 transition-colors" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.interestedDeals}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.interestedDeals} duration={1100} /></p>
           <p className="text-sm text-gray-500">Interested In</p>
         </Link>
 
         <Link 
           to="/inbox"
-          className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all group relative"
+          className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 hover:border-blue-200 transition-all duration-300 group overflow-hidden"
         >
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-500" />
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
               <MessageSquare className="h-5 w-5 text-blue-500" />
             </div>
             <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.messagesUnread}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.messagesUnread} duration={1100} /></p>
           <p className="text-sm text-gray-500">Unread Messages</p>
           {stats.messagesUnread > 0 && (
-            <span className="absolute top-3 right-3 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+            <span className="absolute top-4 right-4 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
           )}
         </Link>
 
         <Link 
           to="/find"
-          className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition-all group"
+          className="relative bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-0.5 hover:border-purple-200 transition-all duration-300 group overflow-hidden"
         >
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-400 to-fuchsia-500" />
           <div className="flex items-center justify-between mb-3">
             <div className="p-2 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
               <Building2 className="h-5 w-5 text-purple-500" />
             </div>
-            <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-blue-500 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-purple-500 transition-colors" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.activeDeals}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.activeDeals} duration={1100} /></p>
           <p className="text-sm text-gray-500">Active Deals</p>
         </Link>
       </div>

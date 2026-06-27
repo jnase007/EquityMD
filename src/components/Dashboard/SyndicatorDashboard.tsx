@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { compressImageForUpload } from '../../utils/uploadCompression';
+import { CountUp } from '../ui/CountUp';
 import { useAuthStore } from '../../lib/store';
 import { useGamification } from '../Gamification/useGamification';
 import { AchievementsModal } from '../Gamification/AchievementsModal';
@@ -637,34 +638,37 @@ export function SyndicatorDashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+        <div className="relative bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-emerald-100 rounded-lg">
               <Building2 className="h-5 w-5 text-emerald-600" />
             </div>
             <span className="text-gray-500 text-sm">Active Deals</span>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.activeDeals}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.activeDeals} duration={1100} /></p>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+        <div className="relative bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-500" />
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-100 rounded-lg">
               <Users className="h-5 w-5 text-blue-600" />
             </div>
             <span className="text-gray-500 text-sm">Interested</span>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.totalInvestors}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.totalInvestors} duration={1100} /></p>
         </div>
         
-        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+        <div className="relative bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden">
+          <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-orange-400 to-amber-500" />
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-orange-100 rounded-lg">
               <Clock className="h-5 w-5 text-orange-600" />
             </div>
             <span className="text-gray-500 text-sm">Pending</span>
           </div>
-          <p className="text-3xl font-bold text-gray-900">{stats.pendingRequests}</p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums"><CountUp end={stats.pendingRequests} duration={1100} /></p>
         </div>
         
         <Link 
