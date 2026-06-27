@@ -7,6 +7,8 @@ import { Users, Briefcase, Mail, Award, CheckCircle, DollarSign,
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { DealCard, FeatureCard, StatCard, InvestorCard } from '../components/Cards';
+import { CountUp } from '../components/ui/CountUp';
+import { Reveal } from '../components/ui/Reveal';
 import { AuthModal } from '../components/AuthModal';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
@@ -225,20 +227,26 @@ export function Home() {
               </button>
             </div>
             
-            {/* Mini Stats */}
+            {/* Mini Stats — animated count-up */}
             <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white">$43M+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums">
+                  <CountUp end={43} prefix="$" suffix="M+" />
+                </p>
                 <p className="text-white/60 text-sm">Deal Volume</p>
               </div>
               <div className="hidden sm:block w-px h-12 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white">7,400+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums">
+                  <CountUp end={7400} suffix="+" />
+                </p>
                 <p className="text-white/60 text-sm">Investors</p>
               </div>
               <div className="hidden sm:block w-px h-12 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white">295+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white tabular-nums">
+                  <CountUp end={295} suffix="+" />
+                </p>
                 <p className="text-white/60 text-sm">Syndicators</p>
               </div>
             </div>
@@ -264,35 +272,41 @@ export function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-blue-200">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="h-7 w-7 text-white" />
+            <Reveal direction="up" delay={0}>
+              <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 hover:border-blue-200 h-full">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/20">
+                  <ShieldCheck className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Investment Opportunities</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Browse syndication deals from real estate operators across various markets and asset classes.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Investment Opportunities</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Browse syndication deals from real estate operators across various markets and asset classes.
-              </p>
-            </div>
+            </Reveal>
             
-            <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-emerald-200">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Bell className="h-7 w-7 text-white" />
+            <Reveal direction="up" delay={120}>
+              <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 hover:border-emerald-200 h-full">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/20">
+                  <Bell className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">New Deal Alerts</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Get notified when new deals matching your criteria are listed. Never miss an investment opportunity.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">New Deal Alerts</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Get notified when new deals matching your criteria are listed. Never miss an investment opportunity.
-              </p>
-            </div>
+            </Reveal>
             
-            <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:border-purple-200">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Mail className="h-7 w-7 text-white" />
+            <Reveal direction="up" delay={240}>
+              <div className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 hover:border-purple-200 h-full">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/20">
+                  <Mail className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Direct Syndicator Access</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Connect directly with syndicators. No middlemen, no investor fees, just direct communication.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Direct Syndicator Access</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Connect directly with syndicators. No middlemen, no investor fees, just direct communication.
-              </p>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
