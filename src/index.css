@@ -1504,24 +1504,35 @@ html.dark .bg-amber-50,
 html.dark .bg-purple-50,
 html.dark .bg-rose-50,
 html.dark .bg-indigo-50,
+html.dark [class*="bg-indigo-50/"],
+html.dim [class*="bg-indigo-50/"] {
+  background-color: rgba(99, 102, 241, 0.14) !important;
+}
+
 /* opacity-tinted section-header variants (e.g. bg-amber-50/40) — these were
    NOT matched by the exact .bg-amber-50 rules, so they leaked light colors
-   in dark mode (washed-grey banner + low-contrast text). */
+   in dark mode. Keep each color's hue (subtle, dark-friendly tint). */
 html.dark [class*="bg-amber-50/"],
+html.dim [class*="bg-amber-50/"] {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
 html.dark [class*="bg-emerald-50/"],
-html.dark [class*="bg-blue-50/"],
-html.dark [class*="bg-purple-50/"],
-html.dark [class*="bg-rose-50/"],
 html.dark [class*="bg-green-50/"],
-html.dark [class*="bg-indigo-50/"],
-html.dim [class*="bg-amber-50/"],
 html.dim [class*="bg-emerald-50/"],
-html.dim [class*="bg-blue-50/"],
-html.dim [class*="bg-purple-50/"],
-html.dim [class*="bg-rose-50/"],
-html.dim [class*="bg-green-50/"],
-html.dim [class*="bg-indigo-50/"] {
-  background-color: rgba(var(--category-color, 59, 130, 246), 0.15) !important;
+html.dim [class*="bg-green-50/"] {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+html.dark [class*="bg-blue-50/"],
+html.dim [class*="bg-blue-50/"] {
+  background-color: rgba(59, 130, 246, 0.13) !important;
+}
+html.dark [class*="bg-purple-50/"],
+html.dim [class*="bg-purple-50/"] {
+  background-color: rgba(168, 85, 247, 0.13) !important;
+}
+html.dark [class*="bg-rose-50/"],
+html.dim [class*="bg-rose-50/"] {
+  background-color: rgba(244, 63, 94, 0.12) !important;
 }
 
 /* Blog article list items */
