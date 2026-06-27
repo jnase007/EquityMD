@@ -233,8 +233,8 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
   // Check Email / Magic Link Sent State
   if (mode === 'check_email') {
     return createPortal(
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] p-8 text-center" onClick={e => e.stopPropagation()}>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 overflow-y-auto" onClick={onClose}>
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] p-8 text-center max-h-[90vh] overflow-y-auto my-auto" onClick={e => e.stopPropagation()}>
           <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg">
             <Check className="h-8 w-8 text-white" />
           </div>
@@ -254,10 +254,10 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
   // Magic Link State
   if (mode === 'magic_link') {
     return createPortal(
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px]" onClick={e => e.stopPropagation()}>
-          <div className="p-6">
-            <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 overflow-y-auto" onClick={onClose}>
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] max-h-[90vh] overflow-y-auto my-auto" onClick={e => e.stopPropagation()}>
+          <div className="p-6 relative">
+            <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 z-20 flex items-center justify-center h-9 w-9 rounded-full bg-white/90 shadow-md text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition">
               <X className="h-5 w-5" />
             </button>
             
@@ -311,10 +311,10 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
   // Forgot Password State
   if (mode === 'forgot') {
     return createPortal(
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px]" onClick={e => e.stopPropagation()}>
-          <div className="p-6">
-            <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 overflow-y-auto" onClick={onClose}>
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] max-h-[90vh] overflow-y-auto my-auto" onClick={e => e.stopPropagation()}>
+          <div className="p-6 relative">
+            <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 z-20 flex items-center justify-center h-9 w-9 rounded-full bg-white/90 shadow-md text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition">
               <X className="h-5 w-5" />
             </button>
             
@@ -361,10 +361,10 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
   }
 
   return createPortal(
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] relative overflow-hidden" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 overflow-y-auto" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[380px] relative max-h-[90vh] overflow-y-auto my-auto" onClick={e => e.stopPropagation()}>
         {/* Close */}
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10">
+        <button onClick={onClose} aria-label="Close" className="absolute top-3 right-3 z-20 flex items-center justify-center h-9 w-9 rounded-full bg-white/90 shadow-md text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition">
           <X className="h-5 w-5" />
         </button>
 
