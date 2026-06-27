@@ -375,7 +375,7 @@ export function Directory() {
                   {/* Glow effect */}
                   <div className="absolute -inset-1 bg-gradient-to-r from-amber-400 to-orange-400 rounded-2xl opacity-20 group-hover:opacity-30 transition blur"></div>
                   
-                  <div className="relative bg-white rounded-2xl shadow-lg p-6 border border-amber-100 hover:shadow-xl transition">
+                  <div className="relative bg-white rounded-2xl shadow-lg p-6 border border-amber-100 hover:shadow-2xl group-hover:-translate-y-1 transition-all duration-300">
                     {/* Featured Badge */}
                     <div className="absolute top-4 right-4 bg-gradient-to-r from-amber-400 to-orange-400 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
                       <Star className="h-3 w-3" fill="currentColor" />
@@ -387,6 +387,8 @@ export function Directory() {
                         <img
                           src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                           alt={syndicator.company_name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-16 h-16 object-contain rounded-xl border bg-white p-1"
                         />
                       ) : (
@@ -560,13 +562,15 @@ export function Directory() {
               <Link
                 key={syndicator.id}
                 to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 border border-gray-100 group"
+                className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 transition-all duration-300 p-6 border border-gray-100 group"
               >
                 <div className="flex items-center gap-4 mb-4">
                   {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
                     <img
                       src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                       alt={syndicator.company_name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-14 h-14 object-contain rounded-xl"
                     />
                   ) : (
@@ -642,13 +646,15 @@ export function Directory() {
               <Link
                 key={syndicator.id}
                 to={`/syndicators/${syndicator.slug || syndicator.company_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                className="block bg-white rounded-2xl shadow-sm hover:shadow-lg transition p-6 border border-gray-100 group"
+                className="block bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 transition-all duration-300 p-6 border border-gray-100 group"
               >
                 <div className="flex gap-6">
                   {getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url) ? (
                     <img
                       src={getSyndicatorLogo(syndicator.company_name, syndicator.company_logo_url)!}
                       alt={syndicator.company_name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-24 h-24 object-contain rounded-xl flex-shrink-0"
                     />
                   ) : (
