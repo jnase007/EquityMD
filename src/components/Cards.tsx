@@ -82,7 +82,7 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
         </div>
         <div className="p-4 pt-3 flex-grow flex flex-col">
           <div className="flex items-start justify-between mb-3">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 flex-grow group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">{title}</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 flex-grow group-hover:text-blue-800 dark:group-hover:text-blue-200 transition-colors">{title}</h3>
             {verificationStatus && (
               <div className="ml-2 flex-shrink-0">
                 <VerificationBadge status={verificationStatus} size="sm" />
