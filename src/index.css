@@ -1156,9 +1156,11 @@ html.dark {
   background-color: var(--input-bg);
 }
 
-/* Override specific components for dark modes */
-html.dim nav.sticky,
-html.dark nav.sticky {
+/* Override specific components for dark modes.
+   NOTE: exclude .bg-transparent so the hero's transparent navbar stays
+   see-through (lets the hero image extend up under the nav). */
+html.dim nav.sticky:not(.bg-transparent),
+html.dark nav.sticky:not(.bg-transparent) {
   background-color: var(--header-bg) !important;
   border-bottom: 1px solid var(--border-color);
 }

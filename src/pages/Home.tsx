@@ -188,8 +188,8 @@ export function Home() {
             className="absolute inset-0"
             style={{
               backgroundImage: isDark
-                ? 'linear-gradient(to bottom, rgba(15,23,42,0.50), rgba(15,23,42,0.40), rgba(15,23,42,0.62))'
-                : 'linear-gradient(to bottom, rgba(15,23,42,0.70), rgba(15,23,42,0.60), rgba(15,23,42,0.80))',
+                ? 'linear-gradient(to bottom, rgba(10,14,25,0.78), rgba(10,14,25,0.62), rgba(10,14,25,0.80))'
+                : 'linear-gradient(to bottom, rgba(15,23,42,0.72), rgba(15,23,42,0.58), rgba(15,23,42,0.82))',
             }}
           />
           {/* Pattern Overlay */}
