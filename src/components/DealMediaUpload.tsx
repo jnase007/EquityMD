@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Upload, X, Image as ImageIcon, Video } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
+import { compressImageForUpload } from '../utils/uploadCompression';
 
 interface DealMedia {
   id: string;
@@ -28,8 +29,13 @@ export function DealMediaUpload({ dealId, existingMedia, onMediaChange }: DealMe
       const newMedia: DealMedia[] = [];
 
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+        let file = files[i];
         const fileType = file.type.startsWith('image/') ? 'image' : 'video';
+
+        // Compress images before upload so storage stays lean (videos untouched)
+        if (fileType === 'image') {
+          file = await compressImageForUpload(file);
+        }
 
         // Validate file type
         if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
@@ -47,6 +53,8 @@ export function DealMediaUpload({ dealId, existingMedia, onMediaChange }: DealMe
         const fileExt = file.name.split('.').pop();
         const fileName = `${uuidv4()}.${fileExt}`;
         const filePath = `deals/${dealId}/${fileName}`;
+
+        // (file may have been swapped to a compressed File above)
 
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage

@@ -8,6 +8,7 @@ import {
   DollarSign, User
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { compressImageForUpload } from '../../utils/uploadCompression';
 import { useAuthStore } from '../../lib/store';
 import { useGamification } from '../Gamification/useGamification';
 import { AchievementsModal } from '../Gamification/AchievementsModal';
@@ -1304,10 +1305,12 @@ export function SyndicatorDashboard() {
                 type="file"
                 accept="image/*"
                 onChange={async (e) => {
-                  const file = e.target.files?.[0];
+                  let file = e.target.files?.[0];
                   if (!file) return;
                   
                   try {
+                    // Logos are small — use a tighter cap so they stay crisp but lean
+                    file = await compressImageForUpload(file, { maxDim: 600, minBytes: 100_000 });
                     const fileExt = file.name.split('.').pop();
                     const fileName = `${syndicator.id}/logo.${fileExt}`;
                     

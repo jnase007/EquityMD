@@ -39,9 +39,13 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
     const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handleEsc);
     document.body.style.overflow = 'hidden';
+    // Signal that a full-screen modal is open so lower-priority overlays
+    // (e.g. the cookie banner) can step aside on mobile.
+    document.body.classList.add('modal-open');
     return () => {
       document.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
     };
   }, [onClose]);
 

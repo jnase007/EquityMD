@@ -47,6 +47,7 @@ function Toggle({
 export function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [preferences, setPreferences] = useState<ConsentPreferences>({
     necessary: true,
     analytics: true,
@@ -71,6 +72,16 @@ export function CookieConsent() {
       const timer = setTimeout(() => setIsVisible(true), 1500);
       return () => clearTimeout(timer);
     }
+  }, []);
+
+  // Step aside when a full-screen modal (auth, etc.) is open so the cookie
+  // banner never overlaps the modal's bottom fields on mobile.
+  useEffect(() => {
+    const sync = () => setModalOpen(document.body.classList.contains('modal-open'));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
   }, []);
 
   const savePreferences = (prefs: ConsentPreferences) => {
@@ -99,6 +110,8 @@ export function CookieConsent() {
   };
 
   if (!isVisible) return null;
+  // Hide while a modal is open (but keep showing if the user is mid-settings).
+  if (modalOpen && !showSettings) return null;
 
   return (
     <>
