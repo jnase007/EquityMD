@@ -1104,17 +1104,19 @@ html.dim {
 
 /* Dark theme (high contrast dark) */
 html.dark {
-  --bg-primary: #000000;
-  --bg-secondary: #16181c;
-  --bg-tertiary: #1d1f23;
+  /* Softer, premium dark-gray palette (was pure #000 — too harsh/OLED-black).
+     Slight slate tint, with cards lifted above the page for depth. */
+  --bg-primary: #0f1115;
+  --bg-secondary: #181b20;
+  --bg-tertiary: #20242b;
   --text-primary: #e7e9ea;
-  --text-secondary: #71767b;
-  --text-tertiary: #536471;
-  --border-color: #2f3336;
-  --card-bg: #16181c;
-  --input-bg: #202327;
-  --header-bg: #000000;
-  --sidebar-bg: #000000;
+  --text-secondary: #9aa1a9;
+  --text-tertiary: #6b7280;
+  --border-color: #2a2f37;
+  --card-bg: #181b20;
+  --input-bg: #20242b;
+  --header-bg: #13161b;
+  --sidebar-bg: #13161b;
 }
 
 /* Theme-aware utility classes */
