@@ -678,17 +678,17 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
 
         {/* Admin: Pending Deals to Review */}
         {adminMode && (
-          <div id="sec-pending" className="bg-white rounded-2xl shadow-sm border border-amber-200 overflow-hidden mb-8 scroll-mt-24">
-            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-amber-50/40">
+          <div id="sec-pending" className="bg-white dark:bg-[#181b20] rounded-2xl shadow-sm border border-amber-200 dark:border-amber-500/30 overflow-hidden mb-8 scroll-mt-24">
+            <div className="px-6 py-5 border-b border-gray-100 dark:border-white/10 flex items-center justify-between bg-amber-50/40 dark:bg-amber-500/10">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Pending Deals to Review</h2>
-                <p className="text-gray-500 text-sm">Deals submitted by syndicators awaiting your approval</p>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Pending Deals to Review</h2>
+                <p className="text-gray-500 dark:text-gray-300 text-sm">Deals submitted by syndicators awaiting your approval</p>
               </div>
               <div className="flex items-center gap-3">
-                <span className={`text-sm font-bold px-3 py-1 rounded-full ${pendingDeals.length > 0 ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-500'}`}>
+                <span className={`text-sm font-bold px-3 py-1 rounded-full ${pendingDeals.length > 0 ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300' : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-300'}`}>
                   {pendingLoading ? 'Loading…' : `${pendingDeals.length} pending`}
                 </span>
-                <Link to="/admin" className="text-sm font-medium text-blue-600 hover:text-blue-800">Review queue →</Link>
+                <Link to="/admin" className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Review queue →</Link>
               </div>
             </div>
             {pendingDeals.length === 0 && !pendingLoading ? (
