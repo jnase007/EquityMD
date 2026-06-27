@@ -36,6 +36,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { supabase } from "../lib/supabase";
 import { useAuthStore } from "../lib/store";
 import { getSyndicatorLogo } from "../lib/syndicator-logos";
+import { getOptimizedImageUrl } from "../utils/imageOptimization";
 import { Tooltip } from "react-tooltip";
 import type { Deal, DealFile } from "../types/database";
 import { ReturnsCalculator } from "../components/ReturnsCalculator";
@@ -396,10 +397,12 @@ export function DealDetails() {
       <div className="relative h-[450px]">
         <img
           src={
-            deal.cover_image_url ||
+            getOptimizedImageUrl(deal.cover_image_url, { width: 1400, quality: 75 }) ||
             "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80"
           }
           alt={deal.title}
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 
 interface OptimizedImageProps {
   src: string;
@@ -45,24 +46,11 @@ export function OptimizedImage({
     return () => observer.disconnect();
   }, [priority]);
 
-  // Generate optimized image URLs
-  const getOptimizedSrc = (originalSrc: string, width?: number) => {
-    // If using a CDN like Cloudinary, Imgix, or similar
-    // Replace this with your actual image optimization service
-    if (originalSrc.includes('supabase')) {
-      // Supabase storage optimization
-      const url = new URL(originalSrc);
-      if (width) {
-        url.searchParams.set('width', width.toString());
-        url.searchParams.set('quality', '80');
-      }
-      return url.toString();
-    }
-    
-    return originalSrc;
-  };
-
-  const optimizedSrc = getOptimizedSrc(src, width);
+  // Generate optimized image URLs via the shared helper, which correctly
+  // rewrites Supabase /object/public/ URLs to the /render/image/ transform
+  // endpoint (the old inline version added query params to /object/, which
+  // Supabase ignores — so full-size originals were being served).
+  const optimizedSrc = getOptimizedImageUrl(src, width ? { width, quality: 75 } : { quality: 75 });
 
   return (
     <div 
