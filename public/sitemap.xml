@@ -1694,6 +1694,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/crossroads-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/horizon-capital-re</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -1706,43 +1712,31 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/crossroads-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://equitymd.com/syndicators/bayshore-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/origin-investments-general-</loc>
+    <loc>https://equitymd.com/syndicators/michael-blank-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/vinney-chopra-moneil</loc>
+    <loc>https://equitymd.com/syndicators/1031-crowdfunding-ir-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/crow-holdings-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://equitymd.com/syndicators/smartland-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/brad-sumrok-sumrok-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/cadre-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1760,13 +1754,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/caliber-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/michael-blank-ir-</loc>
+    <loc>https://equitymd.com/syndicators/cadre-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1778,13 +1766,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/crow-holdings-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/1031-crowdfunding-ir-</loc>
+    <loc>https://equitymd.com/syndicators/caliber-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1796,43 +1778,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/equitymultiple</loc>
+    <loc>https://equitymd.com/syndicators/origin-investments-general-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/rise48-equity-ir-</loc>
+    <loc>https://equitymd.com/syndicators/brad-sumrok-sumrok-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/disrupt-equity-capital-markets-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/lone-star-capital-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/wildhorn-capital-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/wellings-capital-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/ashcroft-capital-new-investors-</loc>
+    <loc>https://equitymd.com/syndicators/vinney-chopra-moneil</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1850,55 +1808,49 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/wildhorn-capital-ir-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/lone-star-capital-ir-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/disrupt-equity-capital-markets-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/passiveinvesting-com-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/appfolio-investment-management</loc>
+    <loc>https://equitymd.com/syndicators/rise48-equity-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/ares-real-estate</loc>
+    <loc>https://equitymd.com/syndicators/equitymultiple</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/pacific-coast-capital-partners</loc>
+    <loc>https://equitymd.com/syndicators/wellings-capital-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/angelo-gordon</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/forwardlane</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/cerberus-real-estate-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/investnext</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/yieldstreet</loc>
+    <loc>https://equitymd.com/syndicators/ashcroft-capital-new-investors-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1916,97 +1868,55 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/investnext</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/forwardlane</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/ares-real-estate</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/appfolio-investment-management</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/angelo-gordon</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/cerberus-real-estate-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/pacific-coast-capital-partners</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/yieldstreet</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/broadmark-realty-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/essex-property-trust</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/equity-residential</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/post-apartment-homes</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/virtua-partners</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/preferred-apartment-communities</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/udr-united-dominion-realty-trust-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/resia-ahs-residential-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/maa-mid-america-apartment-communities-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/independence-realty-trust</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/lightstone-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/nexpoint-advisors</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/bluerock-residential-growth-reit</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/avalonbay-communities</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/camden-property-trust</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/nelson-partners</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2018,7 +1928,91 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/lightstone-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/independence-realty-trust</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/nexpoint-advisors</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/virtua-partners</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/udr-united-dominion-realty-trust-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/bluerock-residential-growth-reit</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/nelson-partners</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/avalonbay-communities</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/caliber</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/redswan-cre</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/preferred-apartment-communities</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/maa-mid-america-apartment-communities-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/post-apartment-homes</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/equity-residential</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/essex-property-trust</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2030,7 +2024,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/caliber</loc>
+    <loc>https://equitymd.com/syndicators/resia-ahs-residential-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/camden-property-trust</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2150,6 +2150,30 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/multifamilyu-neal-bawa</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/canyon-capital-advisors</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/apogee-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/patriot-holdings</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/7e-investments</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -2162,13 +2186,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/patriot-holdings</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/apogee-capital</loc>
+    <loc>https://equitymd.com/syndicators/victor-menasce-y-street-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2180,49 +2198,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/canyon-capital-advisors</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/victor-menasce-y-street-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/multifamilyu-neal-bawa</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://equitymd.com/syndicators/praxis-capital-ir-</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/apartment-investing</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/the-richman-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/spi-advisory</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/fundrise</loc>
+    <loc>https://equitymd.com/syndicators/1031-crowdfunding</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2234,7 +2216,25 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/1031-crowdfunding</loc>
+    <loc>https://equitymd.com/syndicators/the-richman-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/apartment-investing</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/fundrise</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/spi-advisory</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2294,25 +2294,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/mc-companies</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/realwealth</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/vinney-chopra-moneil-investment-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/mlg-capital</loc>
+    <loc>https://equitymd.com/syndicators/life-bridge-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2324,7 +2306,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/blue-lake-capital</loc>
+    <loc>https://equitymd.com/syndicators/buchannan-street-partners</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/mlg-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2336,25 +2324,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/ashcroft-capital-ir-</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/buchannan-street-partners</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/trion-properties</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/life-bridge-capital</loc>
+    <loc>https://equitymd.com/syndicators/realwealth</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2366,7 +2336,19 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/ashcroft-capital-ir-</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/gatsby-investment</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/vinney-chopra-moneil-investment-group</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2384,6 +2366,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/blue-lake-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/trion-properties</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/mc-companies</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/morgan-enterprise</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -2392,72 +2392,6 @@
   <url>
     <loc>https://equitymd.com/syndicators/sutera-properties</loc>
     <lastmod>2026-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/mckenna-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/sage-investment-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/redhawk-investment-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/lone-star-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/tristar-multifamily</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/pinnacle-multifamily-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/core-multifamily-investments</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/mf-capital-partners</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/vantage-apartments-group</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/precision-equity</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/multifamily-mindset</loc>
-    <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -2474,13 +2408,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/haven-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/legacy-wealth-holdings</loc>
+    <loc>https://equitymd.com/syndicators/mf-capital-partners</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2492,7 +2420,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/obsidian-capital</loc>
+    <loc>https://equitymd.com/syndicators/vertical-street-ventures</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2504,7 +2432,49 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/vertical-street-ventures</loc>
+    <loc>https://equitymd.com/syndicators/multifamily-mindset</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/precision-equity</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/pinnacle-multifamily-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/obsidian-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/legacy-wealth-holdings</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/lone-star-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/sage-investment-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/mckenna-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2516,7 +2486,37 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/verivest</loc>
+    <loc>https://equitymd.com/syndicators/redhawk-investment-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/tristar-multifamily</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/core-multifamily-investments</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/haven-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/vantage-apartments-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/elevate-commercial-investment-group</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2528,13 +2528,25 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/sterling-rhino-capital</loc>
+    <loc>https://equitymd.com/syndicators/passiveinvesting-com</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/excelsior-capital</loc>
+    <loc>https://equitymd.com/syndicators/verivest</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/praxis-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/redline-equity</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2546,19 +2558,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/atlas-real-estate-partners</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/reliant-real-estate-management</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/elevate-commercial-investment-group</loc>
+    <loc>https://equitymd.com/syndicators/sunrise-capital-investors</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2576,25 +2576,31 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/passiveinvesting-com</loc>
+    <loc>https://equitymd.com/syndicators/atlas-real-estate-partners</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/praxis-capital</loc>
+    <loc>https://equitymd.com/syndicators/excelsior-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/sunrise-capital-investors</loc>
+    <loc>https://equitymd.com/syndicators/sterling-rhino-capital</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/redline-equity</loc>
+    <loc>https://equitymd.com/syndicators/reliant-real-estate-management</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/disrupt-equity</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2612,13 +2618,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/the-kitti-sisters</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/left-field-investors</loc>
+    <loc>https://equitymd.com/syndicators/jake-and-gino</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2654,6 +2654,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/left-field-investors</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/syndicated-equities</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/rise48-equity</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -2666,55 +2678,13 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/syndicated-equities</loc>
+    <loc>https://equitymd.com/syndicators/the-kitti-sisters</loc>
     <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/jake-and-gino</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/disrupt-equity</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/jll-income-property-trust</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/national-equity-fund</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/boston-financial-investment-management</loc>
-    <lastmod>2025-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://equitymd.com/syndicators/sylvis-capital</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/the-bam-companies</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/van-west-partners-fund</loc>
     <lastmod>2025-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2726,31 +2696,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/pnc-real-estate</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/walker-dunlop</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://equitymd.com/syndicators/southern-impression-homes</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/hudson-housing-capital</loc>
-    <lastmod>2025-08-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/starwood-capital-group</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2768,14 +2714,74 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://equitymd.com/syndicators/national-equity-fund</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/boston-financial-investment-management</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/pnc-real-estate</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/the-bam-companies</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/van-west-partners-fund</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://equitymd.com/syndicators/starwood-capital-group</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/starboard-reality</loc>
-    <lastmod>2025-11-17</lastmod>
+    <loc>https://equitymd.com/syndicators/jll-income-property-trust</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/walker-dunlop</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/hudson-housing-capital</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/starwood-capital-group</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/starboard-realty-advisors</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/hunt-capital-partners</loc>
+    <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -2798,7 +2804,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/hunt-capital-partners</loc>
+    <loc>https://equitymd.com/syndicators/37th-parallel-properties</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2810,7 +2816,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/37th-parallel-properties</loc>
+    <loc>https://equitymd.com/syndicators/nuveen-real-estate</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/cardone-capital</loc>
+    <lastmod>2026-03-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://equitymd.com/syndicators/blackstone-real-estate</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2828,37 +2846,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/blackstone-real-estate</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/cardone-capital</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://equitymd.com/syndicators/nuveen-real-estate</loc>
-    <lastmod>2026-03-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://equitymd.com/syndicators/horizon-investment-group</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/summit-capital-partners</loc>
+    <loc>https://equitymd.com/syndicators/evergreen-residential</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://equitymd.com/syndicators/evergreen-residential</loc>
+    <loc>https://equitymd.com/syndicators/summit-capital-partners</loc>
     <lastmod>2026-03-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -2889,7 +2889,7 @@
   </url>
   <url>
     <loc>https://equitymd.com/deals/multifamily-adu-opportunity</loc>
-    <lastmod>2026-06-26</lastmod>
+    <lastmod>2026-06-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>

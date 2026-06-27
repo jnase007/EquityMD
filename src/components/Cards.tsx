@@ -51,46 +51,57 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
 
   return (
     <Link to={`/deals/${slug}`} className={`block h-full ${className}`} onClick={handleClick}>
-      <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition h-full flex flex-col overflow-hidden scrollable-card">
+      <div className="group bg-white rounded-2xl shadow-md hover:shadow-2xl ring-1 ring-gray-100 hover:ring-blue-200 transition-all duration-300 ease-out hover:-translate-y-1 h-full flex flex-col overflow-hidden scrollable-card">
         <div className="relative overflow-hidden">
           <OptimizedImage 
             src={image} 
             alt={title} 
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
             width={400}
             height={192}
           />
+          {/* gradient scrim for legibility + premium feel */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
+          {/* Active status pill */}
+          <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-500/95 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm backdrop-blur">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            Active
+          </div>
+          {/* location overlaid on image */}
+          <div className="absolute bottom-2.5 left-3 right-3 flex items-center text-white/95 text-xs font-medium drop-shadow">
+            <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
+            <span className="truncate">{location}</span>
+          </div>
           {!isAuthenticated && (
-            <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-xs flex items-center max-w-[90%]">
+            <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded-full text-xs flex items-center max-w-[60%] backdrop-blur">
               <Lock className="h-3 w-3 mr-1 flex-shrink-0" />
               <span className="truncate">Sign in</span>
             </div>
           )}
         </div>
         <div className="p-4 pt-3 flex-grow flex flex-col">
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="text-lg font-bold text-gray-800 line-clamp-2 flex-grow">{title}</h3>
+          <div className="flex items-start justify-between mb-3">
+            <h3 className="text-lg font-bold text-gray-900 line-clamp-2 flex-grow group-hover:text-blue-700 transition-colors">{title}</h3>
             {verificationStatus && (
               <div className="ml-2 flex-shrink-0">
                 <VerificationBadge status={verificationStatus} size="sm" />
               </div>
             )}
           </div>
-          <p className="text-gray-600 mb-4 text-sm">{location}</p>
           
           {isAuthenticated ? (
-            <div className="grid grid-cols-3 gap-2 border-t pt-3 mt-auto">
-              <div>
-                <p className="text-xs text-gray-500">Target Return</p>
-                <p className="font-semibold text-blue-600 text-sm">{metrics.target}</p>
+            <div className="grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 mt-auto">
+              <div className="text-center rounded-lg bg-blue-50/60 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500">Target</p>
+                <p className="font-bold text-blue-700 text-sm">{metrics.target}</p>
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Minimum</p>
-                <p className="font-semibold text-blue-600 text-sm">{metrics.minimum}</p>
+              <div className="text-center rounded-lg bg-blue-50/60 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500">Minimum</p>
+                <p className="font-bold text-blue-700 text-sm">{metrics.minimum}</p>
               </div>
-              <div>
-                <p className="text-xs text-gray-500">Term</p>
-                <p className="font-semibold text-blue-600 text-sm">{metrics.term}</p>
+              <div className="text-center rounded-lg bg-blue-50/60 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-gray-500">Term</p>
+                <p className="font-bold text-blue-700 text-sm">{metrics.term}</p>
               </div>
             </div>
           ) : (
