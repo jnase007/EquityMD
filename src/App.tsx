@@ -185,15 +185,37 @@ export default function App() {
   const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
     try {
       // Ensure auth session is attached before querying (RLS requires it)
-      const { data: { session } } = await withTimeout(supabase.auth.getSession(), 8000, 'getSession');
+      let { data: { session } } = await withTimeout(supabase.auth.getSession(), 8000, 'getSession');
       if (!session) {
         authLogger.log('No session yet — delaying profile fetch');
-        if (retryCount < 5) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+        if (retryCount < 2) {
+          await new Promise(resolve => setTimeout(resolve, 800));
           return fetchProfile(userId, retryCount + 1);
         }
-        authLogger.log('No session after 5 retries — giving up');
+        authLogger.log('No session after retries — giving up');
         return;
+      }
+
+      // FIX A: Proactively refresh an expired/near-expiry token BEFORE the RLS
+      // query. A stale JWT makes the first profiles fetch stall (cold-visit 30s
+      // load). Refreshing up front avoids burning the retry ladder on a doomed
+      // first attempt. Only do this once (retryCount === 0) to avoid loops.
+      if (retryCount === 0 && session.expires_at) {
+        const nowSec = Math.floor(Date.now() / 1000);
+        const secsLeft = session.expires_at - nowSec;
+        if (secsLeft < 60) {
+          authLogger.log(`Token expires in ${secsLeft}s — refreshing before profile fetch`);
+          try {
+            const { data: refreshed } = await withTimeout(
+              supabase.auth.refreshSession(),
+              8000,
+              'refreshSession'
+            );
+            if (refreshed?.session) session = refreshed.session;
+          } catch (refreshErr) {
+            authLogger.log('Proactive refresh failed (continuing):', refreshErr);
+          }
+        }
       }
 
       authLogger.log('Fetching profile for user:', userId);
@@ -204,18 +226,20 @@ export default function App() {
       );
 
       if (error) {
-        if ((error.message.includes('fetch') || error.message.includes('network')) && retryCount < 5) {
+        // FIX B: trim retry ladder (was 5 retries w/ 1+2+3+4+5s backoff = 15s).
+        // Now 2 retries at a flat 800ms — caps worst case at ~1.6s here.
+        if ((error.message.includes('fetch') || error.message.includes('network')) && retryCount < 2) {
           authLogger.log(`Retrying profile fetch... Attempt ${retryCount + 1}`);
-          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+          await new Promise(resolve => setTimeout(resolve, 800));
           return fetchProfile(userId, retryCount + 1);
         }
         throw error;
       }
       
-      // RLS can return null if session wasn't attached — retry
-      if (!data && retryCount < 3) {
+      // RLS can return null if session wasn't attached — retry (trimmed 3->2 @ 800ms)
+      if (!data && retryCount < 2) {
         authLogger.log('Profile query returned null (possible RLS race) — retrying');
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 800));
         return fetchProfile(userId, retryCount + 1);
       }
 
@@ -321,7 +345,13 @@ export default function App() {
   useEffect(() => {
     let mounted = true;
     let authProcessed = false;
-    
+
+    // Boot timer: measure cold-load auth resolution (before/after this fix).
+    const bootStart = performance.now();
+    const logBootDone = (reason: string) => {
+      authLogger.log(`[boot] auth resolved in ${Math.round(performance.now() - bootStart)}ms (${reason})`);
+    };
+
     // Check if this is an OAuth callback (has hash fragment with tokens)
     const hasAuthTokens = window.location.hash.includes('access_token') || 
                           window.location.hash.includes('error=');
@@ -352,6 +382,7 @@ export default function App() {
         }
         authProcessed = true;
         setAuthLoading(false);
+        logBootDone('INITIAL_SESSION');
         
         // Clean up URL hash after processing
         if (hasAuthTokens) {
@@ -370,6 +401,7 @@ export default function App() {
         }
         if (!authProcessed) {
           setAuthLoading(false);
+          logBootDone('SIGNED_IN');
         }
         
         // Clean up URL hash after sign in
@@ -397,6 +429,7 @@ export default function App() {
       if (!authProcessed && mounted) {
         authLogger.log('Auth fallback timeout - no session detected');
         setAuthLoading(false);
+        logBootDone('fallback-2s');
       }
     }, 2000);
     
