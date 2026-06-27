@@ -5,6 +5,7 @@ interface OptimizedImageProps {
   src: string;
   alt: string;
   className?: string;
+  imgClassName?: string; // extra classes applied to the inner <img> (e.g. object-fit, hover zoom)
   width?: number;
   height?: number;
   priority?: boolean; // Load immediately for above-the-fold images
@@ -15,6 +16,7 @@ export function OptimizedImage({
   src,
   alt,
   className = '',
+  imgClassName = '',
   width,
   height,
   priority = false,
@@ -94,9 +96,9 @@ export function OptimizedImage({
         <img
           src={optimizedSrc}
           alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
+          className={`w-full h-full object-cover transition-all duration-500 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          } ${imgClassName}`}
           onLoad={() => setIsLoaded(true)}
           onError={() => setError(true)}
           loading={priority ? 'eager' : 'lazy'}

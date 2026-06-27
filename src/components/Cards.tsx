@@ -56,9 +56,10 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
           <OptimizedImage 
             src={image} 
             alt={title} 
-            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-56"
+            imgClassName="scale-100 group-hover:scale-105"
             width={400}
-            height={192}
+            height={224}
           />
           {/* gradient scrim for legibility + premium feel */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
