@@ -152,9 +152,11 @@ export function Directory() {
 
   async function fetchSyndicators() {
     try {
+      // Only select the columns the directory cards actually render — avoids
+      // pulling every heavy array column (*) for ~250 rows on first paint.
       const { data: syndicatorData, error: syndicatorError } = await supabase
         .from('syndicators')
-        .select()
+        .select('id, slug, company_name, company_description, company_logo_url, city, state, average_rating, total_reviews, total_deal_volume, active_deals, years_in_business, team_size, min_investment, specialties, investment_focus, target_markets, certifications, notable_projects, feat, verification_status')
         .in('verification_status', ['verified', 'premier']);
 
       if (syndicatorError) {
