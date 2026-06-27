@@ -2419,3 +2419,29 @@ html.dim a:visited:not(.text-white):not([class*="bg-"]),
 html.dark a:visited:not(.text-white):not([class*="bg-"]) {
   color: #a78bfa;
 }
+/* ──────────────────────────────────────────────────────────────
+   Deal-card metric chips (Target / Minimum / Term)
+   Dedicated classes so the dark-mode override sheet can't touch
+   them. Light + dark values are explicit and high-contrast.
+   ────────────────────────────────────────────────────────────── */
+.eqmd-metric-chip {
+  background-color: rgba(37, 99, 235, 0.07); /* light blue tint */
+}
+.eqmd-metric-label {
+  color: #6b7280; /* gray-500 */
+}
+.eqmd-metric-value {
+  color: #1d4ed8; /* blue-700 */
+}
+html.dark .eqmd-metric-chip,
+html.dim .eqmd-metric-chip {
+  background-color: rgba(96, 165, 250, 0.12) !important; /* dark: translucent blue */
+}
+html.dark .eqmd-metric-label,
+html.dim .eqmd-metric-label {
+  color: #cbd5e1 !important; /* slate-300 — clearly readable */
+}
+html.dark .eqmd-metric-value,
+html.dim .eqmd-metric-value {
+  color: #93c5fd !important; /* blue-300 — high contrast on dark */
+}

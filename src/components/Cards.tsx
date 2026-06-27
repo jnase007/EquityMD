@@ -90,18 +90,18 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
           </div>
           
           {isAuthenticated ? (
-            <div className="grid grid-cols-3 gap-2 border-t border-gray-100 dark:border-white/10 pt-3 mt-auto">
-              <div className="text-center rounded-lg bg-blue-50/60 dark:bg-blue-500/10 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Target</p>
-                <p className="font-bold text-blue-700 dark:text-blue-300 text-sm">{metrics.target}</p>
+            <div className="eqmd-metric-grid grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 mt-auto">
+              <div className="eqmd-metric-chip text-center rounded-lg py-2">
+                <p className="eqmd-metric-label text-[10px] uppercase tracking-wide">Target</p>
+                <p className="eqmd-metric-value font-bold text-sm">{metrics.target}</p>
               </div>
-              <div className="text-center rounded-lg bg-blue-50/60 dark:bg-blue-500/10 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Minimum</p>
-                <p className="font-bold text-blue-700 dark:text-blue-300 text-sm">{metrics.minimum}</p>
+              <div className="eqmd-metric-chip text-center rounded-lg py-2">
+                <p className="eqmd-metric-label text-[10px] uppercase tracking-wide">Minimum</p>
+                <p className="eqmd-metric-value font-bold text-sm">{metrics.minimum}</p>
               </div>
-              <div className="text-center rounded-lg bg-blue-50/60 dark:bg-blue-500/10 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Term</p>
-                <p className="font-bold text-blue-700 dark:text-blue-300 text-sm">{metrics.term}</p>
+              <div className="eqmd-metric-chip text-center rounded-lg py-2">
+                <p className="eqmd-metric-label text-[10px] uppercase tracking-wide">Term</p>
+                <p className="eqmd-metric-value font-bold text-sm">{metrics.term}</p>
               </div>
             </div>
           ) : (
