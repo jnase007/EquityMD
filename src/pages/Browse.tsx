@@ -77,13 +77,6 @@ const getPropertyImage = (propertyType: string, index: number) => {
   return propertyTypeImages[propertyType] || fallbackImages[index % fallbackImages.length];
 };
 
-// Map syndicator IDs to their verification status
-const syndicatorVerificationStatus: Record<string, VerificationStatus> = {
-  'back-bay-capital': 'premier',
-  'sutera-properties': 'premier', 
-  'starboard-realty': 'premier',
-};
-
 export function Browse() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -98,6 +91,8 @@ export function Browse() {
   const [authRedirectPath, setAuthRedirectPath] = useState<string | undefined>(undefined);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortBy, setSortBy] = useState('recent');
+  // Real verification status pulled from the DB, keyed by syndicator_id.
+  const [syndicatorVerificationStatus, setSyndicatorVerificationStatus] = useState<Record<string, VerificationStatus>>({});
 
   // Handle "List Your Deal" button click
   const handleListDealClick = () => {
@@ -147,6 +142,22 @@ export function Browse() {
 
       console.log('Fetched deals for browse page:', data);
       setDeals(data);
+
+      // Pull live verification status for the syndicators behind these deals
+      const syndicatorIds = [...new Set((data as any[]).map(d => d.syndicator_id).filter(Boolean))];
+      if (syndicatorIds.length) {
+        const { data: syns } = await supabase
+          .from('syndicators')
+          .select('id, verification_status')
+          .in('id', syndicatorIds);
+        if (syns) {
+          const map: Record<string, VerificationStatus> = {};
+          for (const s of syns as any[]) {
+            if (s.verification_status) map[s.id] = s.verification_status as VerificationStatus;
+          }
+          setSyndicatorVerificationStatus(map);
+        }
+      }
     } catch (error) {
       console.error('Error fetching deals:', error);
       setDeals([]);
