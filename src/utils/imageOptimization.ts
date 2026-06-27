@@ -50,11 +50,20 @@ export function getOptimizedImageUrl(
     return `${originalUrl}${separator}${params.toString()}`;
   }
   
-  // For Supabase storage - add transform params
-  if (originalUrl.includes('supabase.co/storage')) {
-    // Supabase supports image transforms with /render/image endpoint
-    // But for now, return original URL
-    return originalUrl;
+  // For Supabase storage - use the image transformation endpoint.
+  // Rewrites /storage/v1/object/public/... -> /storage/v1/render/image/public/...
+  // and appends width/quality. Confirmed enabled on this project; turns multi-MB
+  // source PNGs into right-sized images (e.g. 6.8MB -> ~1.3MB for blog cards).
+  if (originalUrl.includes('supabase.co/storage') && originalUrl.includes('/object/public/')) {
+    // Already a render URL? leave it.
+    if (originalUrl.includes('/render/image/')) return originalUrl;
+    const rendered = originalUrl.replace('/object/public/', '/render/image/public/');
+    const params = new URLSearchParams();
+    if (width) params.set('width', width.toString());
+    if (height) params.set('height', height.toString());
+    params.set('quality', quality.toString());
+    const separator = rendered.includes('?') ? '&' : '?';
+    return `${rendered}${separator}${params.toString()}`;
   }
   
   // If using an image CDN

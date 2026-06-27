@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useTheme } from '../contexts/ThemeContext';
+import { getOptimizedImageUrl } from '../utils/imageOptimization';
 
 // FAQ data for Blog page - learning and education questions
 const blogFaqs = [
@@ -350,8 +351,9 @@ export function Blog() {
                   <div className="lg:flex">
                     <div className="lg:w-1/2 relative overflow-hidden">
                       <img
-                        src={filteredPosts[0].image}
+                        src={getOptimizedImageUrl(filteredPosts[0].image, { width: 1000, quality: 70 })}
                         alt={filteredPosts[0].title}
+                        decoding="async"
                         className="w-full h-64 lg:h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
@@ -422,8 +424,10 @@ export function Blog() {
                     >
                       <Link to={`/blog/${post.slug}`} className="block relative overflow-hidden">
                         <img
-                          src={post.image}
+                          src={getOptimizedImageUrl(post.image, { width: 600, quality: 70 })}
                           alt={post.title}
+                          loading="lazy"
+                          decoding="async"
                           className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
