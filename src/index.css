@@ -1535,6 +1535,16 @@ html.dim [class*="bg-rose-50/"] {
   background-color: rgba(244, 63, 94, 0.12) !important;
 }
 
+/* Headings (e.g. deal-card titles) keep PRIMARY text color in dim/dark even when
+   they use line-clamp — otherwise the blog-excerpt rule below washes them out to a
+   muted gray that's nearly invisible on dark cards. Higher specificity wins. */
+html.dim h1.line-clamp-2, html.dim h2.line-clamp-2, html.dim h3.line-clamp-2,
+html.dim h1.line-clamp-3, html.dim h2.line-clamp-3, html.dim h3.line-clamp-3,
+html.dark h1.line-clamp-2, html.dark h2.line-clamp-2, html.dark h3.line-clamp-2,
+html.dark h1.line-clamp-3, html.dark h2.line-clamp-3, html.dark h3.line-clamp-3 {
+  color: var(--text-primary);
+}
+
 /* Blog article list items */
 html.dim .line-clamp-2,
 html.dim .line-clamp-3,
