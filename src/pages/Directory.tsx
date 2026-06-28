@@ -310,19 +310,19 @@ export function Directory() {
           ))}
         </div>
         
-        <div className="max-w-7xl mx-auto px-4 py-12 relative">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-white/20 backdrop-blur rounded-2xl">
-              <Users className="w-8 h-8 text-white" />
+        <div className="max-w-7xl mx-auto px-4 py-6 relative">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-2.5 bg-white/20 backdrop-blur rounded-xl">
+              <Users className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-white">Syndicator Directory</h1>
-              <p className="text-white/80 mt-1">Connect with experienced real estate investment firms</p>
+              <h1 className="text-2xl lg:text-3xl font-bold text-white">Syndicator Directory</h1>
+              <p className="text-white/80 text-sm">Connect with experienced real estate investment firms</p>
             </div>
           </div>
           
           {/* Stats Row */}
-          <div className="flex flex-wrap gap-4 mt-6 mb-8">
+          <div className="flex flex-wrap gap-3 mt-4 mb-5">
             <div className="bg-white/20 backdrop-blur rounded-xl px-4 py-2">
               <span className="text-white/70 text-sm">Listed Syndicators</span>
               <p className="text-white font-bold text-xl">{syndicators.length}</p>
