@@ -32,8 +32,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
   const [password, setPassword] = useState('');
 
   // Check if user email exists (for smart form switching)
-  const [emailExists, setEmailExists] = useState<boolean | null>(null);
-  const [checkingEmail, setCheckingEmail] = useState(false);
+
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -49,29 +48,13 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
     };
   }, [onClose]);
 
-  // Auto-detect if email exists when user finishes typing
-  useEffect(() => {
-    if (!email || !email.includes('@') || mode !== 'sign_up') return;
-    
-    const timer = setTimeout(async () => {
-      setCheckingEmail(true);
-      try {
-        // Check if email exists by attempting to get user
-        await supabase.auth.signInWithOtp({ 
-          email,
-          options: { shouldCreateUser: false }
-        });
-        // If no error, email exists
-        setEmailExists(true);
-      } catch {
-        setEmailExists(false);
-      } finally {
-        setCheckingEmail(false);
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [email, mode]);
+  // NOTE: The previous "auto-detect if email exists" probe was removed.
+  // It called supabase.auth.signInWithOtp({ shouldCreateUser: false }) on every
+  // keystroke pause, which (a) dispatched a real OTP/magic-link email to every
+  // typed address and (b) never reflected the true result because signInWithOtp
+  // returns { error } instead of throwing, so the try/catch always set
+  // emailExists=true. The sign-up submit handler already surfaces
+  // "Email already registered" + switches to sign-in, so no live probe is needed.
 
   const handleSocialLogin = async (provider: 'google' | 'linkedin_oidc') => {
     setSocialLoading(provider);
@@ -467,25 +450,13 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
               <input
                 type="email"
                 value={email}
-                onChange={(e) => { setEmail(e.target.value); setEmailExists(null); }}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email address"
                 required
                 autoComplete="email"
                 className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
               />
-              {checkingEmail && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 animate-spin" />
-              )}
             </div>
-
-            {/* Smart hint if email exists during sign up */}
-            {mode === 'sign_up' && emailExists && (
-              <p className="text-sm text-amber-600 flex items-center gap-1">
-                <AlertCircle className="h-4 w-4" />
-                This email is registered.{' '}
-                <button type="button" onClick={() => setMode('sign_in')} className="underline font-medium">Sign in instead?</button>
-              </p>
-            )}
 
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
