@@ -182,10 +182,15 @@ export default function App() {
     }
   }, [location.pathname]);
 
-  const fetchProfile = useCallback(async (userId: string, retryCount = 0) => {
+  const fetchProfile = useCallback(async (userId: string, retryCount = 0, knownSession: any = null) => {
     try {
-      // Ensure auth session is attached before querying (RLS requires it)
-      let { data: { session } } = await withTimeout(supabase.auth.getSession(), 8000, 'getSession');
+      // PERF: onAuthStateChange already hands us the session — skip a redundant
+      // getSession() round-trip (~150ms) on the common boot path. Only fall back
+      // to getSession() when we weren't handed one (e.g. retries).
+      let session = knownSession;
+      if (!session) {
+        ({ data: { session } } = await withTimeout(supabase.auth.getSession(), 8000, 'getSession'));
+      }
       if (!session) {
         authLogger.log('No session yet — delaying profile fetch');
         if (retryCount < 2) {
@@ -373,16 +378,17 @@ export default function App() {
         // This fires immediately with the current session (or null)
         authLogger.log('Initial session event:', session?.user?.id);
         setUser(session?.user ?? null);
-        if (session?.user) {
-          try {
-            await fetchProfile(session.user.id);
-          } catch (profileError) {
-            console.error('Profile fetch error:', profileError);
-          }
-        }
+        // PERF: release the auth-loading gate immediately so the logged-in UI
+        // renders right away; let the profile populate asynchronously instead of
+        // blocking the whole app on it. Pass the known session to skip getSession().
         authProcessed = true;
         setAuthLoading(false);
         logBootDone('INITIAL_SESSION');
+        if (session?.user) {
+          fetchProfile(session.user.id, 0, session).catch((profileError) => {
+            console.error('Profile fetch error:', profileError);
+          });
+        }
         
         // Clean up URL hash after processing
         if (hasAuthTokens) {
@@ -391,17 +397,17 @@ export default function App() {
       } else if (event === 'SIGNED_IN') {
         authLogger.log('User signed in:', session?.user?.id);
         setUser(session?.user ?? null);
-        if (session?.user) {
-          try {
-            await fetchProfile(session.user.id);
-            await syncGuestFavorites(session.user.id);
-          } catch (profileError) {
-            console.error('Profile fetch error:', profileError);
-          }
-        }
+        // PERF: release the gate first, then populate profile async (pass session).
         if (!authProcessed) {
           setAuthLoading(false);
           logBootDone('SIGNED_IN');
+        }
+        if (session?.user) {
+          fetchProfile(session.user.id, 0, session)
+            .then(() => syncGuestFavorites(session.user.id))
+            .catch((profileError) => {
+              console.error('Profile fetch error:', profileError);
+            });
         }
         
         // Clean up URL hash after sign in
