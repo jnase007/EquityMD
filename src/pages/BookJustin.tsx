@@ -5,61 +5,107 @@ import { SEO } from '../components/SEO';
 import { Calendar, Clock, Video, CheckCircle2, Building2, Users, TrendingUp } from 'lucide-react';
 
 const BOOKING_URL = 'https://calendar.app.google/8LAesJ7mk4iZrJgv5';
+const GOLD = '#B8860B';
 
 export function BookJustin() {
   return (
-    <div className="relative min-h-screen">
-      {/* Multifamily building background */}
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=80')",
-        }}
-        aria-hidden="true"
-      />
-      {/* Readability overlay */}
-      <div
-        className="fixed inset-0 -z-10"
-        style={{
-          background:
-            'linear-gradient(to bottom right, rgba(248,250,252,0.82), rgba(255,255,255,0.72), rgba(238,242,255,0.82))',
-        }}
-        aria-hidden="true"
-      />
+    <div className="relative min-h-screen bg-white">
       <SEO
         title="Meet Justin | Founder of EquityMD"
         description="Justin Nassie has been in commercial real estate since 2007, connecting syndicators with accredited investors. Learn his story and book a time to connect."
       />
       <Navbar />
 
-      <main className="pt-24 pb-16">
+      {/* ===== HERO ===== */}
+      <section
+        className="pt-28 pb-16 sm:pb-20"
+        style={{ background: 'linear-gradient(120deg,#ffffff 0%,#faf9f7 55%,#f3f2ef 100%)' }}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+
+            {/* LEFT: text */}
+            <div>
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3 mb-6">
+                <span className="block h-px w-10" style={{ backgroundColor: GOLD }} />
+                <span
+                  className="text-xs font-semibold tracking-[0.18em] uppercase"
+                  style={{ color: GOLD }}
+                >
+                  Founder &amp; Investor
+                </span>
+              </div>
+
+              {/* Name */}
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 leading-[0.95]">
+                Justin Nassie
+              </h1>
+
+              {/* Role */}
+              <p className="mt-3 text-2xl sm:text-3xl font-medium" style={{ color: GOLD }}>
+                Founder of EquityMD
+              </p>
+
+              {/* Headline */}
+              <h2 className="mt-7 text-3xl sm:text-4xl font-bold leading-snug text-gray-900">
+                <span style={{ color: GOLD }}>Your Capital Partner.</span>
+                <br />
+                <span>Deals Worth Doing.</span>
+              </h2>
+
+              {/* Subhead */}
+              <p className="mt-5 text-lg text-gray-500 max-w-lg leading-relaxed">
+                In commercial real estate since 2007. Connecting syndicators with a
+                proven network of accredited investors — and investing alongside them.
+              </p>
+
+              {/* Buttons */}
+              <div className="mt-8 flex flex-wrap gap-4">
+                <a
+                  href={BOOKING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-white shadow-sm transition hover:brightness-95"
+                  style={{ backgroundColor: GOLD }}
+                >
+                  <Calendar className="h-5 w-5" />
+                  Book a Call
+                </a>
+                <a
+                  href="https://equitymd.com"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-gray-900 bg-white border border-gray-300 transition hover:bg-gray-50"
+                >
+                  See My Work
+                </a>
+              </div>
+            </div>
+
+            {/* RIGHT: framed portrait */}
+            <div className="flex justify-center lg:justify-end">
+              <div
+                className="rounded-3xl overflow-hidden bg-[#faf9f7] w-full max-w-md"
+                style={{ border: `2px solid ${GOLD}`, aspectRatio: '4 / 5' }}
+              >
+                <img
+                  src="/images/justin-portrait.jpg"
+                  alt="Justin Nassie, Founder of EquityMD"
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ===== STORY + BOOKING ===== */}
+      <main className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
 
-            {/* LEFT: Name + Photo + Story */}
+            {/* LEFT: Story */}
             <div className="lg:col-span-3">
-              {/* Header: photo + name */}
-              <div className="flex items-center gap-5 mb-8">
-                <img
-                  src="/images/justin.jpg"
-                  alt="Justin Nassie, Founder of EquityMD"
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover object-top ring-4 ring-white shadow-lg shrink-0"
-                />
-                <div>
-                  <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
-                    Justin Nassie
-                  </h1>
-                  <p className="text-base sm:text-lg text-blue-600 font-medium mt-1">
-                    Founder of EquityMD
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Connecting syndicators with accredited investors
-                  </p>
-                </div>
-              </div>
-
-              {/* Story */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 sm:p-9">
                 <h2 className="text-2xl font-bold text-gray-900 mb-5">
                   How I came up with EquityMD
@@ -107,8 +153,11 @@ export function BookJustin() {
                     { icon: Users, stat: '15 syndicators', desc: 'Backed with investor capital' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <div className="shrink-0 w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                        <item.icon className="h-5 w-5 text-blue-600" />
+                      <div
+                        className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: 'rgba(184,134,11,0.1)' }}
+                      >
+                        <item.icon className="h-5 w-5" style={{ color: GOLD }} />
                       </div>
                       <div>
                         <div className="font-bold text-gray-900">{item.stat}</div>
@@ -123,22 +172,23 @@ export function BookJustin() {
             {/* RIGHT: Booking */}
             <div className="lg:col-span-2 lg:sticky lg:top-24">
               <div className="bg-white rounded-2xl border border-gray-100 shadow-lg overflow-hidden">
-                {/* Gradient CTA header */}
-                <div className="p-8 text-center bg-gradient-to-br from-blue-600 to-indigo-600">
+                {/* CTA header */}
+                <div className="p-8 text-center" style={{ background: `linear-gradient(135deg,${GOLD},#8a6608)` }}>
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/15 mb-4">
                     <Calendar className="h-7 w-7 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">
                     Grab a time on my calendar
                   </h3>
-                  <p className="text-blue-100 text-sm mb-6">
+                  <p className="text-white/80 text-sm mb-6">
                     See my availability and pick a slot that works for you.
                   </p>
                   <a
                     href={BOOKING_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-blue-700 font-semibold px-7 py-3.5 rounded-lg transition shadow-md w-full justify-center"
+                    className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 font-semibold px-7 py-3.5 rounded-lg transition shadow-md w-full justify-center"
+                    style={{ color: GOLD }}
                   >
                     <Calendar className="h-5 w-5" />
                     Book a Time with Justin
@@ -153,8 +203,11 @@ export function BookJustin() {
                     { icon: CheckCircle2, title: 'No pressure', desc: 'Just a real conversation.' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <div className="shrink-0 w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
-                        <item.icon className="h-4 w-4 text-blue-600" />
+                      <div
+                        className="shrink-0 w-9 h-9 rounded-lg flex items-center justify-center"
+                        style={{ backgroundColor: 'rgba(184,134,11,0.1)' }}
+                      >
+                        <item.icon className="h-4 w-4" style={{ color: GOLD }} />
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900 text-sm">{item.title}</div>
