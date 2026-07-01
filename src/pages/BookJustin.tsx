@@ -8,7 +8,25 @@ const BOOKING_URL = 'https://calendar.app.google/8LAesJ7mk4iZrJgv5';
 
 export function BookJustin() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50">
+    <div className="relative min-h-screen">
+      {/* Multifamily building background */}
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=80')",
+        }}
+        aria-hidden="true"
+      />
+      {/* Readability overlay */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          background:
+            'linear-gradient(to bottom right, rgba(248,250,252,0.82), rgba(255,255,255,0.72), rgba(238,242,255,0.82))',
+        }}
+        aria-hidden="true"
+      />
       <SEO
         title="Meet Justin | Founder of EquityMD"
         description="Justin Nassie has been in commercial real estate since 2007, connecting syndicators with accredited investors. Learn his story and book a time to connect."
