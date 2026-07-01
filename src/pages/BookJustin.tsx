@@ -63,6 +63,14 @@ export function BookJustin() {
                 <strong className="text-gray-900">community and marketplace</strong> built for
                 connection and dealmaking.
               </p>
+              <p>
+                And I'm not just building this from the outside. I{' '}
+                <strong className="text-gray-900">own commercial real estate myself</strong> and
+                I'm an <strong className="text-gray-900">accredited investor</strong> — so I'm
+                looking for deals too. EquityMD is the place I want for myself: somewhere to find
+                the opportunities that actually work for me. I built the marketplace I'd want to
+                shop in.
+              </p>
             </div>
 
             {/* Credibility strip */}
