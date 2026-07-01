@@ -73,10 +73,10 @@ export function BookJustin() {
                   Book a Call
                 </a>
                 <a
-                  href="https://equitymd.com"
+                  href="#story"
                   className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-gray-900 bg-white border border-gray-300 transition hover:bg-gray-50"
                 >
-                  See My Work
+                  My Story
                 </a>
               </div>
             </div>
@@ -100,7 +100,7 @@ export function BookJustin() {
       </section>
 
       {/* ===== STORY + BOOKING ===== */}
-      <main className="py-16 bg-white">
+      <main id="story" className="py-16 bg-white scroll-mt-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
 
