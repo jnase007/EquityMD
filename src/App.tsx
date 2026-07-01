@@ -56,6 +56,7 @@ const BrandingGuide = lazyRetry(() => import('./pages/BrandingGuide'), 'Branding
 const Leaderboard = lazyRetry(() => import('./pages/Leaderboard'), 'Leaderboard');
 const Discover = lazyRetry(() => import('./pages/Discover'), 'Discover');
 const Calendar = lazyRetry(() => import('./pages/Calendar'), 'Calendar');
+const BookJustin = lazyRetry(() => import('./pages/BookJustin'), 'BookJustin');
 const Goals = lazyRetry(() => import('./pages/Goals'), 'Goals');
 const SyndicatorSetup = lazyRetry(() => import('./pages/SyndicatorSetup'), 'SyndicatorSetup');
 // GoToMarket merged into Strategy — /gtm redirects to /strategy
@@ -552,7 +553,7 @@ export default function App() {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review', '/gtm', '/strategy', '/rankings', '/compare'];
+  const publicRoutes = ['/', '/find', '/directory', '/how-it-works', '/contact', '/about', '/blog', '/legal/privacy', '/legal/terms', '/legal/disclaimer', '/resources/glossary', '/pricing', '/email-preview', '/email-test', '/loader-demo', '/test-messaging', '/test-auth', '/tooltip-demo', '/onboarding-demo', '/admin', '/dashboard-review', '/gtm', '/strategy', '/rankings', '/compare', '/justin'];
 
   // Check if current route requires authentication
   const requiresAuth = !publicRoutes.includes(location.pathname);
@@ -593,6 +594,7 @@ export default function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/justin" element={<BookJustin />} />
         <Route path="/new-pricing" element={<NewPricing />} />
         <Route path="/email-preview" element={<EmailPreview />} />
         <Route path="/email-test" element={<EmailTest />} />
