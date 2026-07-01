@@ -11,7 +11,7 @@ export function BookJustin() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50">
       <SEO
         title="Meet Justin | Founder of EquityMD"
-        description="Justin Nassie has been in commercial real estate since 2008, connecting syndicators with accredited investors. Learn his story and book a time to connect."
+        description="Justin Nassie has been in commercial real estate since 2007, connecting syndicators with accredited investors. Learn his story and book a time to connect."
       />
       <Navbar />
 
@@ -48,7 +48,7 @@ export function BookJustin() {
                 </h2>
                 <div className="space-y-4 text-gray-600 leading-relaxed">
                   <p>
-                    I've been in real estate since <strong className="text-gray-900">2008</strong>. I got
+                    I've been in real estate since <strong className="text-gray-900">2007</strong>. I got
                     my start at <strong className="text-gray-900">Sperry Van Ness</strong>, a commercial
                     real estate firm in Irvine, California, where I worked on portfolios worth
                     <strong className="text-gray-900"> over $100 million</strong>.
@@ -84,7 +84,7 @@ export function BookJustin() {
                 {/* Credibility strip */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-100">
                   {[
-                    { icon: Building2, stat: 'Since 2008', desc: 'In commercial real estate' },
+                    { icon: Building2, stat: 'Since 2007', desc: 'In commercial real estate' },
                     { icon: TrendingUp, stat: '$100M+', desc: 'Portfolios at Sperry Van Ness' },
                     { icon: Users, stat: '15 syndicators', desc: 'Backed with investor capital' },
                   ].map((item, i) => (
