@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
@@ -7,8 +7,6 @@ import { Calendar, Clock, Video, CheckCircle2, Building2, Users, TrendingUp } fr
 const BOOKING_URL = 'https://calendar.app.google/8LAesJ7mk4iZrJgv5';
 
 export function BookJustin() {
-  const [, setIframeFailed] = useState(false);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50">
       <SEO
@@ -21,9 +19,11 @@ export function BookJustin() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-600/10 mb-5">
-              <Building2 className="h-8 w-8 text-blue-600" />
-            </div>
+            <img
+              src="/images/justin.jpg"
+              alt="Justin Nassie, Founder of EquityMD"
+              className="w-32 h-32 sm:w-36 sm:h-36 rounded-full object-cover object-top mx-auto mb-5 ring-4 ring-white shadow-lg"
+            />
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
               Meet Justin
             </h1>
@@ -124,28 +124,23 @@ export function BookJustin() {
             ))}
           </div>
 
-          {/* Booking area */}
+          {/* Booking CTA card */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-lg overflow-hidden">
-            <div className="relative">
-              <iframe
-                src={BOOKING_URL}
-                title="Book a meeting with Justin"
-                className="w-full"
-                style={{ height: 720, border: 'none' }}
-                onError={() => setIframeFailed(true)}
-              />
-            </div>
-
-            {/* Always-visible CTA (primary path if Google blocks the iframe) */}
-            <div className="p-8 text-center border-t border-gray-100 bg-gray-50">
-              <p className="text-gray-600 mb-4">
-                Scheduler not loading? Open it in a new tab:
+            <div className="p-10 text-center bg-gradient-to-br from-blue-600 to-indigo-600">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/15 mb-4">
+                <Calendar className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Grab a time on my calendar
+              </h3>
+              <p className="text-blue-100 mb-6 max-w-md mx-auto">
+                Click below to see my availability and pick a slot that works for you.
               </p>
               <a
                 href={BOOKING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3.5 rounded-lg transition shadow-sm"
+                className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-blue-700 font-semibold px-8 py-3.5 rounded-lg transition shadow-md"
               >
                 <Calendar className="h-5 w-5" />
                 Book a Time with Justin
