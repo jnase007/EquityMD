@@ -54,6 +54,11 @@ export function OptimizedImage({
   // Supabase ignores — so full-size originals were being served).
   const optimizedSrc = getOptimizedImageUrl(src, width ? { width, quality: 75 } : { quality: 75 });
 
+  // Default object-fit is cover, but let callers override it (e.g. object-contain
+  // to show the WHOLE property image instead of a cropped/zoomed-in crop).
+  const hasObjectFit = /(^|\s)object-(cover|contain|fill|none|scale-down)(\s|$)/.test(imgClassName);
+  const objectFitClass = hasObjectFit ? '' : 'object-cover';
+
   return (
     <div 
       ref={imgRef}
@@ -96,7 +101,7 @@ export function OptimizedImage({
         <img
           src={optimizedSrc}
           alt={alt}
-          className={`w-full h-full object-cover transition-all duration-500 ${
+          className={`w-full h-full ${objectFitClass} transition-all duration-500 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } ${imgClassName}`}
           onLoad={() => setIsLoaded(true)}

@@ -52,12 +52,12 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
   return (
     <Link to={`/deals/${slug}`} className={`block h-full ${className}`} onClick={handleClick}>
       <div className="group bg-white rounded-2xl shadow-md hover:shadow-2xl ring-1 ring-gray-100 hover:ring-blue-200 transition-all duration-300 ease-out hover:-translate-y-1 h-full flex flex-col overflow-hidden scrollable-card">
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden bg-gray-100">
           <OptimizedImage 
             src={image} 
             alt={title} 
             className="w-full h-56"
-            imgClassName="scale-100 group-hover:scale-105"
+            imgClassName="object-contain scale-100 group-hover:scale-105"
             width={400}
             height={224}
           />
