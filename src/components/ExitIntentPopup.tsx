@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Gift, TrendingUp, Building2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useAuthStore } from '../lib/store';
 
 const STORAGE_KEY = 'equitymd_exit_popup_shown';
 const SHOW_AFTER_DAYS = 7; // Don't show again for 7 days after dismissing
 
 export function ExitIntentPopup() {
+  const { user } = useAuthStore();
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    // Never show the newsletter/deal-alerts popup to logged-in users — they're
+    // already in the system and will receive newsletters directly.
+    if (user) return;
+
     try {
       // Check if we should show the popup
       const lastShown = localStorage.getItem(STORAGE_KEY);
@@ -40,7 +46,7 @@ export function ExitIntentPopup() {
     } catch (err) {
       console.error('ExitIntentPopup error:', err);
     }
-  }, [isVisible]);
+  }, [isVisible, user]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -81,7 +87,8 @@ export function ExitIntentPopup() {
     }
   };
 
-  if (!isVisible) return null;
+  // Belt-and-suspenders: never render for logged-in users.
+  if (user || !isVisible) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
