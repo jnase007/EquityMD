@@ -3,7 +3,10 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { 
   ChevronLeft, Save, AlertCircle, Sparkles, Building, MapPin, 
   DollarSign, FileText, Camera, CheckCircle, Loader2, Plus, 
-  Trash2, Video, Youtube, X, Eye, ArrowLeft, Upload, FileUp
+  Trash2, Video, Youtube, X, Eye, ArrowLeft, Upload, FileUp,
+  Building2, Store, Factory, Cross, GraduationCap, Hotel,
+  Lock, Globe, FolderOpen, ClipboardList, PenLine,
+  BarChart3, TrendingUp, Folder
 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
@@ -27,14 +30,14 @@ interface DealFile {
 }
 
 const PROPERTY_TYPES = [
-  { value: 'Multi-Family', label: 'Multi-Family', icon: '🏢', description: 'Apartment buildings, duplexes, condos' },
-  { value: 'Office', label: 'Office', icon: '🏬', description: 'Commercial office spaces' },
-  { value: 'Retail', label: 'Retail', icon: '🏪', description: 'Shopping centers, storefronts' },
-  { value: 'Industrial', label: 'Industrial', icon: '🏭', description: 'Warehouses, manufacturing' },
-  { value: 'Medical', label: 'Medical', icon: '🏥', description: 'Medical offices, healthcare facilities' },
-  { value: 'Student Housing', label: 'Student Housing', icon: '🎓', description: 'Near universities and colleges' },
-  { value: 'Hospitality', label: 'Hospitality', icon: '🏨', description: 'Hotels, resorts, vacation rentals' },
-  { value: 'Mixed-Use', label: 'Mixed-Use', icon: '🏗️', description: 'Combination of residential & commercial' },
+  { value: 'Multi-Family', label: 'Multi-Family', icon: Building2, description: 'Apartment buildings, duplexes, condos' },
+  { value: 'Office', label: 'Office', icon: Building, description: 'Commercial office spaces' },
+  { value: 'Retail', label: 'Retail', icon: Store, description: 'Shopping centers, storefronts' },
+  { value: 'Industrial', label: 'Industrial', icon: Factory, description: 'Warehouses, manufacturing' },
+  { value: 'Medical', label: 'Medical', icon: Cross, description: 'Medical offices, healthcare facilities' },
+  { value: 'Student Housing', label: 'Student Housing', icon: GraduationCap, description: 'Near universities and colleges' },
+  { value: 'Hospitality', label: 'Hospitality', icon: Hotel, description: 'Hotels, resorts, vacation rentals' },
+  { value: 'Mixed-Use', label: 'Mixed-Use', icon: Building2, description: 'Combination of residential & commercial' },
 ];
 
 const US_STATES = [
@@ -965,12 +968,12 @@ export function EditDeal() {
           {/* Helpful hint */}
           {formData.status === 'draft' && (
             <p className="mt-4 text-sm text-indigo-700 border-t border-indigo-200 pt-3">
-              💡 <strong className="text-indigo-900">Draft deals</strong> are only visible to you. Click "Publish Deal" to make it visible to investors on the Find Deals page.
+              <strong className="text-indigo-900">Draft deals</strong> are only visible to you. Click "Publish Deal" to make it visible to investors on the Find Deals page.
             </p>
           )}
           {formData.status === 'active' && (
             <p className="mt-4 text-sm text-emerald-700 border-t border-indigo-200 pt-3">
-              ✅ <strong className="text-emerald-800">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-700">Find Deals</a> page.
+              <strong className="text-emerald-800">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-700">Find Deals</a> page.
             </p>
           )}
         </div>
@@ -1063,7 +1066,7 @@ export function EditDeal() {
                             : 'border-gray-200 hover:border-emerald-300'
                         }`}
                       >
-                        <span className="text-2xl mb-2 block">{type.icon}</span>
+                        <type.icon className="h-6 w-6 mb-2 block text-gray-700" />
                         <p className="font-semibold text-gray-900 text-sm">{type.label}</p>
                       </button>
                     ))}
@@ -1604,13 +1607,13 @@ export function EditDeal() {
                     <p className="text-sm font-medium text-gray-700 mb-2">Document Category</p>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        { value: 'PPM', label: 'PPM', icon: '📋' },
-                        { value: 'Subscription Agreement', label: 'Subscription', icon: '✍️' },
-                        { value: 'Operating Agreement', label: 'Operating', icon: '📝' },
-                        { value: 'Financial Projections', label: 'Financials', icon: '📊' },
-                        { value: 'Property Report', label: 'Property', icon: '🏢' },
-                        { value: 'Market Analysis', label: 'Market', icon: '📈' },
-                        { value: 'Other Documents', label: 'Other', icon: '📁' },
+                        { value: 'PPM', label: 'PPM', icon: ClipboardList },
+                        { value: 'Subscription Agreement', label: 'Subscription', icon: PenLine },
+                        { value: 'Operating Agreement', label: 'Operating', icon: FileText },
+                        { value: 'Financial Projections', label: 'Financials', icon: BarChart3 },
+                        { value: 'Property Report', label: 'Property', icon: Building2 },
+                        { value: 'Market Analysis', label: 'Market', icon: TrendingUp },
+                        { value: 'Other Documents', label: 'Other', icon: Folder },
                       ].map((cat) => (
                         <button
                           key={cat.value}
@@ -1621,7 +1624,7 @@ export function EditDeal() {
                               : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:bg-blue-50'
                           }`}
                         >
-                          {cat.icon} {cat.label}
+                          <cat.icon className="inline h-4 w-4 mr-1" /> {cat.label}
                         </button>
                       ))}
                     </div>
@@ -1632,14 +1635,14 @@ export function EditDeal() {
                     <div className="space-y-3">
                       <p className="text-sm font-medium text-gray-700">Uploaded Documents ({dealFiles.length})</p>
                       {dealFiles.map((file) => {
-                        const fileIcon = file.file_type?.includes('pdf') ? '📄' : 
-                                        file.file_type?.includes('word') || file.file_type?.includes('document') ? '📝' :
-                                        file.file_type?.includes('excel') || file.file_type?.includes('spreadsheet') ? '📊' :
-                                        file.file_type?.includes('powerpoint') || file.file_type?.includes('presentation') ? '📽️' : '📁';
+                        const FileIcon = file.file_type?.includes('pdf') ? FileText : 
+                                        file.file_type?.includes('word') || file.file_type?.includes('document') ? FileText :
+                                        file.file_type?.includes('excel') || file.file_type?.includes('spreadsheet') ? BarChart3 :
+                                        file.file_type?.includes('powerpoint') || file.file_type?.includes('presentation') ? Video : Folder;
                         return (
                           <div key={file.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-4">
-                              <div className="text-3xl">{fileIcon}</div>
+                              <FileIcon className="h-7 w-7 text-gray-600" />
                               <div>
                                 <p className="font-medium text-gray-900">{file.file_name}</p>
                                 <div className="flex items-center gap-2 mt-1">
@@ -1649,7 +1652,7 @@ export function EditDeal() {
                                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                                     file.is_private ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
                                   }`}>
-                                    {file.is_private ? '🔒 Private' : '🌐 Public'}
+                                    {file.is_private ? <><Lock className="inline h-3 w-3 mr-0.5" /> Private</> : <><Globe className="inline h-3 w-3 mr-0.5" /> Public</>}
                                   </span>
                                 </div>
                               </div>
@@ -1671,7 +1674,7 @@ export function EditDeal() {
                                 }`}
                                 title={file.is_private ? 'Make public' : 'Make private'}
                               >
-                                {file.is_private ? '🌐' : '🔒'}
+                                {file.is_private ? <Globe className="h-5 w-5" /> : <Lock className="h-5 w-5" />}
                               </button>
                               <button
                                 onClick={() => deleteDocument(file.id, file.file_url)}
@@ -1687,7 +1690,7 @@ export function EditDeal() {
                     </div>
                   ) : (
                     <div className="text-center py-8 bg-white/50 rounded-xl border border-dashed border-blue-200">
-                      <div className="text-4xl mb-2">📂</div>
+                      <FolderOpen className="h-9 w-9 mb-2 mx-auto text-gray-400" />
                       <p className="font-medium text-gray-700">No documents uploaded yet</p>
                       <p className="text-sm text-gray-500">Drag & drop or click above to upload your first document</p>
                     </div>

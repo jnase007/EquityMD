@@ -692,7 +692,7 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
               </div>
             </div>
             {pendingDeals.length === 0 && !pendingLoading ? (
-              <div className="p-8 text-center text-sm text-gray-500">Nothing waiting — no deals pending review. 🎉</div>
+              <div className="p-8 text-center text-sm text-gray-500">Nothing waiting — no deals pending review.</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">

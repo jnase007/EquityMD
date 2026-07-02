@@ -10,7 +10,7 @@ interface ProfileCompletionCardProps {
 export function ProfileCompletionCard({ completion, userType }: ProfileCompletionCardProps) {
   const { percentage, completedFields, totalFields, nextSteps } = completion;
   const badgeColor = getCompletionBadgeColor(percentage);
-  const badgeIcon = getCompletionBadgeIcon(percentage);
+  const BadgeIcon = getCompletionBadgeIcon(percentage);
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg p-6 border border-blue-200">
@@ -28,7 +28,7 @@ export function ProfileCompletionCard({ completion, userType }: ProfileCompletio
         </div>
         
         <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${badgeColor}`}>
-          <span className="mr-1">{badgeIcon}</span>
+          <BadgeIcon className="h-3.5 w-3.5 mr-1" />
           {percentage}%
         </div>
       </div>
@@ -70,7 +70,7 @@ export function ProfileCompletionCard({ completion, userType }: ProfileCompletio
         <div className="flex items-center text-sm text-green-700 bg-green-50 rounded-lg p-3">
           <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
           <span className="font-medium">
-            🎉 Profile Complete! You're ready to {userType === 'investor' ? 'explore deals' : 'list your deals'}.
+            Profile Complete! You're ready to {userType === 'investor' ? 'explore deals' : 'list your deals'}.
           </span>
         </div>
       )}

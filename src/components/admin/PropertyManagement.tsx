@@ -129,7 +129,7 @@ export function PropertyManagement() {
         body: {
           to: deal.syndicator?.company_name ? undefined : undefined, // We don't have syndicator email easily
           type: 'custom',
-          subject: `✅ Your deal "${deal.title}" has been approved!`,
+          subject: `Your deal "${deal.title}" has been approved!`,
           content: `Your deal "${deal.title}" is now live on EquityMD and visible to investors.`
         }
       });

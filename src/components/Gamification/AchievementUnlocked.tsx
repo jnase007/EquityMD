@@ -11,14 +11,14 @@ interface AchievementUnlockedProps {
 
 // Varied button texts for more engagement
 const CELEBRATION_BUTTONS = [
-  "Awesome! 🎉",
-  "Let's Go! 🚀",
-  "Nice! 💪",
-  "Sweet! ✨",
-  "Woohoo! 🙌",
-  "Keep Going! 🔥",
-  "Crushing It! 💥",
-  "Amazing! ⭐",
+  "Awesome!",
+  "Let's Go!",
+  "Nice!",
+  "Sweet!",
+  "Woohoo!",
+  "Keep Going!",
+  "Crushing It!",
+  "Amazing!",
 ];
 
 export function AchievementUnlocked({ achievement, onClose, onContinue }: AchievementUnlockedProps) {
@@ -126,13 +126,13 @@ export function AchievementUnlocked({ achievement, onClose, onContinue }: Achiev
         {/* Content */}
         <div className="text-center mt-4">
           <p className={`text-sm font-medium ${colors.text} mb-2 uppercase tracking-wider`}>
-            🎊 Achievement Unlocked! 🎊
+            Achievement Unlocked!
           </p>
           
           {/* Achievement icon */}
           <div className="relative inline-block mb-4">
-            <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur flex items-center justify-center text-5xl shadow-lg animate-bounce-slow">
-              {achievement.icon}
+            <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur flex items-center justify-center shadow-lg animate-bounce-slow">
+              <Trophy className="h-12 w-12 text-white" />
             </div>
             {(achievement.rarity === 'legendary' || achievement.rarity === 'epic') && (
               <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-yellow-300 animate-spin-slow" />
@@ -275,7 +275,7 @@ export function LevelUpCelebration({ newLevel, onClose }: LevelUpProps) {
         </button>
         
         <div className="text-center">
-          <div className="text-6xl mb-4 animate-bounce">{newLevel.icon}</div>
+          <div className="mb-4 animate-bounce flex justify-center"><Trophy className="h-16 w-16 text-white" /></div>
           <p className="text-purple-200 text-sm font-medium uppercase tracking-wider mb-2">
             Level Up!
           </p>

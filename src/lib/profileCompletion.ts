@@ -1,4 +1,6 @@
 import type { Profile } from '../types/database';
+import type { LucideIcon } from 'lucide-react';
+import { Check, Zap, TrendingUp, Rocket } from 'lucide-react';
 
 export interface ProfileCompletionResult {
   percentage: number;
@@ -203,9 +205,9 @@ export function getCompletionBadgeColor(percentage: number): string {
   return 'bg-red-100 text-red-800 border-red-200';
 }
 
-export function getCompletionBadgeIcon(percentage: number): string {
-  if (percentage >= 80) return '✓';
-  if (percentage >= 60) return '⚡';
-  if (percentage >= 40) return '��';
-  return '🚀';
-} 
+export function getCompletionBadgeIcon(percentage: number): LucideIcon {
+  if (percentage >= 80) return Check;
+  if (percentage >= 60) return Zap;
+  if (percentage >= 40) return TrendingUp;
+  return Rocket;
+}

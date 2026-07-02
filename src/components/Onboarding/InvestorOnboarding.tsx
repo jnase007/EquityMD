@@ -4,7 +4,8 @@ import {
   ChevronLeft, ChevronRight, Check, Loader2, TrendingUp,
   Shield, DollarSign, MapPin, Target, User, Mail, Lock,
   Building2, Briefcase, Clock, AlertCircle, Eye, EyeOff,
-  CheckCircle, Sparkles, Home
+  CheckCircle, Sparkles, Home,
+  Building, Store, Factory, Cross, Hotel
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
@@ -17,12 +18,12 @@ const INVESTMENT_RANGES = [
 ];
 
 const PROPERTY_TYPES = [
-  { value: 'Multi-Family', label: 'Multi-Family', icon: '🏢' },
-  { value: 'Office', label: 'Office', icon: '🏬' },
-  { value: 'Retail', label: 'Retail', icon: '🏪' },
-  { value: 'Industrial', label: 'Industrial', icon: '🏭' },
-  { value: 'Medical', label: 'Medical', icon: '🏥' },
-  { value: 'Hospitality', label: 'Hospitality', icon: '🏨' },
+  { value: 'Multi-Family', label: 'Multi-Family', icon: Building2 },
+  { value: 'Office', label: 'Office', icon: Building },
+  { value: 'Retail', label: 'Retail', icon: Store },
+  { value: 'Industrial', label: 'Industrial', icon: Factory },
+  { value: 'Medical', label: 'Medical', icon: Cross },
+  { value: 'Hospitality', label: 'Hospitality', icon: Hotel },
 ];
 
 const INVESTMENT_GOALS = [
@@ -448,7 +449,7 @@ export function InvestorOnboarding() {
                           : 'border-slate-600 hover:border-slate-500'
                       }`}
                     >
-                      <span className="text-2xl block mb-1">{type.icon}</span>
+                      <type.icon className="h-6 w-6 mx-auto mb-1 text-slate-300" />
                       <span className={`text-xs font-medium ${
                         formData.propertyTypes.includes(type.value) ? 'text-blue-400' : 'text-slate-300'
                       }`}>

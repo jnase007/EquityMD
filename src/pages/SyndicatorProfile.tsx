@@ -881,7 +881,7 @@ export function SyndicatorProfile() {
                       }`}>
                         {syndicator.bbb_rating}
                         {syndicator.bbb_accredited && (
-                          <span className="ml-1 text-xs">Accredited ✓</span>
+                          <span className="ml-1 text-xs">Accredited</span>
                         )}
                       </span>
                     </div>

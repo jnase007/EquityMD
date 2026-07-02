@@ -4,19 +4,20 @@ import {
   ChevronLeft, ChevronRight, Check, Loader2, Building2,
   User, Mail, Lock, Globe, MapPin, Briefcase, Award,
   AlertCircle, Eye, EyeOff, CheckCircle, Sparkles, 
-  DollarSign, Users, Target, TrendingUp
+  DollarSign, Users, Target, TrendingUp,
+  Building, Store, Factory, Cross, Hotel, GraduationCap
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const SPECIALTIES = [
-  { value: 'Multi-Family', label: 'Multi-Family', icon: '🏢' },
-  { value: 'Office', label: 'Office', icon: '🏬' },
-  { value: 'Retail', label: 'Retail', icon: '🏪' },
-  { value: 'Industrial', label: 'Industrial', icon: '🏭' },
-  { value: 'Medical', label: 'Medical', icon: '🏥' },
-  { value: 'Hospitality', label: 'Hospitality', icon: '🏨' },
-  { value: 'Mixed-Use', label: 'Mixed-Use', icon: '🏗️' },
-  { value: 'Student Housing', label: 'Student Housing', icon: '🎓' },
+  { value: 'Multi-Family', label: 'Multi-Family', icon: Building2 },
+  { value: 'Office', label: 'Office', icon: Building },
+  { value: 'Retail', label: 'Retail', icon: Store },
+  { value: 'Industrial', label: 'Industrial', icon: Factory },
+  { value: 'Medical', label: 'Medical', icon: Cross },
+  { value: 'Hospitality', label: 'Hospitality', icon: Hotel },
+  { value: 'Mixed-Use', label: 'Mixed-Use', icon: Building2 },
+  { value: 'Student Housing', label: 'Student Housing', icon: GraduationCap },
 ];
 
 const DEAL_VOLUME_RANGES = [
@@ -547,7 +548,7 @@ export function SyndicatorOnboarding() {
                             : 'border-slate-600 hover:border-slate-500'
                         }`}
                       >
-                        <span className="text-xl block mb-1">{specialty.icon}</span>
+                        <specialty.icon className="h-5 w-5 mx-auto mb-1 text-slate-300" />
                         <span className={`text-xs font-medium ${
                           formData.specialties.includes(specialty.value) ? 'text-emerald-400' : 'text-slate-300'
                         }`}>

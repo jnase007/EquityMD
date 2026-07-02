@@ -114,7 +114,7 @@ export function DealQA({ dealId, syndicatorId }: DealQAProps) {
 
       if (error) throw error;
 
-      toast.success('Question submitted! 🎉');
+      toast.success('Question submitted!');
       setNewQuestion('');
       fetchQuestions();
     } catch (error) {
@@ -148,7 +148,7 @@ export function DealQA({ dealId, syndicatorId }: DealQAProps) {
           .eq('id', questionId);
       }
 
-      toast.success('Answer posted! ✅');
+      toast.success('Answer posted!');
       setNewAnswer(prev => ({ ...prev, [questionId]: '' }));
       fetchQuestions();
     } catch (error) {

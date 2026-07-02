@@ -290,7 +290,7 @@ function AchievementRow({ achievement }: { achievement: Achievement }) {
           ? 'bg-gradient-to-br from-gray-100 to-gray-200' 
           : 'bg-gray-200 grayscale'
       }`}>
-        {isUnlocked ? achievement.icon : <Lock className="h-6 w-6 text-gray-400" />}
+        {isUnlocked ? <Trophy className="h-6 w-6 text-gray-600" /> : <Lock className="h-6 w-6 text-gray-400" />}
       </div>
       
       {/* Content */}

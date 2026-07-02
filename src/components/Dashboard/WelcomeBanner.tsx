@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   X, Camera, Search, Heart, Plus, 
-  ArrowRight, Sparkles, Target, Users
+  ArrowRight, Sparkles, Target, Users, Check
 } from 'lucide-react';
 import { useAuthStore } from '../../lib/store';
 
@@ -92,7 +92,7 @@ export function WelcomeBanner({ userType, userName, onDismiss }: WelcomeBannerPr
           </div>
           <div>
             <h2 className="text-2xl font-bold">
-              Welcome, {userName}! 🎉
+              Welcome, {userName}!
             </h2>
             <p className="text-blue-100">
               Here's how to get started
@@ -196,11 +196,11 @@ export function ProfileNudge({ percentage, onClick }: { percentage: number; onCl
         {/* Benefits */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="text-emerald-500">✓</span>
+            <Check className="h-4 w-4 text-emerald-500" />
             Get verified badge at 80%
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="text-emerald-500">✓</span>
+            <Check className="h-4 w-4 text-emerald-500" />
             More relevant deal listings
           </div>
         </div>

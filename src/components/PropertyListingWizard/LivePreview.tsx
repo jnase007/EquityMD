@@ -99,7 +99,7 @@ export function LivePreview({ formData, syndicatorName }: LivePreviewProps) {
           {/* Property Type Badge */}
           {propertyType && (
             <div className="absolute top-3 left-3 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full text-sm font-medium text-gray-800 shadow-lg flex items-center gap-1.5">
-              <span>{propertyType.icon}</span>
+              <propertyType.icon className="h-4 w-4" />
               {propertyType.label}
             </div>
           )}

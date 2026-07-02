@@ -152,7 +152,7 @@ export function VerificationUpload({ syndicatorId, verificationStatus, onStatusC
 
       <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-3 mb-6">
         <p className="text-blue-300 text-sm">
-          🇺🇸 EquityMD is currently available for US-based entities only.
+          EquityMD is currently available for US-based entities only.
         </p>
       </div>
 

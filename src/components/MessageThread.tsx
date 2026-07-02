@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { formatDistanceToNow, format, isToday, isYesterday } from 'date-fns';
-import { Send, Building2, User, Check, CheckCheck, Smile, Paperclip, Mic, MoreVertical, Reply, Copy, Trash2, Image } from 'lucide-react';
+import { Send, Building2, User, Check, CheckCheck, Smile, Paperclip, Mic, MoreVertical, Reply, Copy, Trash2, Image, Hand, Calendar, BarChart3, HelpCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 
@@ -34,10 +34,10 @@ interface MessageThreadProps {
 
 // Quick reply templates
 const quickReplies = [
-  { id: 1, text: "Thanks for reaching out! I'll review and get back to you shortly.", icon: "👋" },
-  { id: 2, text: "I'm interested in learning more. When would be a good time to connect?", icon: "📅" },
-  { id: 3, text: "Could you please send me the investment deck?", icon: "📊" },
-  { id: 4, text: "Thank you for the information. I need some time to review.", icon: "🤔" },
+  { id: 1, text: "Thanks for reaching out! I'll review and get back to you shortly.", icon: Hand },
+  { id: 2, text: "I'm interested in learning more. When would be a good time to connect?", icon: Calendar },
+  { id: 3, text: "Could you please send me the investment deck?", icon: BarChart3 },
+  { id: 4, text: "Thank you for the information. I need some time to review.", icon: HelpCircle },
 ];
 
 export function MessageThread({ 
@@ -546,7 +546,7 @@ export function MessageThread({
                 onClick={() => handleQuickReply(reply.text)}
                 className="text-left p-3 bg-gray-50 hover:bg-blue-50 rounded-xl text-sm text-gray-700 hover:text-blue-700 transition-colors border border-gray-100 hover:border-blue-200"
               >
-                <span className="mr-2">{reply.icon}</span>
+                <reply.icon className="inline h-4 w-4 mr-2" />
                 {reply.text.substring(0, 50)}...
               </button>
             ))}

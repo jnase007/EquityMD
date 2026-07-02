@@ -3,7 +3,7 @@ import {
   Sparkles, CheckCircle, AlertCircle, X, Loader2, 
   Image, FileText, Video, MapPin, DollarSign, TrendingUp,
   Building, Calendar, Users, Award, ChevronDown, ChevronUp,
-  Lightbulb, Target, Brain
+  Lightbulb, Target, Brain, AlertTriangle, Star, ThumbsUp
 } from 'lucide-react';
 
 interface DealData {
@@ -228,18 +228,18 @@ export function DealQualityChecker({ formData, media, files, onClose }: DealQual
   // Get status color and label
   const getStatus = () => {
     if (requiredPassed < requiredChecks.length) {
-      return { color: 'red', label: 'Needs Work', emoji: '⚠️' };
+      return { color: 'red', label: 'Needs Work', Icon: AlertTriangle };
     }
     if (percentage >= 90) {
-      return { color: 'green', label: 'Excellent', emoji: '🌟' };
+      return { color: 'green', label: 'Excellent', Icon: Star };
     }
     if (percentage >= 70) {
-      return { color: 'emerald', label: 'Good', emoji: '✅' };
+      return { color: 'emerald', label: 'Good', Icon: CheckCircle };
     }
     if (percentage >= 50) {
-      return { color: 'amber', label: 'Fair', emoji: '👍' };
+      return { color: 'amber', label: 'Fair', Icon: ThumbsUp };
     }
-    return { color: 'orange', label: 'Needs Improvement', emoji: '📝' };
+    return { color: 'orange', label: 'Needs Improvement', Icon: FileText };
   };
 
   const status = getStatus();
@@ -342,7 +342,7 @@ Format each suggestion as a brief tip (1-2 sentences). Start each with an emoji.
                   status.color === 'orange' ? 'bg-orange-100 text-orange-700' :
                   'bg-red-100 text-red-700'
                 }`}>
-                  {status.emoji} {status.label}
+                  <status.Icon className="inline h-4 w-4 mr-1" /> {status.label}
                 </span>
               </h3>
               <p className="text-sm text-gray-500">

@@ -223,7 +223,7 @@ export function SyndicatorSetup() {
       });
       
       console.log('Profile created successfully!');
-      toast.success('Profile created successfully! 🎉');
+      toast.success('Profile created successfully!');
       setStep('success');
       
     } catch (error: any) {
@@ -313,7 +313,7 @@ export function SyndicatorSetup() {
               <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Building2 className="h-10 w-10" />
               </div>
-              <h1 className="text-3xl font-bold mb-3">Welcome, Syndicator! 🎉</h1>
+              <h1 className="text-3xl font-bold mb-3">Welcome, Syndicator!</h1>
               <p className="text-xl text-blue-100">Let's set up your business profile</p>
             </div>
             
@@ -705,7 +705,7 @@ export function SyndicatorSetup() {
               <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="h-10 w-10" />
               </div>
-              <h1 className="text-3xl font-bold mb-3">Your Profile is Live! 🎉</h1>
+              <h1 className="text-3xl font-bold mb-3">Your Profile is Live!</h1>
               <p className="text-xl text-green-100">Welcome to the EquityMD syndicator community</p>
             </div>
             

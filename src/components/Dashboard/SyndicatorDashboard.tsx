@@ -220,7 +220,7 @@ export function SyndicatorDashboard() {
             user_id: request.investor.id,
             type: 'investment_status',
             title: newStatus === 'approved' 
-              ? '🎉 Investment Request Approved!' 
+              ? 'Investment Request Approved!' 
               : 'Investment Request Update',
             content: newStatus === 'approved'
               ? `Your investment request of ${formatCurrency(request.amount)} for ${request.deal?.title} has been approved!`
@@ -236,7 +236,7 @@ export function SyndicatorDashboard() {
 
       toast.success(
         newStatus === 'approved' 
-          ? '✅ Investment request approved!' 
+          ? 'Investment request approved!' 
           : 'Investment request declined'
       );
 
@@ -308,7 +308,7 @@ export function SyndicatorDashboard() {
         company_description: editForm.companyDescription.trim(),
       });
       setShowEditBusiness(false);
-      toast.success('Business profile updated! ✨');
+      toast.success('Business profile updated!');
     } catch (error: any) {
       console.error('Error updating business:', error);
       toast.error('Failed to update business profile');
@@ -329,7 +329,7 @@ export function SyndicatorDashboard() {
 
       setSyndicator({ ...syndicator, company_logo_url: url });
       setShowLogoUpload(false);
-      toast.success('Logo updated! 🎨');
+      toast.success('Logo updated!');
     } catch (error) {
       console.error('Error updating logo:', error);
       toast.error('Failed to update logo');
@@ -375,9 +375,9 @@ export function SyndicatorDashboard() {
             <div className="mt-10 pt-8 border-t border-white/20">
               <p className="text-purple-200 text-sm mb-4">What you'll get:</p>
               <div className="flex flex-wrap justify-center gap-4">
-                <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Business Profile</span>
-                <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Deal Listings</span>
-                <span className="bg-white/10 px-4 py-2 rounded-full text-sm">✓ Investor Connections</span>
+                <span className="bg-white/10 px-4 py-2 rounded-full text-sm inline-flex items-center gap-1.5"><CheckCircle className="h-4 w-4" /> Business Profile</span>
+                <span className="bg-white/10 px-4 py-2 rounded-full text-sm inline-flex items-center gap-1.5"><CheckCircle className="h-4 w-4" /> Deal Listings</span>
+                <span className="bg-white/10 px-4 py-2 rounded-full text-sm inline-flex items-center gap-1.5"><CheckCircle className="h-4 w-4" /> Investor Connections</span>
               </div>
             </div>
             
@@ -1150,7 +1150,7 @@ export function SyndicatorDashboard() {
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <p className="font-medium text-purple-900">
-                  {integrationsNotify ? "You're on the list! 🎉" : "Want to be notified when integrations launch?"}
+                  {integrationsNotify ? "You're on the list!" : "Want to be notified when integrations launch?"}
                 </p>
                 <p className="text-sm text-purple-700">
                   {integrationsNotify 

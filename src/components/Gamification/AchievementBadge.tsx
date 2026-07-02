@@ -1,5 +1,5 @@
 import React from 'react';
-import { Lock, CheckCircle } from 'lucide-react';
+import { Lock, CheckCircle, Trophy, Sparkles } from 'lucide-react';
 import { Achievement, getRarityColor } from './types';
 
 interface AchievementBadgeProps {
@@ -60,7 +60,7 @@ export function AchievementBadge({
         `}
       >
         {isUnlocked ? (
-          <span className="drop-shadow-sm">{achievement.icon}</span>
+          <Trophy className={`${size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6'} text-current drop-shadow-sm`} />
         ) : (
           <Lock className={`${size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6'} text-gray-400`} />
         )}
@@ -76,7 +76,7 @@ export function AchievementBadge({
       {/* Rarity indicator for legendary */}
       {isUnlocked && achievement.rarity === 'legendary' && (
         <div className="absolute -top-1 -right-1">
-          <span className="text-xs">✨</span>
+          <Sparkles className="h-3 w-3 text-yellow-400" />
         </div>
       )}
       
@@ -168,10 +168,10 @@ export function AchievementStrip({ achievements, maxDisplay = 5 }: AchievementSt
       {displayAchievements.map((achievement) => (
         <div 
           key={achievement.id}
-          className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-sm"
+          className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center"
           title={achievement.title}
         >
-          {achievement.icon}
+          <Trophy className="h-4 w-4 text-gray-500" />
         </div>
       ))}
       {moreCount > 0 && (

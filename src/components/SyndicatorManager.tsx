@@ -316,7 +316,7 @@ export function SyndicatorManager({
             
             <div className="mt-4 p-3 bg-white/70 rounded-xl border border-purple-100">
               <p className="text-sm text-gray-600">
-                <span className="font-medium text-purple-700">💡 Next:</span> You'll add your logo, description, and track record to complete your profile.
+                <span className="font-medium text-purple-700">Next:</span> You'll add your logo, description, and track record to complete your profile.
               </p>
             </div>
           </div>
@@ -465,7 +465,7 @@ export function SyndicatorManager({
             {(!primarySyndicator.company_logo_url || !primarySyndicator.company_description) && (
               <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl">
                 <p className="text-sm text-emerald-800">
-                  <span className="font-semibold">💡 Pro tip:</span> Completing your profile increases your chances of getting verified and appearing in featured listings.
+                  <span className="font-semibold">Pro tip:</span> Completing your profile increases your chances of getting verified and appearing in featured listings.
                 </p>
               </div>
             )}

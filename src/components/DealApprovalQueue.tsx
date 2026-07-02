@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Clock, AlertCircle, Building2, ExternalLink, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, AlertCircle, Building2, ExternalLink, Loader2, MapPin, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
@@ -218,9 +218,9 @@ export function DealApprovalQueue() {
                       {(deal.syndicator as any).company_name}
                     </span>
                   )}
-                  {deal.location && <span>📍 {deal.location}</span>}
-                  {deal.property_type && <span>🏢 {deal.property_type}</span>}
-                  <span>📅 {new Date(deal.created_at).toLocaleDateString()}</span>
+                  {deal.location && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {deal.location}</span>}
+                  {deal.property_type && <span className="inline-flex items-center gap-1"><Building2 className="h-3.5 w-3.5" /> {deal.property_type}</span>}
+                  <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {new Date(deal.created_at).toLocaleDateString()}</span>
                 </div>
                 {deal.approval_notes && (
                   <div className="mt-2 text-sm text-red-600 bg-red-50 rounded px-3 py-1 inline-block">

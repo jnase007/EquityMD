@@ -38,8 +38,8 @@ export function ProgressCard({
       } px-6 py-5 text-white`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center text-3xl">
-              {currentLevel.icon}
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
+              <Trophy className="h-7 w-7 text-white" />
             </div>
             <div>
               <p className="text-white/70 text-sm font-medium">Level {currentLevel.level}</p>
@@ -142,7 +142,7 @@ export function LevelBadge({ points, role, size = 'md' }: LevelBadgeProps) {
       level.level <= 4 ? 'from-blue-100 to-indigo-100 text-blue-700' :
       'from-purple-100 to-pink-100 text-purple-700'
     } rounded-full ${sizeClasses[size]}`}>
-      <span className={iconSizes[size]}>{level.icon}</span>
+      <Trophy className={iconSizes[size]} />
       <span className="font-medium">Lvl {level.level}</span>
     </div>
   );

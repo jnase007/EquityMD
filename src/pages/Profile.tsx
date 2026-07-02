@@ -438,7 +438,7 @@ const EnhancedProfileCompletionCard = ({
             <div className="flex items-center">
               <CheckCircle className={`text-green-600 mr-1 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
               <span className={`font-medium text-green-800 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                {isMobile ? 'Complete!' : 'Complete! 🎉'}
+                {isMobile ? 'Complete!' : 'Complete!'}
               </span>
             </div>
           )}
@@ -517,7 +517,7 @@ const EnhancedProfileCompletionCard = ({
             </div>
             {isComplete && (
               <div className="absolute -top-1 -right-1">
-                <span className="text-2xl">🎉</span>
+                <CheckCircle className="h-6 w-6 text-green-500 fill-white" />
               </div>
             )}
           </div>
@@ -528,7 +528,7 @@ const EnhancedProfileCompletionCard = ({
           <div className="mt-3 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg flex items-center gap-2">
             <Award className="h-5 w-5 text-emerald-600 flex-shrink-0" />
             <span className="text-sm font-medium text-emerald-800">
-              🏆 Verified badge unlocked! Complete remaining fields to stand out.
+              Verified badge unlocked! Complete remaining fields to stand out.
             </span>
           </div>
         )}
@@ -538,7 +538,7 @@ const EnhancedProfileCompletionCard = ({
           <div className="mt-3 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg flex items-center gap-2">
             <Target className="h-5 w-5 text-amber-600 flex-shrink-0" />
             <span className="text-sm font-medium text-amber-800">
-              💡 Just {80 - percentage}% more to unlock the Verified badge!
+              Just {80 - percentage}% more to unlock the Verified badge!
             </span>
           </div>
         )}
@@ -548,7 +548,7 @@ const EnhancedProfileCompletionCard = ({
           <div className="mt-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-blue-600 flex-shrink-0" />
             <span className="text-sm font-medium text-blue-800">
-              📈 Profiles with photos get <strong>3x more views</strong> from {isSyndicator ? 'investors' : 'syndicators'}!
+              Profiles with photos get <strong>3x more views</strong> from {isSyndicator ? 'investors' : 'syndicators'}!
             </span>
           </div>
         )}
@@ -580,7 +580,7 @@ const EnhancedProfileCompletionCard = ({
                 <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
               <div>
-                <p className="font-semibold text-green-800">Profile Complete! 🎉</p>
+                <p className="font-semibold text-green-800">Profile Complete!</p>
                 <p className="text-sm text-green-600">You're ready to get verified and attract more {isSyndicator ? 'investors' : 'opportunities'}!</p>
               </div>
             </div>
@@ -789,7 +789,6 @@ export function Profile() {
         }, 3000);
         
         toast.success(`Scrolled to ${field} section`, {
-          icon: '📍',
           duration: 2000,
         });
       }
@@ -896,7 +895,7 @@ export function Profile() {
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg shadow-md p-6 animate-fade-in">
               <div className="flex items-center">
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold mb-2">Welcome to EquityMD! 🎉</h2>
+                  <h2 className="text-2xl font-bold mb-2">Welcome to EquityMD!</h2>
                   <p className="text-blue-100 mb-3">
                     You're just a few steps away from {profile.user_type === 'investor' 
                       ? 'discovering exclusive real estate investment opportunities'
@@ -984,7 +983,7 @@ export function Profile() {
               <div className="flex items-center">
                 <TrendingUp className="h-5 w-5 text-green-600 mr-2" />
                 <span className="text-sm font-medium text-green-800">
-                  Multifamily properties are trending! 📈 Complete your property preferences to see matching deals.
+                  Multifamily properties are trending! Complete your property preferences to see matching deals.
                 </span>
               </div>
             </div>

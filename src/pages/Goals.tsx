@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { InvestmentGoals } from '../components/InvestmentGoals';
-import { ArrowLeft, Target } from 'lucide-react';
+import { ArrowLeft, Target, BarChart3, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export function Goals() {
@@ -43,21 +43,21 @@ export function Goals() {
           {/* Tips Section */}
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-white rounded-xl border border-gray-200">
-              <div className="text-2xl mb-2">🎯</div>
+              <Target className="h-6 w-6 mb-2 text-gray-700" />
               <h3 className="font-medium text-gray-900 mb-1">Set SMART Goals</h3>
               <p className="text-sm text-gray-500">
                 Specific, Measurable, Achievable, Relevant, and Time-bound goals lead to better outcomes.
               </p>
             </div>
             <div className="p-4 bg-white rounded-xl border border-gray-200">
-              <div className="text-2xl mb-2">📊</div>
+              <BarChart3 className="h-6 w-6 mb-2 text-gray-700" />
               <h3 className="font-medium text-gray-900 mb-1">Diversify</h3>
               <p className="text-sm text-gray-500">
                 Spread investments across different property types, markets, and syndicators.
               </p>
             </div>
             <div className="p-4 bg-white rounded-xl border border-gray-200">
-              <div className="text-2xl mb-2">⏳</div>
+              <Clock className="h-6 w-6 mb-2 text-gray-700" />
               <h3 className="font-medium text-gray-900 mb-1">Stay Consistent</h3>
               <p className="text-sm text-gray-500">
                 Regular investing over time can help smooth out market volatility.

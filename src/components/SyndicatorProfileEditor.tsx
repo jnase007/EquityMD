@@ -120,9 +120,8 @@ export function SyndicatorProfileEditor({ syndicator, onSave, onCancel }: Syndic
       if (error) throw error;
 
       // Show success with celebration
-      toast.success('Profile saved successfully! 🎉', {
-        duration: 2000,
-        icon: '✅'
+      toast.success('Profile saved successfully!', {
+        duration: 2000
       });
       
       // Small delay before closing to let user see the success
@@ -141,8 +140,7 @@ export function SyndicatorProfileEditor({ syndicator, onSave, onCancel }: Syndic
     setFormData(prev => ({ ...prev, companyLogoUrl: url }));
     if (url) {
       toast.success('Logo uploaded! Click "Save Changes" to apply.', {
-        duration: 3000,
-        icon: '🖼️'
+        duration: 3000
       });
     }
   };

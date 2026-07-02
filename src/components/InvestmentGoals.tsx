@@ -28,10 +28,10 @@ interface Milestone {
 }
 
 const MILESTONES: Milestone[] = [
-  { percentage: 25, label: 'Quarter Way', icon: <Star className="h-4 w-4" />, celebrationText: 'Great start! 🌟' },
-  { percentage: 50, label: 'Halfway There', icon: <Zap className="h-4 w-4" />, celebrationText: 'Halfway to your goal! ⚡' },
-  { percentage: 75, label: 'Almost There', icon: <Award className="h-4 w-4" />, celebrationText: 'So close! Keep going! 🏆' },
-  { percentage: 100, label: 'Goal Achieved', icon: <Target className="h-4 w-4" />, celebrationText: 'Congratulations! 🎉' },
+  { percentage: 25, label: 'Quarter Way', icon: <Star className="h-4 w-4" />, celebrationText: 'Great start!' },
+  { percentage: 50, label: 'Halfway There', icon: <Zap className="h-4 w-4" />, celebrationText: 'Halfway to your goal!' },
+  { percentage: 75, label: 'Almost There', icon: <Award className="h-4 w-4" />, celebrationText: 'So close! Keep going!' },
+  { percentage: 100, label: 'Goal Achieved', icon: <Target className="h-4 w-4" />, celebrationText: 'Congratulations!' },
 ];
 
 export function InvestmentGoals() {
@@ -252,7 +252,7 @@ export function InvestmentGoals() {
                       <h4 className="font-medium text-gray-900">{goal.title}</h4>
                       {isCompleted && (
                         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
-                          ✓ Complete
+                          Complete
                         </span>
                       )}
                     </div>
@@ -319,7 +319,7 @@ export function InvestmentGoals() {
                   <div className="flex items-center gap-2 text-sm">
                     {nextMilestone.icon}
                     <span className={isCompleted ? 'text-emerald-700' : 'text-gray-600'}>
-                      {isCompleted ? 'Goal achieved! 🎉' : `Next: ${nextMilestone.label} (${nextMilestone.percentage}%)`}
+                      {isCompleted ? 'Goal achieved!' : `Next: ${nextMilestone.label} (${nextMilestone.percentage}%)`}
                     </span>
                   </div>
                   <div className="text-lg font-bold text-gray-900">{progress}%</div>

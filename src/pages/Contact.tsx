@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
-import { Mail, Building2, Send, MessageSquare, Phone, Clock, Sparkles, CheckCircle } from 'lucide-react';
+import { Mail, Building2, Send, MessageSquare, Phone, Clock, Sparkles, CheckCircle, AlertTriangle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
 
@@ -68,7 +68,7 @@ export function Contact() {
         await supabase.functions.invoke('send-email', {
           body: {
             to: 'justin@brandastic.com',
-            subject: `📩 New Contact Form: ${formData.subject || formData.type || 'Inquiry'}`,
+            subject: `New Contact Form: ${formData.subject || formData.type || 'Inquiry'}`,
             content:
               `New contact form submission on EquityMD:\n\n` +
               `Name: ${formData.name}\n` +
@@ -293,7 +293,7 @@ export function Contact() {
 
                 {error && (
                   <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 flex items-center gap-2">
-                    <span className="text-red-500">⚠️</span>
+                    <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0" />
                     {error}
                   </div>
                 )}

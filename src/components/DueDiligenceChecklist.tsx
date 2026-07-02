@@ -214,8 +214,8 @@ export function DueDiligenceChecklist({ dealId, dealTitle, onClose }: DueDiligen
       content += '='.repeat(category.title.length) + '\n';
       
       category.items.forEach(item => {
-        const status = completedItems.has(item.id) ? '✓' : '○';
-        const flag = redFlags.has(item.id) ? ' ⚠️ RED FLAG' : '';
+        const status = completedItems.has(item.id) ? '[x]' : '[ ]';
+        const flag = redFlags.has(item.id) ? ' [RED FLAG]' : '';
         content += `${status} ${item.label}${flag}\n`;
         if (notes[item.id]) {
           content += `   Notes: ${notes[item.id]}\n`;

@@ -471,7 +471,7 @@ export function PropertyListingWizard() {
             body: {
               to: 'justin@brandastic.com',
               type: 'custom',
-              subject: `🔔 New Deal Pending Review: ${formData.title}`,
+              subject: `New Deal Pending Review: ${formData.title}`,
               content: `A new deal has been submitted and needs your approval.\n\nDeal: ${formData.title}\nLocation: ${location}\nSyndicator: ${syndicator?.company_name || 'Unknown'}\nProperty Type: ${formData.propertyType}\n\nLog in to the admin dashboard to review and approve: https://equitymd.com/admin`
             }
           });
@@ -620,7 +620,7 @@ export function PropertyListingWizard() {
                       : 'bg-gray-100 text-gray-400'
                   }`}
                 >
-                  <span className="text-lg">{index < currentStep ? '✓' : step.icon}</span>
+                  <span className="text-lg">{index < currentStep ? <Check className="h-5 w-5" /> : <step.icon className="h-5 w-5" />}</span>
                   <div className="text-left hidden md:block">
                     <div className="text-sm font-semibold">{step.title}</div>
                     <div className={`text-xs ${index === currentStep ? 'text-emerald-100' : 'text-gray-400'}`}>
@@ -804,7 +804,7 @@ export function PropertyListingWizard() {
                               <div className="flex-1">
                                 <p className="font-semibold text-gray-900">{syndicator.company_name}</p>
                                 {syndicator.verification_status === 'verified' && (
-                                  <span className="text-xs text-emerald-600">✓ Verified</span>
+                                  <span className="text-xs text-emerald-600 inline-flex items-center gap-1"><Check className="h-3 w-3" /> Verified</span>
                                 )}
                               </div>
                               {formData.syndicatorId === syndicator.id && (
@@ -861,7 +861,7 @@ export function PropertyListingWizard() {
                                 : 'border-gray-200 hover:border-emerald-300'
                             }`}
                           >
-                            <span className="text-2xl mb-2 block">{type.icon}</span>
+                            <type.icon className="h-6 w-6 mb-2 block text-gray-700" />
                             <p className="font-semibold text-gray-900 text-sm">{type.label}</p>
                             <p className="text-xs text-gray-500 mt-1 line-clamp-2">{type.description}</p>
                           </button>

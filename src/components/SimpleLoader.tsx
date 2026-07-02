@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 interface SimpleLoaderProps {
   text?: string;
@@ -29,7 +30,7 @@ export function SimpleLoader({
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center max-w-md mx-4">
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl">⚠️</span>
+            <AlertTriangle className="h-7 w-7 text-yellow-600" />
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">
             Taking longer than expected

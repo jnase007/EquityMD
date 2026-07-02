@@ -1,4 +1,9 @@
 // Types for the Property Listing Wizard
+import type { LucideIcon } from 'lucide-react';
+import {
+  Building2, Building, Store, Factory, Cross, GraduationCap, Hotel,
+  Home, MapPin, DollarSign, FileText, Camera, CheckCircle
+} from 'lucide-react';
 
 export interface PropertyFormData {
   // Basic Info
@@ -49,18 +54,18 @@ export interface WizardStep {
   id: string;
   title: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
-export const PROPERTY_TYPES = [
-  { value: 'Multi-Family', label: 'Multi-Family', icon: '🏢', description: 'Apartment buildings, duplexes, condos' },
-  { value: 'Office', label: 'Office', icon: '🏬', description: 'Commercial office spaces' },
-  { value: 'Retail', label: 'Retail', icon: '🏪', description: 'Shopping centers, storefronts' },
-  { value: 'Industrial', label: 'Industrial', icon: '🏭', description: 'Warehouses, manufacturing' },
-  { value: 'Medical', label: 'Medical', icon: '🏥', description: 'Medical offices, healthcare facilities' },
-  { value: 'Student Housing', label: 'Student Housing', icon: '🎓', description: 'Near universities and colleges' },
-  { value: 'Hospitality', label: 'Hospitality', icon: '🏨', description: 'Hotels, resorts, vacation rentals' },
-  { value: 'Mixed-Use', label: 'Mixed-Use', icon: '🏗️', description: 'Combination of residential & commercial' },
+export const PROPERTY_TYPES: { value: string; label: string; icon: LucideIcon; description: string }[] = [
+  { value: 'Multi-Family', label: 'Multi-Family', icon: Building2, description: 'Apartment buildings, duplexes, condos' },
+  { value: 'Office', label: 'Office', icon: Building, description: 'Commercial office spaces' },
+  { value: 'Retail', label: 'Retail', icon: Store, description: 'Shopping centers, storefronts' },
+  { value: 'Industrial', label: 'Industrial', icon: Factory, description: 'Warehouses, manufacturing' },
+  { value: 'Medical', label: 'Medical', icon: Cross, description: 'Medical offices, healthcare facilities' },
+  { value: 'Student Housing', label: 'Student Housing', icon: GraduationCap, description: 'Near universities and colleges' },
+  { value: 'Hospitality', label: 'Hospitality', icon: Hotel, description: 'Hotels, resorts, vacation rentals' },
+  { value: 'Mixed-Use', label: 'Mixed-Use', icon: Building2, description: 'Combination of residential & commercial' },
 ];
 
 export const US_STATES = [
@@ -117,12 +122,12 @@ export const US_STATES = [
 ];
 
 export const WIZARD_STEPS: WizardStep[] = [
-  { id: 'basics', title: 'Property Basics', description: 'Name and type', icon: '🏠' },
-  { id: 'location', title: 'Location', description: 'Where is it?', icon: '📍' },
-  { id: 'investment', title: 'Investment Terms', description: 'Financial details', icon: '💰' },
-  { id: 'details', title: 'Description', description: 'Tell your story', icon: '📝' },
-  { id: 'media', title: 'Photos & Media', description: 'Show it off', icon: '📸' },
-  { id: 'review', title: 'Review & Publish', description: 'Final check', icon: '✅' },
+  { id: 'basics', title: 'Property Basics', description: 'Name and type', icon: Home },
+  { id: 'location', title: 'Location', description: 'Where is it?', icon: MapPin },
+  { id: 'investment', title: 'Investment Terms', description: 'Financial details', icon: DollarSign },
+  { id: 'details', title: 'Description', description: 'Tell your story', icon: FileText },
+  { id: 'media', title: 'Photos & Media', description: 'Show it off', icon: Camera },
+  { id: 'review', title: 'Review & Publish', description: 'Final check', icon: CheckCircle },
 ];
 
 export const initialFormData: PropertyFormData = {

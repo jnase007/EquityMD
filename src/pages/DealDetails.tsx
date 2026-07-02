@@ -20,6 +20,8 @@ import {
   Settings,
   Eye,
   Share2,
+  Star,
+  Check,
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -615,7 +617,7 @@ export function DealDetails() {
               <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 border border-blue-100 rounded-2xl shadow-lg p-6">
                 <div className="flex items-center gap-1 mb-4">
                   <div className="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1">
-                    <span>⭐</span> FEATURED
+                    <Star className="h-3.5 w-3.5 fill-current" /> FEATURED
                   </div>
                 </div>
 
@@ -656,7 +658,7 @@ export function DealDetails() {
                       </div>
                     )}
                     <div className="flex items-center text-sm text-gray-500">
-                      <span className="text-yellow-500 mr-1">⭐</span>
+                      <Star className="h-4 w-4 text-yellow-500 fill-current mr-1" />
                       <span className="font-semibold text-gray-900">
                         {deal.syndicator.average_rating?.toFixed(1) || "0"}
                       </span>
@@ -810,7 +812,7 @@ export function DealDetails() {
                 <div className="flex">
                   <AlertCircle className="h-5 w-5 text-green-500 mr-2" />
                   <div className="text-sm text-green-700">
-                    ✓ You're verified as an accredited investor and can invest in this opportunity.
+                    You're verified as an accredited investor and can invest in this opportunity.
                   </div>
                 </div>
               </div>

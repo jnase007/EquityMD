@@ -125,19 +125,19 @@ Your role is to help investors understand what questions to ask and what informa
 
       const userPrompt = `Based on the following deal information, provide an educational analysis to help the investor understand this opportunity. Structure your response with these sections:
 
-1. **📋 Deal Overview** - A brief, neutral summary of what this deal is (2-3 sentences)
+1. **Deal Overview** - A brief, neutral summary of what this deal is (2-3 sentences)
 
-2. **📍 Market Context** - ${marketData ? 'Using the market data provided, explain key factors about this location that investors should understand (population trends, job market, rent trends, etc.). Be factual and neutral.' : 'Note that we don\'t have detailed market data for this specific location - encourage the investor to research local market conditions.'}
+2. **Market Context** - ${marketData ? 'Using the market data provided, explain key factors about this location that investors should understand (population trends, job market, rent trends, etc.). Be factual and neutral.' : 'Note that we don\'t have detailed market data for this specific location - encourage the investor to research local market conditions.'}
 
-3. **✅ Information Provided** - List what information/documents the syndicator HAS included
+3. **Information Provided** - List what information/documents the syndicator HAS included
 
-4. **❓ Information to Request** - List what additional information an investor might want to request before making a decision
+4. **Information to Request** - List what additional information an investor might want to request before making a decision
 
-5. **🔍 Due Diligence Questions** - 5-7 specific questions the investor should consider asking or researching${marketData ? ', including questions specific to this market' : ''}
+5. **Due Diligence Questions** - 5-7 specific questions the investor should consider asking or researching${marketData ? ', including questions specific to this market' : ''}
 
-6. **📊 Key Metrics to Understand** - Explain what the stated metrics (IRR, equity multiple, preferred return) mean in simple terms${marketData ? ', and how they compare to typical cap rates in this market' : ''}
+6. **Key Metrics to Understand** - Explain what the stated metrics (IRR, equity multiple, preferred return) mean in simple terms${marketData ? ', and how they compare to typical cap rates in this market' : ''}
 
-7. **💡 Educational Notes** - Any general educational information about this type of investment and market that would help the investor
+7. **Educational Notes** - Any general educational information about this type of investment and market that would help the investor
 
 Remember: Be helpful and educational, but NEVER tell them what to do. End with a reminder to consult professionals.
 

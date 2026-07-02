@@ -13,41 +13,41 @@ import {
   User, Camera, MapPin, Phone, Mail, Building2, 
   Target, DollarSign, Settings, Shield, ChevronRight,
   Check, AlertCircle, Sparkles, Trophy, Zap, LayoutDashboard,
-  TrendingUp
+  TrendingUp, Building, Store, Factory, Hotel, Package, Trees
 } from 'lucide-react';
 
 // Investment ranges
 const INVESTMENT_RANGES = [
-  { value: '25000-50000', label: '$25K - $50K', emoji: '💰' },
-  { value: '50000-100000', label: '$50K - $100K', emoji: '💵' },
-  { value: '100000-250000', label: '$100K - $250K', emoji: '🏦' },
-  { value: '250000-500000', label: '$250K - $500K', emoji: '💎' },
-  { value: '500000-1000000', label: '$500K - $1M', emoji: '🚀' },
-  { value: '1000000+', label: '$1M+', emoji: '👑' },
+  { value: '25000-50000', label: '$25K - $50K', icon: DollarSign },
+  { value: '50000-100000', label: '$50K - $100K', icon: DollarSign },
+  { value: '100000-250000', label: '$100K - $250K', icon: DollarSign },
+  { value: '250000-500000', label: '$250K - $500K', icon: DollarSign },
+  { value: '500000-1000000', label: '$500K - $1M', icon: DollarSign },
+  { value: '1000000+', label: '$1M+', icon: DollarSign },
 ];
 
 // Property types
 const PROPERTY_TYPES = [
-  { value: 'multifamily', label: 'Multifamily', icon: '🏢' },
-  { value: 'office', label: 'Office', icon: '🏛️' },
-  { value: 'retail', label: 'Retail', icon: '🛍️' },
-  { value: 'industrial', label: 'Industrial', icon: '🏭' },
-  { value: 'mixed-use', label: 'Mixed-Use', icon: '🏙️' },
-  { value: 'self-storage', label: 'Self-Storage', icon: '📦' },
-  { value: 'hospitality', label: 'Hospitality', icon: '🏨' },
-  { value: 'land', label: 'Land', icon: '🌍' },
+  { value: 'multifamily', label: 'Multifamily', icon: Building2 },
+  { value: 'office', label: 'Office', icon: Building },
+  { value: 'retail', label: 'Retail', icon: Store },
+  { value: 'industrial', label: 'Industrial', icon: Factory },
+  { value: 'mixed-use', label: 'Mixed-Use', icon: Building2 },
+  { value: 'self-storage', label: 'Self-Storage', icon: Package },
+  { value: 'hospitality', label: 'Hospitality', icon: Hotel },
+  { value: 'land', label: 'Land', icon: Trees },
 ];
 
 // Preferred markets
 const MARKETS = [
-  { value: 'texas', label: 'Texas', icon: '🤠' },
-  { value: 'florida', label: 'Florida', icon: '🌴' },
-  { value: 'california', label: 'California', icon: '☀️' },
-  { value: 'arizona', label: 'Arizona', icon: '🏜️' },
-  { value: 'georgia', label: 'Georgia', icon: '🍑' },
-  { value: 'tennessee', label: 'Tennessee', icon: '🎸' },
-  { value: 'north-carolina', label: 'North Carolina', icon: '🌲' },
-  { value: 'nationwide', label: 'Nationwide', icon: '🇺🇸' },
+  { value: 'texas', label: 'Texas', icon: MapPin },
+  { value: 'florida', label: 'Florida', icon: MapPin },
+  { value: 'california', label: 'California', icon: MapPin },
+  { value: 'arizona', label: 'Arizona', icon: MapPin },
+  { value: 'georgia', label: 'Georgia', icon: MapPin },
+  { value: 'tennessee', label: 'Tennessee', icon: MapPin },
+  { value: 'north-carolina', label: 'North Carolina', icon: MapPin },
+  { value: 'nationwide', label: 'Nationwide', icon: MapPin },
 ];
 
 type Section = 'profile' | 'investment' | 'settings';
@@ -221,7 +221,7 @@ export function ProfileNew() {
         });
       }
 
-      toast.success('Profile saved! ✨');
+      toast.success('Profile saved!');
     } catch (error: any) {
       console.error('Error saving profile:', error);
       toast.error(error?.message || 'Failed to save profile');
@@ -286,7 +286,7 @@ export function ProfileNew() {
         throw error;
       }
 
-      toast.success('Investment preferences saved! 🎯');
+      toast.success('Investment preferences saved!');
       fetchProfileData();
     } catch (error: any) {
       console.error('Error saving investment profile:', error);
@@ -309,7 +309,7 @@ export function ProfileNew() {
         setProfile({ ...profile, avatar_url: url });
       }
       setShowImageUpload(false);
-      toast.success('Profile photo updated! 📸');
+      toast.success('Profile photo updated!');
     } catch (error) {
       console.error('Error updating avatar:', error);
       toast.error('Failed to update photo');
@@ -561,7 +561,7 @@ export function ProfileNew() {
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
-                          <span className="text-2xl mb-1 block">{range.emoji}</span>
+                          <range.icon className="h-6 w-6 mb-1 mx-auto text-gray-700" />
                           <span className={`text-sm font-medium ${
                             formData.investmentRange === range.value ? 'text-blue-700' : 'text-gray-700'
                           }`}>{range.label}</span>
@@ -589,7 +589,7 @@ export function ProfileNew() {
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
-                          <span className="text-xl block mb-1">{type.icon}</span>
+                          <type.icon className="h-5 w-5 mb-1 mx-auto text-gray-700" />
                           <span className={`text-xs font-medium ${
                             formData.propertyTypes.includes(type.value) ? 'text-blue-700' : 'text-gray-600'
                           }`}>{type.label}</span>
@@ -617,7 +617,7 @@ export function ProfileNew() {
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
-                          <span className="text-xl block mb-1">{market.icon}</span>
+                          <market.icon className="h-5 w-5 mb-1 mx-auto text-gray-700" />
                           <span className={`text-xs font-medium ${
                             formData.markets.includes(market.value) ? 'text-blue-700' : 'text-gray-600'
                           }`}>{market.label}</span>

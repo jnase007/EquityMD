@@ -3,7 +3,8 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { 
   TrendingUp, Building2, ArrowRight, ArrowLeft, Check, 
   DollarSign, MapPin, Target, Briefcase, Users, Sparkles,
-  ChevronRight, Camera, Globe, Zap
+  ChevronRight, Camera, Globe, Zap,
+  Building, Store, Factory, Package, Crown, Trophy, Gem
 } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
@@ -63,31 +64,31 @@ const Confetti = () => (
 
 // Investment range options
 const INVESTMENT_RANGES = [
-  { value: '25000-50000', label: '$25K - $50K', icon: '💵' },
-  { value: '50000-100000', label: '$50K - $100K', icon: '💰' },
-  { value: '100000-250000', label: '$100K - $250K', icon: '💎' },
-  { value: '250000-500000', label: '$250K - $500K', icon: '🏆' },
-  { value: '500000+', label: '$500K+', icon: '👑' },
+  { value: '25000-50000', label: '$25K - $50K', icon: DollarSign },
+  { value: '50000-100000', label: '$50K - $100K', icon: DollarSign },
+  { value: '100000-250000', label: '$100K - $250K', icon: Gem },
+  { value: '250000-500000', label: '$250K - $500K', icon: Trophy },
+  { value: '500000+', label: '$500K+', icon: Crown },
 ];
 
 // Property types
 const PROPERTY_TYPES = [
-  { value: 'multifamily', label: 'Multifamily', icon: '🏢' },
-  { value: 'office', label: 'Office', icon: '🏛️' },
-  { value: 'retail', label: 'Retail', icon: '🏪' },
-  { value: 'industrial', label: 'Industrial', icon: '🏭' },
-  { value: 'mixed-use', label: 'Mixed-Use', icon: '🏗️' },
-  { value: 'self-storage', label: 'Self-Storage', icon: '📦' },
+  { value: 'multifamily', label: 'Multifamily', icon: Building2 },
+  { value: 'office', label: 'Office', icon: Building },
+  { value: 'retail', label: 'Retail', icon: Store },
+  { value: 'industrial', label: 'Industrial', icon: Factory },
+  { value: 'mixed-use', label: 'Mixed-Use', icon: Building2 },
+  { value: 'self-storage', label: 'Self-Storage', icon: Package },
 ];
 
 // Markets
 const MARKETS = [
-  { value: 'texas', label: 'Texas', icon: '🤠' },
-  { value: 'florida', label: 'Florida', icon: '🌴' },
-  { value: 'arizona', label: 'Arizona', icon: '🌵' },
-  { value: 'california', label: 'California', icon: '☀️' },
-  { value: 'georgia', label: 'Georgia', icon: '🍑' },
-  { value: 'nationwide', label: 'Nationwide', icon: '🇺🇸' },
+  { value: 'texas', label: 'Texas', icon: MapPin },
+  { value: 'florida', label: 'Florida', icon: MapPin },
+  { value: 'arizona', label: 'Arizona', icon: MapPin },
+  { value: 'california', label: 'California', icon: MapPin },
+  { value: 'georgia', label: 'Georgia', icon: MapPin },
+  { value: 'nationwide', label: 'Nationwide', icon: MapPin },
 ];
 
 export function Welcome() {
@@ -317,7 +318,7 @@ export function Welcome() {
                   <Sparkles className="h-8 w-8 text-blue-600" />
                 </div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-3">
-                  Welcome to EquityMD! 🎉
+                  Welcome to EquityMD!
                 </h2>
                 <p className="text-lg text-gray-600">
                   What brings you here today?
@@ -333,7 +334,7 @@ export function Welcome() {
                   <div className="absolute top-4 right-4 w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                     <TrendingUp className="h-5 w-5 text-emerald-600" />
                   </div>
-                  <div className="text-4xl mb-4">💰</div>
+                  <DollarSign className="h-10 w-10 mb-4 text-emerald-600" />
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     I Want to Invest
                   </h3>
@@ -353,7 +354,7 @@ export function Welcome() {
                   <div className="absolute top-4 right-4 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Building2 className="h-5 w-5 text-blue-600" />
                   </div>
-                  <div className="text-4xl mb-4">🏢</div>
+                  <Building2 className="h-10 w-10 mb-4 text-blue-600" />
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     I Have Deals to List
                   </h3>
@@ -378,7 +379,7 @@ export function Welcome() {
                 <div className="animate-fade-in">
                   <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      Let's get to know you! 👋
+                      Let's get to know you!
                     </h2>
                     <p className="text-gray-600">This helps us personalize your experience</p>
                   </div>
@@ -413,7 +414,7 @@ export function Welcome() {
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
                           >
-                            <span className="text-2xl">{range.icon}</span>
+                            <range.icon className="h-6 w-6 mx-auto text-gray-700" />
                             <p className="font-semibold text-gray-900 mt-1">{range.label}</p>
                           </button>
                         ))}
@@ -444,7 +445,7 @@ export function Welcome() {
                 <div className="animate-fade-in">
                   <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      What property types interest you? 🏢
+                      What property types interest you?
                     </h2>
                     <p className="text-gray-600">Select all that apply</p>
                   </div>
@@ -464,7 +465,7 @@ export function Welcome() {
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        <span className="text-3xl">{type.icon}</span>
+                        <type.icon className="h-7 w-7 mx-auto text-gray-700" />
                         <p className="font-semibold text-gray-900 mt-2">{type.label}</p>
                         {investorData.propertyTypes.includes(type.value) && (
                           <Check className="h-5 w-5 text-blue-600 mx-auto mt-2" />
@@ -496,7 +497,7 @@ export function Welcome() {
                 <div className="animate-fade-in">
                   <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      Which markets are you interested in? 📍
+                      Which markets are you interested in?
                     </h2>
                     <p className="text-gray-600">Select all that apply</p>
                   </div>
@@ -516,7 +517,7 @@ export function Welcome() {
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        <span className="text-3xl">{market.icon}</span>
+                        <market.icon className="h-7 w-7 mx-auto text-gray-700" />
                         <p className="font-semibold text-gray-900 mt-2">{market.label}</p>
                         {investorData.markets.includes(market.value) && (
                           <Check className="h-5 w-5 text-blue-600 mx-auto mt-2" />
@@ -564,7 +565,7 @@ export function Welcome() {
                 <div className="animate-fade-in">
                   <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      Tell us about you! 👋
+                      Tell us about you!
                     </h2>
                     <p className="text-gray-600">This helps investors know who they're working with</p>
                   </div>
@@ -621,7 +622,7 @@ export function Welcome() {
                 <div className="animate-fade-in">
                   <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      Describe your company 🏢
+                      Describe your company
                     </h2>
                     <p className="text-gray-600">Help investors understand what makes you unique</p>
                   </div>
@@ -638,7 +639,7 @@ export function Welcome() {
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 transition-colors resize-none"
                     />
                     <p className="text-sm text-gray-500 mt-2">
-                      💡 Tip: Mention your years of experience, number of deals, and investment focus
+                      Tip: Mention your years of experience, number of deals, and investment focus
                     </p>
                   </div>
 
@@ -681,7 +682,7 @@ export function Welcome() {
               </div>
               
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                You're All Set! 🎉
+                You're All Set!
               </h2>
               
               <p className="text-lg text-gray-600 mb-6">

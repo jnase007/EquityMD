@@ -59,7 +59,7 @@ export function SmartMatchingCard() {
       if (error) throw error;
       
       setEmailEnabled(!emailEnabled);
-      toast.success(emailEnabled ? 'Deal alerts disabled' : 'Deal alerts enabled! 🎯');
+      toast.success(emailEnabled ? 'Deal alerts disabled' : 'Deal alerts enabled!');
     } catch (error) {
       console.error('Error toggling email alerts:', error);
       toast.error('Failed to update preference');

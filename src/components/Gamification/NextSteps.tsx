@@ -8,7 +8,8 @@ import {
   Sparkles,
   ArrowRight,
   Gift,
-  Target
+  Target,
+  Flame
 } from 'lucide-react';
 import { NextStep } from './types';
 
@@ -126,7 +127,7 @@ function NextStepItem({ step, isFirst = false, onClick }: NextStepItemProps) {
           {step.completed ? (
             <CheckCircle2 className="h-6 w-6 text-emerald-500" />
           ) : (
-            step.icon
+            <Target className="h-6 w-6 text-indigo-500" />
           )}
         </div>
         
@@ -176,7 +177,7 @@ export function InlineNextStep({ step, variant = 'default' }: InlineNextStepProp
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="text-2xl">{step.icon}</div>
+            <Target className="h-6 w-6" />
             <div>
               <p className="font-semibold">{step.title}</p>
               <p className="text-indigo-200 text-sm">{step.description}</p>
@@ -200,7 +201,7 @@ export function InlineNextStep({ step, variant = 'default' }: InlineNextStepProp
         onClick={() => navigate(step.action)}
         className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium text-sm"
       >
-        <span>{step.icon}</span>
+        <Target className="h-4 w-4" />
         <span>{step.title}</span>
         <ChevronRight className="h-4 w-4" />
       </button>
@@ -213,8 +214,8 @@ export function InlineNextStep({ step, variant = 'default' }: InlineNextStepProp
       className="w-full p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl text-left hover:shadow-md transition-shadow border border-indigo-100 group"
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center text-xl">
-          {step.icon}
+        <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+          <Target className="h-5 w-5 text-indigo-600" />
         </div>
         <div className="flex-1">
           <p className="font-semibold text-gray-900">{step.title}</p>
@@ -255,7 +256,7 @@ export function WelcomeBackCard({ userName, streak, todayPoints = 0, nextStep }:
           
           {streak > 0 && (
             <div className="flex items-center gap-2 bg-orange-500/20 px-3 py-1.5 rounded-full">
-              <span className="text-orange-400">🔥</span>
+              <Flame className="h-4 w-4 text-orange-400" />
               <span className="font-bold text-orange-300">{streak} day streak</span>
             </div>
           )}
@@ -274,8 +275,8 @@ export function WelcomeBackCard({ userName, streak, todayPoints = 0, nextStep }:
             className="w-full mt-2 p-4 bg-white/10 backdrop-blur rounded-xl text-left hover:bg-white/20 transition-colors group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center text-xl">
-                {nextStep.icon}
+              <div className="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center">
+                <Target className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1">
                 <p className="text-xs text-slate-400 mb-0.5">Your next step</p>

@@ -8,7 +8,7 @@ import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { QuickLinksFooter } from '../components/InternalLinks';
 import { AuthModal } from '../components/AuthModal';
-import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award, Trophy, Zap, Target, Flame, Lock, Sparkles, Play } from 'lucide-react';
+import { Search, CheckCircle, DollarSign, TrendingUp, Building2, Shield, Users, ArrowRight, Star, Clock, Award, Trophy, Zap, Target, Flame, Lock, Sparkles, Play, Sprout, Gem, Crown, BarChart3, Camera, Heart, Handshake, MessageCircle, Rocket, Globe, Home, Megaphone, Eye } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 // FAQ data for SEO schema markup - targeting "People Also Ask" questions
@@ -390,9 +390,9 @@ export function HowItWorks() {
               <div className="mb-6">
                 <p className="text-sm text-white/60 mb-3">Level Progression</p>
                 <div className="flex items-center gap-2">
-                  {['🌱', '🔍', '📈', '💎', '👑'].map((icon, i) => (
+                  {[Sprout, Search, TrendingUp, Gem, Crown].map((Icon, i) => (
                     <div key={i} className="flex-1 text-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                      <div className="text-2xl mb-1">{icon}</div>
+                      <Icon className="h-6 w-6 mb-1 mx-auto text-white" />
                       <div className="text-xs text-white/50">Lvl {i + 1}</div>
                     </div>
                   ))}
@@ -401,9 +401,9 @@ export function HowItWorks() {
 
               {/* Achievements */}
               <div className="grid grid-cols-4 gap-3">
-                {['🎯', '📸', '❤️', '🤝', '💬', '💰', '🏆', '🚀'].map((icon, i) => (
-                  <div key={i} className={`aspect-square rounded-xl flex items-center justify-center text-2xl ${i < 3 ? 'bg-white/20 ring-2 ring-white/30' : 'bg-white/5 opacity-50'}`}>
-                    {i < 3 ? icon : <Lock className="h-4 w-4 text-white/30" />}
+                {[Target, Camera, Heart, Handshake, MessageCircle, DollarSign, Trophy, Rocket].map((Icon, i) => (
+                  <div key={i} className={`aspect-square rounded-xl flex items-center justify-center ${i < 3 ? 'bg-white/20 ring-2 ring-white/30' : 'bg-white/5 opacity-50'}`}>
+                    {i < 3 ? <Icon className="h-6 w-6 text-white" /> : <Lock className="h-4 w-4 text-white/30" />}
                   </div>
                 ))}
               </div>
@@ -425,9 +425,9 @@ export function HowItWorks() {
               <div className="mb-6">
                 <p className="text-sm text-white/60 mb-3">Level Progression</p>
                 <div className="flex items-center gap-2">
-                  {['🌱', '📊', '🏢', '⭐', '👑'].map((icon, i) => (
+                  {[Sprout, BarChart3, Building2, Star, Crown].map((Icon, i) => (
                     <div key={i} className="flex-1 text-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                      <div className="text-2xl mb-1">{icon}</div>
+                      <Icon className="h-6 w-6 mb-1 mx-auto text-white" />
                       <div className="text-xs text-white/50">Lvl {i + 1}</div>
                     </div>
                   ))}
@@ -436,9 +436,9 @@ export function HowItWorks() {
 
               {/* Achievements */}
               <div className="grid grid-cols-4 gap-3">
-                {['🏢', '🌐', '🏠', '📢', '👁️', '🔥', '💰', '🏆'].map((icon, i) => (
-                  <div key={i} className={`aspect-square rounded-xl flex items-center justify-center text-2xl ${i < 3 ? 'bg-white/20 ring-2 ring-white/30' : 'bg-white/5 opacity-50'}`}>
-                    {i < 3 ? icon : <Lock className="h-4 w-4 text-white/30" />}
+                {[Building2, Globe, Home, Megaphone, Eye, Flame, DollarSign, Trophy].map((Icon, i) => (
+                  <div key={i} className={`aspect-square rounded-xl flex items-center justify-center ${i < 3 ? 'bg-white/20 ring-2 ring-white/30' : 'bg-white/5 opacity-50'}`}>
+                    {i < 3 ? <Icon className="h-6 w-6 text-white" /> : <Lock className="h-4 w-4 text-white/30" />}
                   </div>
                 ))}
               </div>

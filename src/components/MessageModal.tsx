@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, DollarSign, MessageCircle, CheckCircle, Sparkles, Bell, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { X, Send, DollarSign, MessageCircle, CheckCircle, Sparkles, Bell, Mail, ArrowRight, Loader2, AlertTriangle } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { trackSyndicatorContact, trackInvestmentInterest } from '../lib/analytics';
@@ -159,7 +159,7 @@ export function MessageModal({
                 data: {
                   senderName: 'EquityMD System',
                   senderType: 'system',
-                  messagePreview: `📢 Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}\n${isInvestment ? `Investment Amount: ${formatCurrency(investmentAmount)}` : ''}\n\nConsider reaching out to encourage them to claim their profile.`,
+                  messagePreview: `Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}\n${isInvestment ? `Investment Amount: ${formatCurrency(investmentAmount)}` : ''}\n\nConsider reaching out to encourage them to claim their profile.`,
                   dealTitle: `Unclaimed Profile: ${syndicatorName}`,
                   dealSlug: dealSlug,
                   timestamp: new Date().toLocaleString('en-US', {
@@ -205,7 +205,7 @@ export function MessageModal({
                     data: {
                       senderName: 'EquityMD (FYI)',
                       senderType: 'system',
-                      messagePreview: `👀 Someone is interested in a deal you created.\n\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nFrom: ${profile?.full_name || 'A user'} (${user?.email})\n${isInvestment ? `Investment interest: ${formatCurrency(investmentAmount)}` : 'Sent a message'}\n\nYou may want to give your syndicator a heads-up to follow up.`,
+                      messagePreview: `Someone is interested in a deal you created.\n\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nFrom: ${profile?.full_name || 'A user'} (${user?.email})\n${isInvestment ? `Investment interest: ${formatCurrency(investmentAmount)}` : 'Sent a message'}\n\nYou may want to give your syndicator a heads-up to follow up.`,
                       dealTitle: dealTitle,
                       dealSlug: dealSlug,
                       timestamp: new Date().toLocaleString('en-US', {
@@ -238,7 +238,7 @@ export function MessageModal({
 
     try {
       const content = isInvestment
-        ? `💰 Investment Interest: ${formatCurrency(investmentAmount)}\n\n${message || 'I am interested in this investment opportunity.'}`
+        ? `Investment Interest: ${formatCurrency(investmentAmount)}\n\n${message || 'I am interested in this investment opportunity.'}`
         : message;
 
       // Check if receiverId is a valid user ID (not just a syndicator ID)
@@ -300,7 +300,7 @@ export function MessageModal({
               user_id: receiverId,
               type: isInvestment ? 'investment_status' : 'message',
               title: isInvestment 
-                ? `💰 New Investment Interest - ${formatCurrency(investmentAmount)}`
+                ? `New Investment Interest - ${formatCurrency(investmentAmount)}`
                 : `New message from ${profile?.full_name || 'An Investor'}`,
               content: isInvestment
                 ? `${profile?.full_name || 'An investor'} is interested in investing ${formatCurrency(investmentAmount)} in ${dealTitle || 'your deal'}.`
@@ -355,8 +355,8 @@ export function MessageModal({
       // Show success toast
       toast.success(
         isInvestment 
-          ? '🎉 Investment interest submitted!' 
-          : '✉️ Message sent successfully!',
+          ? 'Investment interest submitted!' 
+          : 'Message sent successfully!',
         { duration: 4000 }
       );
 
@@ -415,7 +415,7 @@ export function MessageModal({
               <CheckCircle className="h-12 w-12 text-white" />
             </div>
             <h3 className="text-2xl font-bold mb-2">
-              {isInvestment ? '🎉 Interest Submitted!' : '✉️ Message Sent!'}
+              {isInvestment ? 'Interest Submitted!' : 'Message Sent!'}
             </h3>
             <p className="text-emerald-100">
               {isInvestment 
@@ -567,7 +567,7 @@ export function MessageModal({
                   />
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  💡 Enter your desired investment amount (minimum typically $25,000 - $50,000)
+                  Enter your desired investment amount (minimum typically $25,000 - $50,000)
                 </p>
               </div>
             )}
@@ -592,7 +592,7 @@ export function MessageModal({
             {/* Error */}
             {error && (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2">
-                <span className="text-lg">⚠️</span>
+                <AlertTriangle className="h-5 w-5 flex-shrink-0" />
                 {error}
               </div>
             )}

@@ -94,7 +94,7 @@ export function CountdownTimer({ endDate, className = '' }: CountdownTimerProps)
       {isUrgent && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
           <div className="text-red-800 text-sm font-medium">
-            ⚠️ Don't miss out! This opportunity closes soon.
+            Don't miss out! This opportunity closes soon.
           </div>
         </div>
       )}

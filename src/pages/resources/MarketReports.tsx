@@ -6,7 +6,7 @@ import { SEO } from '../../components/SEO';
 import { 
   Search, TrendingUp, MapPin, Building2, Users, Briefcase, 
   DollarSign, ArrowRight, Info, CheckCircle, AlertTriangle,
-  BarChart3, Home, Star
+  BarChart3, Home, Star, Rocket
 } from 'lucide-react';
 import { 
   MARKET_DATA, 
@@ -162,7 +162,7 @@ export function MarketReports() {
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
-            🏆 Primary ({tierCounts.primary})
+            <Star className="inline h-4 w-4 mr-1" /> Primary ({tierCounts.primary})
           </button>
           <button
             onClick={() => setSelectedTier('secondary')}
@@ -172,7 +172,7 @@ export function MarketReports() {
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
-            📈 Secondary ({tierCounts.secondary})
+            <TrendingUp className="inline h-4 w-4 mr-1" /> Secondary ({tierCounts.secondary})
           </button>
           <button
             onClick={() => setSelectedTier('emerging')}
@@ -182,7 +182,7 @@ export function MarketReports() {
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
-            🚀 Emerging ({tierCounts.emerging})
+            <Rocket className="inline h-4 w-4 mr-1" /> Emerging ({tierCounts.emerging})
           </button>
         </div>
 
