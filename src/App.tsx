@@ -65,6 +65,7 @@ const InvestorFeed = lazyRetry(() => import('./pages/InvestorFeed'));
 
 // Keep lightweight components as regular imports
 import { NotFound } from './pages/NotFound';
+import { ResetPassword } from './pages/ResetPassword';
 import { HowItWorks } from './pages/HowItWorks';
 import { HowItWorksImproved } from './pages/HowItWorksImproved';
 
@@ -745,6 +746,9 @@ export default function App() {
 
         {/* Emergency logout route */}
         <Route path="/logout" element={<LogoutRoute />} />
+        {/* Password reset landing (Supabase resetPasswordForEmail redirectTo) */}
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         {/* 404 Route */}
         <Route path="*" element={<NotFound />} />
           </Routes>
