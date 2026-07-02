@@ -4,6 +4,10 @@ import { Lock, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-rea
 import { supabase } from '../lib/supabase';
 import { SEO } from '../components/SEO';
 import { Navbar } from '../components/Navbar';
+import { Footer } from '../components/Footer';
+
+// Branded building hero image (same asset the homepage hero uses).
+const BUILDING_BG = 'https://auth.equitymd.com/storage/v1/object/public/images/shutterstock_2568276509.jpg';
 
 /**
  * Password reset landing page.
@@ -105,11 +109,16 @@ export function ResetPassword() {
   };
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <SEO title="Reset Password | EquityMD" noindex />
       <Navbar />
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+      {/* Branded building background with dark overlay for legibility */}
+      <div
+        className="relative flex-grow flex items-center justify-center px-4 py-16 bg-cover bg-center"
+        style={{ backgroundImage: `url('${BUILDING_BG}')` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/85 via-slate-900/75 to-blue-900/80" />
+        <div className="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-11 h-11 rounded-xl bg-blue-600/10 flex items-center justify-center">
               <Lock className="h-5 w-5 text-blue-600" />
@@ -205,6 +214,7 @@ export function ResetPassword() {
           )}
         </div>
       </div>
-    </>
+      <Footer />
+    </div>
   );
 }
