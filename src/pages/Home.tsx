@@ -468,58 +468,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* SEO Internal Links Section */}
-      <section className="py-16 bg-white border-t border-gray-100">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Explore EquityMD</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">For Investors</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/find" className="text-blue-600 hover:underline">Browse Syndication Deals</Link></li>
-                <li><Link to="/directory" className="text-blue-600 hover:underline">Syndicator Directory</Link></li>
-                <li><Link to="/rankings" className="text-blue-600 hover:underline">Top Rated Syndicators 2026</Link></li>
-                <li><Link to="/compare" className="text-blue-600 hover:underline">Compare Syndicators</Link></li>
-                <li><Link to="/market-map" className="text-blue-600 hover:underline">Investment Market Map</Link></li>
-                <li><Link to="/resources/calculator" className="text-blue-600 hover:underline">Returns Calculator</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Resources</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/how-it-works" className="text-blue-600 hover:underline">How Syndication Works</Link></li>
-                <li><Link to="/resources/due-diligence" className="text-blue-600 hover:underline">Due Diligence Guide</Link></li>
-                <li><Link to="/resources/glossary" className="text-blue-600 hover:underline">Syndication Glossary</Link></li>
-                <li><Link to="/resources/education" className="text-blue-600 hover:underline">Investor Education</Link></li>
-                <li><Link to="/resources/market-reports" className="text-blue-600 hover:underline">Market Reports by State</Link></li>
-                <li><Link to="/blog" className="text-blue-600 hover:underline">Investing Blog</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Popular Markets</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/resources/market-reports/texas" className="text-blue-600 hover:underline">Texas Real Estate</Link></li>
-                <li><Link to="/resources/market-reports/florida" className="text-blue-600 hover:underline">Florida Real Estate</Link></li>
-                <li><Link to="/resources/market-reports/california" className="text-blue-600 hover:underline">California Real Estate</Link></li>
-                <li><Link to="/resources/market-reports/arizona" className="text-blue-600 hover:underline">Arizona Real Estate</Link></li>
-                <li><Link to="/resources/market-reports/georgia" className="text-blue-600 hover:underline">Georgia Real Estate</Link></li>
-                <li><Link to="/resources/market-reports/north-carolina" className="text-blue-600 hover:underline">North Carolina Real Estate</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">For Syndicators</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link to="/new-pricing" className="text-blue-600 hover:underline">List Your Deals</Link></li>
-                <li><Link to="/pricing" className="text-blue-600 hover:underline">Syndicator Pricing</Link></li>
-                <li><Link to="/success-stories" className="text-blue-600 hover:underline">Success Stories</Link></li>
-                <li><Link to="/about" className="text-blue-600 hover:underline">About EquityMD</Link></li>
-                <li><Link to="/contact" className="text-blue-600 hover:underline">Contact Us</Link></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section with Schema.org markup for SEO */}
       <div className="py-20 bg-gradient-to-br from-slate-50 via-white to-blue-50">
         <div className="max-w-3xl mx-auto px-4">
