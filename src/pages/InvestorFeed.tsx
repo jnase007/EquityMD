@@ -178,6 +178,9 @@ export default function InvestorFeed() {
       return;
     }
 
+    // Admins get full access to the investor feed regardless of syndicator/subscription status
+    const isAdmin = !!profile?.is_admin;
+
     async function loadData() {
       try {
         // Check if user is a syndicator
@@ -199,6 +202,57 @@ export default function InvestorFeed() {
         }
 
         if (!syndData) {
+          // Admin without a syndicator profile: grant full feed access
+          if (isAdmin) {
+            setIsSyndicator(true);
+            setSyndicator({ subscription_status: 'active', subscribed_at: null, admin_access: true });
+            const { data: investorData, error: invError } = await supabase
+              .from('investor_profiles')
+              .select(`
+                id,
+                accredited_status,
+                location,
+                preferred_property_types,
+                preferred_locations,
+                risk_tolerance,
+                investment_goals,
+                created_at
+              `)
+              .order('created_at', { ascending: false });
+
+            if (invError) {
+              console.error('Error fetching investors (admin):', invError);
+              setError('Failed to load investor data');
+            } else if (investorData) {
+              const profileIds = investorData.map(ip => ip.id);
+              const { data: profilesData } = await supabase
+                .from('profiles')
+                .select('id, full_name, email, avatar_url')
+                .in('id', profileIds);
+              const profileMap = new Map(
+                (profilesData || []).map(p => [p.id, p])
+              );
+              const merged: InvestorCard[] = investorData.map(ip => {
+                const prof = profileMap.get(ip.id);
+                return {
+                  id: ip.id,
+                  full_name: prof?.full_name || 'Anonymous Investor',
+                  email: prof?.email || '',
+                  avatar_url: prof?.avatar_url || null,
+                  location: ip.location,
+                  accredited_status: ip.accredited_status,
+                  preferred_property_types: ip.preferred_property_types || [],
+                  preferred_locations: ip.preferred_locations || [],
+                  risk_tolerance: ip.risk_tolerance,
+                  investment_goals: ip.investment_goals,
+                  created_at: ip.created_at,
+                };
+              });
+              setInvestors(merged);
+            }
+            setLoading(false);
+            return;
+          }
           setIsSyndicator(false);
           setLoading(false);
           return;
@@ -269,7 +323,7 @@ export default function InvestorFeed() {
     }
 
     loadData();
-  }, [user]);
+  }, [user, profile?.is_admin]);
 
   if (loading) {
     return (
@@ -283,8 +337,8 @@ export default function InvestorFeed() {
     );
   }
 
-  // Non-syndicator view
-  if (!isSyndicator) {
+  // Non-syndicator view (admins bypass this gate)
+  if (!isSyndicator && !profile?.is_admin) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Navbar />
