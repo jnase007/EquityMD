@@ -11,6 +11,7 @@ import { SyndicatorProfileForm } from '../components/SyndicatorProfileForm';
 import { SyndicatorManager } from '../components/SyndicatorManager';
 import { SyndicatorProfileEditor } from '../components/SyndicatorProfileEditor';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
+import { SetPasswordForm } from '../components/SetPasswordForm';
 import { supabase } from '../lib/supabase';
 import { calculateProfileCompletion } from '../lib/profileCompletion';
 import { 
@@ -1022,6 +1023,10 @@ export function Profile() {
                 />
               </div>
             )}
+
+            <div className="mb-6">
+              <SetPasswordForm />
+            </div>
 
             {/* Danger Zone - Hidden at bottom */}
             <div className="mt-8 pt-6 border-t border-gray-200">

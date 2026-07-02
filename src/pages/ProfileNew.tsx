@@ -7,6 +7,7 @@ import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
 import { ImageUpload } from '../components/ImageUpload';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
+import { SetPasswordForm } from '../components/SetPasswordForm';
 import toast, { Toaster } from 'react-hot-toast';
 import { 
   User, Camera, MapPin, Phone, Mail, Building2, 
@@ -701,6 +702,10 @@ export function ProfileNew() {
                         />
                       </div>
                     )}
+
+                    <div className="mt-4 p-4 border border-gray-200 rounded-xl">
+                      <SetPasswordForm />
+                    </div>
 
                     {/* Account Type */}
                     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">

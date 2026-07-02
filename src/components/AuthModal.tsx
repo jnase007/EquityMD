@@ -204,13 +204,26 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
         }
       }
     } catch (err: any) {
-      if (err.message?.includes('Invalid login')) {
-        setError('Invalid email or password');
-      } else if (err.message?.includes('already registered')) {
-        setError('Email already registered');
+      const msg = err?.message || '';
+      if (msg.includes('Invalid login')) {
+        // Most common hidden cause: the account was created via Google/LinkedIn
+        // and has no password. Guide the user instead of a dead-end error.
+        setError(
+          "That email and password didn't match. If you signed up with Google or LinkedIn, " +
+          'use that button above — or click "Forgot password" to set a password for email sign-in.'
+        );
+      } else if (msg.includes('already registered') || msg.includes('User already registered')) {
+        // Includes the case where an OAuth (LinkedIn/Google) account already
+        // owns this email. Flip to sign-in and point them at the right path.
+        setError(
+          'An account already exists for this email. If you first signed up with Google or LinkedIn, ' +
+          'use that button above — or reset your password to sign in with email.'
+        );
         setMode('sign_in');
+      } else if (msg.includes('Email not confirmed')) {
+        setError('Please confirm your email first — check your inbox (and spam) for the confirmation link.');
       } else {
-        setError(err.message || 'Something went wrong');
+        setError(msg || 'Something went wrong. Please try again.');
       }
     } finally {
       setLoading(false);
