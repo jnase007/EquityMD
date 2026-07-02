@@ -3,7 +3,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { SEO } from '../components/SEO';
 import { FAQList } from '../components/FAQSection';
-import { Building2, Users, CheckCircle, Star, ArrowRight, Sparkles, Crown, Zap, Gift, PartyPopper } from 'lucide-react';
+import { Building2, Users, CheckCircle, Star, ArrowRight, Sparkles, Crown, Zap, Gift } from 'lucide-react';
 import { useAuthStore } from '../lib/store';
 import { AuthModal } from '../components/AuthModal';
 import { useTheme } from '../contexts/ThemeContext';
@@ -158,14 +158,10 @@ export function Pricing() {
       {/* Promotional Banner */}
       <div className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white py-4 px-4">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-          <div className="flex items-center gap-2">
-            <PartyPopper className="h-5 w-5 text-yellow-200" />
-            <span className="font-bold text-lg">🎉 Launch Promotion!</span>
-          </div>
+          <span className="font-bold text-lg">Launch Promotion!</span>
           <span className="text-emerald-50">
             All listing fees waived until <strong>December 2026</strong> — Start listing for FREE!
           </span>
-          <Gift className="h-5 w-5 text-yellow-200 hidden sm:block" />
         </div>
       </div>
 

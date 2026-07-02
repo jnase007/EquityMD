@@ -476,14 +476,10 @@ export function SyndicatorDashboard() {
       {/* Launch Promotion Banner */}
       <div className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 rounded-2xl p-4 shadow-lg">
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-white text-center">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🎉</span>
-            <span className="font-bold text-lg">Launch Promotion!</span>
-          </div>
+          <span className="font-bold text-lg">Launch Promotion!</span>
           <span className="text-emerald-50">
             All listing fees waived until <strong>December 2026</strong> — Start listing for FREE!
           </span>
-          <span className="text-2xl hidden sm:block">🎁</span>
         </div>
         <p className="text-center text-emerald-100/70 text-xs mt-2">
           Pricing and promotions subject to change at EquityMD's discretion.
