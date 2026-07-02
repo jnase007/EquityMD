@@ -10,6 +10,7 @@ interface OptimizedImageProps {
   height?: number;
   priority?: boolean; // Load immediately for above-the-fold images
   placeholder?: string; // Base64 or low-res placeholder
+  blurFill?: boolean; // Show the WHOLE image (object-contain) with a blurred copy filling the frame instead of gray bars
 }
 
 export function OptimizedImage({
@@ -20,7 +21,8 @@ export function OptimizedImage({
   width,
   height,
   priority = false,
-  placeholder
+  placeholder,
+  blurFill = false
 }: OptimizedImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
@@ -57,7 +59,8 @@ export function OptimizedImage({
   // Default object-fit is cover, but let callers override it (e.g. object-contain
   // to show the WHOLE property image instead of a cropped/zoomed-in crop).
   const hasObjectFit = /(^|\s)object-(cover|contain|fill|none|scale-down)(\s|$)/.test(imgClassName);
-  const objectFitClass = hasObjectFit ? '' : 'object-cover';
+  // blurFill => always contain (whole image visible), blurred copy fills the frame.
+  const objectFitClass = blurFill ? 'object-contain' : (hasObjectFit ? '' : 'object-cover');
 
   return (
     <div 
@@ -96,12 +99,28 @@ export function OptimizedImage({
         </div>
       )}
 
+      {/* Blurred fill background — shows the whole image (object-contain) on top
+          while a scaled-up, blurred copy fills the letterbox space instead of
+          gray bars. Premium look, no cropping of the real photo. */}
+      {isInView && blurFill && !error && (
+        <img
+          src={optimizedSrc}
+          alt=""
+          aria-hidden="true"
+          className={`absolute inset-0 w-full h-full object-cover scale-110 blur-xl transition-opacity duration-500 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      )}
+
       {/* Actual image - only load when in view */}
       {isInView && (
         <img
           src={optimizedSrc}
           alt={alt}
-          className={`w-full h-full ${objectFitClass} transition-all duration-500 ${
+          className={`relative w-full h-full ${objectFitClass} transition-all duration-500 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } ${imgClassName}`}
           onLoad={() => setIsLoaded(true)}

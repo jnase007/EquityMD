@@ -46,11 +46,20 @@ export function DealMediaGallery({ media }: DealMediaGalleryProps) {
             className="cursor-pointer group relative overflow-hidden rounded-lg bg-gray-100 aspect-[4/3]"
           >
             {item.type === 'image' ? (
-              <img
-                src={item.url}
-                alt={item.title}
-                className="w-full h-full object-cover transition duration-200 group-hover:scale-105"
-              />
+              <>
+                {/* Blurred fill so the whole photo shows (object-contain) with no gray bars */}
+                <img
+                  src={item.url}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl"
+                />
+                <img
+                  src={item.url}
+                  alt={item.title}
+                  className="relative w-full h-full object-contain transition duration-200 group-hover:scale-105"
+                />
+              </>
             ) : (
               <video
                 src={item.url}
