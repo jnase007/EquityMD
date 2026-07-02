@@ -455,14 +455,14 @@ export default function InvestorFeed() {
                 </ul>
 
                 <a
-                  href="mailto:justin@brandastic.com?subject=EquityMD%20Investor%20Program"
+                  href="mailto:justin@equitymd.com?subject=EquityMD%20Investor%20Program"
                   className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg transition-colors w-full justify-center"
                 >
                   <Mail className="h-5 w-5" />
                   Contact Us
                 </a>
                 <p className="text-gray-500 text-sm mt-3">
-                  Questions? Email justin@brandastic.com
+                  Questions? Email justin@equitymd.com
                 </p>
               </div>
             </div>
