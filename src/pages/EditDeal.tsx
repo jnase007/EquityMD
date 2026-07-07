@@ -920,6 +920,8 @@ export function EditDeal() {
                   ? 'bg-emerald-100 text-emerald-700' 
                   : formData.status === 'draft'
                   ? 'bg-amber-100 text-amber-700'
+                  : formData.status === 'closed'
+                  ? 'bg-green-100 text-green-700'
                   : 'bg-gray-100 text-gray-700'
               }`}>
                 <div className={`w-2 h-2 rounded-full ${
@@ -927,9 +929,11 @@ export function EditDeal() {
                     ? 'bg-emerald-500' 
                     : formData.status === 'draft'
                     ? 'bg-amber-500'
+                    : formData.status === 'closed'
+                    ? 'bg-green-500'
                     : 'bg-gray-500'
                 }`} />
-                {formData.status === 'active' ? 'Published' : formData.status === 'draft' ? 'Draft' : formData.status}
+                {formData.status === 'active' ? 'Published' : formData.status === 'draft' ? 'Draft' : formData.status === 'closed' ? 'Fully Funded' : formData.status}
               </div>
             </div>
             
@@ -944,15 +948,34 @@ export function EditDeal() {
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
                   Publish Deal
                 </button>
-              ) : (
+              ) : formData.status === 'closed' ? (
                 <button
-                  onClick={() => handleSave('draft')}
+                  onClick={() => handleSave('active')}
                   disabled={saving}
-                  className="px-4 py-2 bg-amber-100 text-amber-700 font-semibold rounded-lg hover:bg-amber-200 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-emerald-100 text-emerald-700 font-semibold rounded-lg hover:bg-emerald-200 transition-colors flex items-center gap-2"
                 >
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertCircle className="h-4 w-4" />}
-                  Unpublish
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                  Reopen Deal
                 </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleSave('closed')}
+                    disabled={saving}
+                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all flex items-center gap-2"
+                  >
+                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                    Mark as Fully Funded
+                  </button>
+                  <button
+                    onClick={() => handleSave('draft')}
+                    disabled={saving}
+                    className="px-4 py-2 bg-amber-100 text-amber-700 font-semibold rounded-lg hover:bg-amber-200 transition-colors flex items-center gap-2"
+                  >
+                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <AlertCircle className="h-4 w-4" />}
+                    Unpublish
+                  </button>
+                </>
               )}
               
               <button
@@ -973,7 +996,12 @@ export function EditDeal() {
           )}
           {formData.status === 'active' && (
             <p className="mt-4 text-sm text-emerald-700 border-t border-indigo-200 pt-3">
-              <strong className="text-emerald-800">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-700">Find Deals</a> page.
+              <strong className="text-emerald-800">This deal is live!</strong> Investors can see it on the <a href="/find" className="underline hover:no-underline text-emerald-700">Find Deals</a> page. When the raise is complete, click <strong>"Mark as Fully Funded"</strong> to display a Fully Funded badge and close it to new investment.
+            </p>
+          )}
+          {formData.status === 'closed' && (
+            <p className="mt-4 text-sm text-green-700 border-t border-indigo-200 pt-3">
+              <strong className="text-green-800">Fully Funded.</strong> This deal shows a "Fully Funded" badge and no longer appears in the active Find Deals feed. Investors can still view it and contact you. Click <strong>"Reopen Deal"</strong> to make it active again.
             </p>
           )}
         </div>
