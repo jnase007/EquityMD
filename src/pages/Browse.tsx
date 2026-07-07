@@ -125,10 +125,13 @@ export function Browse() {
         .select('*')
         .order('highlighted', { ascending: false })
         .order('created_at', { ascending: false });
-      if (selectedStatus !== 'All') {
+      if (selectedStatus === 'Funded') {
+        query = query.eq('status', 'closed');
+      } else if (selectedStatus !== 'All') {
         query = query.eq('status', selectedStatus.toLowerCase());
       } else {
-        query = query.in('status', ['active', 'draft']);
+        // Default feed: active + draft, plus funded (closed) deals as track-record showcase
+        query = query.in('status', ['active', 'draft', 'closed']);
       }
       // Deals are approved by setting status=active in admin — no separate approval_status needed
       const { data, error } = await query;
@@ -176,7 +179,9 @@ export function Browse() {
     const matchesSearch = deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          deal.location.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = selectedType === 'All' || deal.property_type === selectedType;
-    const matchesStatus = selectedStatus === 'All' || deal.status?.toLowerCase() === selectedStatus.toLowerCase();
+    const matchesStatus = selectedStatus === 'All'
+      || (selectedStatus === 'Funded' && deal.status?.toLowerCase() === 'closed')
+      || deal.status?.toLowerCase() === selectedStatus.toLowerCase();
     
     return matchesSearch && matchesType && matchesStatus;
   }).sort((a, b) => {
@@ -195,7 +200,7 @@ export function Browse() {
   const regularDeals = filteredDeals.filter(deal => !deal.highlighted);
 
   const types = ['All', 'Office', 'Multi-Family', 'Medical', 'Student Housing', 'Industrial', 'Preferred Equity', 'Residential'];
-  const statuses = ['All', 'Active', 'Draft', 'Archived'];
+  const statuses = ['All', 'Active', 'Funded', 'Draft', 'Archived'];
 
   // Calculate stats
   const avgIRR = deals.length > 0 ? (deals.reduce((sum, d) => sum + (d.target_irr || 0), 0) / deals.length).toFixed(1) : '0';
@@ -428,6 +433,7 @@ export function Browse() {
                         isAuthenticated={!!user}
                         onAuthRequired={() => setShowAuthModal(true)}
                         verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                        status={deal.status}
                       />
                     </div>
                   </div>
@@ -452,6 +458,7 @@ export function Browse() {
                     isAuthenticated={!!user}
                     onAuthRequired={() => setShowAuthModal(true)}
                     verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                    status={deal.status}
                   />
                 ))}
               </div>
@@ -489,6 +496,7 @@ export function Browse() {
                       isAuthenticated={!!user}
                       onAuthRequired={() => setShowAuthModal(true)}
                       verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                      status={deal.status}
                     />
                   </div>
                 ))}
@@ -512,6 +520,7 @@ export function Browse() {
                     isAuthenticated={!!user}
                     onAuthRequired={() => setShowAuthModal(true)}
                     verificationStatus={syndicatorVerificationStatus[deal.syndicator_id] || 'unverified'}
+                    status={deal.status}
                   />
                 ))}
               </div>

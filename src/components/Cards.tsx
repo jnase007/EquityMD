@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock } from 'lucide-react';
+import { ChevronRight, MapPin, TrendingUp, DollarSign, Clock, Lock, CheckCircle } from 'lucide-react';
 import { OptimizedImage } from './OptimizedImage';
 import { VerificationBadge, VerificationStatus } from './VerificationBadge';
 
@@ -39,9 +39,12 @@ interface DealCardProps {
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
   verificationStatus?: VerificationStatus;
+  status?: string;
+  id?: string;
 }
 
-export function DealCard({ slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired, verificationStatus }: DealCardProps) {
+export function DealCard({ slug, image, title, location, metrics, className = '', detailed = false, isAuthenticated = false, onAuthRequired, verificationStatus, status = 'active' }: DealCardProps) {
+  const isFunded = status === 'closed';
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated && onAuthRequired) {
       e.preventDefault();
@@ -63,11 +66,18 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
           />
           {/* gradient scrim for legibility + premium feel */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
-          {/* Active status pill */}
-          <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-500/95 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm backdrop-blur">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            Active
-          </div>
+          {/* Status pill: Funded (closed) vs Active */}
+          {isFunded ? (
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-green-600/95 text-white px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm backdrop-blur">
+              <CheckCircle className="w-3 h-3" />
+              Funded
+            </div>
+          ) : (
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-emerald-500/95 text-white px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm backdrop-blur">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              Active
+            </div>
+          )}
           {/* location overlaid on image */}
           <div className="absolute bottom-2.5 left-3 right-3 flex items-center text-white/95 text-xs font-medium drop-shadow">
             <MapPin className="h-3.5 w-3.5 mr-1 flex-shrink-0" />
@@ -127,6 +137,7 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
 }
 
 interface DealListItemProps {
+  id?: string;
   slug: string;
   image: string;
   title: string;
@@ -136,9 +147,11 @@ interface DealListItemProps {
   isAuthenticated?: boolean;
   onAuthRequired?: () => void;
   verificationStatus?: VerificationStatus;
+  status?: string;
 }
 
-export function DealListItem({ slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired, verificationStatus }: DealListItemProps) {
+export function DealListItem({ slug, image, title, location, description, metrics, isAuthenticated = false, onAuthRequired, verificationStatus, status = 'active' }: DealListItemProps) {
+  const isFunded = status === 'closed';
   const handleClick = (e: React.MouseEvent) => {
     if (!isAuthenticated && onAuthRequired) {
       e.preventDefault();
@@ -158,6 +171,12 @@ export function DealListItem({ slug, image, title, location, description, metric
               width={192}
               height={192}
             />
+            {isFunded && (
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-green-600/95 text-white px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-sm">
+                <CheckCircle className="h-3 w-3" />
+                Funded
+              </div>
+            )}
             {!isAuthenticated && (
               <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-full text-xs flex items-center">
                 <Lock className="h-4 w-4 mr-1" />
