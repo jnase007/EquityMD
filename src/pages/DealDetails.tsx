@@ -22,6 +22,7 @@ import {
   Share2,
   Star,
   Check,
+  CheckCircle,
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -417,6 +418,12 @@ export function DealDetails() {
               <ChevronRight className="h-4 w-4 mx-2 text-white/50" />
               <span className="text-white">{deal.title}</span>
             </nav>
+            {deal.status === 'closed' && (
+              <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 bg-green-600 text-white rounded-full text-sm font-bold uppercase tracking-wide shadow-lg">
+                <CheckCircle className="h-4 w-4" />
+                Fully Funded
+              </div>
+            )}
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-4xl lg:text-5xl font-bold">{deal.title}</h1>
               {/* Edit Button - visible to deal owner or any admin */}
@@ -746,6 +753,26 @@ export function DealDetails() {
                       Edit Deal
                     </Link>
                   </div>
+                ) : deal.status === 'closed' ? (
+                  <>
+                    <div className="w-full bg-green-50 border-2 border-green-500 rounded-lg p-4 text-center">
+                      <div className="flex items-center justify-center gap-2 text-green-700 font-bold mb-1">
+                        <CheckCircle className="h-5 w-5" />
+                        Fully Funded
+                      </div>
+                      <div className="text-sm text-green-600">This offering has closed. Contact the syndicator about future opportunities.</div>
+                    </div>
+
+                    <button
+                      onClick={() => handleAction("contact")}
+                      disabled={syndicatorHasEmail === false}
+                      className="w-full bg-white text-blue-600 border-2 border-blue-600 py-3 rounded-lg hover:bg-blue-50 transition flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
+                      title={syndicatorHasEmail === false ? "This syndicator has not provided a contact email" : ""}
+                    >
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      Contact Syndicator
+                    </button>
+                  </>
                 ) : (
                   <>
                     <button
