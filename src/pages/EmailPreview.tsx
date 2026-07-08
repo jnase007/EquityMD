@@ -1141,38 +1141,6 @@ export function EmailPreview() {
                                          <div class="deal-grid">
                        <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                          <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
-                         </div>
-                         <div class="deal-content" style="padding: 20px;">
-                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Multifamily ADU Opportunity</div>
-                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
-                               <span style="margin-right: 4px;">👑</span> Premier Partner
-                             </div>
-                           </div>
-                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Southern California</div>
-                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
-                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">30% IRR</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">3 years</div>
-                               </div>
-                             </div>
-                           </div>
-                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
-                         </div>
-                       </div>
-                       
-                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
                            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/deals/93e2f56c-ae12-44d0-b38c-b8fc44add3d5/64ce8eba-03e9-4635-b1ff-0b2fb741c8a8.jpg" alt="Value Add Multifamily Nashville, TN MSA" style="width: 100%; height: 100%; object-fit: cover;">
                          </div>
                          <div class="deal-content" style="padding: 20px;">
@@ -1200,6 +1168,38 @@ export function EmailPreview() {
                              </div>
                            </div>
                            <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
+                         </div>
+                       </div>
+                       
+                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
+                         </div>
+                         <div class="deal-content" style="padding: 20px;">
+                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Multifamily ADU Opportunity</div>
+                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
+                               <span style="margin-right: 4px;">👑</span> Premier Partner
+                             </div>
+                           </div>
+                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Southern California</div>
+                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">30% IRR</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">3 years</div>
+                               </div>
+                             </div>
+                           </div>
+                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
                          </div>
                        </div>
 
