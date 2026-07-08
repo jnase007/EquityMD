@@ -1203,7 +1203,7 @@ export function EmailPreview() {
 
                        <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                          <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(35%);">
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover;">
                            <div style="position: absolute; top: 12px; left: 12px; background: #059669; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">✓ FUNDED &amp; CLOSED</div>
                          </div>
                          <div class="deal-content" style="padding: 20px;">
