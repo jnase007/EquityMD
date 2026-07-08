@@ -59,10 +59,10 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
           <OptimizedImage 
             src={image} 
             alt={title} 
-            className="w-full h-52"
+            className="w-full aspect-[3/2]"
             imgClassName="object-cover object-center scale-100 group-hover:scale-105"
-            width={400}
-            height={208}
+            width={600}
+            height={400}
           />
           {/* gradient scrim for legibility + premium feel */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />

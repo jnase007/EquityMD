@@ -66,7 +66,6 @@ export function OptimizedImage({
     <div 
       ref={imgRef}
       className={`relative overflow-hidden ${className}`}
-      style={{ width, height }}
     >
       {/* Placeholder */}
       {!isLoaded && (
