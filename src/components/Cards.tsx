@@ -60,7 +60,8 @@ export function DealCard({ slug, image, title, location, metrics, className = ''
             src={image} 
             alt={title} 
             className="w-full h-72"
-            imgClassName="object-cover object-center scale-100 group-hover:scale-105"
+            imgClassName="scale-100 group-hover:scale-105"
+            blurFill
             width={400}
             height={288}
           />

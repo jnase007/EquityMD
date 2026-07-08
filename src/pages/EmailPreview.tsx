@@ -1200,6 +1200,36 @@ export function EmailPreview() {
                            <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
                          </div>
                        </div>
+
+                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
+                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(35%);">
+                           <div style="position: absolute; top: 12px; left: 12px; background: #059669; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">✓ FUNDED &amp; CLOSED</div>
+                         </div>
+                         <div class="deal-content" style="padding: 20px;">
+                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Greenville Apartment Complex</div>
+                           </div>
+                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Travelers Rest, SC</div>
+                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
+                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #6b7280;">17.19% IRR</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #6b7280;">$50,000</div>
+                               </div>
+                               <div>
+                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
+                                 <div style="font-size: 16px; font-weight: 600; color: #6b7280;">5 years</div>
+                               </div>
+                             </div>
+                           </div>
+                           <div class="deal-cta" style="background: #f3f4f6; color: #6b7280; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 600; display: inline-block; width: 100%; text-align: center; box-sizing: border-box;">Funded &amp; Closed</div>
+                         </div>
+                       </div>
                      </div>
                     
                     <div class="feature-list">
