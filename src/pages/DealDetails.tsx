@@ -398,17 +398,6 @@ export function DealDetails() {
 
       {/* Hero Section */}
       <div className="relative h-[450px] overflow-hidden bg-gray-900">
-        {/* Blurred fill background so the whole property image shows (object-contain) instead of a zoomed-in crop */}
-        <img
-          src={
-            getOptimizedImageUrl(deal.cover_image_url, { width: 1400, quality: 75 }) ||
-            "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80"
-          }
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover scale-110 blur-xl"
-        />
         <img
           src={
             getOptimizedImageUrl(deal.cover_image_url, { width: 1400, quality: 75 }) ||
@@ -417,7 +406,7 @@ export function DealDetails() {
           alt={deal.title}
           fetchPriority="high"
           decoding="async"
-          className="relative w-full h-full object-contain"
+          className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
         <div className="absolute inset-0 flex items-center">
