@@ -34,7 +34,7 @@ export function EmailPreview() {
 
   // Sample data for previews
   const sampleData = {
-    name: 'Dr. Sarah Johnson',
+    name: 'Sarah Johnson',
     email: 'sarah.johnson@email.com',
     investor: {
       userName: 'Dr. Sarah Johnson',
