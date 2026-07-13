@@ -1088,7 +1088,7 @@ export function EmailPreview() {
                   <div class="content">
                     <!-- Video Commercial Image at Top -->
                     <div style="text-align: center; margin: 32px 0;">
-                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;" target="_blank" rel="noopener noreferrer">
                         <img 
                           src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" 
                           alt="EquityMD Commercial Video" 
@@ -1120,7 +1120,7 @@ export function EmailPreview() {
                     <p style="margin-bottom: 24px; color: #6b7280;">Watch our commercial to learn how we connect accredited investors with institutional-quality real estate opportunities:</p>
                     
                     <div style="text-align: center; margin: 32px 0;">
-                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;">
+                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;" target="_blank" rel="noopener noreferrer">
                         <div style="position: relative; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                           <div style="position: relative; padding-bottom: 56.25%; background: linear-gradient(45deg, #2563eb, #1d4ed8);">
                             <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white;">
@@ -1167,7 +1167,7 @@ export function EmailPreview() {
                                </div>
                              </div>
                            </div>
-                           <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
+                           <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;" target="_blank" rel="noopener noreferrer">Sign Up to View Deal &gt;</a>
                          </div>
                        </div>
                        
@@ -1199,7 +1199,7 @@ export function EmailPreview() {
                                </div>
                              </div>
                            </div>
-                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;">Sign Up to View Deal &gt;</a>
+                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;" target="_blank" rel="noopener noreferrer">Sign Up to View Deal &gt;</a>
                          </div>
                        </div>
 
@@ -1248,7 +1248,7 @@ export function EmailPreview() {
                     <div class="urgent-cta">
                       <h3>⏰ Limited Time Opportunity</h3>
                       <p>New deals are hitting the market every month. Sign up free with Google or LinkedIn to get access to full deal details and connect with syndicators.</p>
-                      <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;">
+                      <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;" target="_blank" rel="noopener noreferrer">
                         Sign Up Free with Google or LinkedIn
                       </a>
                     </div>
@@ -1260,14 +1260,14 @@ export function EmailPreview() {
                   </div>
 
                   <div style="text-align: center; margin-top: 32px;">
-                    <a href="https://equitymd.com" class="button">
+                    <a href="https://equitymd.com" class="button" target="_blank" rel="noopener noreferrer">
                       Sign Up Free with Google or LinkedIn
                     </a>
                   </div>
                 </div>
 
                 <div class="footer">
-                  <p>You received this email because you signed up at equitymd.com. Sign up at <a href="https://equitymd.com" style="color: #2563eb;">equitymd.com</a> to view deals and get started.</p>
+                  <p>You received this email because you signed up at equitymd.com. Sign up at <a href="https://equitymd.com" style="color: #2563eb;" target="_blank" rel="noopener noreferrer">equitymd.com</a> to view deals and get started.</p>
                   <p>Questions? Contact us at <a href="mailto:hello@equitymd.com" style="color: #2563eb;">hello@equitymd.com</a></p>
                   <p>© 2026 EquityMD. All rights reserved.</p>
                 </div>
