@@ -920,100 +920,79 @@ export function EmailPreview() {
               <meta charset="utf-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <meta name="color-scheme" content="light" />
-              <meta name="supported-color-schemes" content="light" />
-              <title>Welcome to EquityMD</title>
-              <!--[if mso]>
-              <noscript>
-                <xml>
-                  <o:OfficeDocumentSettings>
-                    <o:PixelsPerInch>96</o:PixelsPerInch>
-                  </o:OfficeDocumentSettings>
-                </xml>
-              </noscript>
-              <![endif]-->
+              <title>You've Been Selected — EquityMD</title>
               <style>
                 body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
                 table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
-                img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
-                body { margin: 0 !important; padding: 0 !important; width: 100% !important; background: #0B1220; }
-                a { color: #0A84FF; }
-                .btn:hover { opacity: 0.94; }
+                img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; max-width: 100%; }
+                body { margin: 0 !important; padding: 0 !important; width: 100% !important; background: #F3F6FB; }
+                a { color: #2563EB; }
                 @media screen and (max-width: 620px) {
                   .container { width: 100% !important; }
-                  .px { padding-left: 20px !important; padding-right: 20px !important; }
-                  .hero-pad { padding: 36px 20px 28px !important; }
-                  .section-pad { padding: 28px 20px !important; }
-                  .stack { display: block !important; width: 100% !important; }
-                  .stack-gap { height: 16px !important; }
+                  .px { padding-left: 18px !important; padding-right: 18px !important; }
+                  .hero-pad { padding: 28px 18px 24px !important; }
+                  .h1 { font-size: 26px !important; line-height: 1.2 !important; }
                   .deal-metric { width: 33% !important; }
-                  .h1 { font-size: 28px !important; line-height: 1.2 !important; }
                 }
               </style>
             </head>
-            <body style="margin:0;padding:0;background:#0B1220;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-              <!-- Preheader -->
+            <body style="margin:0;padding:0;background:#F3F6FB;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
               <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;mso-hide:all;font-size:1px;line-height:1px;">
-                Browse syndicators, compare verified deals, and connect directly — free with Google or LinkedIn.
+                You've been selected for EquityMD — browse syndicators, compare deals, and connect free with Google or LinkedIn.
               </div>
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0B1220;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F3F6FB;">
                 <tr>
                   <td align="center" style="padding:28px 12px 40px;">
                     <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
 
-                      <!-- Top brand bar -->
+                      <!-- Logo header -->
                       <tr>
                         <td align="center" style="padding:0 0 18px;">
-                          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                            <tr>
-                              <td style="font-size:22px;font-weight:800;letter-spacing:-0.4px;color:#FFFFFF;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-                                Equity<span style="color:#38BDF8;">MD</span>
-                              </td>
-                            </tr>
-                          </table>
+                          <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                            <img src="https://equitymd.com/logo-black.png" alt="EquityMD" width="168" style="width:168px;height:auto;margin:0 auto;" />
+                          </a>
                         </td>
                       </tr>
 
-                      <!-- Card shell -->
+                      <!-- Main card -->
                       <tr>
-                        <td style="background:#FFFFFF;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.35);">
+                        <td style="background:#FFFFFF;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(15,23,42,0.08);border:1px solid #E8EEF7;">
 
-                          <!-- Hero -->
+                          <!-- Light hero -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="hero-pad" style="background:linear-gradient(145deg,#0B1220 0%,#0F2744 48%,#0A3A66 100%);padding:44px 36px 36px;text-align:center;">
-                                <div style="display:inline-block;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.28);color:#7DD3FC;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;padding:7px 12px;border-radius:999px;margin-bottom:18px;">
+                              <td class="hero-pad" style="padding:36px 36px 28px;text-align:center;background:linear-gradient(180deg,#F8FBFF 0%,#FFFFFF 100%);border-bottom:1px solid #EDF2F7;">
+                                <div style="display:inline-block;background:#EFF6FF;border:1px solid #BFDBFE;color:#1D4ED8;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;padding:6px 12px;border-radius:999px;margin-bottom:16px;">
                                   For accredited investors
                                 </div>
-                                <div class="h1" style="font-size:34px;line-height:1.15;font-weight:800;color:#FFFFFF;letter-spacing:-0.6px;margin:0 0 14px;">
-                                  Your seat at the table is open.
+                                <div class="h1" style="font-size:30px;line-height:1.2;font-weight:800;color:#0F172A;letter-spacing:-0.4px;margin:0 0 12px;">
+                                  You've been selected
                                 </div>
-                                <div style="font-size:16px;line-height:1.55;color:rgba(226,232,240,0.88);max-width:460px;margin:0 auto 22px;">
-                                  Discover syndicators. Compare real offerings. Connect directly — with the transparency valuation-minded investors expect.
+                                <div style="font-size:16px;line-height:1.55;color:#475569;max-width:460px;margin:0 auto 22px;">
+                                  Welcome to EquityMD — the platform where accredited investors discover syndicators, compare real offerings, and connect directly.
                                 </div>
                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                                   <tr>
-                                    <td align="center" bgcolor="#0A84FF" style="border-radius:10px;">
-                                      <a class="btn" href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.2px;padding:14px 28px;border-radius:10px;">
+                                    <td align="center" bgcolor="#2563EB" style="border-radius:10px;">
+                                      <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:14px 26px;border-radius:10px;">
                                         Sign up free
                                       </a>
                                     </td>
                                   </tr>
                                 </table>
-                                <div style="margin-top:12px;font-size:12px;color:rgba(148,163,184,0.95);">
-                                  Google or LinkedIn · no sales call required
-                                </div>
+                                <div style="margin-top:10px;font-size:12px;color:#94A3B8;">Google or LinkedIn · free to join</div>
                               </td>
                             </tr>
                           </table>
 
-                          <!-- Greeting + story -->
+                          <!-- Greeting -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="section-pad px" style="padding:36px 36px 8px;color:#334155;font-size:15px;line-height:1.65;">
-                                <p style="margin:0 0 16px;font-size:17px;color:#0F172A;"><strong>Hi *|FNAME:there|*,</strong></p>
-                                <p style="margin:0 0 14px;">EquityMD is the directory where accredited investors discover and compare real estate syndicators — track records, offerings, and direct contact in one place.</p>
-                                <p style="margin:0 0 8px;">Syndicators list. You research. You decide. <strong style="color:#0F172A;">We're the marketplace, not the middleman.</strong></p>
+                              <td class="px" style="padding:32px 36px 8px;color:#475569;font-size:15px;line-height:1.65;">
+                                <p style="margin:0 0 14px;font-size:17px;color:#0F172A;"><strong>Hi *|FNAME:there|*!</strong></p>
+                                <p style="margin:0 0 12px;">Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
+                                <p style="margin:0 0 4px;">Syndicators list their own deals and track records. You browse, research, and connect with them directly. <strong style="color:#0F172A;">We're the marketplace — not the middleman.</strong></p>
                               </td>
                             </tr>
                           </table>
@@ -1021,36 +1000,36 @@ export function EmailPreview() {
                           <!-- Stats -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="px" style="padding:20px 36px 8px;">
-                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);border:1px solid #E2E8F0;border-radius:16px;">
+                              <td class="px" style="padding:22px 36px 8px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;">
                                   <tr>
-                                    <td width="50%" align="center" style="padding:22px 12px;border-right:1px solid #E2E8F0;">
-                                      <div style="font-size:28px;font-weight:800;color:#0A84FF;letter-spacing:-0.5px;line-height:1;">295+</div>
-                                      <div style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-top:6px;">Syndicators</div>
+                                    <td width="50%" align="center" style="padding:20px 10px;border-right:1px solid #E2E8F0;">
+                                      <div style="font-size:26px;font-weight:800;color:#2563EB;line-height:1;">295+</div>
+                                      <div style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.7px;margin-top:6px;">Syndicators</div>
                                     </td>
-                                    <td width="50%" align="center" style="padding:22px 12px;">
-                                      <div style="font-size:28px;font-weight:800;color:#0A84FF;letter-spacing:-0.5px;line-height:1;">18.5%</div>
-                                      <div style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-top:6px;">Average IRR*</div>
+                                    <td width="50%" align="center" style="padding:20px 10px;">
+                                      <div style="font-size:26px;font-weight:800;color:#2563EB;line-height:1;">18.5%</div>
+                                      <div style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.7px;margin-top:6px;">Average IRR*</div>
                                     </td>
                                   </tr>
                                 </table>
-                                <div style="font-size:11px;color:#94A3B8;margin-top:8px;text-align:center;">*Platform-reported historical average across listed offerings. Not a guarantee of future results.</div>
+                                <div style="font-size:11px;color:#94A3B8;margin-top:8px;text-align:center;">*Platform-reported historical average. Not a guarantee of future results.</div>
                               </td>
                             </tr>
                           </table>
 
-                          <!-- Watch block -->
+                          <!-- How it works video -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="section-pad px" style="padding:28px 36px 8px;">
-                                <div style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#0A84FF;margin-bottom:8px;">See the platform</div>
-                                <div style="font-size:22px;font-weight:800;color:#0F172A;letter-spacing:-0.3px;margin-bottom:10px;">How EquityMD works</div>
-                                <div style="font-size:14px;color:#64748B;line-height:1.55;margin-bottom:16px;">A quick look at browsing deals, researching syndicators, and connecting on your timeline.</div>
+                              <td class="px" style="padding:28px 36px 8px;">
+                                <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2563EB;margin-bottom:6px;">See the platform</div>
+                                <div style="font-size:21px;font-weight:800;color:#0F172A;margin-bottom:8px;">How EquityMD works</div>
+                                <div style="font-size:14px;color:#64748B;line-height:1.55;margin-bottom:14px;">Watch the commercial, then explore deals and syndicators at your own pace.</div>
                                 <a href="https://equitymd.com/how-it-works" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
-                                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" alt="Watch the EquityMD commercial" width="528" style="width:100%;max-width:528px;height:auto;border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,0.12);" />
+                                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" alt="Watch the EquityMD commercial" width="528" style="width:100%;max-width:528px;height:auto;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.08);" />
                                 </a>
                                 <div style="text-align:center;margin-top:14px;">
-                                  <a class="btn" href="https://equitymd.com/how-it-works" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0F172A;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:13px;padding:12px 22px;border-radius:10px;">
+                                  <a href="https://equitymd.com/how-it-works" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0F172A;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:13px;padding:12px 20px;border-radius:10px;">
                                     Watch & explore →
                                   </a>
                                 </div>
@@ -1058,13 +1037,13 @@ export function EmailPreview() {
                             </tr>
                           </table>
 
-                          <!-- Featured deals header -->
+                          <!-- Featured header -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="px" style="padding:34px 36px 6px;">
-                                <div style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#0A84FF;margin-bottom:8px;">Live marketplace</div>
-                                <div style="font-size:22px;font-weight:800;color:#0F172A;letter-spacing:-0.3px;margin-bottom:8px;">Featured opportunities</div>
-                                <div style="font-size:14px;color:#64748B;line-height:1.55;">Sign up or log in with Google or LinkedIn for full details, documents, and syndicator contact.</div>
+                              <td class="px" style="padding:32px 36px 6px;">
+                                <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2563EB;margin-bottom:6px;">Live marketplace</div>
+                                <div style="font-size:21px;font-weight:800;color:#0F172A;margin-bottom:8px;">Featured investment opportunities</div>
+                                <div style="font-size:14px;color:#64748B;line-height:1.55;">Sign up free with Google or LinkedIn to unlock full details, documents, and syndicator contact.</div>
                               </td>
                             </tr>
                           </table>
@@ -1072,49 +1051,49 @@ export function EmailPreview() {
                           <!-- Deal 1 -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="px" style="padding:18px 36px 8px;">
-                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;">
+                              <td class="px" style="padding:16px 36px 8px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;background:#FFFFFF;">
                                   <tr>
                                     <td>
-                                      <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                                      <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" target="_blank" rel="noopener noreferrer">
                                         <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/deals/93e2f56c-ae12-44d0-b38c-b8fc44add3d5/64ce8eba-03e9-4635-b1ff-0b2fb741c8a8.jpg" alt="Value Add Multifamily Nashville, TN MSA" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
                                       </a>
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td style="padding:18px 18px 20px;">
+                                    <td style="padding:18px;">
                                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                         <tr>
                                           <td valign="top">
-                                            <div style="font-size:18px;font-weight:800;color:#0F172A;letter-spacing:-0.2px;line-height:1.3;">Value Add Multifamily</div>
-                                            <div style="font-size:13px;color:#64748B;margin-top:4px;">Nashville MSA · Murfreesboro, TN</div>
+                                            <div style="font-size:17px;font-weight:800;color:#0F172A;line-height:1.3;">Value Add Multifamily Nashville, TN MSA</div>
+                                            <div style="font-size:13px;color:#64748B;margin-top:4px;">Murfreesboro, TN</div>
                                           </td>
-                                          <td valign="top" align="right" width="88">
+                                          <td valign="top" align="right" width="84">
                                             <span style="display:inline-block;background:#ECFDF5;color:#047857;border:1px solid #A7F3D0;font-size:11px;font-weight:700;padding:5px 8px;border-radius:999px;">Verified</span>
                                           </td>
                                         </tr>
                                       </table>
-                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;border-top:1px solid #F1F5F9;padding-top:14px;">
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;border-top:1px solid #F1F5F9;">
                                         <tr>
-                                          <td class="deal-metric" width="33%" style="padding:0 4px 0 0;">
-                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Target</div>
-                                            <div style="font-size:16px;font-weight:800;color:#0A84FF;margin-top:3px;">17% IRR</div>
+                                          <td class="deal-metric" width="33%" style="padding-top:12px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Target</div>
+                                            <div style="font-size:16px;font-weight:800;color:#2563EB;margin-top:3px;">17% IRR</div>
                                           </td>
-                                          <td class="deal-metric" width="33%" style="padding:0 4px;">
-                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Minimum</div>
-                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">$100k</div>
+                                          <td class="deal-metric" width="33%" style="padding-top:12px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Minimum</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">$100,000</div>
                                           </td>
-                                          <td class="deal-metric" width="33%" style="padding:0 0 0 4px;">
-                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Term</div>
+                                          <td class="deal-metric" width="33%" style="padding-top:12px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Term</div>
                                             <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">5 years</div>
                                           </td>
                                         </tr>
                                       </table>
                                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
                                         <tr>
-                                          <td align="center" bgcolor="#0A84FF" style="border-radius:10px;">
-                                            <a class="btn" href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" target="_blank" rel="noopener noreferrer" style="display:block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 18px;border-radius:10px;text-align:center;">
-                                              View deal →
+                                          <td align="center" bgcolor="#2563EB" style="border-radius:10px;">
+                                            <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" target="_blank" rel="noopener noreferrer" style="display:block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 16px;border-radius:10px;text-align:center;">
+                                              Sign up to view deal →
                                             </a>
                                           </td>
                                         </tr>
@@ -1130,20 +1109,20 @@ export function EmailPreview() {
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
                               <td class="px" style="padding:12px 36px 8px;">
-                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;background:#FFFFFF;">
                                   <tr>
                                     <td>
-                                      <a href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                                      <a href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer">
                                         <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
                                       </a>
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td style="padding:18px 18px 20px;">
+                                    <td style="padding:18px;">
                                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                         <tr>
                                           <td valign="top">
-                                            <div style="font-size:18px;font-weight:800;color:#0F172A;letter-spacing:-0.2px;line-height:1.3;">Multifamily ADU Opportunity</div>
+                                            <div style="font-size:17px;font-weight:800;color:#0F172A;line-height:1.3;">Multifamily ADU Opportunity</div>
                                             <div style="font-size:13px;color:#64748B;margin-top:4px;">Southern California</div>
                                           </td>
                                           <td valign="top" align="right" width="118">
@@ -1151,27 +1130,27 @@ export function EmailPreview() {
                                           </td>
                                         </tr>
                                       </table>
-                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;border-top:1px solid #F1F5F9;padding-top:14px;">
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;border-top:1px solid #F1F5F9;">
                                         <tr>
-                                          <td class="deal-metric" width="33%" style="padding:0 4px 0 0;">
-                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Target</div>
-                                            <div style="font-size:16px;font-weight:800;color:#0A84FF;margin-top:3px;">30% IRR</div>
+                                          <td class="deal-metric" width="33%" style="padding-top:12px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Target</div>
+                                            <div style="font-size:16px;font-weight:800;color:#2563EB;margin-top:3px;">30% IRR</div>
                                           </td>
-                                          <td class="deal-metric" width="33%" style="padding:0 4px;">
-                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Minimum</div>
-                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">$50k</div>
+                                          <td class="deal-metric" width="33%" style="padding-top:12px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Minimum</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">$50,000</div>
                                           </td>
-                                          <td class="deal-metric" width="33%" style="padding:0 0 0 4px;">
-                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Term</div>
+                                          <td class="deal-metric" width="33%" style="padding-top:12px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;">Term</div>
                                             <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">3 years</div>
                                           </td>
                                         </tr>
                                       </table>
                                       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
                                         <tr>
-                                          <td align="center" bgcolor="#0A84FF" style="border-radius:10px;">
-                                            <a class="btn" href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer" style="display:block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 18px;border-radius:10px;text-align:center;">
-                                              View deal →
+                                          <td align="center" bgcolor="#2563EB" style="border-radius:10px;">
+                                            <a href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer" style="display:block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 16px;border-radius:10px;text-align:center;">
+                                              Sign up to view deal →
                                             </a>
                                           </td>
                                         </tr>
@@ -1183,19 +1162,19 @@ export function EmailPreview() {
                             </tr>
                           </table>
 
-                          <!-- Funded proof card -->
+                          <!-- Funded proof -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
                               <td class="px" style="padding:12px 36px 8px;">
-                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;background:#F8FAFC;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;background:#F8FAFC;">
                                   <tr>
-                                    <td width="120" valign="top" style="padding:0;">
-                                      <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" width="120" height="120" style="width:120px;height:120px;object-fit:cover;" />
+                                    <td width="110" valign="top">
+                                      <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" width="110" height="110" style="width:110px;height:110px;object-fit:cover;" />
                                     </td>
                                     <td valign="middle" style="padding:14px 16px;">
-                                      <div style="font-size:11px;font-weight:700;color:#047857;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px;">Funded & closed</div>
+                                      <div style="font-size:11px;font-weight:700;color:#047857;letter-spacing:0.7px;text-transform:uppercase;margin-bottom:4px;">Funded & closed</div>
                                       <div style="font-size:15px;font-weight:800;color:#0F172A;">Greenville Apartment Complex</div>
-                                      <div style="font-size:12px;color:#64748B;margin-top:3px;">Travelers Rest, SC · 17.19% target IRR</div>
+                                      <div style="font-size:12px;color:#64748B;margin-top:3px;">Travelers Rest, SC · 17.19% target IRR · $50,000 min</div>
                                     </td>
                                   </tr>
                                 </table>
@@ -1203,28 +1182,30 @@ export function EmailPreview() {
                             </tr>
                           </table>
 
-                          <!-- Why complete profile -->
+                          <!-- Why profile - light version -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="section-pad px" style="padding:28px 36px 12px;">
-                                <div style="background:#0B1220;border-radius:16px;padding:24px 22px;color:#E2E8F0;">
-                                  <div style="font-size:16px;font-weight:800;color:#FFFFFF;margin-bottom:14px;">Why create a free profile</div>
-                                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                    <tr><td style="padding:0 0 10px;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ Full deal docs & projections once you're in</td></tr>
-                                    <tr><td style="padding:0 0 10px;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ Message syndicators directly — no gatekeeping sales funnel</td></tr>
-                                    <tr><td style="padding:0 0 10px;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ Early access as new offerings go live</td></tr>
-                                    <tr><td style="padding:0;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ One place to compare operators and track records</td></tr>
-                                  </table>
-                                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:18px;">
-                                    <tr>
-                                      <td bgcolor="#0A84FF" style="border-radius:10px;">
-                                        <a class="btn" href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 22px;border-radius:10px;">
-                                          Sign up free with Google or LinkedIn
-                                        </a>
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </div>
+                              <td class="px" style="padding:24px 36px 12px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:14px;">
+                                  <tr>
+                                    <td style="padding:22px 20px;">
+                                      <div style="font-size:16px;font-weight:800;color:#1E3A8A;margin-bottom:12px;">Why complete your free profile</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Full deal docs and projections</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Direct messages with syndicators</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Early access as new offerings launch</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:16px;">• Compare operators in one place</div>
+                                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                          <td bgcolor="#2563EB" style="border-radius:10px;">
+                                            <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#2563EB;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 20px;border-radius:10px;">
+                                              Sign up free with Google or LinkedIn
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>
                               </td>
                             </tr>
                           </table>
@@ -1232,9 +1213,9 @@ export function EmailPreview() {
                           <!-- About -->
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
-                              <td class="px" style="padding:8px 36px 32px;color:#64748B;font-size:13px;line-height:1.6;">
+                              <td class="px" style="padding:8px 36px 30px;color:#64748B;font-size:13px;line-height:1.6;">
                                 <strong style="color:#0F172A;">About EquityMD</strong><br />
-                                EquityMD is a listing platform connecting accredited investors with commercial real estate syndicators. We do not facilitate transactions or provide investment advice. Always do your own due diligence.
+                                EquityMD is a listing platform connecting accredited investors with commercial real estate syndicators. We do not facilitate transactions or provide investment advice. Always perform your own due diligence.
                               </td>
                             </tr>
                           </table>
@@ -1244,14 +1225,19 @@ export function EmailPreview() {
 
                       <!-- Footer -->
                       <tr>
-                        <td align="center" style="padding:28px 16px 8px;color:#94A3B8;font-size:12px;line-height:1.6;">
-                          You received this because you signed up at
-                          <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="color:#7DD3FC;text-decoration:none;">equitymd.com</a>.
-                          <br />
-                          Questions?
-                          <a href="mailto:hello@equitymd.com" style="color:#7DD3FC;text-decoration:none;">hello@equitymd.com</a>
-                          <br /><br />
-                          © 2026 EquityMD. All rights reserved.
+                        <td align="center" style="padding:26px 16px 8px;">
+                          <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                            <img src="https://equitymd.com/logo-black.png" alt="EquityMD" width="120" style="width:120px;height:auto;margin:0 auto 12px;opacity:0.9;" />
+                          </a>
+                          <div style="color:#64748B;font-size:12px;line-height:1.6;">
+                            You received this because you signed up at
+                            <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="color:#2563EB;text-decoration:none;">equitymd.com</a>.
+                            <br />
+                            Questions?
+                            <a href="mailto:hello@equitymd.com" style="color:#2563EB;text-decoration:none;">hello@equitymd.com</a>
+                            <br /><br />
+                            © 2026 EquityMD. All rights reserved.
+                          </div>
                         </td>
                       </tr>
 
