@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Users, Briefcase, Mail, Award, CheckCircle, DollarSign,
   BarChart, Target, Clock, Percent, Shield, Building, ChevronRight,
   MessageCircle, User, ArrowRight, Lock, Scale, ShieldCheck, Bell,
-  Sparkles, TrendingUp, Star, Zap
+  TrendingUp, Star, Zap
 } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { DealCard, FeatureCard, StatCard, InvestorCard } from '../components/Cards';
@@ -202,7 +202,7 @@ export function Home() {
           <div className="max-w-5xl mx-auto text-center px-4 pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20 safe-area-top">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6">
-              <Sparkles className="h-4 w-4 text-yellow-300" />
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
               <span className="text-white/90 text-sm font-medium">Trusted by 7,400+ Accredited Investors</span>
             </div>
             
@@ -414,8 +414,7 @@ export function Home() {
             
             <div className="relative">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-medium mb-6">
-                <Sparkles className="h-4 w-4" />
-                Start Your Journey
+                Start free
               </div>
               
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">

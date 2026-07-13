@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { setOAuthNextPath, clearOAuthNextPath } from '../lib/oauthRedirect';
 import { trackUserLogin } from '../lib/analytics';
-import { 
-  X, Mail, Lock, User, Loader2, Check, AlertCircle, 
-  ArrowRight, Eye, EyeOff, Sparkles, Zap, Shield
+import {
+  X, Mail, Lock, User, Loader2, Check, AlertCircle,
+  ArrowRight, Eye, EyeOff, Building2, Zap, Shield
 } from 'lucide-react';
 
 interface AuthModalProps {
@@ -372,7 +372,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
           {/* Header */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl mb-4 shadow-lg">
-              <Sparkles className="h-6 w-6 text-white" />
+              <Building2 className="h-6 w-6 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900">
               {mode === 'sign_up' ? 'Create account' : 'Welcome back'}
