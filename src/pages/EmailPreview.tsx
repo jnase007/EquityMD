@@ -950,7 +950,7 @@ export function EmailPreview() {
                       <tr>
                         <td align="center" style="padding:0 0 18px;">
                           <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
-                            <img src="https://equitymd.com/logo-black.png" alt="EquityMD" width="168" style="width:168px;height:auto;margin:0 auto;" />
+                            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos/logo-black.png" alt="EquityMD" width="168" style="width:168px;height:auto;margin:0 auto;" />
                           </a>
                         </td>
                       </tr>
@@ -1227,7 +1227,7 @@ export function EmailPreview() {
                       <tr>
                         <td align="center" style="padding:26px 16px 8px;">
                           <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
-                            <img src="https://equitymd.com/logo-black.png" alt="EquityMD" width="120" style="width:120px;height:auto;margin:0 auto 12px;opacity:0.9;" />
+                            <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/logos/logo-black.png" alt="EquityMD" width="120" style="width:120px;height:auto;margin:0 auto 12px;opacity:0.9;" />
                           </a>
                           <div style="color:#64748B;font-size:12px;line-height:1.6;">
                             You received this because you signed up at
