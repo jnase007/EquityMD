@@ -915,363 +915,350 @@ export function EmailPreview() {
       case 'investor_launch':
         return `
           <!DOCTYPE html>
-          <html>
+          <html lang="en">
             <head>
-              <meta charset="utf-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>🚀 You've Been Selected - Welcome to EquityMD</title>
-              ${baseStyles}
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <meta name="color-scheme" content="light" />
+              <meta name="supported-color-schemes" content="light" />
+              <title>Welcome to EquityMD</title>
+              <!--[if mso]>
+              <noscript>
+                <xml>
+                  <o:OfficeDocumentSettings>
+                    <o:PixelsPerInch>96</o:PixelsPerInch>
+                  </o:OfficeDocumentSettings>
+                </xml>
+              </noscript>
+              <![endif]-->
               <style>
-                .hero-section {
-                  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-                  color: white;
-                  padding: 40px 32px;
-                  border-radius: 8px 8px 0 0;
-                  text-align: center;
-                  margin: -32px -32px 32px -32px;
-                }
-                .hero-title {
-                  font-size: 28px;
-                  font-weight: 700;
-                  margin-bottom: 16px;
-                }
-                .hero-subtitle {
-                  font-size: 18px;
-                  opacity: 0.9;
-                  margin-bottom: 24px;
-                }
-                .deal-grid {
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                  gap: 24px;
-                  margin: 32px 0;
-                }
-                .deal-card {
-                  border: 1px solid #e5e7eb;
-                  border-radius: 12px;
-                  overflow: hidden;
-                  background: white;
-                  transition: transform 0.2s, box-shadow 0.2s;
-                }
-                .deal-card:hover {
-                  transform: translateY(-2px);
-                  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-                }
-                .deal-image {
-                  width: 100%;
-                  height: 200px;
-                  background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  color: #6b7280;
-                  font-weight: 600;
-                }
-                .deal-content {
-                  padding: 20px;
-                }
-                .deal-title {
-                  font-size: 18px;
-                  font-weight: 600;
-                  color: #1f2937;
-                  margin-bottom: 8px;
-                }
-                .deal-location {
-                  color: #6b7280;
-                  font-size: 14px;
-                  margin-bottom: 12px;
-                }
-                .deal-highlights {
-                  display: flex;
-                  flex-wrap: wrap;
-                  gap: 8px;
-                  margin-bottom: 16px;
-                }
-                .deal-highlight {
-                  background: #f3f4f6;
-                  color: #374151;
-                  padding: 4px 8px;
-                  border-radius: 4px;
-                  font-size: 12px;
-                  font-weight: 500;
-                }
-                .deal-cta {
-                  background: #2563eb;
-                  color: white;
-                  text-decoration: none;
-                  padding: 8px 16px;
-                  border-radius: 6px;
-                  font-size: 14px;
-                  font-weight: 500;
-                  display: inline-block;
-                }
-                .stats-section {
-                  background: #f8fafc;
-                  border-radius: 12px;
-                  padding: 24px;
-                  margin: 32px 0;
-                  text-align: center;
-                }
-                .stats-grid {
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                  gap: 24px;
-                  margin-top: 20px;
-                }
-                .stat-item {
-                  text-align: center;
-                }
-                .stat-number {
-                  font-size: 24px;
-                  font-weight: 700;
-                  color: #2563eb;
-                  display: block;
-                }
-                .stat-label {
-                  font-size: 14px;
-                  color: #6b7280;
-                  margin-top: 4px;
-                }
-                .feature-list {
-                  background: #f0f9ff;
-                  border: 1px solid #bae6fd;
-                  border-radius: 8px;
-                  padding: 20px;
-                  margin: 24px 0;
-                }
-                .feature-list h3 {
-                  color: #0369a1;
-                  margin-bottom: 12px;
-                  font-size: 16px;
-                  font-weight: 600;
-                }
-                .feature-list ul {
-                  margin: 0;
-                  padding-left: 20px;
-                }
-                .feature-list li {
-                  margin-bottom: 6px;
-                  color: #0c4a6e;
-                }
-                .urgent-cta {
-                  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-                  color: white;
-                  padding: 24px;
-                  border-radius: 12px;
-                  text-align: center;
-                  margin: 32px 0;
-                }
-                .urgent-cta h3 {
-                  font-size: 20px;
-                  font-weight: 600;
-                  margin-bottom: 8px;
-                }
-                .urgent-cta p {
-                  opacity: 0.9;
-                  margin-bottom: 16px;
+                body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+                table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; }
+                img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
+                body { margin: 0 !important; padding: 0 !important; width: 100% !important; background: #0B1220; }
+                a { color: #0A84FF; }
+                .btn:hover { opacity: 0.94; }
+                @media screen and (max-width: 620px) {
+                  .container { width: 100% !important; }
+                  .px { padding-left: 20px !important; padding-right: 20px !important; }
+                  .hero-pad { padding: 36px 20px 28px !important; }
+                  .section-pad { padding: 28px 20px !important; }
+                  .stack { display: block !important; width: 100% !important; }
+                  .stack-gap { height: 16px !important; }
+                  .deal-metric { width: 33% !important; }
+                  .h1 { font-size: 28px !important; line-height: 1.2 !important; }
                 }
               </style>
             </head>
-            <body>
-              <div class="container">
-                <div class="card">
-                  <div class="hero-section">
-                    <div class="logo" style="color: white; margin-bottom: 16px;">
-                      Equity<span style="color: #fbbf24;">MD</span>
-                    </div>
-                    <div class="hero-title">🚀 You've Been Selected!</div>
-                    <div class="hero-subtitle">
-                      Welcome to EquityMD - The Premier Platform for Accredited Real Estate Investors
-                    </div>
-                  </div>
-                  
-                  <div class="content">
-                    <!-- Video Commercial Image at Top -->
-                    <div style="text-align: center; margin: 32px 0;">
-                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;" target="_blank" rel="noopener noreferrer">
-                        <img 
-                          src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" 
-                          alt="EquityMD Commercial Video" 
-                          style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
-                        />
-                      </a>
-                      <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
-                    </div>
-                    
-                    <p><strong>Hi *|FNAME:there|*!</strong> Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
-                    
-                    <p>Syndicators list their own deals and track records. You browse, research, and connect with them directly. We're the marketplace — not the middleman.</p>
-                    
-                                         <div class="stats-section">
-                       <h3 style="margin-bottom: 16px; color: #1f2937;">Platform Highlights</h3>
-                       <div class="stats-grid">
-                         <div class="stat-item">
-                           <span class="stat-number">295+</span>
-                           <span class="stat-label">Syndicators</span>
-                         </div>
-                         <div class="stat-item">
-                           <span class="stat-number">18.5%</span>
-                           <span class="stat-label">Average IRR</span>
-                         </div>
-                       </div>
-                     </div>
-                    
-                    <h3 style="color: #1f2937; margin: 32px 0 16px 0;">See How EquityMD Works</h3>
-                    <p style="margin-bottom: 24px; color: #6b7280;">Watch our commercial to learn how we connect accredited investors with institutional-quality real estate opportunities:</p>
-                    
-                    <div style="text-align: center; margin: 32px 0;">
-                      <a href="https://equitymd.com/how-it-works" style="display: inline-block; text-decoration: none;" target="_blank" rel="noopener noreferrer">
-                        <div style="position: relative; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                          <div style="position: relative; padding-bottom: 56.25%; background: linear-gradient(45deg, #2563eb, #1d4ed8);">
-                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: white;">
-                              <div style="text-align: center;">
-                                <div style="font-size: 48px; margin-bottom: 16px;">▶️</div>
-                                <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">EquityMD Commercial</div>
-                                <div style="font-size: 14px; opacity: 0.9;">Click to watch and learn more</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                    
-                    <h3 style="color: #1f2937; margin: 32px 0 16px 0;">Featured Investment Opportunities</h3>
-                    <p>Take a look at some of the premium deals currently available on our platform. <strong>Sign up or log in with Google or LinkedIn</strong> to view full details, documents, and contact syndicators.</p>
-                    
-                                         <div class="deal-grid">
-                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/deals/93e2f56c-ae12-44d0-b38c-b8fc44add3d5/64ce8eba-03e9-4635-b1ff-0b2fb741c8a8.jpg" alt="Value Add Multifamily Nashville, TN MSA" style="width: 100%; height: 100%; object-fit: cover;">
-                         </div>
-                         <div class="deal-content" style="padding: 20px;">
-                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Value Add Multifamily Nashville, TN MSA</div>
-                             <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
-                               <span style="margin-right: 4px;">✓</span> Verified
-                             </div>
-                           </div>
-                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Murfreesboro, TN</div>
-                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
-                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">17% IRR</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$100,000</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">5 years</div>
-                               </div>
-                             </div>
-                           </div>
-                           <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;" target="_blank" rel="noopener noreferrer">Sign Up to View Deal &gt;</a>
-                         </div>
-                       </div>
-                       
-                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" style="width: 100%; height: 100%; object-fit: cover;">
-                         </div>
-                         <div class="deal-content" style="padding: 20px;">
-                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Multifamily ADU Opportunity</div>
-                             <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; display: flex; align-items: center;">
-                               <span style="margin-right: 4px;">👑</span> Premier Partner
-                             </div>
-                           </div>
-                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Southern California</div>
-                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
-                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">30% IRR</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">$50,000</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #2563eb;">3 years</div>
-                               </div>
-                             </div>
-                           </div>
-                           <a href="https://equitymd.com/deals/multifamily-adu-opportunity" class="deal-cta" style="background: #2563eb; color: white; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; display: inline-block; width: 100%; text-align: center;" target="_blank" rel="noopener noreferrer">Sign Up to View Deal &gt;</a>
-                         </div>
-                       </div>
-
-                       <div class="deal-card" style="border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                         <div class="deal-image" style="position: relative; height: 200px; overflow: hidden;">
-                           <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" style="width: 100%; height: 100%; object-fit: cover;">
-                           <div style="position: absolute; top: 12px; left: 12px; background: #059669; color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;">✓ FUNDED &amp; CLOSED</div>
-                         </div>
-                         <div class="deal-content" style="padding: 20px;">
-                           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                             <div class="deal-title" style="font-size: 18px; font-weight: 600; color: #1f2937;">Greenville Apartment Complex</div>
-                           </div>
-                           <div class="deal-location" style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">Travelers Rest, SC</div>
-                           <div style="border-top: 1px solid #e5e7eb; padding-top: 16px; margin-bottom: 16px;">
-                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Target Return</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #6b7280;">17.19% IRR</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Minimum</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #6b7280;">$50,000</div>
-                               </div>
-                               <div>
-                                 <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Term</div>
-                                 <div style="font-size: 16px; font-weight: 600; color: #6b7280;">5 years</div>
-                               </div>
-                             </div>
-                           </div>
-                           <div class="deal-cta" style="background: #f3f4f6; color: #6b7280; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 600; display: inline-block; width: 100%; text-align: center; box-sizing: border-box;">Funded &amp; Closed</div>
-                         </div>
-                       </div>
-                     </div>
-                    
-                    <div class="feature-list">
-                      <h3>🎯 Why Complete Your Profile?</h3>
-                      <ul>
-                        <li><strong>Exclusive Access:</strong> View detailed deal documentation and financial projections</li>
-                        <li><strong>Direct Communication:</strong> Connect directly with syndicators and ask questions</li>
-                        <li><strong>Portfolio Tracking:</strong> Monitor your investments and track performance</li>
-                        <li><strong>New Deals Monthly:</strong> Get early access to fresh opportunities hitting the market</li>
-                        <li><strong>Professional Network:</strong> Build relationships with top-tier real estate professionals</li>
-                      </ul>
-                    </div>
-                    
-                    <div class="urgent-cta">
-                      <h3>⏰ Limited Time Opportunity</h3>
-                      <p>New deals are hitting the market every month. Sign up free with Google or LinkedIn to get access to full deal details and connect with syndicators.</p>
-                      <a href="https://equitymd.com" class="button" style="background: white; color: #2563eb; font-weight: 600;" target="_blank" rel="noopener noreferrer">
-                        Sign Up Free with Google or LinkedIn
-                      </a>
-                    </div>
-                    
-                    <p style="margin-top: 32px;"><strong>About EquityMD:</strong></p>
-                    <p>EquityMD is the premier platform connecting accredited investors with exclusive commercial real estate opportunities. Syndicators list their deals directly on our marketplace to reach qualified investors.</p>
-                    
-                    <p>Our platform provides transparency, professional due diligence, and direct access to syndicators - everything you need to make informed investment decisions.</p>
-                  </div>
-
-                  <div style="text-align: center; margin-top: 32px;">
-                    <a href="https://equitymd.com" class="button" target="_blank" rel="noopener noreferrer">
-                      Sign Up Free with Google or LinkedIn
-                    </a>
-                  </div>
-                </div>
-
-                <div class="footer">
-                  <p>You received this email because you signed up at equitymd.com. Sign up at <a href="https://equitymd.com" style="color: #2563eb;" target="_blank" rel="noopener noreferrer">equitymd.com</a> to view deals and get started.</p>
-                  <p>Questions? Contact us at <a href="mailto:hello@equitymd.com" style="color: #2563eb;">hello@equitymd.com</a></p>
-                  <p>© 2026 EquityMD. All rights reserved.</p>
-                </div>
+            <body style="margin:0;padding:0;background:#0B1220;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+              <!-- Preheader -->
+              <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;mso-hide:all;font-size:1px;line-height:1px;">
+                Browse syndicators, compare verified deals, and connect directly — free with Google or LinkedIn.
               </div>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0B1220;">
+                <tr>
+                  <td align="center" style="padding:28px 12px 40px;">
+                    <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
+
+                      <!-- Top brand bar -->
+                      <tr>
+                        <td align="center" style="padding:0 0 18px;">
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td style="font-size:22px;font-weight:800;letter-spacing:-0.4px;color:#FFFFFF;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                                Equity<span style="color:#38BDF8;">MD</span>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- Card shell -->
+                      <tr>
+                        <td style="background:#FFFFFF;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.35);">
+
+                          <!-- Hero -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="hero-pad" style="background:linear-gradient(145deg,#0B1220 0%,#0F2744 48%,#0A3A66 100%);padding:44px 36px 36px;text-align:center;">
+                                <div style="display:inline-block;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.28);color:#7DD3FC;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;padding:7px 12px;border-radius:999px;margin-bottom:18px;">
+                                  For accredited investors
+                                </div>
+                                <div class="h1" style="font-size:34px;line-height:1.15;font-weight:800;color:#FFFFFF;letter-spacing:-0.6px;margin:0 0 14px;">
+                                  Your seat at the table is open.
+                                </div>
+                                <div style="font-size:16px;line-height:1.55;color:rgba(226,232,240,0.88);max-width:460px;margin:0 auto 22px;">
+                                  Discover syndicators. Compare real offerings. Connect directly — with the transparency valuation-minded investors expect.
+                                </div>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                                  <tr>
+                                    <td align="center" bgcolor="#0A84FF" style="border-radius:10px;">
+                                      <a class="btn" href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.2px;padding:14px 28px;border-radius:10px;">
+                                        Sign up free
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <div style="margin-top:12px;font-size:12px;color:rgba(148,163,184,0.95);">
+                                  Google or LinkedIn · no sales call required
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Greeting + story -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="section-pad px" style="padding:36px 36px 8px;color:#334155;font-size:15px;line-height:1.65;">
+                                <p style="margin:0 0 16px;font-size:17px;color:#0F172A;"><strong>Hi *|FNAME:there|*,</strong></p>
+                                <p style="margin:0 0 14px;">EquityMD is the directory where accredited investors discover and compare real estate syndicators — track records, offerings, and direct contact in one place.</p>
+                                <p style="margin:0 0 8px;">Syndicators list. You research. You decide. <strong style="color:#0F172A;">We're the marketplace, not the middleman.</strong></p>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Stats -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="px" style="padding:20px 36px 8px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);border:1px solid #E2E8F0;border-radius:16px;">
+                                  <tr>
+                                    <td width="50%" align="center" style="padding:22px 12px;border-right:1px solid #E2E8F0;">
+                                      <div style="font-size:28px;font-weight:800;color:#0A84FF;letter-spacing:-0.5px;line-height:1;">295+</div>
+                                      <div style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-top:6px;">Syndicators</div>
+                                    </td>
+                                    <td width="50%" align="center" style="padding:22px 12px;">
+                                      <div style="font-size:28px;font-weight:800;color:#0A84FF;letter-spacing:-0.5px;line-height:1;">18.5%</div>
+                                      <div style="font-size:12px;font-weight:600;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-top:6px;">Average IRR*</div>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <div style="font-size:11px;color:#94A3B8;margin-top:8px;text-align:center;">*Platform-reported historical average across listed offerings. Not a guarantee of future results.</div>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Watch block -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="section-pad px" style="padding:28px 36px 8px;">
+                                <div style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#0A84FF;margin-bottom:8px;">See the platform</div>
+                                <div style="font-size:22px;font-weight:800;color:#0F172A;letter-spacing:-0.3px;margin-bottom:10px;">How EquityMD works</div>
+                                <div style="font-size:14px;color:#64748B;line-height:1.55;margin-bottom:16px;">A quick look at browsing deals, researching syndicators, and connecting on your timeline.</div>
+                                <a href="https://equitymd.com/how-it-works" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                                  <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" alt="Watch the EquityMD commercial" width="528" style="width:100%;max-width:528px;height:auto;border-radius:14px;box-shadow:0 10px 30px rgba(15,23,42,0.12);" />
+                                </a>
+                                <div style="text-align:center;margin-top:14px;">
+                                  <a class="btn" href="https://equitymd.com/how-it-works" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0F172A;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:13px;padding:12px 22px;border-radius:10px;">
+                                    Watch & explore →
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Featured deals header -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="px" style="padding:34px 36px 6px;">
+                                <div style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#0A84FF;margin-bottom:8px;">Live marketplace</div>
+                                <div style="font-size:22px;font-weight:800;color:#0F172A;letter-spacing:-0.3px;margin-bottom:8px;">Featured opportunities</div>
+                                <div style="font-size:14px;color:#64748B;line-height:1.55;">Sign up or log in with Google or LinkedIn for full details, documents, and syndicator contact.</div>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Deal 1 -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="px" style="padding:18px 36px 8px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;">
+                                  <tr>
+                                    <td>
+                                      <a href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                                        <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/deals/93e2f56c-ae12-44d0-b38c-b8fc44add3d5/64ce8eba-03e9-4635-b1ff-0b2fb741c8a8.jpg" alt="Value Add Multifamily Nashville, TN MSA" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
+                                      </a>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding:18px 18px 20px;">
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                          <td valign="top">
+                                            <div style="font-size:18px;font-weight:800;color:#0F172A;letter-spacing:-0.2px;line-height:1.3;">Value Add Multifamily</div>
+                                            <div style="font-size:13px;color:#64748B;margin-top:4px;">Nashville MSA · Murfreesboro, TN</div>
+                                          </td>
+                                          <td valign="top" align="right" width="88">
+                                            <span style="display:inline-block;background:#ECFDF5;color:#047857;border:1px solid #A7F3D0;font-size:11px;font-weight:700;padding:5px 8px;border-radius:999px;">Verified</span>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;border-top:1px solid #F1F5F9;padding-top:14px;">
+                                        <tr>
+                                          <td class="deal-metric" width="33%" style="padding:0 4px 0 0;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Target</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0A84FF;margin-top:3px;">17% IRR</div>
+                                          </td>
+                                          <td class="deal-metric" width="33%" style="padding:0 4px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Minimum</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">$100k</div>
+                                          </td>
+                                          <td class="deal-metric" width="33%" style="padding:0 0 0 4px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Term</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">5 years</div>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+                                        <tr>
+                                          <td align="center" bgcolor="#0A84FF" style="border-radius:10px;">
+                                            <a class="btn" href="https://equitymd.com/deals/value-add-multifamily-nashville-tn-msa" target="_blank" rel="noopener noreferrer" style="display:block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 18px;border-radius:10px;text-align:center;">
+                                              View deal →
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Deal 2 -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="px" style="padding:12px 36px 8px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;">
+                                  <tr>
+                                    <td>
+                                      <a href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                                        <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
+                                      </a>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding:18px 18px 20px;">
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                          <td valign="top">
+                                            <div style="font-size:18px;font-weight:800;color:#0F172A;letter-spacing:-0.2px;line-height:1.3;">Multifamily ADU Opportunity</div>
+                                            <div style="font-size:13px;color:#64748B;margin-top:4px;">Southern California</div>
+                                          </td>
+                                          <td valign="top" align="right" width="118">
+                                            <span style="display:inline-block;background:#FFFBEB;color:#B45309;border:1px solid #FDE68A;font-size:11px;font-weight:700;padding:5px 8px;border-radius:999px;">Premier Partner</span>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;border-top:1px solid #F1F5F9;padding-top:14px;">
+                                        <tr>
+                                          <td class="deal-metric" width="33%" style="padding:0 4px 0 0;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Target</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0A84FF;margin-top:3px;">30% IRR</div>
+                                          </td>
+                                          <td class="deal-metric" width="33%" style="padding:0 4px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Minimum</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">$50k</div>
+                                          </td>
+                                          <td class="deal-metric" width="33%" style="padding:0 0 0 4px;">
+                                            <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Term</div>
+                                            <div style="font-size:16px;font-weight:800;color:#0F172A;margin-top:3px;">3 years</div>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+                                        <tr>
+                                          <td align="center" bgcolor="#0A84FF" style="border-radius:10px;">
+                                            <a class="btn" href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer" style="display:block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 18px;border-radius:10px;text-align:center;">
+                                              View deal →
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Funded proof card -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="px" style="padding:12px 36px 8px;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E2E8F0;border-radius:16px;overflow:hidden;background:#F8FAFC;">
+                                  <tr>
+                                    <td width="120" valign="top" style="padding:0;">
+                                      <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/liva_2025/IMG_0982.jpeg" alt="Greenville Apartment Complex" width="120" height="120" style="width:120px;height:120px;object-fit:cover;" />
+                                    </td>
+                                    <td valign="middle" style="padding:14px 16px;">
+                                      <div style="font-size:11px;font-weight:700;color:#047857;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px;">Funded & closed</div>
+                                      <div style="font-size:15px;font-weight:800;color:#0F172A;">Greenville Apartment Complex</div>
+                                      <div style="font-size:12px;color:#64748B;margin-top:3px;">Travelers Rest, SC · 17.19% target IRR</div>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- Why complete profile -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="section-pad px" style="padding:28px 36px 12px;">
+                                <div style="background:#0B1220;border-radius:16px;padding:24px 22px;color:#E2E8F0;">
+                                  <div style="font-size:16px;font-weight:800;color:#FFFFFF;margin-bottom:14px;">Why create a free profile</div>
+                                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                    <tr><td style="padding:0 0 10px;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ Full deal docs & projections once you're in</td></tr>
+                                    <tr><td style="padding:0 0 10px;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ Message syndicators directly — no gatekeeping sales funnel</td></tr>
+                                    <tr><td style="padding:0 0 10px;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ Early access as new offerings go live</td></tr>
+                                    <tr><td style="padding:0;font-size:14px;line-height:1.5;color:#CBD5E1;">▸ One place to compare operators and track records</td></tr>
+                                  </table>
+                                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:18px;">
+                                    <tr>
+                                      <td bgcolor="#0A84FF" style="border-radius:10px;">
+                                        <a class="btn" href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0A84FF;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:13px 22px;border-radius:10px;">
+                                          Sign up free with Google or LinkedIn
+                                        </a>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <!-- About -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                              <td class="px" style="padding:8px 36px 32px;color:#64748B;font-size:13px;line-height:1.6;">
+                                <strong style="color:#0F172A;">About EquityMD</strong><br />
+                                EquityMD is a listing platform connecting accredited investors with commercial real estate syndicators. We do not facilitate transactions or provide investment advice. Always do your own due diligence.
+                              </td>
+                            </tr>
+                          </table>
+
+                        </td>
+                      </tr>
+
+                      <!-- Footer -->
+                      <tr>
+                        <td align="center" style="padding:28px 16px 8px;color:#94A3B8;font-size:12px;line-height:1.6;">
+                          You received this because you signed up at
+                          <a href="https://equitymd.com" target="_blank" rel="noopener noreferrer" style="color:#7DD3FC;text-decoration:none;">equitymd.com</a>.
+                          <br />
+                          Questions?
+                          <a href="mailto:hello@equitymd.com" style="color:#7DD3FC;text-decoration:none;">hello@equitymd.com</a>
+                          <br /><br />
+                          © 2026 EquityMD. All rights reserved.
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+              </table>
             </body>
           </html>
         `;
