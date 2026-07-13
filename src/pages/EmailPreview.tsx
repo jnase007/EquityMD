@@ -1098,7 +1098,7 @@ export function EmailPreview() {
                       <p style="margin-top: 12px; color: #6b7280; font-size: 14px;">Click to watch our commercial and learn how EquityMD works</p>
                     </div>
                     
-                    <p><strong>Hi *|FNAME|*!</strong> Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
+                    <p><strong>Hi *|FNAME:there|*!</strong> Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
                     
                     <p>Syndicators list their own deals and track records. You browse, research, and connect with them directly. We're the marketplace — not the middleman.</p>
                     
@@ -1616,7 +1616,7 @@ export function EmailPreview() {
         <div class="hero-subtitle">295+ syndicators with reviews, deal details, and track records — all in one place.</div>
       </div>
       <div style="color: #4b5563;">
-        <p><strong>Hi *|FNAME|*,</strong></p>
+        <p><strong>Hi *|FNAME:there|*,</strong></p>
         <p>Most investors only have access to deals from a few syndicators or firms they already know. That means you're only seeing a fraction of what's out there.</p>
         <p>EquityMD changes that. <strong>One site with 295+ syndicators</strong> — browse deals, read investor reviews, and dig into the details. All on your own time.</p>
 
@@ -1695,7 +1695,7 @@ export function EmailPreview() {
       <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
-      <p>Hi *|FNAME|*,</p>
+      <p>Hi *|FNAME:there|*,</p>
       <p>If you're like most CRE investors, you have access to deals from maybe 3-5 firms you know. That's a small window into a massive market.</p>
       <p>EquityMD opens that up. <strong>295+ syndicators</strong>, searchable by market and asset class. Each profile has deal details, track records, and investor reviews — so you can browse and evaluate on your own time.</p>
       <p>Here's what a quick search looks like:</p>
@@ -1763,7 +1763,7 @@ export function EmailPreview() {
       <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
-      <p>Hi *|FNAME|*,</p>
+      <p>Hi *|FNAME:there|*,</p>
       <p>Last note — then we'll let the site speak for itself.</p>
       <p>Here's the problem we keep hearing from investors: <strong>"I only see deals from the 2-3 firms I already know. I'm sure I'm missing opportunities."</strong></p>
       <p>You probably are. Most deal flow happens through closed networks. By the time you hear about a deal from someone outside your circle, it's already subscribed.</p>
@@ -1826,14 +1826,18 @@ Msg & data rates may apply.`;
     }
   };
 
-  // Transforms the preview HTML into a Mailchimp-ready file.
-  // Wraps bare *|FNAME|* merge tags with a conditional default so recipients
-  // without a first name see a graceful fallback ("Hi there!") instead of "Hi !".
+  // Convert the live preview HTML into a Mailchimp-ready file.
+  // Use Mailchimp default-value merge tags so empty FNAME becomes "there"
+  // instead of blank: *|FNAME:there|*  →  "Hi Justin!" or "Hi there!"
   const mailchimpify = (html: string) => {
-    return html.replace(
-      /\*\|FNAME\|\*/g,
-      '*|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*'
-    );
+    return html
+      // Collapse legacy long IF/ELSE first-name blocks → short default form
+      .replace(
+        /\*\|IF:FNAME\|\*\*\|FNAME\|\*\*\|ELSE:\|\*there\*\|END:IF\|\*/g,
+        '*|FNAME:there|*'
+      )
+      // Bare FNAME → default form (skip tags that already have a default, e.g. *|FNAME:there|*)
+      .replace(/\*\|FNAME\|\*/g, '*|FNAME:there|*');
   };
 
   const copyToClipboard = async () => {
