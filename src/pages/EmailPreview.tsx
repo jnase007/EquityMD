@@ -913,8 +913,7 @@ export function EmailPreview() {
         `;
 
       case 'investor_launch':
-        return `
-          <!DOCTYPE html>
+        return `          <!DOCTYPE html>
           <html lang="en">
             <head>
               <meta charset="utf-8" />
@@ -938,7 +937,7 @@ export function EmailPreview() {
             </head>
             <body style="margin:0;padding:0;background:#F3F6FB;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
               <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;mso-hide:all;font-size:1px;line-height:1px;">
-                You've been selected for EquityMD — browse syndicators, compare deals, and connect free with Google or LinkedIn.
+                Free deal flow you won't find elsewhere — review offerings from a broader syndicator network. Sign up free.
               </div>
 
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F3F6FB;">
@@ -970,7 +969,7 @@ export function EmailPreview() {
                                   You've been selected
                                 </div>
                                 <div style="font-size:16px;line-height:1.55;color:#475569;max-width:460px;margin:0 auto 22px;">
-                                  Welcome to EquityMD — the platform where accredited investors discover syndicators, compare real offerings, and connect directly.
+                                  Welcome to EquityMD — a free marketplace for accredited investors to review more deal flow from a network of syndicators listing offerings you'll decide on, on your own terms.
                                 </div>
                                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                                   <tr>
@@ -981,7 +980,7 @@ export function EmailPreview() {
                                     </td>
                                   </tr>
                                 </table>
-                                <div style="margin-top:10px;font-size:12px;color:#94A3B8;">Google or LinkedIn · free to join</div>
+                                <div style="margin-top:10px;font-size:12px;color:#94A3B8;">Google or LinkedIn · free forever to browse and review deals</div>
                               </td>
                             </tr>
                           </table>
@@ -991,8 +990,8 @@ export function EmailPreview() {
                             <tr>
                               <td class="px" style="padding:32px 36px 8px;color:#475569;font-size:15px;line-height:1.65;">
                                 <p style="margin:0 0 14px;font-size:17px;color:#0F172A;"><strong>Hi *|FNAME:there|*!</strong></p>
-                                <p style="margin:0 0 12px;">Thanks for checking out EquityMD — a directory where accredited investors discover and compare real estate syndicators.</p>
-                                <p style="margin:0 0 4px;">Syndicators list their own deals and track records. You browse, research, and connect with them directly. <strong style="color:#0F172A;">We're the marketplace — not the middleman.</strong></p>
+                                <p style="margin:0 0 12px;">Thanks for checking out EquityMD — a free marketplace where accredited investors can see more deal flow in one place.</p>
+                                <p style="margin:0 0 4px;">Syndicators list their own deals for you to review. You're not being matched or introduced through us — you decide. <strong style="color:#0F172A;">The benefit is deal flow:</strong> access to a network of offerings coming out this year that you’d be hard pressed to find elsewhere. <strong style="color:#0F172A;">Signup is free — no cost.</strong></p>
                               </td>
                             </tr>
                           </table>
@@ -1024,7 +1023,7 @@ export function EmailPreview() {
                               <td class="px" style="padding:28px 36px 8px;">
                                 <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2563EB;margin-bottom:6px;">See the platform</div>
                                 <div style="font-size:21px;font-weight:800;color:#0F172A;margin-bottom:8px;">How EquityMD works</div>
-                                <div style="font-size:14px;color:#64748B;line-height:1.55;margin-bottom:14px;">Watch the commercial, then explore deals and syndicators at your own pace.</div>
+                                <div style="font-size:14px;color:#64748B;line-height:1.55;margin-bottom:14px;">Watch the commercial, then browse the marketplace deal flow and review offerings at your own pace.</div>
                                 <a href="https://equitymd.com/how-it-works" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
                                   <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/images/video_commercial.png" alt="Watch the EquityMD commercial" width="528" style="width:100%;max-width:528px;height:auto;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.08);" />
                                 </a>
@@ -1041,9 +1040,9 @@ export function EmailPreview() {
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
                               <td class="px" style="padding:32px 36px 6px;">
-                                <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2563EB;margin-bottom:6px;">Live marketplace</div>
+                                <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2563EB;margin-bottom:6px;">Live deal flow</div>
                                 <div style="font-size:21px;font-weight:800;color:#0F172A;margin-bottom:8px;">Featured investment opportunities</div>
-                                <div style="font-size:14px;color:#64748B;line-height:1.55;">Sign up free with Google or LinkedIn to unlock full details, documents, and syndicator contact.</div>
+                                <div style="font-size:14px;color:#64748B;line-height:1.55;">Sign up free with Google or LinkedIn to unlock full details, documents, and a growing pipeline of deals to review this year.</div>
                               </td>
                             </tr>
                           </table>
@@ -1189,11 +1188,11 @@ export function EmailPreview() {
                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:14px;">
                                   <tr>
                                     <td style="padding:22px 20px;">
-                                      <div style="font-size:16px;font-weight:800;color:#1E3A8A;margin-bottom:12px;">Why complete your free profile</div>
-                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Full deal docs and projections</div>
-                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Direct messages with syndicators</div>
-                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Early access as new offerings launch</div>
-                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:16px;">• Compare operators in one place</div>
+                                      <div style="font-size:16px;font-weight:800;color:#1E3A8A;margin-bottom:12px;">Why create your free account</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• Full deal docs and projections to review yourself</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• More deal flow from a syndicator network you won't find in one place</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:8px;">• New offerings launching throughout the year</div>
+                                      <div style="font-size:14px;color:#1E40AF;line-height:1.55;margin-bottom:16px;">• No cost to join — browse and decide on your terms</div>
                                       <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                                         <tr>
                                           <td bgcolor="#2563EB" style="border-radius:10px;">
@@ -1215,7 +1214,7 @@ export function EmailPreview() {
                             <tr>
                               <td class="px" style="padding:8px 36px 30px;color:#64748B;font-size:13px;line-height:1.6;">
                                 <strong style="color:#0F172A;">About EquityMD</strong><br />
-                                EquityMD is a listing platform connecting accredited investors with commercial real estate syndicators. We do not facilitate transactions or provide investment advice. Always perform your own due diligence.
+                                EquityMD is a free marketplace where accredited investors can review commercial real estate syndication deal flow. We are not a matchmaker or broker: syndicators list offerings, you decide. We do not facilitate transactions or provide investment advice. Always perform your own due diligence.
                               </td>
                             </tr>
                           </table>
@@ -1247,7 +1246,7 @@ export function EmailPreview() {
               </table>
             </body>
           </html>
-        `;
+`;
 
       case 'deal_alert':
         return `
