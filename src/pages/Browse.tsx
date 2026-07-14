@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MapPin, LayoutGrid, List, Lock, ChevronRight, TrendingUp, DollarSign, Clock, Sparkles, Building2, ArrowRight, Target, Gem } from 'lucide-react';
+import { Search, Filter, MapPin, LayoutGrid, List, Lock, ChevronRight, TrendingUp, DollarSign, Clock, Building2, ArrowRight, Target, Gem } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { DealCard, DealListItem } from '../components/Cards';
@@ -404,11 +404,11 @@ export function Browse() {
         {highlightedDeals.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-amber-100 rounded-xl">
-                <Sparkles className="h-5 w-5 text-amber-600" />
+              <div className="p-2 bg-blue-50 rounded-xl">
+                <Building2 className="h-5 w-5 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900">Featured Opportunities</h3>
-              <div className="flex-1 h-px bg-gradient-to-r from-amber-200 to-transparent"></div>
+              <div className="flex-1 h-px bg-gradient-to-r from-slate-200 to-transparent"></div>
             </div>
             
             {viewMode === 'grid' ? (
