@@ -989,7 +989,7 @@ export function EmailPreview() {
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
                               <td class="px" style="padding:32px 36px 8px;color:#475569;font-size:15px;line-height:1.65;">
-                                <p style="margin:0 0 14px;font-size:17px;color:#0F172A;"><strong>Hi *|FNAME:there|*!</strong></p>
+                                <p style="margin:0 0 14px;font-size:17px;color:#0F172A;"><strong>Hi *|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*!</strong></p>
                                 <p style="margin:0 0 12px;">Thanks for checking out EquityMD — a free marketplace where accredited investors can see more deal flow in one place.</p>
                                 <p style="margin:0 0 4px;">Syndicators list their own deals for you to review. You're not being matched or introduced through us — you decide. <strong style="color:#0F172A;">The benefit is deal flow:</strong> access to a network of offerings coming out this year that you’d be hard pressed to find elsewhere. <strong style="color:#0F172A;">Signup is free — no cost.</strong></p>
                               </td>
@@ -1112,7 +1112,7 @@ export function EmailPreview() {
                                   <tr>
                                     <td>
                                       <a href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer">
-                                        <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
+                                        <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/adu.png" alt="Multifamily ADU Opportunity" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
                                       </a>
                                     </td>
                                   </tr>
@@ -1234,6 +1234,12 @@ export function EmailPreview() {
                             <br />
                             Questions?
                             <a href="mailto:hello@equitymd.com" style="color:#2563EB;text-decoration:none;">hello@equitymd.com</a>
+                            <br /><br />
+                            <a href="*|UNSUB|*" style="color:#2563EB;text-decoration:underline;">Unsubscribe</a>
+                            &nbsp;·&nbsp;
+                            <a href="*|UPDATE_PROFILE|*" style="color:#2563EB;text-decoration:underline;">Update preferences</a>
+                            <br />
+                            *|LIST:ADDRESS|*
                             <br /><br />
                             © 2026 EquityMD. All rights reserved.
                           </div>
@@ -1588,7 +1594,7 @@ export function EmailPreview() {
         <div class="hero-subtitle">295+ syndicators with reviews, deal details, and track records — all in one place.</div>
       </div>
       <div style="color: #4b5563;">
-        <p><strong>Hi *|FNAME:there|*,</strong></p>
+        <p><strong>Hi *|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*,</strong></p>
         <p>Most investors only have access to deals from a few syndicators or firms they already know. That means you're only seeing a fraction of what's out there.</p>
         <p>EquityMD changes that. <strong>One site with 295+ syndicators</strong> — browse deals, read investor reviews, and dig into the details. All on your own time.</p>
 
@@ -1667,7 +1673,7 @@ export function EmailPreview() {
       <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
-      <p>Hi *|FNAME:there|*,</p>
+      <p>Hi *|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*,</p>
       <p>If you're like most CRE investors, you have access to deals from maybe 3-5 firms you know. That's a small window into a massive market.</p>
       <p>EquityMD opens that up. <strong>295+ syndicators</strong>, searchable by market and asset class. Each profile has deal details, track records, and investor reviews — so you can browse and evaluate on your own time.</p>
       <p>Here's what a quick search looks like:</p>
@@ -1735,7 +1741,7 @@ export function EmailPreview() {
       <div style="text-align: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e5e7eb;">
         <span style="font-size: 22px; font-weight: 800; color: #1e293b;">Equity<span style="color: #2563eb;">MD</span></span>
       </div>
-      <p>Hi *|FNAME:there|*,</p>
+      <p>Hi *|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*,</p>
       <p>Last note — then we'll let the site speak for itself.</p>
       <p>Here's the problem we keep hearing from investors: <strong>"I only see deals from the 2-3 firms I already know. I'm sure I'm missing opportunities."</strong></p>
       <p>You probably are. Most deal flow happens through closed networks. By the time you hear about a deal from someone outside your circle, it's already subscribed.</p>
@@ -1799,17 +1805,21 @@ Msg & data rates may apply.`;
   };
 
   // Convert the live preview HTML into a Mailchimp-ready file.
-  // Use Mailchimp default-value merge tags so empty FNAME becomes "there"
-  // instead of blank: *|FNAME:there|*  →  "Hi Justin!" or "Hi there!"
+  // Invalid / unsupported: *|FNAME:there|*
+  // Supported fallback: *|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*
+  // Also fine: plain *|FNAME|* + audience First name default = "there".
+  // Note: Mailchimp test sends do NOT populate contact merge tags —
+  // use campaign Preview with "Enable live merge tag info", or a real send
+  // to a contact on the audience (not a test-email bypass).
   const mailchimpify = (html: string) => {
     return html
-      // Collapse legacy long IF/ELSE first-name blocks → short default form
+      // Any lingering invalid short-default form → official IF/ELSE
       .replace(
-        /\*\|IF:FNAME\|\*\*\|FNAME\|\*\*\|ELSE:\|\*there\*\|END:IF\|\*/g,
-        '*|FNAME:there|*'
+        /\*\|FNAME:there\|\*/g,
+        '*|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*'
       )
-      // Bare FNAME → default form (skip tags that already have a default, e.g. *|FNAME:there|*)
-      .replace(/\*\|FNAME\|\*/g, '*|FNAME:there|*');
+      // Strip leading indent so DOCTYPE is at column 0 for Code Your Own imports
+      .replace(/^\s+<!DOCTYPE html>/m, '<!DOCTYPE html>');
   };
 
   const copyToClipboard = async () => {

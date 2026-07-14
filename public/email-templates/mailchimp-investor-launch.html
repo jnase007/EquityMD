@@ -1,4 +1,4 @@
-          <!DOCTYPE html>
+<!DOCTYPE html>
           <html lang="en">
             <head>
               <meta charset="utf-8" />
@@ -74,7 +74,7 @@
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                             <tr>
                               <td class="px" style="padding:32px 36px 8px;color:#475569;font-size:15px;line-height:1.65;">
-                                <p style="margin:0 0 14px;font-size:17px;color:#0F172A;"><strong>Hi *|FNAME:there|*!</strong></p>
+                                <p style="margin:0 0 14px;font-size:17px;color:#0F172A;"><strong>Hi *|IF:FNAME|**|FNAME|**|ELSE:|*there*|END:IF|*!</strong></p>
                                 <p style="margin:0 0 12px;">Thanks for checking out EquityMD — a free marketplace where accredited investors can see more deal flow in one place.</p>
                                 <p style="margin:0 0 4px;">Syndicators list their own deals for you to review. You're not being matched or introduced through us — you decide. <strong style="color:#0F172A;">The benefit is deal flow:</strong> access to a network of offerings coming out this year that you’d be hard pressed to find elsewhere. <strong style="color:#0F172A;">Signup is free — no cost.</strong></p>
                               </td>
@@ -197,7 +197,7 @@
                                   <tr>
                                     <td>
                                       <a href="https://equitymd.com/deals/multifamily-adu-opportunity" target="_blank" rel="noopener noreferrer">
-                                        <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media//adu.png" alt="Multifamily ADU Opportunity" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
+                                        <img src="https://frtxsynlvwhpnzzgfgbt.supabase.co/storage/v1/object/public/deal-media/adu.png" alt="Multifamily ADU Opportunity" width="528" style="width:100%;max-width:528px;height:200px;object-fit:cover;" />
                                       </a>
                                     </td>
                                   </tr>
@@ -319,6 +319,12 @@
                             <br />
                             Questions?
                             <a href="mailto:hello@equitymd.com" style="color:#2563EB;text-decoration:none;">hello@equitymd.com</a>
+                            <br /><br />
+                            <a href="*|UNSUB|*" style="color:#2563EB;text-decoration:underline;">Unsubscribe</a>
+                            &nbsp;·&nbsp;
+                            <a href="*|UPDATE_PROFILE|*" style="color:#2563EB;text-decoration:underline;">Update preferences</a>
+                            <br />
+                            *|LIST:ADDRESS|*
                             <br /><br />
                             © 2026 EquityMD. All rights reserved.
                           </div>
