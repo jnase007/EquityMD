@@ -16,7 +16,8 @@ import {
 } from './templates.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
-const FROM_EMAIL = 'hello@equitymd.com';
+const FROM_EMAIL = 'EquityMD <hello@equitymd.com>';
+const REPLY_TO_EMAIL = 'hello@equitymd.com';
 const ADMIN_EMAIL = 'justin@brandastic.com'; // Admin notification email
 
 serve(async (req) => {
@@ -321,6 +322,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: FROM_EMAIL,
+        reply_to: REPLY_TO_EMAIL,
         to: emailTo,
         subject: emailSubject,
         html,
