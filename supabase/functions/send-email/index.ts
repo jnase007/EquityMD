@@ -128,7 +128,7 @@ serve(async (req) => {
         }
         html = getInvestorLaunchTemplate(data.firstName);
         emailTo = to;
-        emailSubject = '🚀 You\'ve Been Selected - Welcome to EquityMD';
+        emailSubject = "You've Been Selected - EquityMD";
         break;
 
       case 'investment_interest':
