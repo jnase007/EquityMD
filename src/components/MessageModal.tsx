@@ -241,17 +241,16 @@ export function MessageModal({
         ? `Investment Interest: ${formatCurrency(investmentAmount)}\n\n${message || 'I am interested in this investment opportunity.'}`
         : message;
 
-      // Check if receiverId is a valid user ID (not just a syndicator ID)
-      const { data: receiverProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', receiverId)
-        .maybeSingle();
+      // UUID receiver IDs are profile IDs (claimed_by). Do NOT gate on profiles SELECT —
+      // after RLS lockdown, authenticated users could not read other profiles, which
+      // silently skipped message inserts while still showing success + saving investment_requests.
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(receiverId || '');
+      const hasValidReceiver = Boolean(receiverId) && isUuid;
 
-      const hasValidReceiver = !!receiverProfile;
-
-      // Only create message and notification if receiver is a valid user
-      if (hasValidReceiver) {
+      if (!hasValidReceiver) {
+        console.error('Invalid message receiverId (expected claimed profile UUID):', receiverId);
+        setError('Messaging is unavailable for this listing right now. Your interest was still noted if submitted as an investment.');
+      } else {
         const messageData: any = {
           sender_id: user.id,
           receiver_id: receiverId,
@@ -272,7 +271,7 @@ export function MessageModal({
             .maybeSingle();
 
           if (!existingConnection) {
-            await supabase
+            const { error: connError } = await supabase
               .from('investor_connections')
               .insert({
                 investor_id: user.id,
@@ -280,21 +279,28 @@ export function MessageModal({
                 initiated_by: 'investor',
                 status: 'pending'
               });
+            if (connError) {
+              console.error('Connection insert error:', connError);
+            }
           }
         }
 
-        // Send message
+        // Send message — surface failure instead of silent skip
         const { error: messageError } = await supabase
           .from('messages')
           .insert(messageData);
 
         if (messageError) {
           console.error('Message insert error:', messageError);
+          setError(messageError.message || 'Failed to save message to your inbox. Please try again.');
+          setStep('form');
+          setSending(false);
+          return;
         }
 
         // Create notification in database for syndicator
         try {
-          await supabase
+          const { error: notifError } = await supabase
             .from('notifications')
             .insert({
               user_id: receiverId,
@@ -314,6 +320,9 @@ export function MessageModal({
               },
               read: false
             });
+          if (notifError) {
+            console.error('Notification insert error:', notifError);
+          }
         } catch (notifError) {
           console.log('Notification insert error (may not exist):', notifError);
         }
