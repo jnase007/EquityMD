@@ -121,7 +121,8 @@ export function InvestmentInterestAdmin() {
       const [{ data: synds }, { data: creators }] = await Promise.all([
         syndicatorIds.length
           ? supabase
-              .from('syndicator_profiles')
+              // base table (syndicator_profiles is a view)
+              .from('syndicators')
               .select('id, company_name, claimed_by')
               .in('id', syndicatorIds)
           : Promise.resolve({ data: [] as any[] }),

@@ -41,10 +41,7 @@ BEGIN
     EXECUTE 'DROP POLICY IF EXISTS deals_select_admin ON public.deals';
     EXECUTE 'CREATE POLICY deals_select_admin ON public.deals FOR SELECT TO authenticated USING (public.is_admin())';
   END IF;
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='syndicator_profiles') THEN
-    EXECUTE 'DROP POLICY IF EXISTS syndicator_profiles_select_admin ON public.syndicator_profiles';
-    EXECUTE 'CREATE POLICY syndicator_profiles_select_admin ON public.syndicator_profiles FOR SELECT TO authenticated USING (public.is_admin())';
-  END IF;
+  -- syndicator_profiles is a VIEW — policies go on base table `syndicators`
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='syndicators') THEN
     EXECUTE 'DROP POLICY IF EXISTS syndicators_select_admin ON public.syndicators';
     EXECUTE 'CREATE POLICY syndicators_select_admin ON public.syndicators FOR SELECT TO authenticated USING (public.is_admin())';
