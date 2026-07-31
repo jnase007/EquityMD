@@ -508,10 +508,14 @@ export function CommandCenter() {
               </Link>
             )}
             {metrics.pendingRequests > 0 && (
-              <span className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-amber-700">
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('equitymd:admin-tab', { detail: 'interest' }))}
+                className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-amber-700 hover:bg-amber-100 transition"
+              >
                 <DollarSign className="h-4 w-4" />
                 {metrics.pendingRequests} Pending Investment Requests
-              </span>
+              </button>
             )}
           </div>
         </div>
@@ -583,8 +587,10 @@ export function CommandCenter() {
         </div>
 
         {/* Investment Requests */}
-        <div
-          className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/20"
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('equitymd:admin-tab', { detail: 'interest' }))}
+          className="text-left bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/20 hover:brightness-105 transition"
         >
           <div className="flex items-start justify-between">
             <div>
@@ -606,7 +612,7 @@ export function CommandCenter() {
               </span>
             )}
           </div>
-        </div>
+        </button>
       </div>
 
       {/* Secondary Metrics Row */}

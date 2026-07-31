@@ -62,6 +62,15 @@ export function AdminDashboard() {
   }, []);
 
   useEffect(() => {
+    const onTab = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail) setActiveTab(detail as any);
+    };
+    window.addEventListener('equitymd:admin-tab', onTab as EventListener);
+    return () => window.removeEventListener('equitymd:admin-tab', onTab as EventListener);
+  }, []);
+
+  useEffect(() => {
     if (!profile) {
       // Immediately try to fetch profile ourselves (don't just wait for App.tsx)
       fetchProfileDirect().then((success) => {
@@ -226,9 +235,10 @@ export function AdminDashboard() {
             {/* Primary tabs */}
             {[
               { id: 'command', label: 'Overview', icon: Zap },
+              { id: 'interest', label: 'Interest', icon: DollarSign },
               { id: 'users', label: 'Users', icon: Users },
               { id: 'properties', label: 'Deals', icon: Building2 },
-              { id: 'subscriptions', label: 'Subscriptions', icon: DollarSign },
+              { id: 'subscriptions', label: 'Subscriptions', icon: CreditCard },
               { id: 'verification', label: 'Verification', icon: Shield },
               { id: 'blog', label: 'Blog', icon: PenTool },
             ].map(tab => (
@@ -249,7 +259,7 @@ export function AdminDashboard() {
             {/* More dropdown */}
             <div className="relative ml-auto pb-4 group">
               <button className={`flex items-center text-sm font-medium ${
-                ['analytics', 'messages', 'interest', 'claims', 'import-syndicators', 'deal-approval', 'system', 'settings', 'deactivated', 'import-investors', 'credits'].includes(activeTab)
+                ['analytics', 'messages', 'claims', 'import-syndicators', 'deal-approval', 'system', 'settings', 'deactivated', 'import-investors', 'credits'].includes(activeTab)
                   ? 'text-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
               }`}>
@@ -260,7 +270,6 @@ export function AdminDashboard() {
                 {[
                   { id: 'analytics', label: 'Analytics', icon: BarChart },
                   { id: 'messages', label: 'Messages', icon: MessageCircle },
-                  { id: 'interest', label: 'Interest', icon: DollarSign },
                   { id: 'claims', label: 'Claim Requests', icon: CheckCircle },
                   { id: 'deal-approval', label: 'Deal Approval', icon: ClipboardCheck },
                   { id: 'import-syndicators', label: 'Import Syndicators', icon: FileText },

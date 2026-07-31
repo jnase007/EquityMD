@@ -56,43 +56,52 @@ export function MessageModal({
     }).format(num);
   };
 
-  // Send email notification to syndicator
+  // Send email notification to syndicator + always alert admin on investment interest
   const sendEmailNotification = async (type: 'investment_interest' | 'new_message') => {
+    const ADMIN_EMAIL = 'justin@brandastic.com';
+    const timestamp = new Date().toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
     try {
-      // Get syndicator's email if not provided
       let recipientEmail = syndicatorEmail;
-      
       let isUnclaimedProfile = false;
-      
+      let skipRecipientEmail = false;
+
       if (!recipientEmail) {
-        // First try to get from profiles table (if syndicator claimed their profile)
+        // Claimed profile first
         const { data: recipientProfile } = await supabase
           .from('profiles')
           .select('email, email_notifications')
           .eq('id', receiverId)
           .maybeSingle();
-        
+
         if (recipientProfile?.email) {
           recipientEmail = recipientProfile.email;
-          
-          // Check if user has email notifications enabled
-          const notifications = recipientProfile.email_notifications;
-          if (type === 'new_message' && notifications && !notifications.messages) {
-            console.log('User has message notifications disabled');
-            return;
+          const notifications = recipientProfile.email_notifications as any;
+          // Respect recipient prefs for *their* inbox email only.
+          // Never block admin/creator alerts on recipient prefs.
+          if (type === 'new_message' && notifications && notifications.messages === false) {
+            console.log('Recipient has message notifications disabled');
+            skipRecipientEmail = true;
           }
-          if (type === 'investment_interest' && notifications && !notifications.investment_status) {
-            console.log('User has investment notifications disabled');
-            return;
+          if (type === 'investment_interest' && notifications && notifications.investment_status === false) {
+            console.log('Recipient has investment notifications disabled');
+            skipRecipientEmail = true;
           }
         } else {
-          // Fallback: try to get contact_email from syndicators table
+          // Fallback: unclaimed syndicator contact email
           const { data: syndicatorData } = await supabase
             .from('syndicators')
             .select('contact_email, company_name')
             .eq('id', receiverId)
             .maybeSingle();
-          
+
           if (syndicatorData?.contact_email) {
             recipientEmail = syndicatorData.contact_email;
             isUnclaimedProfile = true;
@@ -100,144 +109,124 @@ export function MessageModal({
         }
       }
 
-      if (!recipientEmail) {
-        console.log('No email found for recipient');
-        return;
+      // 1) Always alert admin on investment interest / unclaimed contact — independent of owner email success
+      if (type === 'investment_interest' || isUnclaimedProfile) {
+        try {
+          if ((recipientEmail || '').toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+            const adminNote = isUnclaimedProfile
+              ? `Unclaimed profile alert. Investor trying to contact "${syndicatorName}".`
+              : `Routed to deal owner inbox (not necessarily admin). Review Admin → Interest.`;
+
+            await supabase.functions.invoke('send-email', {
+              body: {
+                to: ADMIN_EMAIL,
+                type: type === 'investment_interest' ? 'investment_interest' : 'new_message',
+                data: type === 'investment_interest' ? {
+                  investorName: profile?.full_name || 'An Investor',
+                  investorEmail: profile?.email || user?.email,
+                  dealTitle: dealTitle || 'Investment Opportunity',
+                  dealSlug: dealSlug,
+                  investmentAmount: formatCurrency(investmentAmount),
+                  message: [
+                    message || '',
+                    '',
+                    `Syndicator: ${syndicatorName}`,
+                    `Deal owner email attempted: ${recipientEmail || 'none'}`,
+                    adminNote,
+                  ].filter(Boolean).join('\n'),
+                  timestamp,
+                } : {
+                  senderName: 'EquityMD System',
+                  senderType: 'system',
+                  messagePreview: `Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}`,
+                  dealTitle: `Unclaimed Profile: ${syndicatorName}`,
+                  dealSlug: dealSlug,
+                  timestamp,
+                }
+              }
+            });
+            console.log('Admin alert sent');
+          }
+        } catch (adminEmailErr) {
+          console.error('Error notifying admin:', adminEmailErr);
+        }
       }
 
-      // Call the edge function to send email
-      const { error: emailError } = await supabase.functions.invoke('send-email', {
-        body: {
-          to: recipientEmail,
-          type: type,
-          data: type === 'investment_interest' ? {
-            investorName: profile?.full_name || 'An Investor',
-            investorEmail: profile?.email || user?.email,
-            dealTitle: dealTitle || 'Investment Opportunity',
-            dealSlug: dealSlug,
-            investmentAmount: formatCurrency(investmentAmount),
-            message: message || undefined,
-            timestamp: new Date().toLocaleString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })
-          } : {
-            senderName: profile?.full_name || 'A User',
-            senderType: profile?.user_type || 'investor',
-            messagePreview: message,
-            dealTitle: dealTitle,
-            dealSlug: dealSlug,
-            timestamp: new Date().toLocaleString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })
+      // 2) Deal owner / syndicator email (best-effort)
+      if (recipientEmail && !skipRecipientEmail) {
+        const { error: emailError } = await supabase.functions.invoke('send-email', {
+          body: {
+            to: recipientEmail,
+            type: type,
+            data: type === 'investment_interest' ? {
+              investorName: profile?.full_name || 'An Investor',
+              investorEmail: profile?.email || user?.email,
+              dealTitle: dealTitle || 'Investment Opportunity',
+              dealSlug: dealSlug,
+              investmentAmount: formatCurrency(investmentAmount),
+              message: message || undefined,
+              timestamp,
+            } : {
+              senderName: profile?.full_name || 'A User',
+              senderType: profile?.user_type || 'investor',
+              messagePreview: message,
+              dealTitle: dealTitle,
+              dealSlug: dealSlug,
+              timestamp,
+            }
           }
+        });
+
+        if (emailError) {
+          console.error('Error sending recipient email notification:', emailError);
+        } else {
+          console.log('Recipient email notification sent successfully');
         }
-      });
+      } else if (!recipientEmail) {
+        console.log('No email found for recipient');
+      }
 
-      if (emailError) {
-        console.error('Error sending email notification:', emailError);
-      } else {
-        console.log('Email notification sent successfully');
-        
-        // Always CC admin on investment interest so platform ops can see it
-        // even when messages go to the deal owner (not Justin).
-        // Also keep the unclaimed-profile alert.
-        const ADMIN_EMAIL = 'justin@brandastic.com';
-        if (isInvestment || isUnclaimedProfile) {
-          try {
-            const adminPreview = isUnclaimedProfile
-              ? `Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}\n${isInvestment ? `Investment Amount: ${formatCurrency(investmentAmount)}` : ''}\n\nConsider reaching out to encourage them to claim their profile.`
-              : `New investment interest on EquityMD.\n\nInvestor: ${profile?.full_name || 'Unknown'} (${user?.email})\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nAmount: ${formatCurrency(investmentAmount)}\n\nThis was also sent to the deal owner. Review in Admin → Interest.`;
-
-            // Don't double-email admin if they already received the primary email
-            if ((recipientEmail || '').toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      // 3) CC deal creator when different from owner/sender/admin
+      try {
+        if (dealId) {
+          const { data: dealRow } = await supabase
+            .from('deals')
+            .select('created_by')
+            .eq('id', dealId)
+            .maybeSingle();
+          const creatorId = dealRow?.created_by;
+          if (creatorId && creatorId !== receiverId && creatorId !== user?.id) {
+            const { data: creatorProfile } = await supabase
+              .from('profiles')
+              .select('email, full_name')
+              .eq('id', creatorId)
+              .maybeSingle();
+            const creatorEmail = (creatorProfile?.email || '').toLowerCase();
+            if (
+              creatorEmail &&
+              creatorEmail !== ADMIN_EMAIL.toLowerCase() &&
+              creatorEmail !== (recipientEmail || '').toLowerCase()
+            ) {
               await supabase.functions.invoke('send-email', {
                 body: {
-                  to: ADMIN_EMAIL,
-                  type: isInvestment ? 'investment_interest' : 'new_message',
-                  data: isInvestment ? {
-                    investorName: profile?.full_name || 'An Investor',
-                    investorEmail: profile?.email || user?.email,
-                    dealTitle: dealTitle || 'Investment Opportunity',
-                    dealSlug: dealSlug,
-                    investmentAmount: formatCurrency(investmentAmount),
-                    message: message || adminPreview,
-                    timestamp: new Date().toLocaleString('en-US', {
-                      weekday: 'long', year: 'numeric', month: 'long',
-                      day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    })
-                  } : {
-                    senderName: 'EquityMD System',
+                  to: creatorProfile!.email,
+                  type: 'new_message',
+                  data: {
+                    senderName: 'EquityMD (FYI)',
                     senderType: 'system',
-                    messagePreview: adminPreview,
-                    dealTitle: isUnclaimedProfile ? `Unclaimed Profile: ${syndicatorName}` : dealTitle,
+                    messagePreview: `Someone is interested in a deal you created.\n\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nFrom: ${profile?.full_name || 'A user'} (${user?.email})\n${type === 'investment_interest' ? `Investment interest: ${formatCurrency(investmentAmount)}` : 'Sent a message'}\n\nYou may want to give your syndicator a heads-up to follow up.`,
+                    dealTitle: dealTitle,
                     dealSlug: dealSlug,
-                    timestamp: new Date().toLocaleString('en-US', {
-                      weekday: 'long', year: 'numeric', month: 'long',
-                      day: 'numeric', hour: '2-digit', minute: '2-digit'
-                    })
+                    timestamp,
                   }
                 }
               });
-              console.log('Admin CC notification sent');
-            }
-          } catch (adminEmailErr) {
-            console.error('Error notifying admin:', adminEmailErr);
-          }
-        }
-
-        // CC the DEAL CREATOR (e.g. admin who built the deal on behalf of a
-        // syndicator) so they can give their syndicator friend a heads-up that
-        // someone's interested — even when the syndicator profile is claimed.
-        try {
-          if (dealId) {
-            const { data: dealRow } = await supabase
-              .from('deals')
-              .select('created_by')
-              .eq('id', dealId)
-              .maybeSingle();
-            const creatorId = dealRow?.created_by;
-            // Skip if no creator, or creator is the recipient, or creator is the sender
-            if (creatorId && creatorId !== receiverId && creatorId !== user?.id) {
-              const { data: creatorProfile } = await supabase
-                .from('profiles')
-                .select('email, full_name')
-                .eq('id', creatorId)
-                .maybeSingle();
-              if (creatorProfile?.email) {
-                await supabase.functions.invoke('send-email', {
-                  body: {
-                    to: creatorProfile.email,
-                    type: 'new_message',
-                    data: {
-                      senderName: 'EquityMD (FYI)',
-                      senderType: 'system',
-                      messagePreview: `Someone is interested in a deal you created.\n\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nFrom: ${profile?.full_name || 'A user'} (${user?.email})\n${isInvestment ? `Investment interest: ${formatCurrency(investmentAmount)}` : 'Sent a message'}\n\nYou may want to give your syndicator a heads-up to follow up.`,
-                      dealTitle: dealTitle,
-                      dealSlug: dealSlug,
-                      timestamp: new Date().toLocaleString('en-US', {
-                        weekday: 'long', year: 'numeric', month: 'long',
-                        day: 'numeric', hour: '2-digit', minute: '2-digit'
-                      })
-                    }
-                  }
-                });
-                console.log('Creator CC notification sent');
-              }
+              console.log('Creator CC notification sent');
             }
           }
-        } catch (creatorErr) {
-          console.error('Error CCing deal creator:', creatorErr);
         }
+      } catch (creatorErr) {
+        console.error('Error CCing deal creator:', creatorErr);
       }
     } catch (error) {
       console.error('Error in sendEmailNotification:', error);
@@ -357,14 +346,49 @@ export function MessageModal({
             });
 
           if (investmentError) {
-            console.log('Investment requests table error:', investmentError);
+            console.error('Investment requests table error:', investmentError);
+            // Don't fail the whole submit if message already saved — surface soft warning
+            toast.error('Interest note saved, but tracking row failed. Admin has been notified by email if available.');
+          } else {
+            // In-app notify all admins so it shows even without email
+            try {
+              const { data: admins } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('is_admin', true);
+              if (admins && admins.length > 0) {
+                const adminNotifs = admins
+                  .filter((a) => a.id !== user.id && a.id !== receiverId)
+                  .map((a) => ({
+                    user_id: a.id,
+                    type: 'investment_status',
+                    title: `New Investment Interest - ${formatCurrency(investmentAmount)}`,
+                    content: `${profile?.full_name || 'An investor'} expressed ${formatCurrency(investmentAmount)} interest in ${dealTitle || 'a deal'} (${syndicatorName}).`,
+                    data: {
+                      deal_id: dealId,
+                      deal_slug: dealSlug,
+                      sender_id: user.id,
+                      sender_name: profile?.full_name,
+                      investment_amount: getRawNumber(investmentAmount),
+                      admin_panel: 'interest',
+                    },
+                    read: false,
+                  }));
+                if (adminNotifs.length) {
+                  const { error: adminNotifErr } = await supabase.from('notifications').insert(adminNotifs);
+                  if (adminNotifErr) console.error('Admin notification insert error:', adminNotifErr);
+                }
+              }
+            } catch (adminNotifCatch) {
+              console.error('Admin in-app notify error:', adminNotifCatch);
+            }
           }
         } catch (error) {
-          console.log('Investment tracking error:', error);
+          console.error('Investment tracking error:', error);
         }
       }
 
-      // Send email notification to syndicator
+      // Send email notification to syndicator + admin
       await sendEmailNotification(isInvestment ? 'investment_interest' : 'new_message');
 
       // Track analytics
