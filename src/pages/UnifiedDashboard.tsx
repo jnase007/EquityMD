@@ -151,28 +151,26 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
         }
       })();
 
-      // Recent interest on MY created deals (investment requests)
+      // Platform-wide recent investment interest (admin sees all deals, not just created_by me)
       (async () => {
         try {
-          // First get my deal ids
-          const { data: myDeals } = await supabase
-            .from('deals')
-            .select('id, title, slug')
-            .eq('created_by', user.id);
-          const dealMap = new Map((myDeals || []).map((d: any) => [d.id, d]));
-          const dealIds = (myDeals || []).map((d: any) => d.id);
-          if (dealIds.length === 0) { setRecentInterest([]); return; }
-          const { data: reqs } = await supabase
+          const { data: reqs, error: reqErr } = await supabase
             .from('investment_requests')
             .select('id, deal_id, user_id, amount, status, created_at')
-            .in('deal_id', dealIds)
             .order('created_at', { ascending: false })
-            .limit(10);
-          // hydrate investor names
-          const userIds = [...new Set((reqs || []).map((r: any) => r.user_id))];
-          const { data: profs } = userIds.length
-            ? await supabase.from('profiles').select('id, full_name, email').in('id', userIds)
-            : { data: [] as any[] };
+            .limit(25);
+          if (reqErr) throw reqErr;
+          const dealIds = [...new Set((reqs || []).map((r: any) => r.deal_id).filter(Boolean))];
+          const userIds = [...new Set((reqs || []).map((r: any) => r.user_id).filter(Boolean))];
+          const [{ data: deals }, { data: profs }] = await Promise.all([
+            dealIds.length
+              ? supabase.from('deals').select('id, title, slug, created_by').in('id', dealIds)
+              : Promise.resolve({ data: [] as any[] }),
+            userIds.length
+              ? supabase.from('profiles').select('id, full_name, email').in('id', userIds)
+              : Promise.resolve({ data: [] as any[] }),
+          ]);
+          const dealMap = new Map((deals || []).map((d: any) => [d.id, d]));
           const profMap = new Map((profs || []).map((p: any) => [p.id, p]));
           setRecentInterest((reqs || []).map((r: any) => ({
             ...r,
@@ -823,36 +821,46 @@ export function UnifiedDashboard({ initialView }: UnifiedDashboardProps = {}) {
           </div>
         )}
 
-        {/* Admin: Recent Interest (who's eyeing my deals) */}
-        {adminMode && recentInterest.length > 0 && (
+        {/* Admin: Recent Interest — platform-wide */}
+        {adminMode && (
           <div id="sec-interest" className="bg-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden mb-8 scroll-mt-24">
-            <div className="px-6 py-5 border-b border-gray-100 bg-emerald-50/40">
-              <h2 className="text-xl font-bold text-gray-900">Recent Interest</h2>
-              <p className="text-gray-500 text-sm">People expressing interest in deals you created — give your syndicator a heads-up</p>
+            <div className="px-6 py-5 border-b border-gray-100 bg-emerald-50/40 flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Recent Interest</h2>
+                <p className="text-gray-500 text-sm">All platform investment interest — not just deals you created</p>
+              </div>
+              <Link to="/admin" className="text-sm font-medium text-emerald-700 hover:text-emerald-900 whitespace-nowrap">
+                Admin Interest →
+              </Link>
             </div>
-            <div className="divide-y divide-gray-100">
-              {recentInterest.map((r) => (
-                <div key={r.id} className="px-6 py-4 flex items-center justify-between gap-4">
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">
-                      {r.investor?.full_name || 'Someone'} · <span className="text-emerald-700">{r.deal?.title || 'a deal'}</span>
+            {recentInterest.length === 0 ? (
+              <div className="p-8 text-center text-sm text-gray-500">No investment interest yet.</div>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {recentInterest.map((r) => (
+                  <div key={r.id} className="px-6 py-4 flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-gray-900 truncate">
+                        {r.investor?.full_name || 'Someone'} · <span className="text-emerald-700">{r.deal?.title || 'a deal'}</span>
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {r.amount ? `$${Number(r.amount).toLocaleString()} interest` : 'Expressed interest'}
+                        {r.status ? ` · ${r.status}` : ''}
+                        {r.created_at ? ` · ${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {r.amount ? `$${Number(r.amount).toLocaleString()} interest` : 'Expressed interest'}
-                      {r.created_at ? ` · ${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      {r.investor?.email && (
+                        <a href={`mailto:${r.investor.email}`} className="text-sm text-blue-600 hover:text-blue-800">Email</a>
+                      )}
+                      {r.deal?.slug && (
+                        <Link to={`/deals/${r.deal.slug}`} className="text-sm text-gray-600 hover:text-gray-900">View deal</Link>
+                      )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    {r.investor?.email && (
-                      <a href={`mailto:${r.investor.email}`} className="text-sm text-blue-600 hover:text-blue-800">Email</a>
-                    )}
-                    {r.deal?.slug && (
-                      <Link to={`/deals/${r.deal.slug}`} className="text-sm text-gray-600 hover:text-gray-900">View deal</Link>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

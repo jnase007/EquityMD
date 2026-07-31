@@ -148,32 +148,48 @@ export function MessageModal({
       } else {
         console.log('Email notification sent successfully');
         
-        // If this is an unclaimed profile, also notify admin
-        if (isUnclaimedProfile) {
-          const ADMIN_EMAIL = 'justin@brandastic.com';
+        // Always CC admin on investment interest so platform ops can see it
+        // even when messages go to the deal owner (not Justin).
+        // Also keep the unclaimed-profile alert.
+        const ADMIN_EMAIL = 'justin@brandastic.com';
+        if (isInvestment || isUnclaimedProfile) {
           try {
-            await supabase.functions.invoke('send-email', {
-              body: {
-                to: ADMIN_EMAIL,
-                type: 'new_message',
-                data: {
-                  senderName: 'EquityMD System',
-                  senderType: 'system',
-                  messagePreview: `Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}\n${isInvestment ? `Investment Amount: ${formatCurrency(investmentAmount)}` : ''}\n\nConsider reaching out to encourage them to claim their profile.`,
-                  dealTitle: `Unclaimed Profile: ${syndicatorName}`,
-                  dealSlug: dealSlug,
-                  timestamp: new Date().toLocaleString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
+            const adminPreview = isUnclaimedProfile
+              ? `Unclaimed Profile Alert!\n\nAn investor (${profile?.full_name || 'Unknown'}) is trying to contact "${syndicatorName}" but their profile hasn't been claimed yet.\n\nInvestor Email: ${user?.email}\nDeal: ${dealTitle || 'N/A'}\n${isInvestment ? `Investment Amount: ${formatCurrency(investmentAmount)}` : ''}\n\nConsider reaching out to encourage them to claim their profile.`
+              : `New investment interest on EquityMD.\n\nInvestor: ${profile?.full_name || 'Unknown'} (${user?.email})\nDeal: ${dealTitle || dealSlug || 'N/A'}\nSyndicator: ${syndicatorName}\nAmount: ${formatCurrency(investmentAmount)}\n\nThis was also sent to the deal owner. Review in Admin → Interest.`;
+
+            // Don't double-email admin if they already received the primary email
+            if ((recipientEmail || '').toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+              await supabase.functions.invoke('send-email', {
+                body: {
+                  to: ADMIN_EMAIL,
+                  type: isInvestment ? 'investment_interest' : 'new_message',
+                  data: isInvestment ? {
+                    investorName: profile?.full_name || 'An Investor',
+                    investorEmail: profile?.email || user?.email,
+                    dealTitle: dealTitle || 'Investment Opportunity',
+                    dealSlug: dealSlug,
+                    investmentAmount: formatCurrency(investmentAmount),
+                    message: message || adminPreview,
+                    timestamp: new Date().toLocaleString('en-US', {
+                      weekday: 'long', year: 'numeric', month: 'long',
+                      day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    })
+                  } : {
+                    senderName: 'EquityMD System',
+                    senderType: 'system',
+                    messagePreview: adminPreview,
+                    dealTitle: isUnclaimedProfile ? `Unclaimed Profile: ${syndicatorName}` : dealTitle,
+                    dealSlug: dealSlug,
+                    timestamp: new Date().toLocaleString('en-US', {
+                      weekday: 'long', year: 'numeric', month: 'long',
+                      day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    })
+                  }
                 }
-              }
-            });
-            console.log('Admin notification sent for unclaimed profile');
+              });
+              console.log('Admin CC notification sent');
+            }
           } catch (adminEmailErr) {
             console.error('Error notifying admin:', adminEmailErr);
           }

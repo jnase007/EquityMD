@@ -251,28 +251,41 @@ export function CommandCenter() {
     });
 
     // Fetch recent investment requests
+    // investment_requests.user_id (not investor_id) — hydrate profiles separately
     const { data: recentRequests } = await supabase
       .from('investment_requests')
-      .select(`
-        id, created_at, amount,
-        deal:deal_id (title),
-        investor:investor_id (full_name)
-      `)
+      .select('id, created_at, amount, deal_id, user_id')
       .gte('created_at', yesterday)
       .order('created_at', { ascending: false })
       .limit(5);
 
-    recentRequests?.forEach((req: any) => {
-      activities.push({
-        id: `request-${req.id}`,
-        type: 'investment_request',
-        title: 'Investment Request',
-        description: `${req.investor?.full_name || 'Investor'} requested $${(req.amount || 0).toLocaleString()} for ${req.deal?.title || 'a deal'}`,
-        timestamp: req.created_at,
-        icon: <DollarSign className="h-4 w-4" />,
-        iconBg: 'bg-blue-100 text-blue-600'
+    if (recentRequests && recentRequests.length > 0) {
+      const dealIds = [...new Set(recentRequests.map((r: any) => r.deal_id).filter(Boolean))];
+      const userIds = [...new Set(recentRequests.map((r: any) => r.user_id).filter(Boolean))];
+      const [{ data: deals }, { data: profs }] = await Promise.all([
+        dealIds.length
+          ? supabase.from('deals').select('id, title').in('id', dealIds)
+          : Promise.resolve({ data: [] as any[] }),
+        userIds.length
+          ? supabase.from('profiles').select('id, full_name').in('id', userIds)
+          : Promise.resolve({ data: [] as any[] }),
+      ]);
+      const dealMap = new Map((deals || []).map((d: any) => [d.id, d]));
+      const profMap = new Map((profs || []).map((p: any) => [p.id, p]));
+      recentRequests.forEach((req: any) => {
+        const investorName = profMap.get(req.user_id)?.full_name || 'Investor';
+        const dealTitle = dealMap.get(req.deal_id)?.title || 'a deal';
+        activities.push({
+          id: `request-${req.id}`,
+          type: 'investment_request',
+          title: 'Investment Request',
+          description: `${investorName} requested $${(req.amount || 0).toLocaleString()} for ${dealTitle}`,
+          timestamp: req.created_at,
+          icon: <DollarSign className="h-4 w-4" />,
+          iconBg: 'bg-blue-100 text-blue-600'
+        });
       });
-    });
+    }
 
     // Sort by timestamp
     return activities.sort((a, b) => 

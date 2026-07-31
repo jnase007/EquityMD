@@ -18,6 +18,7 @@ import { DealApprovalQueue } from '../../components/DealApprovalQueue';
 import { SystemManagement } from '../../components/admin/SystemManagement';
 import { DeactivatedAccountsManagement } from '../../components/admin/DeactivatedAccountsManagement';
 import { MessagesAdmin } from '../../components/admin/MessagesAdmin';
+import { InvestmentInterestAdmin } from '../../components/admin/InvestmentInterestAdmin';
 import { SubscriptionManager } from '../../components/admin/SubscriptionManager';
 import { useAuthStore } from '../../lib/store';
 import { supabase } from '../../lib/supabase';
@@ -26,7 +27,7 @@ import { Link } from 'react-router-dom';
 
 export function AdminDashboard() {
   const { profile } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'deal-approval' | 'system' | 'messages' | 'subscriptions'>('command');
+  const [activeTab, setActiveTab] = useState<'command' | 'analytics' | 'users' | 'deactivated' | 'properties' | 'blog' | 'credits' | 'import-investors' | 'import-syndicators' | 'settings' | 'claims' | 'verification' | 'deal-approval' | 'system' | 'messages' | 'interest' | 'subscriptions'>('command');
 
   const [loadTimeout, setLoadTimeout] = useState(false);
   const [retrying, setRetrying] = useState(false);
@@ -183,6 +184,8 @@ export function AdminDashboard() {
         return <SystemManagement />;
       case 'messages':
         return <MessagesAdmin />;
+      case 'interest':
+        return <InvestmentInterestAdmin />;
       case 'subscriptions':
         return <SubscriptionManager />;
       default:
@@ -246,7 +249,7 @@ export function AdminDashboard() {
             {/* More dropdown */}
             <div className="relative ml-auto pb-4 group">
               <button className={`flex items-center text-sm font-medium ${
-                ['analytics', 'messages', 'claims', 'import-syndicators', 'deal-approval', 'system', 'settings', 'deactivated', 'import-investors', 'credits'].includes(activeTab)
+                ['analytics', 'messages', 'interest', 'claims', 'import-syndicators', 'deal-approval', 'system', 'settings', 'deactivated', 'import-investors', 'credits'].includes(activeTab)
                   ? 'text-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
               }`}>
@@ -257,6 +260,7 @@ export function AdminDashboard() {
                 {[
                   { id: 'analytics', label: 'Analytics', icon: BarChart },
                   { id: 'messages', label: 'Messages', icon: MessageCircle },
+                  { id: 'interest', label: 'Interest', icon: DollarSign },
                   { id: 'claims', label: 'Claim Requests', icon: CheckCircle },
                   { id: 'deal-approval', label: 'Deal Approval', icon: ClipboardCheck },
                   { id: 'import-syndicators', label: 'Import Syndicators', icon: FileText },
