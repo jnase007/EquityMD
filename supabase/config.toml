@@ -20,3 +20,8 @@ entrypoint = "./functions/send-admin-message-email/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/send-admin-message-email/*.html" ]
+
+[functions.deactivate-account]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/deactivate-account/index.ts"

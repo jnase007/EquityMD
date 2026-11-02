@@ -84,6 +84,30 @@ export function Contact() {
         console.error('Contact form email notification failed:', notifyErr);
       }
 
+      // Auto-deactivate when contact subject/message requests account deactivation
+      const deactivateIntent = /deactivat|delete my account|close my account|remove my account|cancel my account/i
+        .test(`${formData.subject || ''} ${formData.message || ''}`);
+      if (deactivateIntent && formData.email) {
+        try {
+          const { data: deactData, error: deactError } = await supabase.functions.invoke('deactivate-account', {
+            body: {
+              mode: 'contact',
+              email: formData.email,
+              name: formData.name,
+              subject: formData.subject,
+              message: formData.message,
+            },
+          });
+          if (deactError) {
+            console.error('Contact auto-deactivate failed:', deactError);
+          } else if (deactData?.success && !deactData?.alreadyDeactivated && !deactData?.skipped) {
+            console.log('Contact auto-deactivate succeeded for', formData.email);
+          }
+        } catch (deactErr) {
+          console.error('Contact auto-deactivate error:', deactErr);
+        }
+      }
+
       setSuccess(true);
       setFormData(prev => ({
         ...prev,

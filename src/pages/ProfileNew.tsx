@@ -53,7 +53,7 @@ const MARKETS = [
 type Section = 'profile' | 'investment' | 'settings';
 
 export function ProfileNew() {
-  const { user, profile, setProfile } = useAuthStore();
+  const { user, profile, setProfile, clearAuth } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<Section>('profile');
@@ -62,6 +62,9 @@ export function ProfileNew() {
   const [syndicator, setSyndicator] = useState<any>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [deactivateConfirmation, setDeactivateConfirmation] = useState('');
+  const [deactivating, setDeactivating] = useState(false);
   
   // Form states
   const [formData, setFormData] = useState({
@@ -296,6 +299,43 @@ export function ProfileNew() {
     }
   };
 
+  
+  const handleAccountDeactivation = async () => {
+    if (deactivateConfirmation !== 'DEACTIVATE') {
+      toast.error('Please type DEACTIVATE to confirm');
+      return;
+    }
+    if (!user) return;
+
+    setDeactivating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('deactivate-account', {
+        body: {
+          mode: 'self',
+          reason: 'Self-serve deactivation from profile settings',
+        },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
+      toast.success('Account deactivated. A confirmation email is on the way.');
+      setShowDeactivateModal(false);
+      setDeactivateConfirmation('');
+      try {
+        await supabase.auth.signOut();
+      } catch (_) {
+        /* ignore */
+      }
+      clearAuth();
+      navigate('/');
+    } catch (err: any) {
+      console.error('Deactivate error:', err);
+      toast.error(err?.message || 'Could not deactivate account. Please try again or contact support.');
+    } finally {
+      setDeactivating(false);
+    }
+  };
+
   const handleAvatarUpload = async (url: string) => {
     try {
       const { error } = await supabase
@@ -352,6 +392,54 @@ export function ProfileNew() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <SEO title="Edit Profile | EquityMD" noindex={true} />
       <Navbar />
+      
+      {/* Account Deactivation Modal */}
+      {showDeactivateModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Deactivate Account</h3>
+            <p className="text-sm text-gray-600 mb-3">
+              This will deactivate your EquityMD account, sign you out, and email a confirmation to {user?.email}.
+            </p>
+            <div className="bg-red-50 border border-red-100 rounded-xl p-3 mb-4 text-sm text-red-800">
+              <strong>Warning:</strong> Reactivation requires contacting support.
+            </div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Type DEACTIVATE to confirm
+            </label>
+            <input
+              type="text"
+              value={deactivateConfirmation}
+              onChange={(e) => setDeactivateConfirmation(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-xl mb-4 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              placeholder="DEACTIVATE"
+              autoComplete="off"
+            />
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeactivateModal(false);
+                  setDeactivateConfirmation('');
+                }}
+                className="flex-1 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50"
+                disabled={deactivating}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleAccountDeactivation}
+                disabled={deactivating || deactivateConfirmation !== 'DEACTIVATE'}
+                className="flex-1 py-2 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 disabled:opacity-50"
+              >
+                {deactivating ? 'Deactivating…' : 'Deactivate'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Toaster position="top-right" />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -787,9 +875,13 @@ export function ProfileNew() {
                     <h3 className="font-medium text-red-700">Danger Zone</h3>
                   </div>
                   <p className="text-sm text-gray-600 mb-4">
-                    Once you deactivate your account, all your data will be removed. This action cannot be undone.
+                    Deactivating hides your profile, turns off notifications, and blocks sign-in. You will receive a confirmation email.
                   </p>
-                  <button className="text-red-600 text-sm font-medium hover:text-red-700">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeactivateModal(true)}
+                    className="text-red-600 text-sm font-medium hover:text-red-700"
+                  >
                     Deactivate Account
                   </button>
                 </div>

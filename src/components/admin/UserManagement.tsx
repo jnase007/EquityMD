@@ -98,20 +98,30 @@ export function UserManagement() {
 
   // Add deactivate/reactivate logic
   const toggleActiveStatus = async (userId: string, currentStatus: boolean) => {
-    if (!window.confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'reactivate'} this user?`)) return;
+    const action = currentStatus ? 'deactivate' : 'reactivate';
+    if (!window.confirm(`Are you sure you want to ${action} this user?${currentStatus ? ' They will be emailed a confirmation.' : ''}`)) return;
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .update({ is_active: !currentStatus })
-        .eq('id', userId)
-        .select();
+      const { data, error } = await supabase.functions.invoke('deactivate-account', {
+        body: {
+          mode: 'admin',
+          userId,
+          action,
+          notifyUser: true,
+          reason: currentStatus ? 'Deactivated by admin' : undefined,
+        },
+      });
       if (error) throw error;
-      setUsers(users.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u));
+      if (data?.error) throw new Error(data.error);
+
+      const nextActive = action === 'reactivate';
+      setUsers(users.map(u => u.id === userId ? { ...u, is_active: nextActive } : u));
       if (selectedUser && selectedUser.id === userId) {
-        setSelectedUser({ ...selectedUser, is_active: !currentStatus });
+        setSelectedUser({ ...selectedUser, is_active: nextActive });
       }
-    } catch (err) {
-      alert('Failed to update user status.');
+      alert(currentStatus ? 'User deactivated. Confirmation email sent.' : 'User reactivated.');
+    } catch (err: any) {
+      console.error('Admin deactivate error:', err);
+      alert(err?.message || 'Failed to update user status.');
     }
   };
 
