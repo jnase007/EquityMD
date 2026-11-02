@@ -29,25 +29,21 @@ function isDeactivateSubject(subject = '', message = '') {
 }
 
 async function sendEmail({ to, subject, content }) {
-  const key = process.env.RESEND_API_KEY || process.env.VITE_RESEND_API_KEY;
-  if (!key) throw new Error('RESEND_API_KEY missing');
-  const res = await fetch('https://api.resend.com/emails', {
+  // Use the already-deployed Supabase send-email edge function (Resend lives there)
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY;
+  if (!supabaseUrl || !serviceKey) throw new Error('Supabase env missing for email');
+  const res = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${key}`,
+      Authorization: `Bearer ${serviceKey}`,
+      apikey: serviceKey,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      from: 'EquityMD <hello@equitymd.com>',
-      reply_to: 'hello@equitymd.com',
-      to,
-      subject,
-      text: content,
-      html: content.split('\n').map((l) => `<p>${l || ' '}</p>`).join(''),
-    }),
+    body: JSON.stringify({ to, subject, content }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(`Resend error: ${JSON.stringify(data)}`);
+  if (!res.ok) throw new Error(`send-email error: ${JSON.stringify(data)}`);
   return data;
 }
 
