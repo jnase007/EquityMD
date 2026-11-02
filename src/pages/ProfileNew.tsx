@@ -5,6 +5,7 @@ import { SEO } from '../components/SEO';
 import { Footer } from '../components/Footer';
 import { useAuthStore } from '../lib/store';
 import { supabase } from '../lib/supabase';
+import { invokeDeactivateAccount } from '../lib/deactivateAccount';
 import { ImageUpload } from '../components/ImageUpload';
 import { EmailUpdateForm } from '../components/EmailUpdateForm';
 import { SetPasswordForm } from '../components/SetPasswordForm';
@@ -309,11 +310,9 @@ export function ProfileNew() {
 
     setDeactivating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('deactivate-account', {
-        body: {
-          mode: 'self',
-          reason: 'Self-serve deactivation from profile settings',
-        },
+      const { data, error } = await invokeDeactivateAccount({
+        mode: 'self',
+        reason: 'Self-serve deactivation from profile settings',
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

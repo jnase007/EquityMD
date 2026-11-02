@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
+import { invokeDeactivateAccount } from '../../lib/deactivateAccount';
 import { Search, Filter, User, Building2, Shield, CheckCircle, XCircle, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown, Plus, Mail } from 'lucide-react';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
@@ -101,14 +102,12 @@ export function UserManagement() {
     const action = currentStatus ? 'deactivate' : 'reactivate';
     if (!window.confirm(`Are you sure you want to ${action} this user?${currentStatus ? ' They will be emailed a confirmation.' : ''}`)) return;
     try {
-      const { data, error } = await supabase.functions.invoke('deactivate-account', {
-        body: {
-          mode: 'admin',
-          userId,
-          action,
-          notifyUser: true,
-          reason: currentStatus ? 'Deactivated by admin' : undefined,
-        },
+      const { data, error } = await invokeDeactivateAccount({
+        mode: 'admin',
+        userId,
+        action,
+        notifyUser: true,
+        reason: currentStatus ? 'Deactivated by admin' : undefined,
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);

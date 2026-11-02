@@ -5,6 +5,7 @@ import { SEO } from '../components/SEO';
 import { FAQSection } from '../components/FAQSection';
 import { Mail, Building2, Send, MessageSquare, Phone, Clock, Sparkles, CheckCircle, AlertTriangle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { invokeDeactivateAccount } from '../lib/deactivateAccount';
 import { useAuthStore } from '../lib/store';
 
 // FAQ data for Contact page - support and getting started
@@ -89,14 +90,12 @@ export function Contact() {
         .test(`${formData.subject || ''} ${formData.message || ''}`);
       if (deactivateIntent && formData.email) {
         try {
-          const { data: deactData, error: deactError } = await supabase.functions.invoke('deactivate-account', {
-            body: {
-              mode: 'contact',
-              email: formData.email,
-              name: formData.name,
-              subject: formData.subject,
-              message: formData.message,
-            },
+          const { data: deactData, error: deactError } = await invokeDeactivateAccount({
+            mode: 'contact',
+            email: formData.email,
+            name: formData.name,
+            subject: formData.subject,
+            message: formData.message,
           });
           if (deactError) {
             console.error('Contact auto-deactivate failed:', deactError);
