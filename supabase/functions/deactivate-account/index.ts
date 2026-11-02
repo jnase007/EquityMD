@@ -231,7 +231,7 @@ serve(async (req) => {
 
       const { data: profile, error: lookupError } = await admin
         .from("profiles")
-        .select("id, email, full_name, is_active")
+        .select("id, email, full_name")
         .ilike("email", email)
         .maybeSingle();
 
@@ -261,7 +261,7 @@ serve(async (req) => {
         });
       }
 
-      if (profile.is_active === false) {
+      if (String(profile.full_name || '').startsWith('[DEACTIVATED]')) {
         return json(200, {
           success: true,
           alreadyDeactivated: true,
@@ -305,12 +305,12 @@ serve(async (req) => {
     if (mode === "self") {
       const { data: profile } = await admin
         .from("profiles")
-        .select("id, email, full_name, is_active")
+        .select("id, email, full_name")
         .eq("id", user.id)
         .maybeSingle();
 
       if (!profile) return json(404, { error: "Profile not found" });
-      if (profile.is_active === false) {
+      if (String(profile.full_name || '').startsWith('[DEACTIVATED]')) {
         return json(200, { success: true, alreadyDeactivated: true });
       }
 
@@ -351,7 +351,7 @@ serve(async (req) => {
 
       const { data: target } = await admin
         .from("profiles")
-        .select("id, email, full_name, is_active")
+        .select("id, email, full_name")
         .eq("id", targetUserId)
         .maybeSingle();
 

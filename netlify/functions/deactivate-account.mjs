@@ -165,7 +165,7 @@ async function handleRequest(req) {
       }
       const { data: profile, error: lookupError } = await admin
         .from('profiles')
-        .select('id, email, full_name, is_active')
+        .select('id, email, full_name')
         .ilike('email', email)
         .maybeSingle();
       if (lookupError) throw lookupError;
@@ -177,7 +177,7 @@ async function handleRequest(req) {
         });
         return json(200, { success: false, skipped: true, reason: 'no_matching_account', notifiedAdmin: true });
       }
-      if (profile.is_active === false) {
+      if (String(profile.full_name || '').startsWith('[DEACTIVATED]')) {
         return json(200, { success: true, alreadyDeactivated: true, email: profile.email });
       }
       const result = await deactivateUser(admin, {
@@ -204,9 +204,9 @@ async function handleRequest(req) {
     if (userError || !user) return json(401, { error: 'Unauthorized' });
 
     if (mode === 'self') {
-      const { data: profile } = await admin.from('profiles').select('id, email, full_name, is_active').eq('id', user.id).maybeSingle();
+      const { data: profile } = await admin.from('profiles').select('id, email, full_name').eq('id', user.id).maybeSingle();
       if (!profile) return json(404, { error: 'Profile not found' });
-      if (profile.is_active === false) return json(200, { success: true, alreadyDeactivated: true });
+      if (String(profile.full_name || '').startsWith('[DEACTIVATED]')) return json(200, { success: true, alreadyDeactivated: true });
       const result = await deactivateUser(admin, {
         userId: user.id,
         email: profile.email || user.email || '',
@@ -225,7 +225,7 @@ async function handleRequest(req) {
       const targetUserId = String(body.userId || '');
       const action = body.action || 'deactivate';
       if (!targetUserId) return json(400, { error: 'userId required' });
-      const { data: target } = await admin.from('profiles').select('id, email, full_name, is_active').eq('id', targetUserId).maybeSingle();
+      const { data: target } = await admin.from('profiles').select('id, email, full_name').eq('id', targetUserId).maybeSingle();
       if (!target) return json(404, { error: 'Target user not found' });
       if (action === 'reactivate') {
         const result = await reactivateUser(admin, { userId: target.id, email: target.email, fullName: target.full_name });
