@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { invokeDeactivateAccount } from '../../lib/deactivateAccount';
-import { Search, Filter, User, Building2, Shield, CheckCircle, XCircle, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown, Plus, Mail } from 'lucide-react';
+import { Search, Filter, User, Building2, Shield, CheckCircle, XCircle, AlertCircle, ArrowUpDown, ArrowUp, ArrowDown, Plus, Mail, Star } from 'lucide-react';
+import { leadSourceLabel } from '../../lib/leadSource';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 
@@ -15,6 +16,12 @@ interface UserData {
   is_active?: boolean;
   created_at: string;
   avatar_url?: string;
+  lead_source?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  lead_source_note?: string | null;
+  admin_starred?: boolean;
 }
 
 type SortField = 'created_at' | 'full_name' | 'email';
@@ -25,7 +32,7 @@ export function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState<'all' | 'investors' | 'syndicators' | 'admins'>('all');
+  const [filter, setFilter] = useState<'all' | 'investors' | 'syndicators' | 'admins' | 'meta' | 'starred'>('all');
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
@@ -68,9 +75,35 @@ export function UserManagement() {
         .order(sortField, { ascending: sortDirection === 'asc' });
 
       if (error) throw error;
-      
-      console.log('Fetched users:', data?.length || 0, 'sorted by', sortField, sortDirection);
-      setUsers(data || []);
+
+      const rows = data || [];
+      const ids = rows.map((u: any) => u.id).filter(Boolean);
+      let prefById: Record<string, any> = {};
+      if (ids.length) {
+        const { data: invRows } = await supabase
+          .from('investor_profiles')
+          .select('id, investment_preferences')
+          .in('id', ids);
+        (invRows || []).forEach((r: any) => {
+          prefById[r.id] = r.investment_preferences || {};
+        });
+      }
+
+      const merged = rows.map((u: any) => {
+        const prefs = prefById[u.id] || {};
+        return {
+          ...u,
+          lead_source: u.lead_source || prefs.lead_source || null,
+          utm_source: u.utm_source || prefs.utm_source || null,
+          utm_medium: u.utm_medium || prefs.utm_medium || null,
+          utm_campaign: u.utm_campaign || prefs.utm_campaign || null,
+          lead_source_note: u.lead_source_note || prefs.lead_source_note || null,
+          admin_starred: u.admin_starred === true || prefs.admin_starred === true,
+        } as UserData;
+      });
+
+      console.log('Fetched users:', merged.length, 'sorted by', sortField, sortDirection);
+      setUsers(merged);
     } catch (err) {
       console.error('Error fetching users:', err);
       setError('Failed to load users. Please try again.');
@@ -124,6 +157,62 @@ export function UserManagement() {
     }
   };
 
+  const setLeadAttribution = async (
+    userId: string,
+    patch: { lead_source?: string | null; admin_starred?: boolean; lead_source_note?: string | null }
+  ) => {
+    try {
+      const user = users.find(u => u.id === userId);
+      if (!user) throw new Error('User not found');
+
+      const nextSource = patch.lead_source !== undefined ? patch.lead_source : user.lead_source;
+      const nextStarred = patch.admin_starred !== undefined ? patch.admin_starred : !!user.admin_starred;
+      const nextNote = patch.lead_source_note !== undefined ? patch.lead_source_note : user.lead_source_note;
+
+      // Prefer profile columns when present; always mirror into investor_profiles prefs.
+      const profileUpdate: Record<string, any> = {
+        lead_source: nextSource || null,
+        admin_starred: nextStarred,
+        lead_source_note: nextNote || null,
+      };
+      const { error: profileErr } = await supabase.from('profiles').update(profileUpdate).eq('id', userId);
+      // Ignore missing-column errors — prefs path still works
+      if (profileErr && !/column|schema cache/i.test(profileErr.message || '')) {
+        console.warn('profiles lead update:', profileErr.message);
+      }
+
+      const { data: inv } = await supabase
+        .from('investor_profiles')
+        .select('investment_preferences')
+        .eq('id', userId)
+        .maybeSingle();
+
+      const prefs = { ...(inv?.investment_preferences || {}) };
+      if (nextSource) prefs.lead_source = nextSource;
+      else delete prefs.lead_source;
+      prefs.admin_starred = nextStarred;
+      if (nextNote) prefs.lead_source_note = nextNote;
+      else delete prefs.lead_source_note;
+
+      const { error: invErr } = await supabase
+        .from('investor_profiles')
+        .upsert({ id: userId, investment_preferences: prefs }, { onConflict: 'id' });
+      if (invErr) throw invErr;
+
+      const updated = {
+        ...user,
+        lead_source: nextSource || null,
+        admin_starred: nextStarred,
+        lead_source_note: nextNote || null,
+      };
+      setUsers(users.map(u => (u.id === userId ? updated : u)));
+      if (selectedUser?.id === userId) setSelectedUser(updated);
+    } catch (err: any) {
+      console.error('Lead attribution update failed:', err);
+      alert(err?.message || 'Failed to update lead source');
+    }
+  };
+
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
       user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -133,7 +222,9 @@ export function UserManagement() {
       filter === 'all' ||
       (filter === 'investors' && user.user_type === 'investor') ||
       (filter === 'syndicators' && user.user_type === 'syndicator') ||
-      (filter === 'admins' && user.is_admin);
+      (filter === 'admins' && user.is_admin) ||
+      (filter === 'meta' && (user.lead_source === 'meta' || user.utm_source === 'facebook' || user.utm_source === 'instagram')) ||
+      (filter === 'starred' && user.admin_starred === true);
 
     return matchesSearch && matchesFilter;
   });
@@ -443,6 +534,8 @@ The EquityMD Team
             <option value="investors">Investors</option>
             <option value="syndicators">Syndicators</option>
             <option value="admins">Admins</option>
+            <option value="meta">Meta Leads</option>
+            <option value="starred">Starred</option>
           </select>
         </div>
       </div>
@@ -508,7 +601,22 @@ The EquityMD Team
                         )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
+                        <div className="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                          {user.admin_starred && (
+                            <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-400 flex-shrink-0" />
+                          )}
+                          <span>{user.full_name}</span>
+                          {(user.lead_source === 'meta' || user.utm_source === 'facebook' || user.utm_source === 'instagram') && (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-600 text-white tracking-wide">
+                              META
+                            </span>
+                          )}
+                          {user.lead_source && user.lead_source !== 'meta' && (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-200 text-slate-700 tracking-wide uppercase">
+                              {leadSourceLabel(user.lead_source)}
+                            </span>
+                          )}
+                        </div>
                         <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
                     </div>
@@ -618,7 +726,58 @@ The EquityMD Team
                 <div className="text-xs text-gray-500">Status: {selectedUser.is_verified ? 'Verified' : 'Unverified'}</div>
                 <div className="text-xs text-gray-500">Admin: {selectedUser.is_admin ? 'Yes' : 'No'}</div>
                 <div className="text-xs text-gray-500">Active: {selectedUser.is_active === false ? 'No' : 'Yes'}</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Source: {selectedUser.lead_source ? leadSourceLabel(selectedUser.lead_source) : '—'}
+                  {selectedUser.utm_campaign ? ` · ${selectedUser.utm_campaign}` : ''}
+                </div>
+                {selectedUser.lead_source_note && (
+                  <div className="text-xs text-gray-400 mt-1">{selectedUser.lead_source_note}</div>
+                )}
               </div>
+
+              <div className="mb-4 p-3 rounded-lg border border-amber-200 bg-amber-50 space-y-2">
+                <div className="text-xs font-semibold text-amber-900 uppercase tracking-wide">Lead source</div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setLeadAttribution(selectedUser.id, { admin_starred: !selectedUser.admin_starred })}
+                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium border ${
+                      selectedUser.admin_starred
+                        ? 'bg-amber-400 text-amber-950 border-amber-500'
+                        : 'bg-white text-gray-700 border-gray-300'
+                    }`}
+                  >
+                    <Star className={`h-4 w-4 ${selectedUser.admin_starred ? 'fill-amber-900' : ''}`} />
+                    {selectedUser.admin_starred ? 'Starred' : 'Star'}
+                  </button>
+                </div>
+                <select
+                  value={selectedUser.lead_source || ''}
+                  onChange={(e) =>
+                    setLeadAttribution(selectedUser.id, {
+                      lead_source: e.target.value || null,
+                      admin_starred: e.target.value === 'meta' ? true : selectedUser.admin_starred,
+                      lead_source_note:
+                        e.target.value === 'meta'
+                          ? selectedUser.lead_source_note || 'Meta Ads campaign'
+                          : selectedUser.lead_source_note,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                >
+                  <option value="">No source set</option>
+                  <option value="meta">Meta (Facebook / Instagram)</option>
+                  <option value="google">Google Ads</option>
+                  <option value="organic">Organic</option>
+                  <option value="referral">Referral</option>
+                  <option value="admin">Admin created</option>
+                  <option value="other">Other</option>
+                </select>
+                <p className="text-[11px] text-amber-800/80">
+                  Star + Meta badge show on the Users table. New signups from Meta UTMs / fbclid auto-tag when capture is live.
+                </p>
+              </div>
+
               {/* Deactivate/Reactivate button in drawer */}
               <button
                 onClick={() => toggleActiveStatus(selectedUser.id, selectedUser.is_active !== false)}

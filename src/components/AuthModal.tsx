@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase'
+import { leadAttributionProfileFields, leadAttributionPreferenceFields } from '../lib/leadSource';
 import { setOAuthNextPath, clearOAuthNextPath } from '../lib/oauthRedirect';
 import { trackUserLogin } from '../lib/analytics';
 import {
@@ -165,6 +166,7 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
         if (error) throw error;
 
         if (data.user) {
+          const leadFields = leadAttributionProfileFields();
           await supabase.from('profiles').upsert({
             id: data.user.id,
             email: data.user.email,
@@ -172,10 +174,12 @@ export function AuthModal({ onClose, defaultView = 'sign_up', redirectPath, defa
             user_type: 'investor',
             is_verified: false,
             is_admin: email === 'justin@brandastic.com',
+            ...leadFields,
           });
           await supabase.from('investor_profiles').upsert({
             id: data.user.id,
             accredited_status: false,
+            investment_preferences: leadAttributionPreferenceFields({}),
           });
 
           if (data.session) {

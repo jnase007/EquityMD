@@ -7,6 +7,9 @@ import { ThemeProvider } from './contexts/ThemeContext';
 // AuthProvider removed - was causing duplicate session checks
 // All auth is handled by useAuthStore in App.tsx
 import App from './App';
+import { captureLeadAttributionFromUrl } from './lib/leadSource';
+
+captureLeadAttributionFromUrl();
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(

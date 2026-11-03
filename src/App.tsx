@@ -4,7 +4,8 @@ import React, { useEffect, useState, Suspense, lazy, useCallback } from 'react';
 declare const __BUILD_TIME__: string;
 (window as any).__EQUITYMD_BUILD__ = __BUILD_TIME__;
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { supabase, withTimeout } from './lib/supabase';
+import { supabase, withTimeout } from './lib/supabase'
+import { captureLeadAttributionFromUrl, leadAttributionProfileFields, leadAttributionPreferenceFields } from './lib/leadSource';
 import { useAuthStore } from './lib/store';
 import { preloadCriticalResources, preloadRoute } from './utils/performance';
 import { authLogger } from './lib/logger';
@@ -264,6 +265,7 @@ export default function App() {
         
         authLogger.log('Creating profile with user type:', userType);
         
+        const leadFields = leadAttributionProfileFields();
         const { data: newProfile, error: createError } = await supabase
           .from('profiles')
           .insert([{
@@ -272,7 +274,8 @@ export default function App() {
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0],
             avatar_url: user.user_metadata?.avatar_url,
             user_type: userType,
-            is_verified: true
+            is_verified: true,
+            ...leadFields,
           }])
           .select()
           .single();
@@ -306,7 +309,7 @@ export default function App() {
             .insert([{ 
               id: userId,
               accredited_status: false,
-              investment_preferences: {},
+              investment_preferences: leadAttributionPreferenceFields({}),
               preferred_property_types: [],
               preferred_locations: []
             }]);

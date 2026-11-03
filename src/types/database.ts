@@ -17,6 +17,12 @@ export interface Profile {
     deal_updates: boolean;
     investment_status: boolean;
   };
+  lead_source?: string | null;
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  lead_source_note?: string | null;
+  admin_starred?: boolean;
 }
 
 export interface InvestorProfile {
