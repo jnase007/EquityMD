@@ -489,23 +489,24 @@ export function CommandCenter() {
               <span className="font-semibold">Action Required</span>
             </div>
             {metrics.pendingVerifications > 0 && (
-              <Link
-                to="#"
-                onClick={() => {/* Navigate to verification tab */}}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-amber-700 hover:bg-amber-100 transition"
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('equitymd:admin-tab', { detail: 'verification' }))}
+                className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-amber-700 hover:bg-amber-100 transition border border-amber-200"
               >
                 <CheckCircle className="h-4 w-4" />
                 {metrics.pendingVerifications} Pending Verifications
-              </Link>
+              </button>
             )}
             {metrics.pendingClaims > 0 && (
-              <Link
-                to="#"
-                className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-amber-700 hover:bg-amber-100 transition"
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('equitymd:admin-tab', { detail: 'claims' }))}
+                className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-amber-700 hover:bg-amber-100 transition border border-amber-200"
               >
                 <Building className="h-4 w-4" />
                 {metrics.pendingClaims} Claim Requests
-              </Link>
+              </button>
             )}
             {metrics.pendingRequests > 0 && (
               <button
